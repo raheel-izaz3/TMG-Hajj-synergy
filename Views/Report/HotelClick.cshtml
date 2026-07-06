@@ -1,0 +1,174 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+
+@{
+    Layout = null;
+    var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hajj Summary Report</title>
+
+
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.4/css/dx.light.css" />
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- ✅ Required Libraries -->
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/jszip.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+
+    <!-- ✅ jsPDF & DevExtreme PDF Exporter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.exporter.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #hajjSummaryGrid {
+            height: auto;
+        }
+
+        .top-buttons {
+            margin-bottom: 15px;
+        }
+
+        #exportToPdf {
+            padding: 8px 16px;
+            background-color: #f60000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .checkboxes {
+            margin-bottom: 20px;
+        }
+
+            .checkboxes label {
+                margin-right: 15px;
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Hajj Summary</h2>
+
+   @*  <div class="checkboxes">
+        <label><input type="checkbox" id="sNoCheckbox" checked /> S.No</label>
+        <label><input type="checkbox" id="hajjiNameCheckbox" checked /> Hajji Name</label>
+        <label><input type="checkbox" id="genderCheckbox" checked /> Gender</label>
+        <label><input type="checkbox" id="passportNoCheckbox" checked /> Passport #</label>
+    </div> *@
+
+    <div class="top-buttons">
+        <button id="exportToPdf">Download PDF</button>
+    </div>
+
+    <div id="hajjSummaryGrid"></div>
+
+    <script>
+        let data = @Html.Raw(jsonData);
+        let gridInstance;
+
+        $(function () {
+
+            data.forEach((item, index) => {
+                item.SNo = index + 1;
+            });
+
+
+            $("#hajjSummaryGrid").dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+                columnAutoWidth: true,
+                paging: false,
+                searchPanel: {
+                    visible: true,
+                    highlightCaseSensitive: false
+                },
+                headerFilter: {
+                    visible: true
+                },
+                sorting: {
+                    mode: "multiple"
+                },
+                export: {
+                    enabled: true,
+                    fileName: "HajjSummary"
+                },
+                onInitialized: function (e) {
+                    gridInstance = e.component;
+                },
+                columns: [
+                    {
+                        caption: "S.No",
+                        width: 60,
+                        cellTemplate: function (container, options) {
+                            const visibleRows = options.component.getVisibleRows();
+                            const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+                            container.text(rowIndex + 1);
+                        }
+                    },
+                    { dataField: "HajjiName", caption: "Hajji Name" },
+                    { dataField: "HBNo", caption: "HbNo" },
+                    { dataField: "Gender", caption: "Gender" },
+                    { dataField: "PackageName", caption: "Package" },
+                    { dataField: "PassportNo", caption: "Passport #" },
+                ]
+            });
+
+
+            $("#sNoCheckbox").on("change", function () {
+                gridInstance.columnOption("SNo", "visible", this.checked);
+            });
+            $("#hajjiNameCheckbox").on("change", function () {
+                gridInstance.columnOption("HajjiName", "visible", this.checked);
+            });
+            $("#genderCheckbox").on("change", function () {
+                gridInstance.columnOption("Gender", "visible", this.checked);
+            });
+            $("#passportNoCheckbox").on("change", function () {
+                gridInstance.columnOption("PassportNo", "visible", this.checked);
+            });
+
+
+            $("#exportToPdf").on("click", function () {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: "landscape",
+                    unit: "pt",
+                    format: "a3"
+                });
+
+                DevExpress.pdfExporter.exportDataGrid({
+                    jsPDFDocument: doc,
+                    component: gridInstance,
+                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                    // customizeCell: function (options) {
+                    //     options.pdfCell.font = { size: 8 };
+                    // }
+                    customizeCell: function (options) {
+                     if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+                         const visibleRows = gridInstance.getVisibleRows();
+                         const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+                         options.pdfCell.text = (rowIndex + 1).toString();
+                     }
+                     options.pdfCell.font = { size: 8 };
+                 }
+                }).then(() => {
+                    doc.save("HajjSummary.pdf");
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

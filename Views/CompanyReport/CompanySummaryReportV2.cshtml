@@ -1,0 +1,482 @@
+﻿@{
+    Layout = "";
+}
+
+@model PackageReportModel
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Summary Report</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <link href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css" rel="stylesheet" />
+    <script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+
+    <style>
+        #gridContainer {
+            /* height: 1040px; */
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+            table th {
+                position: sticky;
+                top: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table tfoot {
+                position: sticky;
+                bottom: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table td {
+                font-size: 8px !important;
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e;
+            }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr > *:nth-child(1) {
+            display: none;
+        }
+
+
+
+        #summaryData.hide2 tr > *:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr > *:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr > *:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr > *:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr > *:nth-child(6) {
+            display: none;
+        }
+
+        #summaryData.hide7 tr > *:nth-child(7),
+        #summaryData.hide7 tr > *:nth-child(7) {
+            display: none;
+        }
+
+        #summaryData.hide8 tr > *:nth-child(8),
+        #summaryData.hide8 tfoot tr > *:nth-child(8) {
+            display: none;
+        }
+
+        #summaryData.hide9 tr > *:nth-child(9) {
+            display: none;
+        }
+
+        #summaryData.hide10 tr > *:nth-child(10) {
+            display: none;
+        }
+
+        #summaryData.hide11 tr > *:nth-child(11) {
+            display: none;
+        }
+
+        #summaryData.hide12 tr > *:nth-child(12) {
+            display: none;
+        }
+
+        #summaryData.hide13 tr > *:nth-child(13) {
+            display: none;
+        }
+
+        #summaryData.hide14 tr > *:nth-child(14) {
+            display: none;
+        }
+
+        #summaryData.hide15 tr > *:nth-child(15) {
+            display: none;
+        }
+
+        #summaryData.hide16 tr > *:nth-child(16) {
+            display: none;
+        }
+
+        #summaryData.hide17 tr > *:nth-child(17) {
+            display: none;
+        }
+
+        #summaryData.hide18 tr > *:nth-child(18) {
+            display: none;
+        }
+
+        #summaryData.hide19 tr > *:nth-child(19) {
+            display: none;
+        }
+
+        #summaryData.hide20 tr > *:nth-child(20) {
+            display: none;
+        }
+
+        #summaryData.hide21 tr > *:nth-child(21) {
+            display: none;
+        }
+
+        #summaryData.hide22 tr > *:nth-child(22) {
+            display: none;
+        }
+
+        #summaryData.hide23 tr > *:nth-child(23) {
+            display: none;
+        }
+
+        #summaryData.hide24 tr > *:nth-child(24) {
+            display: none;
+        }
+
+        #summaryData.hide25 tr > *:nth-child(25) {
+            display: none;
+        }
+
+        #summaryData.hide26 tr > *:nth-child(26) {
+            display: none;
+        }
+
+        #summaryData.hide27 tr > *:nth-child(27) {
+            display: none;
+        }
+
+        #summaryData.hide28 tr > *:nth-child(28) {
+            display: none;
+        }
+
+        #summaryData.hide29 tr > *:nth-child(29) {
+            display: none;
+        }
+
+        #summaryData.hide30 tr > *:nth-child(30) {
+            display: none;
+        }
+
+        #summaryData.hide31 tr > *:nth-child(31) {
+            display: none;
+        }
+
+        #summaryData.hide32 tr > *:nth-child(32) {
+            display: none;
+        }
+
+        #summaryData.hide33 tr > *:nth-child(33) {
+            display: none;
+        }
+
+        #summaryData.hide34 tr > *:nth-child(34) {
+            display: none;
+        }
+
+        #summaryData.hide35 tr > *:nth-child(35) {
+            display: none;
+        }
+
+        button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="@Model.PackageId" class="package-div" style="display: none;">
+        <div class="big-table-record" id="summaryData">
+            <div id="gridWrapper" style="margin-top: 20px;"></div>
+        </div>
+
+    </div>
+</body>
+
+
+<script>
+
+    $(function () {
+        const dataSource = @Html.Raw(Json.Serialize(Model.FamilyMembers));
+
+        const uniqueCurrencies = [...new Set(dataSource.map(item => item.baseCurrency))];
+
+        uniqueCurrencies.forEach(currency => {
+            const filteredData = dataSource.filter(item => item.baseCurrency === currency);
+
+            const gridId = `gridContainer-${currency}`;
+            $("#gridWrapper").append(`<h3>${currency}</h3><div id="${gridId}" class="mb-4"></div>`);
+
+            $(`#${gridId}`).dxDataGrid({
+                dataSource: filteredData,
+                columns: [
+                    { dataField: "companyCode", caption: "Company Code" },
+                    { dataField: "packageName", caption: "Package Name" },
+                    { dataField: "group", caption: "Group #" },
+                    { dataField: "spoName", caption: "SPO" },
+                    { dataField: "fid", caption: "HB #" },
+                    { dataField: "headName", caption: "Family Head Name" },
+                    { dataField: "pax", caption: "Pax", dataType: "number" },
+                    { dataField: "baseCurrency", caption: "Base Currency" },
+                    { dataField: "basicPackageAmount", caption: "Basic Package", dataType: "number", format: "fixedPoint" },
+                    { dataField: "roomsAmount", caption: "Room Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "ticketAmount", caption: "Flight Ticket Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "trainTicketAmount", caption: "Train Ticket Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "additionalTransportAmount", caption: "Additional Transport Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "eiadfAmount", caption: "EI-ADF Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "discountAmount", caption: "General Discount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "packageAmount", caption: "Total Package", dataType: "number", format: "fixedPoint" },
+                    { dataField: "receivedAmountTotal", caption: "Total Received Amount", dataType: "number", format: "fixedPoint" },
+                    { dataField: "finalBalanceReceivable", caption: "Final Balance Receivable", dataType: "number", format: "fixedPoint" },
+                    {
+                        dataField: "receivedAmountPercent",
+                        caption: "Received Amount %",
+                        dataType: "string",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2,
+                            useGrouping: false
+                        },
+                        customizeText: function (data) {
+                            return parseFloat(data.value).toFixed(2);
+                        }
+                    },
+                    { dataField: "category", caption: "Category" }
+                ],
+                columnAutoWidth: true,
+                showBorders: true,
+                hoverStateEnabled: true,
+                showColumnHeaders: true,
+                paging: {
+                    pageSize: 50
+                },
+                pager: {
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 25, 50, 100],
+                    showInfo: true
+                },
+                filterRow: {
+                    visible: true
+                },
+                headerFilter: {
+                    visible: true
+                },
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                summary: {
+                    totalItems: [
+                        { column: "pax", summaryType: "sum", displayFormat: "Total Pax: {0}", valueFormat: "fixedPoint", showInColumn: "pax", skipEmptyValues: false },
+                        { column: "basicPackageAmount", summaryType: "sum", displayFormat: "Total Basic Package: {0}", valueFormat: "fixedPoint", showInColumn: "basicPackageAmount", skipEmptyValues: false },
+                        { column: "roomsAmount", summaryType: "sum", displayFormat: "Total Room Amount: {0}", valueFormat: "fixedPoint", showInColumn: "roomsAmount", skipEmptyValues: false },
+                        { column: "ticketAmount", summaryType: "sum", displayFormat: "Total Flight Ticket: {0}", valueFormat: "fixedPoint", showInColumn: "ticketAmount", skipEmptyValues: false },
+                        { column: "trainTicketAmount", summaryType: "sum", displayFormat: "Total Train Ticket: {0}", valueFormat: "fixedPoint", showInColumn: "trainTicketAmount", skipEmptyValues: false },
+                        { column: "additionalTransportAmount", summaryType: "sum", displayFormat: "Total Additional Transport: {0}", valueFormat: "fixedPoint", showInColumn: "additionalTransportAmount", skipEmptyValues: false },
+                        { column: "eiadfAmount", summaryType: "sum", displayFormat: "Total EI-ADF: {0}", valueFormat: "fixedPoint", showInColumn: "eiadfAmount", skipEmptyValues: false },
+                        { column: "discountAmount", summaryType: "sum", displayFormat: "Total Discount: {0}", valueFormat: "fixedPoint", showInColumn: "discountAmount", skipEmptyValues: false },
+                        { column: "packageAmount", summaryType: "sum", displayFormat: "Grand Total Package: {0}", valueFormat: "fixedPoint", showInColumn: "packageAmount", skipEmptyValues: false },
+                        { column: "receivedAmountTotal", summaryType: "sum", displayFormat: "Total Received: {0}", valueFormat: "fixedPoint", showInColumn: "receivedAmountTotal", skipEmptyValues: false },
+                        { column: "finalBalanceReceivable", summaryType: "sum", displayFormat: "Total Final Balance: {0}", valueFormat: "fixedPoint", showInColumn: "finalBalanceReceivable", skipEmptyValues: false }
+                    ]
+                },
+                export: {
+                    enabled: true,
+                    fileName: `FamilyMembers_${currency}`,
+                    allowExportSelectedData: true
+                }
+            });
+        });
+    });
+
+
+    window.onload = function () {
+        SelectPackage('All');
+    };
+    function SelectPackage(packageId) {
+        var packageDivs = document.querySelectorAll('.package-div');
+
+        if (packageId === 'All') {
+            for (var i = 0; i < packageDivs.length; i++) {
+                packageDivs[i].style.display = 'block';
+            }
+        } else {
+            for (var i = 0; i < packageDivs.length; i++) {
+                var div = packageDivs[i];
+                if (div.id === packageId) {
+                    div.style.display = 'block';
+                } else {
+                    div.style.display = 'none';
+                }
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        $('.package-div table').each(function () {
+            $(this).DataTable({
+                dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+                buttons: [
+                    {
+                        extend: "excel",
+                        footer: true,
+                        text: "Excel",
+                    },
+                ],
+                // "scrollY": "200px", // Adjust height as needed
+                "scrollCollapse": true,
+                "paging": false,
+                "info": false,
+                // "sScrollY": false,
+                "ordering": true,
+                "initComplete": function () {
+                    $('#packageSelect').on('change', function () {
+                        SelectPackage(this.value);
+                    });
+                }
+            });
+        });
+    });
+
+
+</script>
+
+

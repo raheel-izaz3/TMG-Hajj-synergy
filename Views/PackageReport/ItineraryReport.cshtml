@@ -1,0 +1,540 @@
+﻿@{
+    Layout = "";
+}
+@* @model ItineraryReportModel *@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+    <title>Al-Bait-01</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            list-style: none;
+            text-decoration: none;
+        }
+
+
+
+        .wrapper {
+            width: 100%;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+            .wrapper header {
+                display: flex;
+                align-items: center;
+                padding: 25px 30px 10px;
+                justify-content: space-between;
+            }
+
+        header .icons {
+            display: flex;
+        }
+
+            header .icons span {
+                height: 38px;
+                width: 38px;
+                margin: 0 1px;
+                cursor: pointer;
+                color: #878787;
+                text-align: center;
+                line-height: 38px;
+                font-size: 1.9rem;
+                user-select: none;
+                border-radius: 50%;
+            }
+
+        .icons span:last-child {
+            margin-right: -10px;
+        }
+
+        header .icons span:hover {
+            background: #f2f2f2;
+        }
+
+        header .current-date {
+            font-size: 1.45rem;
+            font-weight: 500;
+        }
+
+        .calendar {
+            padding: 20px;
+        }
+
+            .calendar ul {
+                display: flex;
+                flex-wrap: wrap;
+                list-style: none;
+                text-align: center;
+            }
+
+            .calendar .days {
+                margin-bottom: 20px;
+            }
+
+            .calendar li {
+                color: #333;
+                width: calc(100% / 7);
+                font-size: 1.07rem;
+            }
+
+            .calendar .weeks li {
+                font-weight: 500;
+                cursor: default;
+            }
+
+            .calendar .days li {
+                z-index: 1;
+                cursor: pointer;
+                position: relative;
+                margin-top: 30px;
+            }
+
+        .days li.inactive {
+            color: #aaa;
+        }
+
+        .days li.active {
+            color: #fff;
+        }
+
+        .days li::before {
+            position: absolute;
+            content: "";
+            left: 50%;
+            top: 50%;
+            height: 40px;
+            width: 40px;
+            z-index: -1;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .days li.active::before {
+            background: #9B59B6;
+        }
+
+        .days li:not(.active):hover::before {
+            background: #f2f2f2;
+        }
+
+        table tr td {
+            font-size: 10px;
+            border: 1px solid black;
+        }
+
+        table {
+            margin: 0;
+            padding: 0;
+        }
+
+            table th {
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+                border: 1px solid black;
+            }
+
+            table td {
+                margin: 2px;
+                padding: 2px;
+            }
+
+        body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: black;
+            color: white;
+        }
+
+        .date-text {
+            background-color: darkgoldenrod;
+            padding: 7px;
+            display: inline-block;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        .packege-code-text {
+            font-size: 12px;
+        }
+
+        .package-code {
+            font-size: 30px;
+        }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            background-color: darkgoldenrod;
+            color: white;
+            text-align: center;
+            margin-right: 10px;
+            padding: 7px;
+            font-size: 12px;
+            height: 180px;
+            margin-top: 0 !important;
+            text-transform: uppercase;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            width: 20px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px !important;
+        }
+
+        td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .month-name {
+            font-weight: bold;
+        }
+
+
+        .package-items h4 {
+            background-color: darkgoldenrod;
+            color: white;
+            padding: 5px;
+            margin: 5px;
+        }
+
+        .package-body-container {
+            display: flex;
+            column-gap: 20px;
+            width: 100%;
+        }
+
+        .image-card {
+            display: flex;
+        }
+
+        .image-items {
+            width: 250px;
+            height: 100px;
+            object-fit: cover;
+            position: relative;
+            margin: 0 6px;
+        }
+
+            .image-items h3 {
+                position: absolute;
+                width: 100%;
+                background-color: darkgoldenrod;
+                color: white;
+                top: 0;
+                left: 0;
+                text-align: center;
+            }
+
+            .image-items h4 {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: transparent;
+                color: white;
+                text-align: center;
+                padding: 5px;
+            }
+
+        .packages-offfer-plan {
+            font-size: 8px;
+        }
+
+
+
+        .image-items img {
+            width: 100%;
+            height: 180px;
+        }
+
+        .package-items h4,
+        p {
+            text-align: center;
+        }
+
+        .package-section {
+            padding-top: 20px;
+        }
+
+        .flight-table-section table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .flight-table-section table th {
+                padding: 7px !important;
+                border: 1px solid white;
+                font-size: 10px !important;
+                background-color: darkgoldenrod !important;
+                color: white;
+                font-weight: 700;
+            }
+
+            .flight-table-section table td {
+                padding: 0;
+                width: fit-content;
+                border: 1px solid white;
+            }
+
+        .top-table {
+            /* margin: 10px 0; */
+        }
+
+
+            .top-table th {
+                font-size: 16px;
+                color: white !important;
+                padding: 15px !important;
+            }
+
+            .top-table td {
+                /* padding: 15px; */
+                font-size: 14px;
+                font-weight: bold;
+                border: 1px solid white !important;
+            }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="top-header">
+            <div class="logo">
+                <img src="~/@Model.CompanyLogo" alt="" width="150px" height="80">
+            </div>
+            <div>
+                <h1>@Model.PackageName</h1>
+            </div>
+            <div style="margin-top: 10px;" class="date-and-package">
+                <h2 class="date-text">@Model.Tenure</h2>
+                <div class="">
+                    <strong class="packege-code-text">PACKAGE CODE:</strong>
+                    <h2 class="package-code">@Model.PackageCode</h2>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="itinery-text-container" style="display: flex; justify-content: center; margin-top: 10px ;">
+        <h1 class="vertical-text " style="margin-top: 0px !important;">PACKAGE INCLUDES</h1>
+        <table class="top-table">
+
+            <thead>
+                <tr>
+
+                    @foreach (var item in ViewBag.result)
+                    {
+                        int index = ViewBag.result.IndexOf(item);
+                        if (index == 0)
+                        {
+                            <th colspan="2" style="background-color: green;">@item.Place</th>
+                        }
+                        else if (index == 1)
+                        {
+                            <th colspan="2" style="background-color: #333;">@item.Place</th>
+                        }
+                        else if (index == 2)
+                        {
+                            <th colspan="2" style="background-color: goldenrod;">@item.Place</th>
+                        }
+                        else if (index == 3)
+                        {
+                            <th colspan="2" style="background-color: darkgoldenrod;">@item.Place</th>
+                        }
+
+                    }
+                    @*  <th colspan="2" style="background-color: #333;">MAKKAH</th>
+                    <th colspan="2" style="background-color: goldenrod;">AZIZIA</th>
+                    <th colspan="2" style="background-color:darkgoldenrod; ">DAYS OF HAJJ RITIES</th> *@
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in ViewBag.result)
+                {
+                    int index = ViewBag.result.IndexOf(item);
+                    if (index == 0)
+                    {
+                    <td style="background-color: green; color: white;">Check-in: @item.CheckIn</td>
+                    <td style="background-color: green; color: white;">Check-out:  @item.CheckOut</td>
+                    }
+                    else if (index == 1)
+                    {
+                    <td style="background-color: #333; color: white;">Check-in: @item.CheckIn</td>
+                    <td style="background-color: #333; color: white;">Check-out:  @item.CheckOut</td>
+                    }
+                    else if (index == 2)
+                    {
+                    <td style="background-color: goldenrod; color: white;">Check-in: @item.CheckIn</td>
+                    <td style="background-color: goldenrod; color: white;">Check-out:  @item.CheckOut</td>
+                    }
+                    else if (index == 3)
+                    {
+                    <td style="background-color: darkgoldenrod; color: white;">Check-in: @item.CheckIn</td>
+                    <td style="background-color: darkgoldenrod; color: white;">Check-out:  @item.CheckOut</td>
+                    }
+                
+                }
+
+
+                @*   <td style="background-color: #333; color: white;">Check-in:@Model.MakkahCheckIn</td>
+            <td style="background-color: #333; color: white;">Check-out: @Model.MakkahCheckOut</td>
+
+            <td style="background-color: goldenrod; color: white;">Check-in: @Model.MinhaCheckIn</td>
+            <td style="background-color: goldenrod; color: white;">Check-ou:@Model.MinhaCheckOut</td>
+
+            <td style="background-color: darkgoldenrod; color: white;">Check-in: @Model.AziziaCheckIn</td>
+            <td style="background-color: darkgoldenrod; color: white;">Check-out: @Model.AziziaCheckOut</td> *@
+            </tbody>
+
+
+        </table>
+    </div>
+
+
+
+    <section class="package-section">
+        <div class="package-body-container">
+
+            <div class="image-card">
+                <h1 class="vertical-text">PACKAGE INCLUDES</h1>
+
+                <div class="image-items">
+                    <h3>MADINAH</h3>
+                    <img src="~/Images/ItineraryReportImages/Madinah.jpg" alt="">
+                    <h4>@Model.MadinaAccomodationName </h4>
+                </div>
+                <div class="image-items">
+                    <h3>MAKKAH</h3>
+                    <img src="~/Images/ItineraryReportImages/Makkahok.jpg" alt="">
+                    <h4>@Model.MakkahAccomodationName</h4>
+                </div>
+                <div class="image-items">
+                    <h3>AZIZIYAH</h3>
+                    <img src="~/Images/ItineraryReportImages/Azizia.jpg" alt="">
+                    <h4>@Model.MinhaAccomodationName</h4>
+                </div>
+            </div>
+
+            <div class="packages-offfer-plan">
+                <div class="package-item-box" style="display: grid; grid-template-columns: repeat(3,1fr);">
+                    <div class="package-items">
+                        <h4>Duration</h4>
+                        <p>@Model.Days</p>
+                    </div>
+                    <div class="package-items">
+                        <h4>MINA CAMP</h4>
+                        <p>15 Days</p>
+                    </div>
+                    <div class="package-items">
+                        <h4>MEALS</h4>
+                        <p>15 Days</p>
+                    </div>
+                    <div class="package-items">
+                        <h4>TRANSFER</h4>
+                        <p>15 Days</p>
+                    </div>
+                    <div class="package-items">
+                        <h4>HADY</h4>
+                        <p>15 Days</p>
+                    </div>
+                    <div class="package-items">
+                        <h4>SUPPORT</h4>
+                        <p>TOURS & ISLAMIC GUIDANCE </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="flight-table-section" style="margin-top: 20px;">
+        <div class="flight-table" style="display: flex;">
+            <h1 class="vertical-text">PACKAGE INCLUDES</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>COUNTRY</th>
+                        <th>OUTBOUND FLIGHT</th>
+                        <th>RETURN FLIGHT</th>
+                        <th>AIRELINE</th>
+                        <th>FOR FURTHER INFORMATION </th>
+                    </tr>
+                <tbody>
+                        @*  <tr>
+                    <td>PAKISTAN</td>
+                    <td>20-5-2024</td>
+                    <td>26-7-2024</td>
+                    <td>Riyadh Air</td>
+                    <td>NONE</td>
+                    </tr>
+                    <tr>
+                    <td>PAKISTAN</td>
+                    <td>20-5-2024</td>
+                    <td>26-7-2024</td>
+                    <td>Riyadh Air</td>
+                    <td>NONE</td>
+                    </tr>
+                    <tr>
+                    <td>PAKISTAN</td>
+                    <td>20-5-2024</td>
+                    <td>26-7-2024</td>
+                    <td>Riyadh Air</td>
+                    <td>NONE</td>
+                    </tr> *@
+
+
+                </tbody>
+                </thead>
+            </table>
+        </div>
+    </section>
+</body>

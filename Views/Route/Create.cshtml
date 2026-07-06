@@ -1,0 +1,67 @@
+﻿@model RouteRegisterRequest
+
+@{
+    string modelName = "Route";
+    string modelNamePlural = "Routes";
+    string modelControllerRoute = "Route";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="StartPlace"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="StartPlace" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="StartPlace"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Destination"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Destination" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Destination"></span>
+                            </div>
+                            @if(ViewBag.VehiclesCount == 0)
+                            {
+                                <p class="text-danger">No Vehicle Types Added. <a asp-action="Create" asp-controller="Vehicle">Create a Vehicle Type</a></p>
+                            }
+                            @* @{int iter = 0; }
+                            @foreach(Vehicle vehicle in ViewBag.Vehicles)
+                            {
+                                <input type="hidden" value="@vehicle.VehicleId" asp-for="VehicleIds[iter]">
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">@vehicle.VehicleType SAR Price</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="Prices[iter]" type="number" class="form-control" placeholder="Enter @vehicle.VehicleType SAR Price...">
+                                    </div>
+                                </div>
+                                iter++;
+                            } *@
+                            <span class="text-danger" asp-validation-for="Prices"></span>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

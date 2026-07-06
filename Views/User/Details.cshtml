@@ -1,0 +1,161 @@
+﻿@model User
+
+@{
+    string modelName = "User";
+    string modelNamePlural = "Users";
+    string modelControllerRoute = "User";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural / Details</h4>
+
+    <hr class="mb-4" />
+
+    <h4 class="fw-light">Personal Details</h4>
+    <div class="card p-3">
+      <div class="table-responsive">
+          <table class="table">
+            <tr>
+                <th>Username: </th>
+                <td>@Model.Username</td>
+                <th>Email: </th>
+                <td>@Model.Email</td>
+            </tr>
+            <tr>
+                <th>Role Assigned: </th>
+                <td>@Model.Role.RoleName</td>
+                <th>Created On: </th>
+                <td>@Model.CreatedAt</td>
+            </tr>
+          </table>
+      </div>
+      <div class="mt-3" style="padding-left: 15px;">
+        <h5 class="fw-light">Signature</h5>
+        @if(Model.UserSignature != null)
+        {
+            <img src="~/@Model.UserSignature" alt="Signature" style="width: 150px; height: 150px;">
+        }
+        else
+        {
+            <h5 class="fw-light text-danger">No Signature Uploaded</h5>
+        }
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h4 class="fw-light">Assigned Companies</h4>
+    <div class="row">
+    @if(ViewBag.UserCompaniesCount != 0)
+    {
+        @foreach (UserCompanies company in ViewBag.UserCompanies)
+    {
+        <div class="col-sm-12 col-md-6 card pt-3">
+            <div class="table-responsive">
+                <table class="table">
+                    <tr>
+                        <th>Name: </th>
+                        <td>@company.Company.CompanyName</td>
+                    </tr>
+                    <tr>
+                        <th>Code: </th>
+                        <td>@company.Company.CompanyCode</td>
+                    </tr>
+                    <tr>
+                        <th>Website URL: </th>
+                        <td><a href="@company.Company.Website">@company.Company.Website</a></td>
+                    </tr>
+                </table>
+            </div>
+            <p class="mt-3">Preferred Address</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        @foreach(CompanyAddresses addresses in ViewBag.UserCompanyAddresses)
+                        {
+                            if(company.CompanyId == addresses.CompanyId)
+                            {
+                                if(addresses.Preferred == true)
+                                {
+                                    <tr>
+                                        <th>Type: </th>
+                                        <td>@addresses.CompanyAddress.AddressType</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Address: </th>
+                                        <td>@addresses.Address</td>
+                                    </tr>
+                                    break;
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+
+                <p class="mt-3">Preferred Contact</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        @foreach (CompanyContacts contacts in ViewBag.UserCompanyContacts)
+                        {
+                            if (company.CompanyId == contacts.CompanyId)
+                            {
+                                if (contacts.Preferred == true)
+                                {
+                                    <tr>
+                                        <th>Type: </th>
+                                        <td>@contacts.CompanyContactType.ContactType</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contact: </th>
+                                        <td>@contacts.CompanyContact</td>
+                                    </tr>
+                                    break;
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+
+                <p class="mt-3">Preferred Email</p>
+                <div class="table-responsive">
+                    <table class="table">
+                        @foreach (CompanyEmails emails in ViewBag.UserCompanyEmails)
+                        {
+                            if (company.CompanyId == emails.CompanyId)
+                            {
+                                if (emails.Preferred == true)
+                                {
+                                    <tr>
+                                        <th>Type: </th>
+                                        <td>@emails.CompanyEmailType.EmailType</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email: </th>
+                                            <td><a href="mailto:@emails.CompanyEmail">@emails.CompanyEmail</a></td>
+                                    </tr>
+                                    break;
+                                }
+                            }
+                        }
+                    </table>
+                </div>
+                </div>
+            }
+
+        }
+        else
+        {
+            <h5 class="fw-light text-danger">No Companies Assigned</h5>
+
+        }
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/User/Trash/${id}`;
+        }
+    }
+</script>
+

@@ -1,0 +1,211 @@
+﻿@model TravelEditRequest
+
+@{
+    string modelName = "Travel Route";
+    string modelNamePlural = "Travel Routes";
+    string modelControllerRoute = "TravelRoute";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="TravelRouteId">
+                        <div class="row">
+                            <div class="col-sm-12  mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Travel Route Name</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input class="form-control" asp-for="RouteName">
+                                </div>
+                                <span class="text-danger" asp-validation-for="RouteName"></span>
+                            </div>
+
+                            @if (ViewBag.RoutesCount == 0)
+                            {
+                                <p class="text-danger">No Travel Routes Exists! <a asp-controller="TravelRoute" asp-action="Create">Please create routes first</a></p>
+                            }
+
+                            <span class="text-danger" asp-validation-for="RoutesSelected"></span>
+
+                            @{
+                                int i = 0;
+                            }
+                            @foreach (Route route in ViewBag.Routes)
+                            {
+                                bool found = false;
+                                TravelRouteStops stop = null;
+                                foreach (TravelRouteStops assignedStops in ViewBag.AssignedTravelRouteStops)
+                                {
+                                    if (assignedStops.RouteId == route.RouteId)
+                                    {
+                                        stop = assignedStops;
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (found)
+                                {
+                                    <input type="hidden" name="RouteIds[@i]" value="@route.RouteId">
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">@route.StartPlace To @route.Destination</label>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-select" name="RoutesSelected[@i]" class="form-control">
+                                                <option selected value="true">Yes</option>
+                                                <option value="false">No</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Arrival Date</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input name="CheckIns[@i]" class="form-control" type="date" value="@DateTimeManager.DateToHtmlFormat(stop.CheckIn)">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Arrival Time</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input name="CheckInsTime[@i]" class="form-control" type="time" value="@DateTimeManager.TimeToHtmlFormat(stop.CheckInTime)">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Vehicles</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-control" name="VehicleIds[@i]">
+                                                @foreach (var item in ViewBag.Vehicles)
+                                                {
+                                                    @if (item.VehicleId == stop.VehicleId)
+                                                    {
+                                                        <option selected value="@item.VehicleId">@item.VehicleType</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.VehicleId">@item.VehicleType</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Group</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-control" name="TransportTypes[@i]">
+                                                @foreach (var transportType in ViewBag.TransportTypes)
+                                                {
+                                                    int itemValue = Convert.ToInt32(transportType.Value);
+                                                    int transportValue = Convert.ToInt32(stop.TransportType);
+
+                                                    <!option value="@transportType.Value" @(transportType.Value == transportValue ? "selected" : "")>@transportType.Name</!option>
+
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                   @*  <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Price (SAR)</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input class="form-control" name="Prices[@i]" value="@stop.Price" />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div> *@
+
+                                }
+                                else
+                                {
+                                    <input type="hidden" name="RouteIds[@i]" value="@route.RouteId">
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">@route.StartPlace To @route.Destination</label>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-select" name="RoutesSelected[@i]" class="form-control">
+                                                <option value="true">Yes</option>
+                                                <option selected value="false">No</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Arrival</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input name="CheckIns[@i]" class="form-control" type="date">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Arrival</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input name="CheckInsTime[@i]" class="form-control" type="time">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Vehicles</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-control" name="VehicleIds[@i]">
+                                                @foreach (var item in ViewBag.Vehicles)
+                                                {
+                                                    <option value="@item.VehicleId">@item.VehicleType</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Group</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-control" name="TransportTypes[@i]">
+                                                @foreach (var item in ViewBag.TransportTypes)
+                                                {
+                                                    <option value="@item.Value">@item.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    @* <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Price (SAR)</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input class="form-control" name="Prices[@i]" />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div> *@
+                                }
+
+
+                                i++;
+                            }
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

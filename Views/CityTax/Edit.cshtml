@@ -1,0 +1,46 @@
+﻿@model TMG.Models.Updated_Accounts.CityTax
+
+@{
+    string modelName = "CityTax";
+    string modelNamePlural = "City Taxes";
+    string modelControllerRoute = "CityTax";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color: #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="Edit">
+                        <input hidden asp-for="CityTaxId" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Code">Code</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Code" class="form-control" value="@Model.Code">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Code"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name">Name</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control" value="@Model.Name">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

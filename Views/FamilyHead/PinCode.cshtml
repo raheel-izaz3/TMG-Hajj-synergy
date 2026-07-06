@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "PinCode";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Enter Pin Code</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="PinCode">
+                        <input type="hidden" name="id" value="@ViewBag.Id" />
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="password" name="pinCode" class="form-control" placeholder="Enter Pin Code" required />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

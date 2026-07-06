@@ -1,0 +1,66 @@
+@model Invoice
+
+@{
+    string modelName = "Receipt";
+    string modelNamePlural = "Receipts";
+    string modelControllerRoute = "Invoice";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Change Status
+    </h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input asp-for="InvoiceId" type="hidden" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="InvoiceStatus"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="InvoiceStatus" class="form-control">
+                                        <option value="0">Unsupervised</option>
+                                        <option value="1">Supervised</option>
+                                        <option value="2">Pending</option>
+                                        <option value="3">Bounced</option>
+                                        <option value="4">Clearing In Transit</option>
+                                        <option value="5">Cleared</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="InvoiceStatus"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="ClearanceDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ClearanceDate" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClearanceDate"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="DepositDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="DepositDate" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="DepositDate"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Change Status</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

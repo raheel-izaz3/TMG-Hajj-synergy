@@ -1,0 +1,2336 @@
+﻿@using TMG.Models.Updated_Accounts
+@model POTicketViewModel
+@{
+    string modelName = "PO - Ticket";
+    string modelNamePlural = "PO - Tickets";
+    string modelControllerRoute = "POVisa";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <form method="post" asp-action="AddPassenger" id="POTKTForm">
+        <input type="hidden" name="POTicketId" value="@ViewBag.POTicketId" />
+        <input type="hidden" name="PONumber" value="@ViewBag.PONumber" />
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">XO #</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="XONumber" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Ticket Issue Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" class="form-control" value="@DateTimeManager.Today" max="@DateTimeManager.Today" id="PODate" name="Date">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Client Due Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" class="form-control" value="@DateTimeManager.Today" name="DueDate">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Hajji</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="familyHeadId" id="familyHeadId" class="form-control">
+                                        <option value="">Select Haji Booking...</option>
+                                        @foreach (FamilyHead fh in ViewBag.FamilyHeads)
+                                        {
+                                            <option value="@fh.FamilyHeadId">@fh.FullName - @fh.FcId (@fh.Currencies.ToString())</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">TP-RF #</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" name="TPRFNo" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Ticket Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="ticketType" name="TicketType">
+                                        <option value="">Select Ticket Type</option>
+                                        @foreach (var ticket in ViewBag.TicketType)
+                                        {
+                                            <option value="@ticket.Id">@ticket.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Fare Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="fareType" name="FareType">
+                                        <option value="">Select Fare Type</option>
+                                        @foreach (var fare in ViewBag.FareType)
+                                        {
+                                            <option value="@fare.Id">@fare.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Family Member</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="FamilyMembersId" id="familyMembersId" class="form-control">
+                                        <option value="">Select Family Member</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Passenger Category</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" id="passengerCategory" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Passport Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" id="passportNumber" name="passportNumber" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Date Of Birth</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" id="dateOfBirth" name="dateOfBirth" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Passport Date Of Expiry</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" id="passportExpiry" name="passportExpiry" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Frequent Flyer</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="text" id="frequentFlyer" name="frequentFlyer" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Posting Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="postingTypeDropdown" name="PostingType">
+                                        <option value="">Select Posting Type</option>
+                                        @foreach (var fl in ViewBag.PostingType)
+                                        {
+                                            <option value="@fl.Id">@fl.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <!-- Issue Date Input (Initially hidden) -->
+                            <div id="issueDateDiv" class="col-sm-12 col-md-2 mb-3" style="display: none;">
+                                <label class="form-label" for="basic-icon-default-fullname">Issue Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" id="issueDate" class="form-control" name="IssueDate">
+                                </div>
+                            </div>
+
+                            <!-- Company Dropdown (Initially hidden) -->
+                            <div id="hgoDropdownDiv" class="col-sm-12 col-md-6 mb-3" style="display: none;">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="hgoDropdown" name="CompanyId">
+                                        <option value="">Select Company</option>
+                                        @foreach (Company company in ViewBag.Companies)
+                                        {
+                                            <option value="@company.CompanyId">@company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr />
+
+                            <div class="vendor-row row mb-3">
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label">Vendor Type</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control vendor-type" id="VendorType" onchange="getVendors(this)" name="VendorTypeId">
+                                            <option value="">Select Type...</option>
+                                            @foreach (VendorType type in ViewBag.VendorTypes)
+                                            {
+                                                <option value="@type.VendorTypeId">@type.TypeName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label">Vendor</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control vendor-select" id="vendor" name="VendorId">
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <hr />
+
+                            <div class="row mb-3">
+
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label">Booking Agent</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" id="bookingAgentSelect" name="BookingAgentId">
+                                            <option value="">Select Booking Agent...</option>
+                                            @foreach (SPO sp in ViewBag.SPOS)
+                                            {
+                                                <option value="@sp.SPOId">@sp.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label">Ticketing Agent</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" id="ticketingAgentSelect" name="TicketingAgentId">
+                                            <option value="">Select Ticketing Agent...</option>
+                                            @foreach (SPO sp in ViewBag.SPOS)
+                                            {
+                                                <option value="@sp.SPOId">@sp.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label">Recovery Officer</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" id="recoveryOfficerSelect" name="RecoveryOfficerId">
+                                            <option value="">Select Recovery Officer...</option>
+                                            @foreach (SPO sp in ViewBag.SPOS)
+                                            {
+                                                <option value="@sp.SPOId">@sp.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label">Posting Agent</label>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" id="postingAgentSelect" name="PostingAgentId">
+                                            <option value="">Select Posting Agent...</option>
+                                            @foreach (SPO sp in ViewBag.SPOS)
+                                            {
+                                                <option value="@sp.SPOId">@sp.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+
+                            </div>
+
+                            <hr />
+                            <div class="col-sm-12 mt-4">
+                                <button type="button" onclick="" id="submitButton" class="btn btn-success float-end">Add Row</button>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mt-3">
+                                <div class="table-responsive">
+                                    <table class="table" id="flightDetailsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Ticket No</th>
+                                                <th>Flight No</th>
+                                                <th>Departure Airport</th>
+                                                <th>Arrival Airport</th>
+                                                <th>Departure Time</th>
+                                                <th>Arrival Time</th>
+                                                <th>Transit Time</th>
+                                                <th>Departure Date</th>
+                                                <th>Arrival Date</th>
+                                                <th>Airline</th>
+                                                <th>Class</th>
+                                                <th>Sub Class</th>
+                                                <th>Type</th>
+                                                <th>PNR No</th>
+                                                <th>PNR GDS</th>
+                                                <th>Seat Number</th>
+                                                <th>Prefered Meals</th>
+                                                <th>Ticket Category</th>
+                                                <th>City Tax / Amount</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="flightDetailsBody">
+                                            <!-- Flight details will be dynamically inserted here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <hr class="mt-3" />
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Basic Fare</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" id="basicfair" name="basicFare" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Discount to TMG</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="Discount" id="discount" class="form-control" value="0" oninput="formatInputValue(this)" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Commission to TMG %</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="CommissionPersentage" id="commissionPer" class="form-control" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Commission</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="Commission" id="Commi" class="form-control" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Agent Fee %</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="AgentPersentage" id="agentper" class="form-control" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Agent Fee Amount</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="AgentAmount" id="agentAmount" class="form-control" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Agent Amount</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="AgentFixedAmount" id="agentfixedAmount" class="form-control" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Net Total</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="NetTotal" id="NetTo" class="form-control" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr class="mt-3" />
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">N9</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="ntax" id="ntaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">RG</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="rg" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SF</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="sf" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SP</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="sp" id="spAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">YD</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="ydAmount" id="ydAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">G4</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="gtaxAmount" id="gtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">PZ</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="pzAmount" id="pzAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">QA</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="qaAmount" id="qaAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">R9</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="rtaxAmount" id="rtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">E3</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="etaxAmount" id="etaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">IO</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="ioAmount" id="ioAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">YR</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="yr" id="yrAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">T2</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="ttax" id="ttaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">F6</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Ftax" id="FtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">ZR</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Zrtax" id="ZrtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">AE</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Aetax" id="AetaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">TP</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Tptax" id="TptaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">CA</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Catax" id="CataxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SQ</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Sqtax" id="SqtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">RC</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Rctax" id="RctaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">XT</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Xttax" id="XttaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">AY</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Aytax" id="AytaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">US</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Ustax" id="UstaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">XA</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Xatax" id="XataxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">XF</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Xftax" id="XftaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">XY</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Xytax" id="XytaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">YC</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Yctax" id="YctaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">UB</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Ubtax" id="UbtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">GB</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="Gbtax" id="GbtaxAmount" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">YQ</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="yq" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SRB</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="srb" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">PK</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="pk" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">PTT</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="ptt" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">PB</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="pb" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Other Taxes</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="otherTaxes" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">With Holding %</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="WTHPersentage" id="WTHPers" class="form-control" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">With Holding</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="WTHAmount" id="WTHAmount" class="form-control" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Net Taxes</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="NetTax" id="NetTax" class="form-control" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SVC</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="svc" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr class="mt-3" />
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">KP-R</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="kpr" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">KB-P</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="kbp" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SP Tax %</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="spTaxPercentage" value="0" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">SP Tax</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="spTax" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr class="mt-3" />
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Final K-B</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="finalkb" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr class="mt-3" />
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Gross Client</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="grossClient" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Net Client</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="netClient" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Net Payable to Airline /  Agent</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" name="grossAirline" readonly />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 mt-4">
+                            <button type="button" id="addPassengerBtn" onclick="submitForm()" class="btn btn-success float-end">Add Passenger</button>
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="ticketDetailsTable">
+                                <thead>
+                                    <tr>
+                                        <th>PO Date</th>
+                                        <th>Due Date</th>
+                                        <th>Family Member</th>
+                                        <th>Ticket Type</th>
+                                        <th>Fare Type</th>
+                                        <th>Flight Details</th>
+                                        <th>Gross Client</th>
+                                        <th>Net Payable to Airline /  Agent</th>
+                                        <th>Net Client</th>
+                                        @* <th>Net Airline</th> *@
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ticketDetailsBody">
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="text-end"><strong>Totals:</strong></td>
+                                        <td id="totalGrossClient">0.00</td>
+                                        <td id="totalGrossAirline">0.00</td>
+                                        <td id="totalNetClient">0.00</td>
+                                        @* <td id="totalNetAirline">0.00</td> *@
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="PostData">
+            <table class="table table-bordered">
+                <tbody id="postfnf">
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="RenderRows()">Create</button>
+        <button type="submit" class="btn btn-primary d-none" id="FnfSub">Create</button>
+    </form>
+
+</div>
+
+<script>
+    // document.getElementById("addPassengerBtn").addEventListener("click", function () {
+    //     let tableBody = document.getElementById("flightDetailsBody");
+
+    //     tableBody.innerHTML = "";
+    // });
+
+    document.addEventListener("DOMContentLoaded", function () {
+         // Select all tax fields
+         const taxFields = document.querySelectorAll("input[name='ntax'], input[name='rg'], input[name='sf'], input[name='sp'], input[name='ydAmount'], input[name='gtaxAmount'], input[name='pzAmount'], input[name='qaAmount'], input[name='rtaxAmount'], input[name='etaxAmount'], input[name='ioAmount'], input[name='yq'], input[name='yr'], input[name='ttax'], input[name='Ftax'], input[name='Zrtax'], input[name='Aetax'], input[name='Tptax'], input[name='Catax'], input[name='Sqtax'], input[name='Rctax'], input[name='Xttax'], input[name='Aytax'], input[name='Ustax'], input[name='Xatax'], input[name='Xftax'], input[name='Xytax'], input[name='Yctax'], input[name='Ubtax'], input[name='Gbtax'], input[name='srb'], input[name='pk'], input[name='ptt'], input[name='pb'], input[name='otherTaxes'], input[name='kpr'], input[name='kbp']");
+
+         const basicFareField = document.getElementById("basicfair");
+         const discountField = document.getElementById("discount");
+         const commissionPercentageField = document.getElementById("commissionPer");
+         const commissionAmountField = document.getElementById("Commi");
+         const wthPercentageField = document.getElementById("WTHPers");
+         const wthAmountField = document.getElementById("WTHAmount");
+         const netTaxField = document.getElementById("NetTax");
+         const netTotalField = document.getElementById("NetTo");
+         const svcField = document.querySelector("input[name='svc']");
+         const finalskb = document.querySelector("input[name='finalkb']");
+         const grossAirlineField = document.querySelector("input[name='grossAirline']");
+         const grossClientField = document.querySelector("input[name='grossClient']");
+         const grossNetClientField = document.querySelector("input[name='netClient']");
+         const spTaxPercentageField = document.querySelector("input[name='spTaxPercentage']");
+         const spTaxField = document.querySelector("input[name='spTax']");
+
+         // Define the Agent Percentage and Agent Fixed Amount fields
+         const agentPercentageField = document.getElementById("agentper");
+         const agentFixedAmountField = document.getElementById("agentfixedAmount");
+         let agentAmountField = document.getElementById("agentAmount");
+
+         // Function to format numbers with commas
+         function formatNumberWithCommas(value) {
+             value = value.replace(/,/g, '').replace(/[^\d.]/g, '');
+             let parts = value.split('.');
+             if (parts.length > 2) {
+                 value = parts[0] + '.' + parts.slice(1).join('');
+             }
+             parts = value.split('.');
+             parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+             return parts.join('.');
+         }
+
+         // Function to toggle readonly fields based on the inputs
+         function toggleReadonlyFields() {
+             let commissionPercentage = parseFloat(commissionPercentageField?.value) || 0;
+             let discount = parseFloat(discountField?.value.replace(/,/g, '')) || 0;
+             let agentPercentage = parseFloat(agentPercentageField?.value) || 0;
+             let agentFixedAmount = parseFloat(agentFixedAmountField?.value.replace(/,/g, '')) || 0;
+
+             // If Commission or Discount is entered, disable Agent Percentage and Agent Fixed Amount
+             if (commissionPercentage > 0 || discount > 0) {
+                 agentPercentageField.setAttribute("readonly", "true");
+                 agentFixedAmountField.setAttribute("readonly", "true");
+
+                 // Enable Commission and Discount fields if Agent fields are disabled
+                 commissionPercentageField.removeAttribute("readonly");
+                 discountField.removeAttribute("readonly");
+             }
+             // If Agent Percentage or Agent Fixed Amount is entered, disable Commission and Discount
+             else if (agentPercentage > 0 || agentFixedAmount > 0) {
+                 commissionPercentageField.setAttribute("readonly", "true");
+                 discountField.setAttribute("readonly", "true");
+
+                 // Enable Agent fields if Commission and Discount are disabled
+                 agentPercentageField.removeAttribute("readonly");
+                 agentFixedAmountField.removeAttribute("readonly");
+             } else {
+                 // If neither is selected, enable all fields
+                 commissionPercentageField.removeAttribute("readonly");
+                 discountField.removeAttribute("readonly");
+                 agentPercentageField.removeAttribute("readonly");
+                 agentFixedAmountField.removeAttribute("readonly");
+             }
+         }
+
+         // Function to calculate Net Total
+         function calculateNetTotal() {
+             let basicFare = parseFloat(basicFareField?.value.replace(/,/g, '')) || 0;
+             let discount = parseFloat(discountField?.value.replace(/,/g, '')) || 0;
+             let commissionPercentage = parseFloat(commissionPercentageField?.value) || 0;
+             let commissionAmount = (basicFare * commissionPercentage) / 100;
+             commissionAmountField.value = formatNumberWithCommas(commissionAmount.toFixed(2));
+
+             // Agent Percentage and Agent Fixed Amount
+             let agentPercentage = parseFloat(agentPercentageField?.value) || 0;
+             let agentAmount = (basicFare * agentPercentage) / 100;
+
+             agentAmountField.value = formatNumberWithCommas(agentAmount.toFixed(2)); // Agent Amount فیلڈ میں سیٹ کرنا
+
+             let agentFixedAmount = parseFloat(agentFixedAmountField?.value.replace(/,/g, '')) || 0;
+
+             let netTotal = basicFare - discount - commissionAmount + agentAmount + agentFixedAmount;
+             netTotalField.value = formatNumberWithCommas(netTotal.toFixed(2));
+         }
+
+         // Function to calculate Gross Client based on discount or commission, or agent amount
+         function calculateGrossClient() {
+             let basicFare = parseFloat(basicFareField?.value.replace(/,/g, '')) || 0;
+             let discount = parseFloat(discountField?.value.replace(/,/g, '')) || 0;
+             let commissionPercentage = parseFloat(commissionPercentageField?.value) || 0;
+             let agentPercentage = parseFloat(agentPercentageField?.value) || 0;
+             let agentFixedAmount = parseFloat(agentFixedAmountField?.value.replace(/,/g, '')) || 0;
+             let netTaxAmount = parseFloat(netTaxField?.value.replace(/,/g, '')) || 0;
+             let svcTaxAmount = parseFloat(svcField?.value.replace(/,/g, '')) || 0;
+             let finalkb = parseFloat(finalskb?.value.replace(/,/g, '')) || 0;
+
+             let grossClient = 0;
+
+             if (agentPercentage > 0 || agentFixedAmount > 0) {
+                 let netTotalAmount = parseFloat(netTotalField?.value.replace(/,/g, '')) || 0;
+                 grossClient = netTotalAmount + netTaxAmount + svcTaxAmount;
+             } else if (discount > 0 || commissionPercentage > 0) {
+                 grossClient = basicFare + netTaxAmount + svcTaxAmount;
+             } else {
+                 // Agar sab kuch zero hai to sirf basic fare dikhayen
+                 grossClient = basicFare + netTaxAmount + svcTaxAmount;
+             }
+
+             // Subtract finalkb in all cases
+             grossClient -= finalkb;
+
+             grossClientField.value = formatNumberWithCommas(grossClient.toFixed(2));
+         }
+
+
+
+             // Function to calculate Taxes (Now correctly handles SP Tax removal)
+         function calculateTaxes() {
+             let totalTax = 0;
+             taxFields.forEach(field => {
+                 let value = parseFloat(field.value.replace(/,/g, '')) || 0;
+                 totalTax += value;
+             });
+
+             let basicFare = parseFloat(basicFareField?.value.replace(/,/g, '')) || 0;
+             let wthPercentage = parseFloat(wthPercentageField?.value) || 0;
+             let wthAmount = (basicFare * wthPercentage) / 100;
+             wthAmountField.value = formatNumberWithCommas(wthAmount.toFixed(2));
+
+             // SP Tax Calculation
+             let spTaxPercentage = parseFloat(spTaxPercentageField?.value.replace(/,/g, '')) || 0;
+             let spTax = (spTaxPercentage > 0) ? (basicFare * spTaxPercentage) / 100 : 0;
+             spTaxField.value = formatNumberWithCommas(spTax.toFixed(2));
+
+             // Update Net Taxes (Properly removes SP Tax when percentage is removed)
+             let netTaxes = totalTax + wthAmount + spTax;
+             netTaxField.value = formatNumberWithCommas(netTaxes.toFixed(2));
+
+             let netTotalAmount = parseFloat(netTotalField?.value.replace(/,/g, '')) || 0;
+            let finalkb = parseFloat(finalskb?.value.replace(/,/g, '')) || 0;
+
+
+             // Fix for Gross Airline (Now includes SP Tax correctly)
+             let grossAir = netTotalAmount + netTaxes - finalkb;
+             grossAirlineField.value = formatNumberWithCommas(grossAir.toFixed(2));
+
+             // Ensure correct calculations for Client amounts
+             calculateGrossClient();
+             calculateNetClient();
+         }
+
+
+         // Function to calculate Net Client
+         function calculateNetClient() {
+             let netTotalClient = parseFloat(netTotalField?.value.replace(/,/g, '')) || 0;
+             let netTaxAmount = parseFloat(netTaxField?.value.replace(/,/g, '')) || 0;
+             let svcTaxAmount = parseFloat(svcField?.value.replace(/,/g, '')) || 0;
+             let finalkb = parseFloat(finalskb?.value.replace(/,/g, '')) || 0;
+
+
+             let netClient = netTotalClient + netTaxAmount + svcTaxAmount;
+
+             // Subtract finalkb
+             netClient -= finalkb;
+
+             grossNetClientField.value = formatNumberWithCommas(netClient.toFixed(2));
+         }
+
+
+
+         // Event listener to update values dynamically
+         [...taxFields, basicFareField, discountField, commissionPercentageField, wthPercentageField, netTotalField, svcField , finalskb, spTaxPercentageField, agentPercentageField, agentFixedAmountField].forEach(field => {
+             if (field) {
+                 field.addEventListener("input", () => {
+                     calculateNetTotal();
+                     calculateTaxes();
+                     calculateGrossClient(); // Recalculate Gross Client after every change
+                     calculateNetClient();
+
+                     // Toggle readonly based on input
+                     toggleReadonlyFields();
+                 });
+             }
+         });
+
+     });
+
+    $("#familyMembersId").on("change", function () {
+        var memberId = $(this).val(); // Get the selected member ID
+
+        if (!memberId) {
+            $("#passengerCategory").val(""); // Clear field if no member is selected
+            return;
+        }
+
+        $.ajax({
+            url: `/POTicket/GetMemberData/${memberId}`, // Adjust the endpoint as necessary
+            type: 'GET',
+            success: function (data) {
+                if (data && data.passenger) {
+                    $("#passengerCategory").val(data.passenger); // Set passenger category
+                    $("#passportNumber").val(data.passportNumber); // Set passenger category
+                    $("#dateOfBirth").val(formatDate(data.dateOfBirth)); // Set passenger category
+                    $("#passportExpiry").val(formatDate(data.passportExpiry)); // Set passenger category
+                    $("#frequentFlyer").val(formatDate(data.frequentFlyer)); // Set passenger category
+                } else {
+                    $("#passengerCategory").val("Unknown");
+                    $("#passportNumber").val("Unknown");
+                    $("#dateOfBirth").val("Unknown");
+                    $("#passportExpiry").val("Unknown");
+                    $("#frequentFlyer").val("Unknown");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                alert("Could not fetch passenger category. Please try again.");
+            }
+        });
+    });
+
+    function formatDate(dateString) {
+        if (!dateString) return ""; // Return empty if no date provided
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return ""; // Handle invalid dates
+        return date.toISOString().split("T")[0]; // Format as YYYY-MM-DD for input[type="date"]
+    }
+
+
+    document.getElementById('submitButton').addEventListener('click', function () {
+        // Replace this with the actual data object that you need
+        const data = {
+            ticketNumber: '',
+            departure: '',
+            arrival: '',
+            departureTime: '',
+            arrivalTime: '',
+            from: '',
+            to: '',
+            pnrNo: '',
+            pnrgds: '',
+            seatNumber: '',
+        };
+
+        // Format time and date as needed (modify functions as per requirements)
+        const formatTime = (time) => time || '';
+        const formattedDate = new Date().toISOString().split('T')[0];
+        const formattedTime = new Date().toTimeString().split(' ')[0];
+
+        // Template literal with dynamic data
+        const row = `
+            <tr>
+                <td><input type='text' name='TicketNumber' class='form-control' maxlength='20' oninput='formatTicketNumber(this)' placeholder='000-0000-000-000' style='width: 200px;' value='${data.ticketNumber}' /></td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px; width: 150px;">
+                       <select class="form-control flightId flight-select2" name="flightNo" onchange="fetchFlightData(this)" style="width: 200px;">
+                            <option value="">Select Flight</option>
+    @foreach (var flightData in ViewBag.Flight)
+    {
+                                            <option value="@flightData.POTicketFlightDataId">@flightData.FlightNumber</option>
+    }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <input type='text' name='Departure' class='form-control' style='width: 200px;' value='${data.depatureCode}' readonly />
+                    <input type='hidden' name='DepartureId' class='form-control' style='width: 200px;' value='${data.departureId}' readonly />
+                </td>
+                <td>
+                    <input type='text' name='Arrival' class='form-control' style='width: 200px;' value='${data.arrivalCode}' readonly />
+                    <input type='hidden' name='ArrivalId' class='form-control' style='width: 200px;' value='${data.ArrivalId}' readonly />
+                </td>
+                <td><input type='time' name='FlightDepartureTime' class='form-control departureTime' style='width: 200px;' value='${formatTime(data.departureTime)}' /></td>
+                <td><input type='time' name='FlightArrivalTime' class='form-control arrivalTime' style='width: 200px;' value='${formatTime(data.arrivalTime)}' /></td>
+                <td>
+                    <input type='text' name='TransectTime' class='form-control transectTime' style='width: 200px;' value='' readonly />
+                    <span class="error-message" style="color: red; font-size: 12px;"></span>
+                </td>
+
+                <td><input name='DepartureDate' type="date" class="form-control" style='width: 200px;'  /></td>
+                <td><input name='ArrivalDate' type="date" class="form-control" style='width: 200px;'  /></td>
+
+                <td>
+                    <input type='text' name='AirlineName' class='form-control' style='width: 200px;' readonly/>
+                    <input type='hidden' name='AirlineId' class='form-control' style='width: 200px;' />
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <select name='FlightClass' class='form-control' style="width: 200px;">
+                            <option value=''>Select Class</option>
+                                @foreach (var tc in ViewBag.FlightClass)
+                                {
+                                    <option value="@tc.Id">@tc.Name</option>
+                                }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <select name='SubClass' class='form-control' style="width: 200px;">
+                            <option value=''>Select Sub Class</option>
+                                @foreach (SubClasses sbClass in ViewBag.SubClasses)
+                                {
+                                    <option value="@sbClass.SubClassesId">@sbClass.Name</option>
+                                }
+                            </select>
+                    </div>
+                </td>
+                 <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <select name='AirportsTypes' class='form-control' style="width: 200px;">
+                                @foreach (var tc in ViewBag.AirportsType)
+                                {
+                                    <option value="@tc.Id">@tc.Name</option>
+                                }
+                        </select>
+                    </div>
+                </td>
+                <td><input type='text' name='PNRNo' class='form-control' style='width: 200px;' value='${data.pnrNo}' /></td>
+                <td><input type='text' name='PNRGDSNo' class='form-control' style='width: 200px;' value='${data.pnrgds}' /></td>
+                <td><input type='text' name='SeatNumber' class='form-control' style='width: 200px;' value='${data.seatNumber}' /></td>
+                <td><input name='PreferedMeals' type="text" class="form-control" style='width: 200px;' value="" /></td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <select name='TicketCategory' class='form-control' style="width: 200px;">
+                            <option value=''>Select Ticket Category</option>
+                                @foreach (var tc in ViewBag.TicketCategory)
+                                {
+                                    <option value="@tc.Id">@tc.Name</option>
+                                }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                       <select name='CityTax' class='form-control' style="width: 200px;">
+                            <option value=''>Select City Tax</option>
+                                @foreach (CityTax tax in ViewBag.CityTax)
+                                {
+                                    <option value="@tax.CityTaxId">@tax.Code</option>
+                                }
+                            </select>
+                        <input name='Amount' type='text' class='form-control' />
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="removeRows(this)">Remove</button>
+                </td>
+            </tr>
+        `;
+
+        // Append the row to the table body
+        document.getElementById('flightDetailsBody').insertAdjacentHTML('beforeend', row);
+
+
+        $('.flight-select2').select2({
+            placeholder: "Select Flight",
+            allowClear: true,
+            width: '200%',
+        });
+
+        updateTransectTime();
+    });
+
+    document.addEventListener("input", function (event) {
+        if (event.target.classList.contains("departureTime") || event.target.classList.contains("arrivalTime")) {
+            updateTransectTime();
+        }
+    });
+
+    function formatTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${hours}:${minutes}`; // Format: HH:mm
+    }
+
+    function updateTransectTime() {
+        let rows = document.querySelectorAll("#flightDetailsTable tbody tr");
+
+        for (let i = 1; i < rows.length; i++) { // Skip the first row
+            let prevRow = rows[i - 1];
+            let currentRow = rows[i];
+
+            let prevArrivalField = prevRow.querySelector(".arrivalTime");
+            let currentDepartureField = currentRow.querySelector(".departureTime");
+            let transectField = prevRow.querySelector(".transectTime");
+            let errorSpan = prevRow.querySelector(".error-message"); // Find the span
+
+            if (!prevArrivalField || !currentDepartureField || !transectField || !errorSpan) {
+                continue; // Skip if any field is missing
+            }
+
+            let prevArrival = prevArrivalField.value.trim();
+            let currentDeparture = currentDepartureField.value.trim();
+
+            if (prevArrival && currentDeparture) {
+                let timeDiff = calculateTimeDifference(prevArrival, currentDeparture);
+                transectField.value = timeDiff;
+
+                // Convert the time difference into minutes for validation
+                let [hours, minutes] = timeDiff.split("h ").map(t => parseInt(t) || 0);
+                let totalMinutes = (hours * 60) + minutes;
+
+                // Show or hide the warning message based on the time difference
+                if (totalMinutes < 60) {
+                    transectField.style.border = "2px solid red"; // Highlight input
+                    errorSpan.textContent = "TransitTime less than 60 minutes!";
+                } else {
+                    transectField.style.border = ""; // Reset border
+                    errorSpan.textContent = ""; // Clear message
+                }
+            }
+        }
+
+        // **New Code:** If only one row is left, clear its Transit Time
+        if (rows.length === 1) {
+            let singleRow = rows[0];
+            let transectField = singleRow.querySelector(".transectTime");
+            let errorSpan = singleRow.querySelector(".error-message");
+
+            if (transectField) transectField.value = ""; // Clear Transit Time
+            if (errorSpan) errorSpan.textContent = ""; // Clear warning
+        }
+    }
+
+
+
+    function calculateTimeDifference(start, end) {
+        let startTime = new Date(`1970-01-01T${start}:00`);
+        let endTime = new Date(`1970-01-01T${end}:00`);
+        let diffMs = endTime - startTime;
+
+        if (diffMs < 0) {
+            diffMs += 24 * 60 * 60 * 1000; // Handle overnight flights
+        }
+
+        let diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        let diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+        return `${diffHrs}h ${diffMins}m`;
+    }
+
+    function observeTimeChanges() {
+        let tableBody = document.querySelector("#flightDetailsTable tbody");
+
+        if (!tableBody) return;
+
+        let observer = new MutationObserver(() => {
+            updateTransectTime();
+        });
+
+        observer.observe(tableBody, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+            attributeFilter: ["value"]
+        });
+    }
+
+    observeTimeChanges();
+
+    function removeRows(button) {
+        const row = button.closest('tr'); // Find the row to remove
+        let tableBody = document.getElementById('flightDetailsBody');
+        let rows = tableBody.querySelectorAll("tr");
+
+        let index = Array.from(rows).indexOf(row); // Get index of the row being removed
+
+        row.remove(); // Remove the row
+
+        // If there's a previous row and no next row, clear its transect time
+        if (index > 0 && index < rows.length) {
+            let prevRow = rows[index - 1];
+            let transectField = prevRow.querySelector(".transectTime");
+            let errorSpan = prevRow.querySelector(".error-message");
+
+            if (transectField) transectField.value = ""; // Clear Transit Time
+            if (errorSpan) errorSpan.textContent = ""; // Clear error message
+        }
+
+        updateTransectTime(); // Recalculate transit time for remaining rows
+    }
+
+
+
+    function fetchFlightData(selectElement) {
+        const flightId = selectElement.value;
+
+        if (!flightId) {
+            alert('Please select a valid flight.');
+            return;
+        }
+
+        // Get the current row
+        const currentRow = selectElement.closest('tr');
+
+        // AJAX call to fetch flight details
+        fetch(`/POTicket/GetFlightDetails?flightId=${flightId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Populate the fields within the same row
+                // currentRow.querySelector("input[name='Departure']").value = data.departure || '';
+                // currentRow.querySelector("input[name='Arrival']").value = data.arrival || '';
+                currentRow.querySelector("input[name='Departure']").value = (data.depatureCode || '') + ' - ' + (data.departure || '');
+                currentRow.querySelector("input[name='Arrival']").value = (data.arrivalCode || '') + ' - ' + (data.arrival || '');
+                currentRow.querySelector("input[name='FlightDepartureTime']").value = data.departureTime || '';
+                currentRow.querySelector("input[name='FlightArrivalTime']").value = data.arrivalTime || '';
+                currentRow.querySelector("input[name='DepartureId']").value = data.departureId || '';
+                currentRow.querySelector("input[name='ArrivalId']").value = data.arrivalId || '';
+                currentRow.querySelector("input[name='AirlineName']").value = data.airlineName || '';
+                currentRow.querySelector("input[name='AirlineId']").value = data.airlineIds || '';
+
+                    updateTransectTime();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Could not fetch flight details. Please try again.');
+            });
+
+    }
+
+    function formatTicketNumber(input) {
+        // Remove any non-digit characters
+        let value = input.value.replace(/\D/g, '');
+
+        // Apply formatting based on length
+        if (value.length > 3 && value.length <= 7) {
+        value = value.substring(0, 3) + '-' + value.substring(3);
+        } else if (value.length > 7 && value.length <= 10) {
+        value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7);
+        } else if (value.length > 10 && value.length <= 13) {
+        value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7, 10) + '-' + value.substring(10);
+        } else if (value.length === 13) {
+        // Jaise hi 13 digits enter hoon, '/' add kar do
+        value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7, 10) + '-' + value.substring(10) + '/';
+        } else if (value.length > 13) {
+        // '/' ke baad bhi 3 digits enter karne ki ijazat do
+        value = value.substring(0, 3) + '-' + value.substring(3, 7) + '-' + value.substring(7, 10) + '-' + value.substring(10, 13) + '/' + value.substring(13, 16);
+        }
+
+        // Update the input value
+        input.value = value;
+    }
+
+
+
+    $(document).ready(function () {
+        $('select[name="familyHeadId"]').select2({
+            placeholder: "Select Family Head",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+
+        $("#familyHeadId").on("change", function () {
+            var id = $(this).val();
+
+            $.ajax({
+                url: `/POTicket/GetFamilyMembers/${id}`,
+                type: 'GET',
+                success: function (data) {
+                    var secondSelect = $("#familyMembersId");
+                    secondSelect.empty();
+
+                    if (data && data.length > 0) {
+                        secondSelect.append('<option value="">Select a Family Member</option>');
+
+                        $.each(data, function (index, member) {
+                            secondSelect.append(
+                                `<option value="${member.familyHeadId}">${member.hajjiName} - ${member.hbNo} (${member.currency})</option>`
+                            );
+                        });
+                    } else {
+                        secondSelect.append('<option value="">No members found</option>');
+                    }
+                }
+            });
+        });
+
+        // Initialize Select2 for flightNo
+        $('select[name="flightNo"]').select2({
+            placeholder: "Select Flight",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+
+    });
+
+    // Taxes ViewBag
+    const taxes = @Html.Raw(Json.Serialize(ViewBag.Taxes));
+
+    function addRow() {
+        const tableBody = document.getElementById('paymentScheduleBody');
+        const rowCount = tableBody.rows.length + 1;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+                                            <td>${rowCount}</td>
+                                            <td><input type="date" name="DueDates[]" class="form-control"></td>
+                                            <td><input type="number" name="Percentages[]" class="form-control percentage-input" placeholder="Enter %" oninput="validatePercentages()"></td>
+                                            <td><input type="text" readonly name="Amounts[]" class="form-control amount-output"></td>
+                                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+                                        `;
+        tableBody.appendChild(newRow);
+
+    }
+
+    // Function to remove a specific row
+    function removeRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateRowNumbers();  // Update row numbering after removal
+        validatePercentages();  // Revalidate percentages after row removal
+    }
+
+    // Function to update row numbers after adding/removing rows
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#paymentScheduleBody tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerText = index + 1;
+        });
+    }
+
+    // ------------------------- Taxes Section Start ------------------------------------------
+
+    let taxRowIndex = 0;
+
+    // Function to add a new tax row
+    function addTaxRow() {
+        const $taxesBody = $('#taxesBody');
+
+        // Increment row index for taxes
+        const rowCount = taxRowIndex + 1;
+
+        const $newTaxRow = $(`
+                                                <tr>
+                                                    <td>${rowCount}</td>
+                                                    <td>${generateTaxDropdown('Taxes[' + taxRowIndex + '].TaxId', taxes, 'taxId', 'taxName')}</td>
+                                                    <td><input type="number" name="Taxes[${taxRowIndex}].TaxPercentage" class="form-control tax-percentage" placeholder="Tax %" step="0.01"></td>
+                                                    <td><input type="number" name="Taxes[${taxRowIndex}].TaxAmount" class="form-control tax-input" placeholder="Enter Tax Amount" required></td>
+                                                    <td><button type="button" class="btn btn-danger" onclick="removeTaxRow(this)"><i class="bx bx-trash me-1"></i></button></td>
+                                                </tr>
+                                            `);
+
+        $taxesBody.append($newTaxRow);
+
+        taxRowIndex++;  // Increment the row index for the next tax row
+
+        updateTotals();
+    }
+
+    // Function to generate tax dropdown for taxes
+    function generateTaxDropdown(name, items, valueKey, displayKey, id) {
+        const defaultOptionText = 'Select Tax';
+        return `
+                                                <select name="${name}" id="taxselect" class="form-control" required>
+                                                    <option value="" disabled selected>${defaultOptionText}</option>
+                                                    ${items.map(item => `<option value="${item[valueKey]}">${item[displayKey]}</option>`).join('')}
+                                                </select>
+                                            `;
+    }
+
+    // Function to remove a tax row
+    function removeTaxRow(button) {
+        $(button).closest('tr').remove();
+
+        // Update serial numbers for remaining rows
+        $('#taxesBody tr').each(function (index) {
+            $(this).find('td:first').text(index + 1);
+        });
+
+        taxRowIndex--;
+
+        // Recalculate totals
+        CalculateTotalTax();
+        updateTotals();
+        validatePercentages();
+    }
+
+    // Function to calculate total taxes
+    function CalculateTotalTax() {
+        let totalAmount = 0;
+        let totalTaxes = 0;
+
+        // Iterate through taxes and calculate total taxes
+        $('#taxesBody tr').each(function () {
+            const taxAmount = parseFloat($(this).find('.tax-input').val()) || 0; // Get tax amount
+            totalTaxes += taxAmount; // Add to total taxes
+        });
+
+        $('#taxesSum').val(totalTaxes.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    }
+
+    // Function to calculate tax amount when tax percentage changes
+    $(document).on('input', '.tax-percentage', function () {
+        const $row = $(this).closest('tr');
+        const amount = parseFloat($('.amount-input').val().replace(/,/g, ''));
+        const taxPercentage = parseFloat($(this).val()) || 0;
+
+        if (taxPercentage > 0 && amount > 0) {
+            // Calculate tax amount based on the selected nature's total
+            const taxAmount = (amount * taxPercentage) / 100;
+            $row.find('.tax-input').val(taxAmount.toFixed(2));
+        }
+
+        // After calculating the tax, call CalculateTotal to update the totals
+        CalculateTotalTax();
+        updateTotals();
+        validatePercentages();
+    });
+
+    // Function to calculate tax percentage when tax input changes
+    $(document).on('input', '.tax-input', function () {
+        const $row = $(this).closest('tr');
+        const amount = parseFloat($('.amount-input').val().replace(/,/g, ''));
+        const taxAmount = parseFloat($(this).val()) || 0; // Get tax amount from input
+
+        if (taxAmount > 0 && amount > 0) {
+            // Calculate tax percentage as (taxAmount / amount) * 100
+            const taxPercentage = (taxAmount / amount) * 100;
+            $row.find('.tax-percentage').val(taxPercentage.toFixed(2));  // Set calculated tax percentage
+        }
+
+        // After updating the tax input, call CalculateTotal to update the totals
+        CalculateTotalTax();
+        updateTotals();
+        validatePercentages();
+    });
+
+    // Function to update all taxes when Amount changes
+    function updateAllTaxes() {
+
+        const amount = parseFloat($('.amount-input').val().replace(/,/g, '')) || 0;
+
+        // Update each tax row
+        $('#taxesBody tr').each(function () {
+            const $row = $(this);
+            const taxPercentage = parseFloat($row.find('.tax-percentage').val()) || 0;
+
+            if (taxPercentage > 0 && amount > 0) {
+                // Calculate tax amount
+                const taxAmount = (amount * taxPercentage) / 100;
+                $row.find('.tax-input').val(taxAmount.toFixed(2));
+            }
+        });
+
+        // After updating all taxes, recalculate totals
+        CalculateTotalTax();
+        updateTotals();
+        validatePercentages();
+    }
+
+    // Add event listeners for Amount
+    $(document).on('input', '.amount-input', function () {
+
+        const totalAmount = parseFloat($('.amount-input').val().replace(/,/g, '')) || 0;
+        $('#subtotal').val(formatToLocaleString(totalAmount));
+
+        CalculateTotalTax();
+        updateAllTaxes();
+        updateTotals();
+        validatePercentages();
+    });
+
+    // ------------------------- Taxes Section End ---------------------------------------------
+
+    // Function to validate the total percentage and update amounts
+    function validatePercentages() {
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        let totalPercentage = 0;
+
+        // Calculate the total percentage
+        percentageInputs.forEach(input => {
+            totalPercentage += parseFloat(input.value) || 0;
+        });
+
+        const warningElement = document.getElementById('percentageWarning');
+        const createButton = document.getElementById('submitButton');
+
+        if (totalPercentage > 100) {
+            // Show warning if total is above 100%
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage cannot exceed 100%.";
+            createButton.disabled = true; // Disable button
+        } else if (totalPercentage < 100) {
+            // Show warning if total is below 100%
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage must equal 100%.";
+            createButton.disabled = true; // Disable button
+        } else {
+            // Hide warning and enable button if total is exactly 100%
+            warningElement.classList.add('d-none');
+            createButton.disabled = false; // Enable button
+        }
+
+        updateAmounts();
+    }
+
+    function updateAmounts() {
+        const totalAmount = parseFloat(document.getElementById('total').value.replace(/,/g, '')) || 0;
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        const amountOutputs = document.querySelectorAll('.amount-output');
+
+        percentageInputs.forEach((input, index) => {
+            const percentage = parseFloat(input.value) || 0;
+            const amount = Math.round((totalAmount * (percentage / 100)) * 100) / 100;
+            amountOutputs[index].value = amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        });
+    }
+
+
+
+    // Ensure this function is called whenever the input changes
+    $('input[name="basicFare"], input[name="sp"], input[name="rg"], input[name="sf"], input[name="svc"], input[name="srb"], input[name="pk"], input[name="ptt"], input[name="pb"], input[name="yq"], input[name="yr"], input[name="kpr"], input[name="kbp"], input[name="commissionPercentage"], input[name="withholdingPercentage"], input[name="spTaxPercentage"], input[name="finalkb"]').on('input', function () {
+        const formattedValue = formatNumberWithCommas($(this).val());
+        $(this).val(formattedValue); // Set the formatted value back to the input // Call the totals calculation function
+    });
+
+    $(document).ready(function () {
+        $('input:text').each(function () {
+            const label = $(this).closest('.col-sm-12').find('.form-label').text().toLowerCase().trim();
+            if (label.includes('sp tax %')) {
+                $(this).attr('name', 'spTaxPercentage');
+            } else if (label === 'sp tax') {
+                $(this).attr('name', 'spTax');
+            } else if (label.includes('basic fare')) {
+                $(this).attr('name', 'basicFare');
+            } else if (label.includes('sp')) {
+                $(this).attr('name', 'sp');
+            } else if (label.includes('rg')) {
+                $(this).attr('name', 'rg');
+            } else if (label.includes('sf')) {
+                $(this).attr('name', 'sf');
+            } else if (label.includes('svc')) {
+                $(this).attr('name', 'svc');
+            } else if (label.includes('srb')) {
+                $(this).attr('name', 'srb');
+            } else if (label.includes('pk')) {
+                $(this).attr('name', 'pk');
+            } else if (label.includes('ptt')) {
+                $(this).attr('name', 'ptt');
+            } else if (label.includes('pb')) {
+                $(this).attr('name', 'pb');
+            } else if (label.includes('yq')) {
+                $(this).attr('name', 'yq');
+            } else if (label.includes('yr')) {
+                $(this).attr('name', 'yr');
+            } else if (label.includes('kp-r')) {
+                $(this).attr('name', 'kpr');
+            } else if (label.includes('kb-p')) {
+                $(this).attr('name', 'kbp');
+            } else if (label.includes('gross client')) {
+                $(this).attr('name', 'grossClient');
+            } else if (label.includes('gross airline')) {
+                $(this).attr('name', 'grossAirline');
+            } else if (label.includes('net client')) {
+                $(this).attr('name', 'netClient');
+            } else if (label.includes('net airline')) {
+                $(this).attr('name', 'netAirline');
+            } else if (label.includes('commission %')) {
+                $(this).attr('name', 'commissionPercentage');
+            } else if (label.includes('commission') && !label.includes('%')) {
+                $(this).attr('name', 'commission');
+            } else if (label.includes('with holding %')) {
+                $(this).attr('name', 'withholdingPercentage');
+            } else if (label.includes('with holding') && !label.includes('%')) {
+                $(this).attr('name', 'withholding');
+            } else if (label.includes('sp tax %')) {
+                $(this).attr('name', 'spTaxPercentage');
+            } else if (label.includes('sp tax') && !label.includes('%')) {
+                $(this).attr('name', 'spTax');
+            }
+
+            $('select[id="bookingAgentSelect"]').select2({
+                placeholder: "Select Booking Agent",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'form-control',
+                selectionCssClass: 'form-control'
+            });
+
+            $('select[id="ticketingAgentSelect"]').select2({
+                placeholder: "Select Ticketing Agent",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'form-control',
+                selectionCssClass: 'form-control'
+            });
+
+            $('select[id="recoveryOfficerSelect"]').select2({
+                placeholder: "Select Recovery Officer",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'form-control',
+                selectionCssClass: 'form-control'
+            });
+
+            $('select[id="postingAgentSelect"]').select2({
+                placeholder: "Select Posting Agent",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'form-control',
+                selectionCssClass: 'form-control'
+            });
+
+            $('select[id="hgoDropdown"]').select2({
+                placeholder: "Select Company",
+                allowClear: true,
+                width: '100%',
+                dropdownCssClass: 'form-control',
+                selectionCssClass: 'form-control'
+            });
+
+            // $('select[name="flightNo"]').select2({
+            //     placeholder: "Select Flight",
+            //     allowClear: true,
+            //     width: '100%', // Adjust the width as needed
+            //     dropdownCssClass: 'form-control',  // For the dropdown
+            //     selectionCssClass: 'form-control'  // For the selected item
+            // });
+
+        });
+
+        $('input[name="basicFare"], input[name="sp"], input[name="rg"], input[name="sf"], input[name="svc"], input[name="srb"], input[name="pk"], input[name="ptt"], input[name="pb"], input[name="yq"], input[name="yr"], input[name="kpr"], input[name="kbp"], input[name="commissionPercentage"], input[name="withholdingPercentage"], input[name="spTaxPercentage"], input[name="Discount"], input[name="AgentAmount"], input[name="AgentFixedAmount"]').on('input', function () {
+            const formattedValue = formatNumberWithCommas($(this).val());
+            $(this).val(formattedValue); // Set the formatted value back to the input
+            calculateTotals(); // Call the totals calculation function
+        });
+    });
+
+    function formatPreFilledValues() {
+        const inputFields = [
+            'basicFare',
+            'sp',
+        ];
+
+        inputFields.forEach(function (inputId) {
+            const inputElement = document.getElementById(inputId);
+            if (inputElement && inputElement.value) {
+                let rawValue = inputElement.value.replace(/,/g, '');
+                inputElement.value = formatNumberWithCommas(rawValue);
+            }
+        });
+    }
+
+    function formatNumberWithCommas(value) {
+        // Remove existing commas and non-numeric characters (except decimal point)
+        value = value.replace(/,/g, '').replace(/[^\d.]/g, '');
+
+        // Ensure only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+        }
+
+        // Add commas to the whole number part
+        parts = value.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        return parts.join('.');
+    }
+
+    function formatInputValue(input) {
+        input.value = formatNumberWithCommas(input.value);
+    }
+
+    // Event listener for the flight type dropdown
+    $('#postingTypeDropdown').change(function () {
+        var selectedValue = $(this).val();  // Get the selected value
+
+        // Hide both input and dropdown initially
+        $('#issueDateDiv').hide();
+        $('#hgoDropdownDiv').hide();
+
+        // Check if the selected flight type is "Individual"
+        if (selectedValue === "0") {
+            $('#issueDateDiv').show();  // Show issue date input
+        }
+        // Check if the selected flight type is "HGO"
+        else if (selectedValue === "1") {
+            $('#hgoDropdownDiv').show();  // Show HGO options dropdown
+        }
+    });
+
+
+
+    function submitForm() {
+
+        // PO Invoice
+
+        const POTicketId = $('input[name="POTicketId"]').val();
+        const PONumber = $('input[name="PONumber"]').val();
+        const xoNumber = $('input[name="XONumber"]').val();
+        const passportNumber = $('#passportNumber').val(); // ya
+        const passengerCategory = $('#passengerCategory').val(); // ya
+        const frequentFlyer = $('#frequentFlyer').val(); // ya
+        const dateOfBirth = $('input[name="dateOfBirth"]').val();
+        const passportExpiry = $('#passportExpiry').val();
+        const poDate = $('input[id="PODate"]').val();
+        const dueDate = $('input[name="DueDate"]').val();  // Fixed the syntax error
+        const familyhead = $('#familyHeadId option:selected').val();
+        const tpNo = $('input[name="TPRFNo"]').val();
+        const ticketType = $('select').eq(2).find('option:selected').text();
+        const ticketTypeId = $('select').eq(2).find('option:selected').val();
+        const fareType = $('select').eq(3).find('option:selected').text();
+        const fareTypeId = $('select').eq(3).find('option:selected').val();
+        const familyMember = $('#familyMembersId option:selected').text();
+        const familyMemberId = $('#familyMembersId option:selected').val();
+        const postingType = $('#postingTypeDropdown option:selected').val();
+        const issueDate = $('input[id="issueDate"]').val();
+        const companyId = $('#hgoDropdown option:selected').val();
+        const VendorType = $('#VendorType option:selected').val();
+        const Vendor = $('#vendor option:selected').val();
+        const bookingAgent = $('#bookingAgentSelect option:selected').val();
+        const ticketingAgent = $('#ticketingAgentSelect option:selected').val();
+        const recoveryOfficer = $('#recoveryOfficerSelect option:selected').val();
+        const postingAgent = $('#postingAgentSelect option:selected').val();
+        const basicfare = $('input[id="basicfair"]').val();  // Fixed duplicate name: changed 'basicfair' to 'basicfare'
+        const Discount = $('input[id="discount"]').val();
+        const commissionPersentage = $('input[id="commissionPer"]').val();
+        const commissionAmount = $('input[id="Commi"]').val();
+        const agentper = $('input[id="agentper"]').val();
+        const agentAmount = $('input[id="agentAmount"]').val();
+        const agentfixedAmount = $('input[id="agentfixedAmount"]').val();
+        const NetTotal = $('input[id="NetTo"]').val();
+        //Taxes
+        const ntax = $('input[name="ntax"]').val();
+        const rg = $('input[name="rg"]').val();
+        const sf = $('input[name="sf"]').val();
+        const sp = $('input[id="spAmount"]').val();
+        const ydAmount = $('input[name="ydAmount"]').val();
+        const gtaxAmount = $('input[name="gtaxAmount"]').val();
+        const pzAmount = $('input[name="pzAmount"]').val();
+        const qaAmount = $('input[name="qaAmount"]').val();
+        const rtaxAmount = $('input[name="rtaxAmount"]').val();
+        const etaxAmount = $('input[name="etaxAmount"]').val();
+        const ioAmount = $('input[name="ioAmount"]').val();
+        const yr = $('input[name="yr"]').val();
+        const ttax = $('input[name="ttax"]').val();
+        const Ftax = $('input[name="Ftax"]').val();
+        const Zrtax = $('input[name="Zrtax"]').val();
+        const Aetax = $('input[name="Aetax"]').val();
+        const Tptax = $('input[name="Tptax"]').val();
+        const Catax = $('input[name="Catax"]').val();
+        const Sqtax = $('input[name="Sqtax"]').val();
+        const Rctax = $('input[name="Rctax"]').val();
+        const Xttax = $('input[name="Xttax"]').val();
+        const Aytax = $('input[name="Aytax"]').val();
+        const Ustax = $('input[name="Ustax"]').val();
+        const Xatax = $('input[name="Xatax"]').val();
+        const Xftax = $('input[name="Xftax"]').val();
+        const Xytax = $('input[name="Xytax"]').val();
+        const Yctax = $('input[name="Yctax"]').val();
+        const Ubtax = $('input[name="Ubtax"]').val();
+        const Gbtax = $('input[name="Gbtax"]').val();
+        const svc = $('input[name="svc"]').val();
+        const srb = $('input[name="srb"]').val();
+        const pk = $('input[name="pk"]').val();
+        const ptt = $('input[name="ptt"]').val();
+        const pb = $('input[name="pb"]').val();
+        const yqAmount = $('input[name="yq"]').val();
+        const WTHPer = $('input[id="WTHPers"]').val();
+        const WTHAmount = $('input[id="WTHAmount"]').val();
+        const NetTax = $('input[id="NetTax"]').val();
+        const kpr = $('input[name="kpr"]').val();
+        const kbp = $('input[name="kbp"]').val();
+        const spTaxPer = $('input[name="spTaxPercentage"]').val();
+        const spTax = $('input[name="spTax"]').val();
+        const finalkbAmount = $('input[name="finalkb"]').val();
+        const otherTaxes = $('input[name="otherTaxes"]').val();
+
+        let rownum = 0;
+        let flightDetails = '';
+        let flightDetailsArray = [];
+
+
+        let rowIndex = $('#postfnf tr').length;
+        let index = $('#ticketDetailsBody tr').length;
+
+
+        $('#flightDetailsBody tr').each(function () {
+
+            // Get the current number of rows in postfnf to determine the next index
+
+            const ticketNumber = $(this).find('td:eq(0) input[name="TicketNumber"]').val(); // TicketNumber
+            const flightNumber = $(this).find('td:eq(1) select').val(); // FlightNumber
+            const departure = $(this).find('td:eq(2) input[name="Departure"]').val(); // Departure
+            const departureid = $(this).find('td:eq(2) input[name="DepartureId"]').val(); // Departure
+            const arrival = $(this).find('td:eq(3) input[name="Arrival"]').val(); // Arrival
+            const arrivalid = $(this).find('td:eq(3) input[name="ArrivalId"]').val(); // Arrival
+            const flightDepartureTime = $(this).find('td:eq(4) input[name="FlightDepartureTime"]').val(); // DepartureTime
+            const flightArrivalTime = $(this).find('td:eq(5) input[name="FlightArrivalTime"]').val(); // ArrivalTimes
+            const transectTime = $(this).find('td:eq(6) input[name="TransectTime"]').val(); // TransectTime
+            const departureDate = $(this).find('td:eq(7) input[name="DepartureDate"]').val(); // DepartureDate
+            const arrivalDate = $(this).find('td:eq(8) input[name="ArrivalDate"]').val(); // ArrivalDate
+            const airline = $(this).find('td:eq(9) input[name="AirlineName"]').val(); // Airline
+            const airlineid = $(this).find('td:eq(9) input[name="AirlineId"]').val();
+            const flightClass = $(this).find('td:eq(10) select').val(); // FlightClass
+            const subClass = $(this).find('td:eq(11) select').val(); // FlightClass
+            const airportsTypes = $(this).find('td:eq(12) select').val(); // FlightClass
+            const pnrNo = $(this).find('td:eq(13) input[name="PNRNo"]').val(); // PNRNo
+            const pnrgdsNo = $(this).find('td:eq(14) input[name="PNRGDSNo"]').val(); // PNRGDSNo
+            const SeatNumber = $(this).find('td:eq(15) input[name="SeatNumber"]').val(); // SeatNumber
+            const preferredMeals = $(this).find('td:eq(16) input[name="PreferedMeals"]').val(); // PreferedMeals
+            const ticketCategory = $(this).find('td:eq(17) select').val(); // TicketCategory
+            const cityTax = $(this).find('td:eq(18) select').val(); // CityTax
+            const amount = $(this).find('td:eq(18) input[name="Amount"]').val(); // Amount
+
+            // Collect all the data in an object
+            flightDetailsArray.push({
+                ticketNumber,
+                flightNumber,
+                departure,
+                departureid,
+                arrival,
+                arrivalid,
+                flightDepartureTime,
+                flightArrivalTime,
+                transectTime,
+                airline,
+                airlineid,
+                arrivalDate,
+                departureDate,
+                flightClass,
+                airportsTypes,
+                subClass,
+                pnrNo,
+                pnrgdsNo,
+                SeatNumber,
+                preferredMeals,
+                ticketCategory,
+                cityTax,
+                amount
+            });
+
+                flightDetails += `Flight: ${ticketNumber}, ${flightNumber}, ${departureid}, ${arrivalid}, ${flightDepartureTime}, ${flightArrivalTime},${transectTime},
+            ${airlineid}, ${arrivalDate}, ${departureDate}, ${pnrgdsNo}, ${SeatNumber}, ${preferredMeals}, ${ticketCategory},${airportsTypes},
+            ${cityTax}: ${amount}<br>`;
+
+        });
+        console.log($('#postfnf').html());
+
+        const grossClient = $('input[name="grossClient"]').val();
+        const grossAirline = $('input[name="grossAirline"]').val();
+        const netClient = $('input[name="netClient"]').val();
+        // const netAirline = $('input[name="netAirline"]').val();
+
+
+        const newRow = `
+                    <tr data-ticketDetailsBody-index="${index}" >
+                        <td>${poDate}</td>
+                        <td>${dueDate}</td>
+                        <td>${familyMember}</td>
+                        <td>${ticketType}</td>
+                        <td>${fareType}</td>
+                        <td>${flightDetails}</td>
+                        <td>${grossClient}</td>
+                        <td>${grossAirline}</td>
+                        <td>${netClient}</td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">
+                                <i class="bx bx-trash me-1"></i>
+                            </button>
+                        </td>
+
+                        <!-- Hidden Inputs -->
+                        <input type="hidden" name="PoInvoice[${index}].XONumber" value="${xoNumber}" />
+                        <input type="hidden" name="PoInvoice[${index}].POTicketId" value="${POTicketId}" />
+                        <input type="hidden" name="PoInvoice[${index}].PONumber" value="${PONumber}" />
+                        <input type="hidden" name="PoInvoice[${index}].PassportNumber" value="${passportNumber}" />
+                        <input type="hidden" name="PoInvoice[${index}].FrequentFlyer" value="${frequentFlyer}" />
+                        <input type="hidden" name="PoInvoice[${index}].DateofBirth" value="${dateOfBirth}" />
+                        <input type="hidden" name="PoInvoice[${index}].PassportExpiry" value="${passportExpiry}" />
+                        <input type="hidden" name="PoInvoice[${index}].Date" value="${poDate}" />
+                        <input type="hidden" name="PoInvoice[${index}].DueDate" value="${dueDate}" />
+                        <input type="hidden" name="PoInvoice[${index}].familyHeadId" value="${familyhead}" />
+                        <input type="hidden" name="PoInvoice[${index}].TPRFNo" value="${tpNo}" />
+                        <input type="hidden" name="PoInvoice[${index}].TicketType" value="${ticketType}" />
+                        <input type="hidden" name="PoInvoice[${index}].FareType" value="${fareType}" />
+                        <input type="hidden" name="PoInvoice[${index}].PassengerCategory" value="${passengerCategory}" />
+                        <input type="hidden" name="PoInvoice[${index}].FamilyMembersId" value="${familyMemberId}" />
+                        <input type="hidden" name="PoInvoice[${index}].PostingType" value="${postingType}" />
+                        <input type="hidden" name="PoInvoice[${index}].IssueDate" value="${issueDate}" />
+                        <input type="hidden" name="PoInvoice[${index}].CompanyId" value="${companyId}" />
+                        <input type="hidden" name="PoInvoice[${index}].VendorTypeId" value="${VendorType}" />
+                        <input type="hidden" name="PoInvoice[${index}].VendorId" value="${Vendor}" />
+                        <input type="hidden" name="PoInvoice[${index}].BookingAgentId" value="${bookingAgent}" />
+                        <input type="hidden" name="PoInvoice[${index}].TicketingAgentId" value="${ticketingAgent}" />
+                        <input type="hidden" name="PoInvoice[${index}].RecoveryOfficerId" value="${recoveryOfficer}" />
+                        <input type="hidden" name="PoInvoice[${index}].PostingAgentId" value="${postingAgent}" />
+                        <input type="hidden" name="PoInvoice[${index}].basicFare" value="${basicfare}" />
+                        <input type="hidden" name="PoInvoice[${index}].Discount" value="${Discount}" />
+                        <input type="hidden" name="PoInvoice[${index}].CommissionPersentage" value="${commissionPersentage}" />
+                        <input type="hidden" name="PoInvoice[${index}].Commission" value="${commissionAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].AgentPersentage" value="${agentper}" />
+                        <input type="hidden" name="PoInvoice[${index}].AgentAmount" value="${agentAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].AgentFixedAmount" value="${agentfixedAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].NetTotal" value="${NetTotal}" />
+                        //Taxes
+                        <input type="hidden" name="PoInvoice[${index}].ntax" value="${ntax}" />
+                        <input type="hidden" name="PoInvoice[${index}].rg" value="${rg}" />
+                        <input type="hidden" name="PoInvoice[${index}].sf" value="${sf}" />
+                        <input type="hidden" name="PoInvoice[${index}].sp" value="${sp}" />
+                        <input type="hidden" name="PoInvoice[${index}].ydAmount" value="${ydAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].gtaxAmount" value="${gtaxAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].pzAmount" value="${pzAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].qaAmount" value="${qaAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].rtaxAmount" value="${rtaxAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].etaxAmount" value="${etaxAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].ioAmount" value="${ioAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].yr" value="${yr}" />
+                        <input type="hidden" name="PoInvoice[${index}].ttax" value="${ttax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Ftax" value="${Ftax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Zrtax" value="${Zrtax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Aetax" value="${Aetax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Tptax" value="${Tptax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Catax" value="${Catax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Sqtax" value="${Sqtax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Rctax" value="${Rctax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Xttax" value="${Xttax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Aytax" value="${Aytax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Ustax" value="${Ustax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Xatax" value="${Xatax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Xftax" value="${Xftax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Xytax" value="${Xytax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Yctax" value="${Yctax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Ubtax" value="${Ubtax}" />
+                        <input type="hidden" name="PoInvoice[${index}].Gbtax" value="${Gbtax}" />
+                        <input type="hidden" name="PoInvoice[${index}].svc" value="${svc}" />
+                        <input type="hidden" name="PoInvoice[${index}].srb" value="${srb}" />
+                        <input type="hidden" name="PoInvoice[${index}].pk" value="${pk}" />
+                        <input type="hidden" name="PoInvoice[${index}].ptt" value="${ptt}" />
+                        <input type="hidden" name="PoInvoice[${index}].pb" value="${pb}" />
+                        <input type="hidden" name="PoInvoice[${index}].yq" value="${yqAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].OtherTaxes" value="${otherTaxes}" />
+
+
+                        <input type="hidden" name="PoInvoice[${index}].WTHPersentage" value="${WTHPer}" />
+                        <input type="hidden" name="PoInvoice[${index}].WTHAmount" value="${WTHAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].NetTax" value="${NetTax}" />
+                        <input type="hidden" name="PoInvoice[${index}].kpr" value="${kpr}" />
+                        <input type="hidden" name="PoInvoice[${index}].kbp" value="${kbp}" />
+                        <input type="hidden" name="PoInvoice[${index}].spTaxPercentage" value="${spTaxPer}" />
+                        <input type="hidden" name="PoInvoice[${index}].spTax" value="${spTax}" />
+                        <input type="hidden" name="PoInvoice[${index}].finalkbAmount" value="${finalkbAmount}" />
+                        <input type="hidden" name="PoInvoice[${index}].grossClient" value="${grossClient}" />
+                        <input type="hidden" name="PoInvoice[${index}].grossAirline" value="${grossAirline}" />
+                        <input type="hidden" name="PoInvoice[${index}].netClient" value="${netClient}" />
+                        ${flightDetailsArray.map((branch, branchIndex) => `
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].familyHeadId" value="${familyhead}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].FamilyMembersId" value="${familyMemberId}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].TicketNumber" value="${branch.ticketNumber}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].POTicketFlightDataId" value="${branch.flightNumber}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].DepartureAirportId" value="${branch.departureid}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].ArrivalAirportId" value="${branch.arrivalid}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].FlightDepartureTime" value="${branch.flightDepartureTime}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].FlightArrivalTime" value="${branch.flightArrivalTime}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].TransectTime" value="${branch.transectTime}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].Airline" value="${branch.airlineid}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].ArrivalDate" value="${branch.arrivalDate}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].DepartureDate" value="${branch.departureDate}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].FlightClass" value="${branch.flightClass}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].AirportsType" value="${branch.airportsTypes}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].SubClass" value="${branch.subClass}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].PNRNo" value="${branch.pnrNo}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].PNRGDSNo" value="${branch.pnrgdsNo}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].SeatNumber" value="${branch.SeatNumber}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].PreferedMeals" value="${branch.preferredMeals}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].TicketCategory" value="${branch.ticketCategory}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].CityTax" value="${branch.cityTax}" />
+                                <input type="hidden" name="PoInvoice[${index}].FlightDetails[${branchIndex}].Amount" value="${branch.amount}" />
+                            `).join('')}
+
+                    </tr>
+
+                `;
+
+        $('#ticketDetailsBody').append(newRow);
+
+        // Calculate new totals after adding row
+        calculateTableTotals();
+    }
+
+
+
+    function deleteRow(button) {
+        const row = $(button).closest('tr'); // Find the closest row
+        console.log("Selected Row:", row.html()); // Check the HTML of the selected row
+
+        const index = row.attr('data-ticketdetailsbody-index'); // Try to get attribute directly
+        console.log("Index from attr:", index);
+
+        if (index !== undefined) {
+            // Remove all rows with the same index (from ticket details and postfnf)
+            $(`tr[data-ticketdetailsbody-index="${index}"]`).remove();
+        }
+
+        row.remove(); // Remove the ticket row itself
+
+        reindexAfterDeletion(); // Reindex after row deletion
+
+        // Recalculate totals
+        calculateTableTotals();
+    }
+
+
+
+    function reindexAfterDeletion() {
+        // Update ticket indices
+        $('#ticketDetailsBody tr').each(function(ticketIndex) {
+            $(this).attr('data-ticketDetailsBody-index', ticketIndex); // Update the index for the <tr> tag
+            $(this).find('input[name^="PoInvoice"]').each(function() {
+                const newName = $(this).attr('name').replace(/\[\d+\]/, `[${ticketIndex}]`);
+                $(this).attr('name', newName);
+            });
+        });
+
+        // Update flight details indices
+        let flightIndex = 0;
+
+        $('#flightDetailsBody tr').each(function() {
+            // Get the ticket index from the closest ticket row
+            const newTicketIndex = $(this).closest('tr').attr('data-ticketdetailsbody-index');
+
+            // Update flight row's ticket index
+            $(this).attr('data-ticketdetailsbody-index', newTicketIndex);
+
+            // Update POFlightDetails indices
+            $(this).find('input[name^="POFlightDetails"]').each(function() {
+                const newName = $(this).attr('name').replace(/POFlightDetails\[\d+\]/, `POFlightDetails[${flightIndex}]`);
+                $(this).attr('name', newName);
+            });
+
+            flightIndex++;
+        });
+
+        // Update postfnf indices
+        $('#postfnf tr').each(function(postfnfIndex) {
+            // Update the data-ticketDetailsBody-index for <tr> in postfnf
+            $(this).attr('data-ticketDetailsBody-index', postfnfIndex);
+
+            // Update the name attributes of the hidden inputs inside postfnf
+            $(this).find('input').each(function() {
+                const newName = $(this).attr('name').replace(/\[\d+\]/, `[${postfnfIndex}]`);
+                $(this).attr('name', newName);
+            });
+        });
+    }
+
+
+
+
+    function resetForm() {
+        $('#POForm')[0].reset();
+        $('#flightDetailsBody').empty();
+        calculateTotals();
+    }
+
+    function addPaymentRow() {
+        const tableBody = document.getElementById('paymentScheduleBody');
+        const rowCount = tableBody.rows.length + 1;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${rowCount}</td>
+            <td><input type="date" name="Payments[${rowCount - 1}].DueDate" class="form-control"></td>
+            <td><input type="number" name="Payments[${rowCount - 1}].Persentage" class="form-control percentage-input" placeholder="Enter %" oninput="validatePaymentPercentages()"></td>
+            <td><input type="text" readonly name="Payments[${rowCount - 1}].Amount" class="form-control amount-output"></td>
+            <td><button type="button" class="btn btn-danger" onclick="removePaymentRow(this)">Remove</button></td>
+        `;
+        tableBody.appendChild(newRow);
+    }
+
+    function removePaymentRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updatePaymentRowNumbers();
+        validatePaymentPercentages();
+    }
+
+    function updatePaymentRowNumbers() {
+        const rows = document.querySelectorAll('#paymentScheduleBody tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerText = index + 1;
+        });
+    }
+
+    function validatePaymentPercentages() {
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        let totalPercentage = 0;
+
+        percentageInputs.forEach(input => {
+            totalPercentage += parseFloat(input.value) || 0;
+        });
+
+        const warningElement = document.getElementById('percentageWarning');
+        const submitButton = document.getElementById('submitButton');
+
+        if (totalPercentage > 100) {
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage cannot exceed 100%.";
+            submitButton.disabled = true;
+        } else if (totalPercentage < 100) {
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage must equal 100%.";
+            submitButton.disabled = true;
+        } else {
+            warningElement.classList.add('d-none');
+            submitButton.disabled = false;
+        }
+
+        updatePaymentAmounts();
+    }
+
+    function updatePaymentAmounts() {
+        const totalAmount = parseFloat($('#totalNetAirline').text()) || 0;
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        const amountOutputs = document.querySelectorAll('.amount-output');
+
+        percentageInputs.forEach((input, index) => {
+            const percentage = parseFloat(input.value) || 0;
+            const amount = Math.round((totalAmount * (percentage / 100)) * 100) / 100;
+            amountOutputs[index].value = amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        });
+    }
+
+    // Add this to your existing calculateTotals function to update payment amounts when totals change
+    const existingCalculateTotals = calculateTotals;
+    calculateTotals = function () {
+        existingCalculateTotals();
+        updatePaymentAmounts();
+    }
+
+    // Add this function to calculate totals from the table
+    function calculateTableTotals() {
+        let totalGrossClient = 0;
+        let totalGrossAirline = 0;
+        let totalNetClient = 0;
+
+        $('#ticketDetailsBody tr').each(function () {
+            totalGrossClient += parseFloat($(this).find('td:eq(6)').text().replace(/,/g, '')) || 0;
+            totalGrossAirline += parseFloat($(this).find('td:eq(7)').text().replace(/,/g, '')) || 0;
+            totalNetClient += parseFloat($(this).find('td:eq(8)').text().replace(/,/g, '')) || 0;
+        });
+
+        $('#totalGrossClient').text(totalGrossClient.toFixed(2));
+        $('#totalGrossAirline').text(totalGrossAirline.toFixed(2));
+        $('#totalNetClient').text(totalNetClient.toFixed(2));
+
+        console.log(totalGrossClient);
+        console.log(totalGrossAirline);
+        console.log(totalNetClient);
+
+        // Update payment schedule amounts based on total net client
+        updatePaymentAmounts();
+    }
+
+
+    function getVendors(selectElement) {
+        const vendorTypeId = selectElement.value;
+        const vendorSelect = selectElement.closest(".vendor-row").querySelector(".vendor-select");
+
+        $.ajax({
+            url: `/VendorType/GetVendors/${vendorTypeId}`,
+            success: res => {
+                vendorSelect.innerHTML = "";
+                res.forEach(vendor => {
+                    const option = document.createElement("option");
+                    option.value = vendor.vendorId;
+                    option.text = vendor.vendorName;
+                    vendorSelect.appendChild(option);
+                });
+            },
+            error: err => {
+                console.error("Error fetching vendors:", err);
+            }
+        });
+    }
+
+
+    function RenderRows(){
+
+    $( "#postfnf tr.alt" ).each(function( index, elem ) {
+        $(elem).find("input").each(function() {
+            var inputName = $(this).attr('name');
+             var newName = inputName.replace('rownum', index);
+            $(this).attr('name', newName);
+        });
+    });
+
+    $('#FnfSub').click()
+    }
+
+</script>

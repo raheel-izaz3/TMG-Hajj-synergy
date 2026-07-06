@@ -1,0 +1,682 @@
+﻿@using Newtonsoft.Json
+@model List<TMG.Models.FormModels.AziziaRoomCountModel>
+@inject TMG.Data.TMGDbContext _db
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@{
+    Layout = "~/Views/Shared/_AccountsLayout.cshtml";
+
+    var hotels = ViewBag.Hotel as List<dynamic>;
+    var roomCounts = ViewBag.AziziaRoomCounts as List<dynamic>;
+}
+
+<!-- AnyChart Core and Bundle -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-bundle.min.js"></script>
+
+<!-- AnyChart Base -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js"></script>
+
+<!-- AnyChart UI and Exports -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-exports.min.js"></script>
+
+<!-- AnyChart CSS -->
+<link href="https://cdn.anychart.com/releases/8.12.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+<link href="https://cdn.anychart.com/releases/8.12.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+<!-- XLSX Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+
+
+<script>
+    // Bookings by Day Line Chart
+    document.addEventListener('DOMContentLoaded', function () {
+    // Access data from ViewBag
+    var bookingCountsDaybyDay = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.bookingCountsDaybyDay)));
+
+    // Extract labels and data values
+    var labels = [];
+    var dataValues = [];
+    for (var i = 0; i < bookingCountsDaybyDay.length; i++) {
+    labels.push(bookingCountsDaybyDay[i].BookingDate);
+    dataValues.push(bookingCountsDaybyDay[i].Bookings);
+    }
+
+    // Set chart theme
+    anychart.theme('wines');
+
+    // Create data set using the dynamic data
+    var dataSet = anychart.data.set(getData());
+
+    // Create line chart
+    var chart = anychart.line();
+
+    // Turn on chart animation
+    chart.animation(true);
+
+    // Turn on the crosshair
+    chart.crosshair().enabled(true).yLabel(false).yStroke(null);
+
+    // Set tooltip mode to point
+    chart.tooltip().positionMode('point');
+    chart.background("#f8f8f8");
+
+    // Set yAxis title
+    chart.yAxis().title('Number of Bookings');
+    chart.xAxis().labels().padding(5);
+
+    // Create series with mapped data
+    var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+    var firstSeries = chart.line(firstSeriesData);
+    firstSeries.name('Bookings By Day');
+    firstSeries.hovered().markers().enabled(true).type('circle').size(4);
+    firstSeries.tooltip().position('right').anchor('left-center').offsetX(5).offsetY(5);
+    firstSeries.stroke('#BB0000');
+
+    // Set container id for the chart
+    chart.container('BookingsByDayLine');
+
+    // Draw the chart
+    chart.draw();
+
+    // Function to get dynamic data
+    function getData() {
+    var data = [];
+    for (var i = 0; i < labels.length; i++) {
+    data.push([labels[i], dataValues[i]]);
+    }
+    return data;
+    }
+
+    // Over all Booking
+    var OverAllQuota = @Html.Raw(ViewBag.OverAllQuota);
+    var OverAllQuotaTotalBooking = @Html.Raw(ViewBag.OverAllQuotaTotalBooking);
+    var RemainingQuota = OverAllQuota - OverAllQuotaTotalBooking;
+
+    anychart.onDocumentReady(function () {
+    // create pie chart with passed data
+    var chart = anychart.pie3d([
+    ['Bookings', OverAllQuotaTotalBooking],
+    ['Remaining', RemainingQuota],
+
+    ]);
+
+    // set chart title text settings
+    chart
+    .title('Overall Company Quota')
+    // set chart radius
+    .radius('43%');
+    chart.background("#f8f8f8");
+    // set container id for the chart
+    chart.container('BookingsByDayPie');
+    // initiate chart drawing
+    chart.draw();
+    });
+    // Azziza Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Azizia Hotel Rooms');
+
+    // Access data from ViewBag
+    var AziziaRoom = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.AziziaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < AziziaRoom.length; i++) {
+    labelsA.push(AziziaRoom[i].RoomName);
+    dataValuesA.push(AziziaRoom[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('AziziaRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+
+
+    //AZIZIA BUILDING
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Azizia Building Rooms');
+
+    // Access data from ViewBag
+    var AziziaBuildingRoom = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.aziziaBuilding)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < AziziaBuildingRoom.length; i++) {
+    labelsA.push(AziziaBuildingRoom[i].RoomName);
+    dataValuesA.push(AziziaBuildingRoom[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('AziziaBuildingRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+
+
+
+    // Medina Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Medinah Hotel Rooms');
+
+    // Access data from ViewBag
+    var MadinaRooms = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.MadinaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < MadinaRooms.length; i++) {
+    labelsA.push(MadinaRooms[i].RoomName);
+    dataValuesA.push(MadinaRooms[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('MadinaRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+    // Macca Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Makkah Hotel Rooms');
+
+    // Access data from ViewBag
+    var MaccaRooms = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.MaccaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < MaccaRooms.length; i++) {
+    labelsA.push(MaccaRooms[i].RoomName);
+    dataValuesA.push(MaccaRooms[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('MaccaRoom');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+    // Hotel Rooms
+    anychart.onDocumentReady(function () {
+    // Access data from ViewBag
+    var roomCounts = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.roomCounts)));
+
+    // Extract labels and data values
+    var dataValuesR = [];
+    for (var i = 0; i < roomCounts.length; i++) {
+    var roomName = roomCounts[i].RoomName;
+    var totalRooms = roomCounts[i].TotalRooms;
+    dataValuesR.push([roomName, totalRooms]);
+    }
+
+    // Create pie chart with dynamic data
+    var chart = anychart.pie3d(dataValuesR);
+
+    // set chart title text settings
+    chart
+    .title('Hotel Rooms')
+    // set chart radius
+    .radius('43%');
+    chart.background("#f8f8f8");
+    // set container id for the chart
+    chart.container('HotelRooms');
+    // initiate chart drawing
+    chart.draw();
+    });
+    // Booking by Munazzam
+    anychart.onDocumentReady(function () {
+    // Access data from ViewBag
+    var totalBookingsByMunazim = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.totalBookingsByMunazim)));
+
+    // Create data array for pie chart
+    var pieData = totalBookingsByMunazim.map(function (item) {
+    return [item.MunazzimName, item.TotalBookings];
+    });
+
+    // Create pie chart with dynamic data
+    var chart = anychart.pie3d(pieData);
+
+    // Set chart title text settings
+    chart.title('Booking by Munazzam');
+
+    // Set chart radius
+    chart.radius('43%');
+
+    // Set chart background color
+    chart.background("#f8f8f8");
+
+    // Set container id for the chart
+    chart.container('Munazzam');
+
+    // Initiate chart drawing
+    chart.draw();
+    });
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('GexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('GroupCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Group Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'GroupWiseCount.xlsx');
+    });
+
+    document.getElementById('PexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('PackageCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Package Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'PackageCount.xlsx');
+    });
+
+    document.getElementById('CexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('CompanyCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Company Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'CompanyCount.xlsx');
+    });
+
+    document.getElementById('MexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('MunnazimCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Munazzim Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'MunnazimCount.xlsx');
+    });
+
+    });
+
+
+
+
+</script>
+
+<style>
+    .mb-4 {
+        width: 20vh !important;
+    }
+
+    .card-body {
+        background-color: #f8f8f8 !important;
+    }
+
+    .anychart-credits-text {
+        display: none !important;
+    }
+
+    .anychart-credits-logo {
+        display: none !important;
+    }
+
+    .charts-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .chart-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+    }
+
+    .charts {
+        height: 300px;
+        width: 25%; /* Set width to 25% for all charts */
+    }
+
+
+    .charts {
+    }
+
+    /* Common styles */
+    .munazzam-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+        .munazzam-container .table-container {
+            width: 80%;
+            margin-top: 100px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .munazzam-container table {
+            width: 100%;
+            background-color: rgb(252, 251, 251);
+        }
+
+        .munazzam-container .charts {
+            height: 300px;
+            width: 40% !important; /* Decrease width of chart to 40% */
+        }
+
+    /* Common styles */
+    table {
+        background-color: rgb(252, 251, 251);
+        height: 200px;
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 15px;
+    }
+
+    #datatable {
+        margin: 0 auto;
+    }
+
+    div#datatable_length {
+        display: none;
+    }
+
+    div.dataTables_wrapper div.dataTables_info {
+        padding-top: .85em;
+        display: none;
+    }
+
+    a.page-link {
+        display: none;
+    }
+
+    .dataTables_scrollHead {
+        overflow: hidden;
+        position: sticky !important;
+        top: 0;
+        background-color: rgba(255,190,0,255);
+        z-index: 1000;
+    }
+
+    th[scope="row"],
+    tfoot tr {
+        position: sticky !important;
+        bottom: 0; /* Place the footer at the bottom */
+        left: 0;
+        z-index: 999;
+        background-color: #dedede;
+    }
+
+    th[scope="row"], thead tr {
+        position: sticky !important;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background-color: #7e3639;
+    }
+    /* Card-container-start */
+
+    .card-boxes {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-content: start;
+    }
+
+    .item {
+        padding: 20px;
+        flex-basis: 0;
+        flex-grow: 1;
+        margin-bottom: 5px;
+        box-shadow: 10px 10px 30px #bebebe, -10px -10px 30px #ffffff;
+        text-align: center;
+    }
+
+
+    .icon i {
+        background-color: var(--theme-primary-color);
+        color: white;
+        padding: 10px;
+        border-radius: 7px;
+        display: inline-block;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+    /* Card-Container-End  */
+
+
+    button {
+        background-color: #185B36 !important;
+        background-image: none !important;
+        color: aliceblue !important;
+        border-radius: 10px;
+        padding: 0.5em 24px;
+        margin-bottom: 1rem;
+    }
+
+    #EHajjContractCount {
+        text-align: center !important;
+    }
+</style>
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-sm-12 order-1">
+
+
+            <div class="row" style="align-content: center !important; justify-content: center !important; margin-bottom: 15px !important">
+                <div class="row" style="align-content: center !important; justify-content: center !important;">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div style="overflow-y: auto; border: 1px solid #ddd;">
+                                <table class="table mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Bank</th>
+                                            <th>Bank Name</th>
+                                            <th>Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var banks in ViewBag.Banks)
+                                        {
+                                            <tr>
+                                                <td>@banks.Bank</td>
+                                                <td>@banks.BankName - @banks.Currency</td>
+                                                <td>
+                                                    <a asp-controller="ADashboard" asp-action="BanksReport" asp-route-id="@banks.BankId" target="_blank">
+                                                        @banks.Balance.ToString("N2")
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#hotelDropdown').change(function () {
+                var hotelId = $(this).val();
+
+                if (hotelId) {
+                    $.ajax({
+                        url: '@Url.Action("Index", "Admin")',
+                        type: 'GET',
+                        data: { hotelId: hotelId },
+                        success: function (response) {
+                            $('#roomCountContainer').html(response);
+                        },
+                        error: function () {
+                            alert('Error fetching data.');
+                        }
+                    });
+                }
+            });
+        });
+
+
+    </script>
+

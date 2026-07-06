@@ -1,0 +1,463 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARRIVAL REPORT FLIGHT-WISE </title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+            table th {
+                /* border: 1px solid #fedf7b !important; */
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                /* width: fit-content !important; */
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table td {
+                font-size: 8px !important;
+                /* outline: 1px solid #fedf7b; */
+                /* border: 1px solid #fedf7b; */
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e;
+                background-color: white !important;
+            }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+
+
+
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr > *:nth-child(1) {
+            display: none;
+        }
+
+        #summaryData.hide2 tr > *:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr > *:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr > *:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr > *:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr > *:nth-child(6) {
+            display: none;
+        }
+
+        #summaryData.hide7 tr > *:nth-child(7) {
+            display: none;
+        }
+
+        #summaryData.hide8 tr > *:nth-child(8) {
+            display: none;
+        }
+
+        #summaryData.hide9 tr > *:nth-child(9) {
+            display: none;
+        }
+
+        #summaryData.hide10 tr > *:nth-child(10) {
+            display: none;
+        }
+
+        #summaryData.hide11 tr > *:nth-child(11) {
+            display: none;
+        }
+
+        #summaryData.hide12 tr > *:nth-child(12) {
+            display: none;
+        }
+
+        #summaryData.hide13 tr > *:nth-child(13) {
+            display: none;
+        }
+
+        #summaryData.hide14 tr > *:nth-child(14) {
+            display: none;
+        }
+
+        button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+        }
+@@media print{
+     button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            display: none !important;
+        }
+        button {
+            display: none !important;
+        }
+
+        #example_filter{
+            display: none !important;
+        }
+        #checkbox{
+            display: none !important;
+        }
+}
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            /* background-image: linear-gradient(to bottom, #dbd4d4 0%, #e9e9e9 100%); */
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+
+        .checkbox-container input {
+            height: 10px;
+            margin: 2px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+<body>
+
+    <div class="checkbox-container" id="checkbox">
+        <label for="checkbox1">SR</label>
+        <input type="checkbox" name="checkbox1" id="checkbox1"
+               onchange='document.getElementById("summaryData").classList.toggle("hide1")' checked>
+        <label for="checkbox2">FULL-NAME</label>
+        <input type="checkbox" name="checkbox2" id="checkbox2"
+               onchange='document.getElementById("summaryData").classList.toggle("hide2")' checked>
+        <!-- checkbox-2--- -->
+        <label for="checkbox3">IMAGE</label>
+        <input type="checkbox" name="checkbox3" id="checkbox3"
+               onchange='document.getElementById("summaryData").classList.toggle("hide3")' checked>
+        <label for="checkbox4"> CID</label>
+        <input type="checkbox" name="checkbox" id="checkbox4"
+               onchange='document.getElementById("summaryData").classList.toggle("hide4")' checked>
+        <label for="checkbox5">PACKAGE</label>
+        <input type="checkbox" name="checkbox" id="checkbox5"
+               onchange='document.getElementById("summaryData").classList.toggle("hide5")' checked>
+        <label for="checkbox6">PASSPORT</label>
+        <input type="checkbox" name="checkbox" id="checkbox6"
+               onchange='document.getElementById("summaryData").classList.toggle("hide6")' checked>
+        <label for="checkbox7">GENDER</label>
+        <input type="checkbox" name="checkbox" id="checkbox7"
+               onchange='document.getElementById("summaryData").classList.toggle("hide7")' checked>
+        <label for="checkbox8">HOTE CONTRACT ID</label>
+        <input type="checkbox" name="checkbox" id="checkbox8"
+               onchange='document.getElementById("summaryData").classList.toggle("hide8")' checked>
+        <label for="checkbox9">HOTAL NAME</label>
+        <input type="checkbox" name="checkbox" id="checkbox9"
+               onchange='document.getElementById("summaryData").classList.toggle("hide9")' checked>
+        <label for="checkbox10">CHECK-IN</label>
+        <input type="checkbox" name="checkbox" id="checkbox10"
+               onchange='document.getElementById("summaryData").classList.toggle("hide10")' checked>
+        <label for="checkbox11">CHECK-IN DATE</label>
+        <input type="checkbox" name="checkbox" id="checkbox11"
+               onchange='document.getElementById("summaryData").classList.toggle("hide11")' checked>
+        <label for="checkbox12">CHECK-OUT</label>
+        <input type="checkbox" name="checkbox" id="checkbox12"
+               onchange='document.getElementById("summaryData").classList.toggle("hide12")' checked>
+        <label for="checkbox13">CHECK-OUT DATE</label>
+        <input type="checkbox" name="checkbox" id="checkbox13"
+               onchange='document.getElementById("summaryData").classList.toggle("hide13")' checked>
+        <label for="checkbox14">VEHICLE</label>
+        <input type="checkbox" name="checkbox" id="checkbox14"
+               onchange='document.getElementById("summaryData").classList.toggle("hide14")' checked>
+
+
+
+    </div>
+
+
+    <!-- DataTable -->
+    <!-- <h2 style="text-align: center; background-color: #fedf7b; padding: 5px;"></h2> -->
+    <div class="myTable" id="summaryData">
+        <table id="example" class="display " style="width: 100% !important;">
+
+
+<div style="display: flex; background-color: #b49164; color: white; border-radius: 2px; align-items: center; padding: 10px !important">
+    <h2 style="margin-right: auto;">Flight No: @ViewBag.details[0].FlightNo</h2>
+    <h2 style="width: 70%; text-align: center; margin-right: 250px !important;">ARRIVAL REPORT FIGHT-WISE</h2>
+</div>
+
+            @foreach (var item in ViewBag.PNR)
+            {
+                <h2>@item.PNR</h2>
+            }
+            
+
+
+            <button onclick="print()">Print</button>
+
+
+            <thead>
+            <th>Sr</th>
+            <th hidden>Id</th>
+            <th>HB #</th>
+            <th>FULL-NAME</th>
+            <th>IMAGE</th>
+            <th>CID</th>
+            <th> PACKAGE </th>
+            <th>PASSPORT</th>
+            <th>GENDER</th>
+            <th>HOTEL CONTRACT ID</th>
+            <th>HOTEL NAME</th>
+            <th>CHECK-IN</th>
+            <th>CHECK-IN DATE</th>
+            <th>CHECK-OUT</th>
+            <th>CHECK-OUT DATE</th>
+            <th>VEHICLE TYPE</th>
+
+
+            </thead>
+
+            <tbody>
+                @{
+                    int index = 1;
+                }
+                @foreach (var item in ViewBag.details)
+                {
+                    <tr>
+                        <td hidden class="FamilyMembersId">@item.FmId</td>
+                        <td>@index</td>
+                        @if (item.IsHead == true)
+                        {
+                            <td><a href="@Url.Action("FlightMembersDetailsArrivalFamilywise", "FlightReport", new { id = item.FcId })">@item.FcId</a></td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td>@item.FullName </td>
+                        <td><img src="~/@item.MemberImage" alt="" width="40px" height="40px"></td>
+                        <td>@item.CID</td>
+                        <td>@item.PackageName</td>
+                        <td>@item.PassportNumber</td>
+                        <td>@item.Gender</td>
+                        <td>@item.EhajjContractNumber</td>
+                        <td>@item.HotelName</td>
+                        <td>@(item.CheckIn == DateTime.MinValue ? "" : item.CheckIn.ToString("HH:mm"))</td>
+                        <td>@(item.CheckIn == DateTime.MinValue ? "" : item.CheckIn.Date.ToString("yyyy-MM-dd"))</td>
+                        <td>@(item.CheckOut == DateTime.MinValue ? "" : item.CheckOut.ToString("HH:mm"))</td>
+                        <td>@(item.CheckOut == DateTime.MinValue ? "" : item.CheckOut.Date.ToString("yyyy-MM-dd"))</td>
+                        <td>
+                            <select name="vehicle[@index]" class="vehicle-dropdown" style="font-size: 8px;">
+                                <option value="0">Select Vehicle</option>
+                                @foreach (var vec in ViewBag.Vehicle)
+                                {
+                                    if (vec.VehicleId == item.AssignedVehicle)
+                                    {
+                                        <option value="@vec.VehicleId" selected>@vec.VehicleType</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@vec.VehicleId">@vec.VehicleType</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        @{
+                            index++;
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button id="save" class="btn btn-primary" onclick="btnSave_Click()">Save</button>
+    </div>
+
+
+
+
+    <script>
+        document.getElementById("save").addEventListener("click", function () {
+            var vehicleData = [];
+            $('.vehicle-dropdown').each(function () {
+                var vehicleId = $(this).val();
+                var _FamilyMembersId = $(this).closest('tr').find('.FamilyMembersId').text();
+                vehicleData.push({ _FamilyMembersId: _FamilyMembersId, VehicleId: vehicleId });
+                console.log(vehicleId);
+                console.log(_FamilyMembersId);
+            });
+            // Proceed with AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/Flight/btnSave_Click',
+                data: {
+                    VehicleData: vehicleData
+                },
+                success: function (data) {
+                    alert("Vehicles Assigned");
+                    console.log(vehicleData);
+                    console.log(data);
+                    return
+                    window.location.href = data.redirectTo;
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+
+
+
+    <!-- JS Scripting  -->
+    <script>
+        // Initialize DataTable
+        $(document).ready(function () {
+            $('#example').DataTable({
+                responsive: true,
+                dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+                buttons: [
+                    {
+                        extend: "excel",
+                        text: "Excel",
+                        footer: true, // Include footer rows in Excel export
+                    },
+                ],
+                // "scrollY": "200px", // Adjust height as needed
+                "scrollCollapse": true,
+                "paging": false, // Disable pagination if necessary
+                "info": false,
+                // "sScrollY": false,
+                "ordering": true,
+
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

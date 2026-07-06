@@ -1,0 +1,440 @@
+﻿@model POHotelViewModel
+@{
+    string modelName = "PO-Hotel";
+    string modelNamePlural = "PO-Hotel";
+    string modelControllerRoute = "POHotel";
+}
+@* <style>
+    /* Initially hide tax fields */
+    #taxFields {
+        display: none;
+    }
+</style> *@
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="Create">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Code</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="Code" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="HotelId" id="hotelId" class="form-control">
+                                        <option value="">Select Hotel...</option>
+                                        @foreach (Hotel fh in ViewBag.Hotel)
+                                        {
+                                            <option value="@fh.HotelId" data-placeid="@fh.PlaceId">@fh.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <!-- Hidden input to store PlaceId -->
+                            <input type="hidden" id="placeId" name="PlaceId" />
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Vendor</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="VendorId" id="vendorId" class="form-control">
+                                        <option value="">Select Vendor...</option>
+                                        @foreach (Vendor fh in ViewBag.Vendor)
+                                        {
+                                            <option value="@fh.VendorId">@fh.VendorName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"> Enter Number of Rooms</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" id="NoOfRooms" name="NumberOfRooms" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"> Floor Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="FloorNumber" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Taxes Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="TaxesId" id="taxesType" class="form-control">
+                                        <option value="">Select TaxesType...</option>
+                                        @foreach (var taxes in ViewBag.TaxesType)
+                                        {
+                                            <option value="@taxes.Id">@taxes.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            @* <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Taxes Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="PaymentMode" class="form-control">
+                                        <option value="">Select Payment Mode...</option>
+                                        @foreach (var pa in ViewBag.PaymentMode)
+                                        {
+                                            <option value="@pa.Id">@pa.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div> *@
+                            <hr />
+
+                            <div class="row mb-3">
+                                <div class="col-sm-12 mb-2">
+                                    <h5 class="float-start">Address</h5>
+                                    <button id="addRow" type="button" onclick="AddRows()" class="btn btn-outline-info float-end">Add <i class="bx bx-add-to-queue"></i></button>
+                                </div>
+
+                                <div class="col-sm-12 col-md-12 mt-3">
+                                    <div class="table-responsive">
+                                        <table class="table" id="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Quantity</th>
+                                                    <th>Amount</th>
+                                                    <th>Arrival</th>
+                                                    <th>Departure</th>
+                                                    <th>Bathroom Type</th>
+                                                    @* <th>Bed Type</th> *@
+                                                    <th>Room Type</th>
+                                                    <th>View</th>
+                                                    <th>Total</th>
+                                                    <th>Action</th> <!-- Remove Button Column -->
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-border-bottom-1" id="tbody"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div class="row mb-3">
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Total</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="text" id="Total" name="Total" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div id="taxFields">
+                                <div class="row mb-3">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Municipility</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="municipilityAmount" name="MunicipilityAmount" class="form-control" oninput="formatWithCommas(this)">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Municipility %</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="municipilityPercentage" name="MunicipilityPercentage" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Municipility Fee Amount</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="municipilityFeeAmount" name="MunicipilityFeeAmount" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+
+                                <div class="row mb-3">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> VAT</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="vatAmmount" name="VatAmmount" class="form-control" oninput="formatWithCommas(this)">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> VAT %</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="vatPercentage" name="VatPercentage" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> VAT Fee Amount</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="vatFeeAmount" name="VatFeeAmount" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+
+                                <div class="row mb-3">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Handling Charges</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="handlingCharges" name="HandlingCharges" class="form-control" oninput="formatWithCommas(this)">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Handling %</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="handlingPercentage" name="HandlingPercentage" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"> Handling Fee Amount</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" id="handlingFeeAmount" name="HandlingFeeAmount" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-3">
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">SubTotal</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="text" id="SubTotal" name="SubTotal" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+
+    $(document).ready(function() {
+        $('#hotelId').change(function() {
+            var placeId = $(this).find(':selected').data('placeid'); // Get PlaceId from selected option
+            $('#placeId').val(placeId); // Store it in hidden input
+        });
+    });
+
+    function AddRows() {
+        const tbody = document.getElementById("tbody");
+        let html =
+            `<tr>
+                <td><input type="text" name="Quantity[]" class="form-control quantity" style='width: 200px;' oninput="updateTotal(); formatWithCommas(this);"></td>
+                <td><input type="text" name="Amount[]" class="form-control amount" style='width: 200px;' oninput="updateTotal(); formatWithCommas(this);"></td>
+                <td><input type="date" name="Arrival[]" class="form-control" style='width: 200px;'></td>
+                <td><input type="date" name="Departure[]" class="form-control" style='width: 200px;'></td>
+                <td>
+                    <select class='form-control' style='width: 200px;' name="BathroomType[]">
+                        <option>Select Bath Type</option>
+    @foreach (var tc in ViewBag.BathType)
+    {
+                                    <option value="@tc.Id">@tc.Name</option>
+    }
+                    </select>
+                </td>
+                <td>
+                    <select class='form-control' style='width: 200px;' name="RoomId[]">
+    @foreach (Room room in ViewBag.Rooms)
+    {
+                                    <option value="@room.RoomId">@room.RoomName (@room.RoomCode)</option>
+    }
+                    </select>
+                </td>
+                <td>
+                    <select class='form-control' style='width: 200px;' name="RoomViewId[]">
+    @foreach (RoomView room in ViewBag.RoomViews)
+    {
+                                    <option value="@room.RoomViewId">@room.Name</option>
+    }
+                    </select>
+                </td>
+                <td><input name="Totals[]" class="form-control total" style='width: 200px;' readonly></td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-md" onclick="RemoveRow(this)">Remove</button>
+                </td>
+            </tr>`;
+
+        tbody.insertAdjacentHTML('beforeend', html);
+    }
+
+    function RemoveRow(button) {
+        const row = button.closest("tr"); // Find the closest row to the clicked button
+        row.remove(); // Remove the row from the table
+        updateGrandTotal(); // Update the grand total after removing a row
+    }
+
+
+
+    function updateTotal() {
+        document.querySelectorAll("#tbody tr").forEach(row => {
+            let quantityField = row.querySelector(".quantity");
+            let amountField = row.querySelector(".amount");
+            let totalField = row.querySelector(".total");
+
+            let quantity = parseFloat(quantityField.value.replace(/,/g, '')) || 0;
+            let amount = parseFloat(amountField.value.replace(/,/g, '')) || 0;
+
+            let total = quantity * amount;
+            totalField.value = total.toFixed(2);
+
+            formatWithCommas(totalField); // Format the total field
+        });
+
+        updateGrandTotal(); // Update the grand total of all rows
+    }
+
+
+    function updateGrandTotal() {
+        let totalFields = document.querySelectorAll('.total');
+        let Total = 0;
+
+        totalFields.forEach(field => {
+            Total += parseFloat(field.value.replace(/,/g, '')) || 0;
+        });
+
+        let TotalField = document.getElementById("Total");
+        TotalField.value = Total.toFixed(2);
+
+        formatWithCommas(TotalField); // Format total field
+
+        // ✅ Ensure UI updates before calculating subtotal
+        setTimeout(() => {
+            calculateSubTotal();
+        }, 50);
+    }
+
+
+    function calculateSubTotal() {
+        let totalField = document.getElementById("Total");
+        let total = parseFloat(totalField.value.replace(/,/g, '')) || 0;
+
+        let municipilityAmount = parseFloat(document.getElementById("municipilityAmount").value.replace(/,/g, '')) || 0;
+        let vatAmmount = parseFloat(document.getElementById("vatAmmount").value.replace(/,/g, '')) || 0;
+        let handlingCharges = parseFloat(document.getElementById("handlingCharges").value.replace(/,/g, '')) || 0;
+
+        let municipilityPercentage = parseFloat(document.getElementById("municipilityPercentage").value) || 0;
+        let vatPercentage = parseFloat(document.getElementById("vatPercentage").value) || 0;
+        let handlingPercentage = parseFloat(document.getElementById("handlingPercentage").value) || 0;
+
+        let subTotal = total;
+        subTotal += municipilityAmount + vatAmmount + handlingCharges;
+
+        let municipilityFeeAmount = (municipilityPercentage / 100) * total;
+        document.getElementById("municipilityFeeAmount").value = municipilityFeeAmount.toFixed(2);
+        subTotal += municipilityFeeAmount;
+
+        let vatFeeAmount = (vatPercentage / 100) * subTotal;
+        document.getElementById("vatFeeAmount").value = vatFeeAmount.toFixed(2);
+        subTotal += vatFeeAmount;
+
+        let handlingFeeAmount = (handlingPercentage / 100) * subTotal;
+        document.getElementById("handlingFeeAmount").value = handlingFeeAmount.toFixed(2);
+        subTotal += handlingFeeAmount;
+
+        document.getElementById("SubTotal").value = subTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // ✅ Attach event listeners inside DOMContentLoaded
+        document.getElementById("Total").addEventListener("input", function () {
+            calculateSubTotal();
+        });
+
+        let inputs = document.querySelectorAll("#Total, #municipilityAmount, #vatAmmount, #handlingCharges, #municipilityPercentage, #vatPercentage, #handlingPercentage");
+
+        inputs.forEach(input => {
+            input.addEventListener("input", function () {
+                calculateSubTotal();
+                formatWithCommas(input);
+            });
+        });
+    });
+
+    // Function to format numbers with commas
+    function formatWithCommas(input) {
+        let value = input.value.replace(/,/g, ''); // Remove existing commas
+        if (!isNaN(value) && value !== '') {
+            let parts = value.split('.'); // Split integer and decimal parts
+            parts[0] = Number(parts[0]).toLocaleString(); // Format integer part with commas
+
+            // Allow only two decimal places
+            if (parts[1]) {
+                parts[1] = parts[1].substring(0, 2); // Limit decimal places to 2
+            }
+
+            input.value = parts.join('.'); // Rejoin with decimal part (if any)
+        }
+    }
+
+    $(document).ready(function () {
+        $('select[name="HotelId"]').select2({
+            placeholder: "Select Hotel",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+
+        $('select[name="VendorId"]').select2({
+            placeholder: "Select Vendor",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+    });
+
+   
+</script>
+@* <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var taxFields = document.getElementById('taxFields');
+        var paymentModeSelect = document.getElementById('taxesType');
+
+        function toggleTaxFields() {
+            var selectedText = paymentModeSelect.options[paymentModeSelect.selectedIndex].text.trim();
+            taxFields.style.display = (selectedText === "IncludingTax") ? 'none' : 'block';
+        }
+
+        // Initial check to hide/show on page load
+        setTimeout(toggleTaxFields, 100); // Small delay to ensure the dropdown is fully loaded
+
+        // Event listener for dropdown change
+        paymentModeSelect.addEventListener('change', toggleTaxFields);
+    });
+
+    function toggleTaxFields() {
+        var selectedValue = paymentModeSelect.value; // Get selected value
+        var includingTaxId = "1"; // Example ID for IncludingTax
+
+        taxFields.style.display = (selectedValue === includingTaxId) ? 'none' : 'block';
+    }
+
+</script> *@

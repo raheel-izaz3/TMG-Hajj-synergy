@@ -1,0 +1,170 @@
+﻿@model RoomAllotment
+@{
+    string modelName = "Room Allotment";
+    string modelNamePlural = "Room Allotments";
+    string modelControllerRoute = "RoomAllotment";
+    }
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" onchange="hotelSelect(this.value, 'select-floor')" id="select-hotel">
+                                        <option value="">Select a Hotel...</option>
+                                        @foreach (Hotel hotel in ViewBag.Hotels)
+                                        {
+                                            <option value="@hotel.HotelId">@hotel.HotelCode - @hotel.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Floor</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" onchange="floorSelect(this.value, 'select-room')" id="select-floor">
+                                        <option value="">Select a Floor...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Room</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="FloorRoomId" onchange="roomSelect(this.value)" id="select-room">
+                                        <option value="">Select a Room...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="FloorRoomId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Valid From</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="ValidFrom" class="form-control" min="@DateTimeManager.Today" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ValidFrom"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Valid Till</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="ValidTill" class="form-control" min="@DateTimeManager.Today" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ValidTill"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function hotelSelect(val, id) {
+        if (val != '') {
+            $.ajax({
+                url: "/Floor/GetFloors/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const selectFloor = document.querySelector("#" + id)
+                    let html = '<option value="">Select Floor</option>'
+                    for (let floor of res.data) {
+                        html += `<option value="${floor.floorId}">Floor #${floor.floorNumber}</option>`
+                    }
+
+                    selectFloor.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function floorSelect(val, id) {
+        if (val != '') {
+            $.ajax({
+                url: "/FloorRoom/GetRooms/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const selectRoom = document.querySelector("#" + id)
+                    let html = '<option value="">Select Room</option>'
+                    for (let room of res.data) {
+                        html += `<option value="${room.floorRoomId}" data-pax="${room.pax}">Room #${room.roomNumber} (${room.room.roomCode})</option>`
+                    }
+
+                    selectRoom.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function roomSelect(val) {
+        var selectRoom = document.querySelector('#select-room');
+        var selectedOption = selectRoom.options[selectRoom.selectedIndex];
+
+        let pax = selectedOption.getAttribute('data-pax')
+
+        const container = document.querySelector("#container")
+        let html = ``;
+        for (let i = 0; i < pax; i++) {
+            html += `<tr>
+                                                                                    <td><b>${i + 1}. </b></td>
+                                                                                    <td>
+                                                                                        <input type="text" class="form-control"
+                                                                                               placeholder="Enter HB #" name="FCIDs[${i}]" oninput="getFamilyData(this.value, ${i})" />
+                                                                                    </td>
+                                                                                    <td id="name_${i}"></td>
+                                                                                </tr>`
+        }
+
+        container.innerHTML = html
+    }
+
+    function getFamilyData(val, i) {
+        const tdName = document.querySelector(`#name_${i}`)
+
+        if (val != '') {
+            $.ajax({
+                url: "/FamilyHead/GetFamilyHeadForReservation/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    if (res.data?.isHead) {
+                        tdName.innerHTML = res.data?.givenName + " <b>(FH)</b>"
+                    }
+                    else {
+                        tdName.innerHTML = res.data?.givenName
+                    }
+                },
+                error: err => {
+                    console.log(err)
+                }
+
+            });
+        }
+        else {
+            tdName.innerHTML = ''
+        }
+    }
+</script>

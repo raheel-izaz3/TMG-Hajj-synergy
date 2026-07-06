@@ -1,0 +1,135 @@
+@model RequiredDocumentsReferenceReportModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Required Documents</h4>
+    <h5 class="fw-bold"><span class="text-muted fw-light"></span> @Model.ReferenceName 
+    </h5>
+
+    <div class="card my-2 p-2 mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="fw-bold">Total Members: @Model.FamilyMembersCount</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        @foreach (string h in Model.RequiredDocHeaders)
+                        {
+                            <th>@h</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Received</td>
+                        @foreach (int p in Model.TotalReceived)
+                        {
+                            <td>@p</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Pending</td>
+                        @foreach (int p in Model.TotalPending)
+                        {
+                            <td>@p</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <h4>Packages</h4>
+
+    <form method="post">
+
+        <button type="submit" class="btn btn-success">Save</button>
+        <hr class="mb-4" />
+
+        @{
+            int i = 0;
+        }
+
+        @foreach (ReferencePackageGroup group in Model.PackageGroups)
+        {
+            int j = 0;
+
+            <h5 class="mb-3 mt-5">@group.PackageName (@group.PackageCode)</h5>
+            <hr class="mb-4" />
+
+            @foreach (ReferenceRequiredDocumentFamilyMemberGroupModel family in group.Families)
+            {
+                int k = 0;
+
+                <h4 class="mb-3 mt-4">@family.FCId</h4>
+                <div class="card p-2">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>HB #</th>
+                                    @foreach (string header in Model.RequiredDocHeaders)
+                                    {
+                                        <th>@header</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var members in family.Documents){
+                                    int l = 0;
+                                    <tr>
+                                        <td>HB #@members.FamilyHeadId</td>
+                                        <th>@members.Name</th>
+                                        @foreach (ReferenceDocumentEntry entry in members.Entries)
+                                        {
+
+                                            <td>
+                                                <input type="hidden" name="DocumentSelected[]"  value="@(entry.Checked ? "true" : "false")" id="ds-@i-@j-@k-@l" />
+                                                <input type="hidden" value="@members.FamilyHeadId" name="FamilyHeadIds[]"/>
+                                                <input type="hidden" value="@entry.RequiredDocument.RequiredDocumentId" name="DocumentIds[]"/>
+                                                <div class="form-check form-check-inline mb-2">
+                                                    <input class="form-check-input check-header"
+                                                        type="checkbox" @(entry.Checked ? "checked" : "") 
+                                                        onchange="document.getElementById('ds-@i-@j-@k-@l').value = this.checked">
+                                                    <label class="form-check-label">@entry.RequiredDocument.Documents</label>
+                                                </div>
+                                            </td>
+                                            l++;
+                                        }
+                                    
+                                    </tr>
+
+                                    k++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                j++;
+            }
+
+            i++;
+        }
+
+
+    </form>
+</div>
+
+<script>
+    let table = new DataTable('#reportTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible:not(:last-child)'
+            }
+        }]
+    });
+
+</script>

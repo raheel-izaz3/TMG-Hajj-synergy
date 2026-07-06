@@ -1,0 +1,295 @@
+﻿@model IEnumerable<TMG.Controllers.POControllers.POTicketIndex>
+
+@{
+    string modelName = "PO - Ticket";
+    string modelNamePlural = "PO - Ticket";
+    string modelControllerRoute = "POTicket";
+    var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!-- Toastr Notifications (same as before, no change) -->
+@if (TempData.ContainsKey("created") && (bool)TempData["created"]!)
+{
+    <script>
+        toastr.options.closeDuration = 100;
+        toastr.options.closeButton = true;
+        toastr.options.positionClass = "toast-top-center";
+        toastr.options.showMethod = 'slideDown';
+        toastr.options.hideMethod = 'slideUp';
+        toastr.options.closeMethod = 'slideUp';
+        toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 });
+    </script>
+    TempData["created"] = false;
+}
+@if (TempData.ContainsKey("deleted") && (bool)TempData["deleted"]!)
+{
+    <script>
+        toastr.options.closeDuration = 100;
+        toastr.options.closeButton = true;
+        toastr.options.positionClass = "toast-top-center";
+        toastr.options.showMethod = 'slideDown';
+        toastr.options.hideMethod = 'slideUp';
+        toastr.options.closeMethod = 'slideUp';
+        toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 });
+    </script>
+    TempData["deleted"] = false;
+}
+@if (TempData.ContainsKey("updated") && (bool)TempData["updated"]!)
+{
+    <script>
+        toastr.options.closeDuration = 100;
+        toastr.options.closeButton = true;
+        toastr.options.positionClass = "toast-top-center";
+        toastr.options.showMethod = 'slideDown';
+        toastr.options.hideMethod = 'slideUp';
+        toastr.options.closeMethod = 'slideUp';
+        toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 });
+    </script>
+    TempData["updated"] = false;
+}
+
+<!-- DevExtreme CSS/JS -->
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+    <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.Trashed)</a>
+
+    <br /><br />
+
+    <div class="card p-2">
+        <div id="reportGrid"></div>
+    </div>
+</div>
+
+<script>
+    let data = @Html.Raw(jsonData);
+
+    // Inject S.No into data
+    data = data.map((item, index) => ({
+        SNo: index + 1,
+        ...item
+    }));
+
+    let gridInstance;
+
+    $(function () {
+        gridInstance = $("#reportGrid").dxDataGrid({
+            dataSource: data,
+            showBorders: true,
+            allowColumnResizing: true,
+            columnAutoWidth: true,
+            paging: false,
+            searchPanel: { visible: true },
+            filterRow: { visible: true, applyFilter: "auto" },
+            headerFilter: { visible: true },
+            columns: [
+                {
+                    caption: "S.No",
+                    dataField: "SNo",
+                    width: 60
+                },
+                { dataField: "PONumber", caption: "PO-#" },
+                { dataField: "Count", caption: "Count" },
+                // { dataField: "TPRFNo", caption: "TP-#" },
+                { dataField: "HBNo", caption: "HB NO" },
+                { dataField: "FullName", caption: "Name" },
+                { dataField: "PostingName", caption: "Company Name" },
+                // { dataField: "AirlineName", caption: "AirLine" },
+                { dataField: "VendorName", caption: "Vendor" },
+                { dataField: "PNRNo", caption: "PNRNo" },
+                { dataField: "TicketingAgentName", caption: "Ticketing Agent" },
+                { dataField: "RecoveryAgentName", caption: "Recovery Officer" },
+                { dataField: "PostingAgentName", caption: "Posting Agent" },
+                { dataField: "SPOAgentName", caption: "SPOs" },
+                { dataField: "Date", caption: "Date", dataType: "date", format: "dd MMM yyyy" },
+                // { dataField: "GrossAirline", caption: "Gross AirLine For Issued Tickets", format: { type: "fixedPoint", precision: 2 } },
+                // { dataField: "GrossAirlineReIssue", caption: "Gross AirLine For ReIssued Tickets", format: { type: "fixedPoint", precision: 2 } },
+                // { dataField: "GrossAirlineReFund", caption: "Gross AirLine For Refund Tickets", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    caption: "Actions",
+                    width: 300,
+                    cellTemplate: function (container, options) {
+                        const id = options.data.POTicketId;
+
+                        const editAllowed = @((ViewBag.EditAllowed ?? false).ToString().ToLower());
+                        const trashAllowed = @((ViewBag.TrashAllowed ?? false).ToString().ToLower());
+                        const controllerRoute = '@modelControllerRoute';
+
+                        const buttonsHtml = [];
+
+                        // Print Button
+                        buttonsHtml.push(`
+                            <a class='btn btn-warning btn-sm m-1' href='/${controllerRoute}/Print/${id}'>
+                                <i class='bx bx-printer me-1'></i> Print
+                            </a>
+                        `);
+
+                        buttonsHtml.push(`
+                            <a class='btn btn-warning btn-sm m-1' href='/${controllerRoute}/CopyData/${id}'>
+                                <i class='bx bx-printer me-1'></i> Copy
+                            </a>
+                        `);
+
+                        if (editAllowed) {
+                            buttonsHtml.push(`
+                                <a class='btn btn-warning btn-sm m-1' href='/${controllerRoute}/ViewInvoice/${id}'>
+                                    <i class='bx bx-printer me-1'></i> View Invoice
+                                </a>
+                            `);
+                            buttonsHtml.push(`
+                                <a class='btn btn-warning btn-sm m-1' href='/${controllerRoute}/AddPassenger/${id}'>
+                                    <i class='bx bx-edit-alt me-1'></i> Add
+                                </a>
+                            `);
+                        }
+
+                        if (trashAllowed) {
+                            buttonsHtml.push(`
+                                <button class='btn btn-outline-danger btn-sm m-1' onclick='confirmDelete(${id})'>
+                                    <i class='bx bx-trash me-1'></i> Trash
+                                </button>
+                            `);
+                        }
+
+                        container.append(`<div class='d-flex flex-wrap'>${buttonsHtml.join('')}</div>`);
+                    }
+                }
+            ],
+            // onContentReady: function(e) {
+            //     let data = e.component.getDataSource().items();
+
+            //     let hasReIssue = data.some(row => row.GrossAirlineReIssue > 0);
+            //     let hasReFund = data.some(row => row.GrossAirlineReFund > 0);
+
+            //     e.component.columnOption("GrossAirlineReIssue", "visible", hasReIssue);
+            //     e.component.columnOption("GrossAirlineReFund", "visible", hasReFund);
+            // }
+        }).dxDataGrid("instance");
+
+        // Uncomment to enable PDF export functionality
+        // const doc = new jsPDF();
+        // DevExpress.pdfExporter.exportDataGrid({
+        //     jsPDFDocument: doc,
+        //     component: gridInstance,
+        //     topLeft: { x: 40, y: 80 },
+        //     margin: { top: 20, left: 20, right: 20, bottom: 20 },
+        //     customizeCell: function (options) {
+        //         if (options.gridCell.rowType === "data" && options.gridCell.column.dataField === "SNo") {
+        //             options.pdfCell.text = options.gridCell.data.SNo.toString();
+        //         }
+        //         options.pdfCell.font = { size: 8 };
+        //     }
+        // }).then(() => {
+        //     doc.save("Infant Report.pdf");
+        // });
+    });
+
+    function confirmDelete(id) {
+        if (confirm("Are you sure?")) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+</script>
+
+
+@* <!-- JSON.NET (PascalCase fix) -->
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Serialization *@
+
+@* <script>
+    // PO Tickets ko JSON me convert (camelCase keys)
+    const poTickets = @Html.Raw(JsonConvert.SerializeObject(Model, new JsonSerializerSettings
+                 {
+                     ContractResolver = new CamelCasePropertyNamesContractResolver()
+                 }));
+
+    $(function () {
+        $("#gridContainer").dxDataGrid({
+            dataSource: poTickets,
+            keyExpr: "poTicketId",
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [10, 20, 50],
+                showInfo: true
+            },
+            searchPanel: { visible: true, width: 240, placeholder: "Search..." },
+            filterRow: { visible: true, applyFilter: "auto" },
+            headerFilter: { visible: true },
+            sorting: { mode: "multiple" },
+            columns: [
+                {
+                    caption: "#",
+                    width: 50,
+                    cellTemplate: function(cellElement, cellInfo) {
+                        cellElement.text(cellInfo.rowIndex + 1);
+                    }
+                },
+                { dataField: "PONumber", caption: "PO-#" },
+                { dataField: "TPRFNo", caption: "TP-#" },
+                { dataField: "HBNo", caption: "HB NO" },
+                { dataField: "FullName", caption: "Name" },
+                { dataField: "PostingName", caption: "Posting Type" },
+                { dataField: "AirlineName", caption: "AirLine" },
+                { dataField: "VendorName", caption: "Vendor" },
+                { dataField: "TicketingAgentName", caption: "Ticketing Agent" },
+                { dataField: "RecoveryAgentName", caption: "Recovery Officer" },
+                { dataField: "PostingAgentName", caption: "Posting Agent" },
+                { dataField: "Date", caption: "Date", dataType: "date", format: "dd MMM yyyy" },
+                { dataField: "GrossAirline", caption: "Gross AirLine", format: { type: "fixedPoint", precision: 2 } },
+                {
+                    caption: "Actions",
+                    width: 300,
+                    cellTemplate: function (container, options) {
+                        const id = options.data.poTicketId;
+
+                        var editAllowed = @((ViewBag.EditAllowed ?? false).ToString().ToLower());
+                        var trashAllowed = @((ViewBag.TrashAllowed ?? false).ToString().ToLower());
+
+                        const buttonsHtml = [];
+
+                        // Print Button
+                        buttonsHtml.push(`
+                            <a class='btn btn-warning btn-sm m-1' href='/${'@modelControllerRoute'}/Print/${id}'>
+                                <i class='bx bx-printer me-1'></i> Print
+                            </a>
+                        `);
+
+                        // View Invoice + Add Passenger (If allowed)
+                        if (editAllowed) {
+                            buttonsHtml.push(`
+                                <a class='btn btn-warning btn-sm m-1' href='/${'@modelControllerRoute'}/ViewInvoice/${id}'>
+                                    <i class='bx bx-printer me-1'></i> View Invoice
+                                </a>
+                            `);
+                            buttonsHtml.push(`
+                                <a class='btn btn-warning btn-sm m-1' href='/${'@modelControllerRoute'}/AddPassenger/${id}'>
+                                    <i class='bx bx-edit-alt me-1'></i> Add
+                                </a>
+                            `);
+                        }
+
+                        // Trash Button (If allowed)
+                        if (trashAllowed) {
+                            buttonsHtml.push(`
+                                <button class='btn btn-outline-danger btn-sm m-1' onclick='confirmDelete(${id})'>
+                                    <i class='bx bx-trash me-1'></i> Trash
+                                </button>
+                            `);
+                        }
+
+                        // Wrap buttons inside flex container (responsive)
+                        container.append(`<div class='d-flex flex-wrap'>${buttonsHtml.join('')}</div>`);
+                    }
+                }
+            ]
+        });
+    });
+
+    
+</script> *@

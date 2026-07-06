@@ -1,0 +1,98 @@
+﻿@{
+    string modelName = "Mis Stamp";
+    string modelNamePlural = "Mis Stamps";
+    string modelControllerRoute = "MisStamp";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Change Image</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="MisStampId" value="@Model.MisStampId" />
+                        <div class="row">
+                            <div class="col-sm-12 W mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" ></label>
+                                <div class="input-group input-group-merge">
+                                    @* <input asp-for="CompanyId" class="form-control"> *@
+                                    <select  class="form-control" name="CompanyId">
+                                        @foreach (var item in ViewBag.Companies)
+                                        {
+                                            @if (item.CompanyId == Model.CompanyId)
+                                            {
+                                                <option value="@item.CompanyId" selected>@item.CompanyCode</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.CompanyId">@item.CompanyCode</option>
+                                            }
+                                            
+                                        }
+                                    </select>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Current Image</label>
+                                <div class="input-group input-group-merge">
+                                    <img src="~/@Model.FilePath" alt="" width="300">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">New Image</label>
+                                <span class="text-danger fw-bold"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input name="File" class="form-control" id="basic-icon-default-fullname" type="file" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Current Image</label>
+                                <div class="input-group input-group-merge">
+                                    <img src="~/@Model.SignatureFilePath" alt="" width="300">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">New Image</label>
+                                <span class="text-danger fw-bold"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input name="FileSignature" class="form-control" id="basic-icon-default-fullname" type="file" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Current Image</label>
+                                <div class="input-group input-group-merge">
+                                    <img src="~/@Model.AccountantSignatureFile" alt="" width="300">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">New Image</label>
+                                <span class="text-danger fw-bold"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input name="AccountantSignatureFile" class="form-control" id="basic-icon-default-fullname" type="file" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

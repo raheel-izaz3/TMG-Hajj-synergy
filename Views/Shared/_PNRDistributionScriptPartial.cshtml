@@ -1,0 +1,45 @@
+﻿<script>
+    function distribute() {
+        if (!confirm("Are you sure?")) return
+
+        const familyHeads = document.querySelectorAll(`[data-is-head="True"]`);
+        const limit = @Model.PAX;
+
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        const length = selectedCheckboxes.length;
+        let pnrId = @Model.PNRId;
+
+        // reset all checks
+        for (let check of selectedCheckboxes) {
+            if (check.hasAttribute('disabled')) continue;
+
+            let fcId = check.getAttribute('data-HB #');
+
+            if (check.checked) removeMember(pnrId, fcId)
+            check.checked = false
+        }
+
+        // loop over all family heads
+        for (let fh of familyHeads) {
+            const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+            const length = selectedCheckboxes.length;
+
+            let headId = fh.getAttribute("data-head-id")
+            const familyMembers = document.querySelectorAll(`[data-head-id="${headId}"]`)
+            const memberCount = familyMembers.length
+
+            if ((memberCount + length) > @Model.PAX) {
+                continue
+            }
+
+            // loop over all members of the current family head
+            for (let m of familyMembers) {
+                if (m.hasAttribute('disabled')) continue;
+                m.checked = true
+                let fcId = m.getAttribute('data-HB #')
+                addMember(pnrId, fcId)
+            }
+        }
+        updateSelectedCount()
+    }
+</script>

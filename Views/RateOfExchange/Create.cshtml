@@ -1,0 +1,104 @@
+﻿@model RateOfExchange
+@{
+    string modelName = "Daily Rate Of Exchange";
+    string modelNamePlural = "Daily Rate Of Exchanges";
+    string modelControllerRoute = "RateOfExchange";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Currency"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <select class="form-control" asp-for="Currency"
+                                        asp-items="@Html.GetEnumSelectList<Currencies>()">
+
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currency"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PKRROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="PKRROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PKRROE"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SARROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="SARROE" value="1" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SARROE"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="USDROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="USDROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="USDROE"></span>
+                            </div>
+
+                           @*  <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AEDROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="AEDROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AEDROE"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GBPROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="GBPROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="GBPROE"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="EUROROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="EUROROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="EUROROE"></span>
+                            </div>
+ *@
+
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,71 @@
+﻿<script>
+    function addPNR() {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+            <div class="row" id="pnr_${id}">
+                          <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select onchange="onTypeSelect(this)"
+                                                            id="TypeSelect_${id}"
+                                                            name="PNRTypes[]"
+                                                            class="form-control"
+                                                            data-pnr-type-id="${id}">
+                                                        <option value="">Select Class...</option>
+                                                        <option value="0">Economy</option>
+                                                        <option value="1">Business</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">PNR Name</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control"
+                                                    placeholder="Enter PNR Name..."
+                                                    name="PNRNames[]">
+                                                </div>
+                                            </div>
+
+                                                <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Capacity</label>
+                                                <small id="RemainingCapacity_${id}"></small>
+                                                <div class="input-group input-group-merge">
+                                                    <input min="0" value="0" id="Capacity_${id}"
+                                                           class="form-control"
+                                                           type="number"
+                                                           name="Capacities[]"
+                                                           data-pnr-type=""
+                                                           oninput="onCapacityInput(this)">
+                                                </div>
+                                            </div>
+
+                                                <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+                                                                            <label class="form-label"></label>
+                                                                            <button type="button" 
+                                                                            class="btn btn-icon btn-danger" 
+                                                                            onclick="removePnr(${id})"><i class='bx bxs-trash'></i></button>
+                                                                        </div>
+                                                                        <hr>
+                                        </div>
+                                        `;
+
+        $("#pnrs").append(row);
+    }
+
+    function removePnr(id) {
+        let cap = document.querySelector(`#Capacity_${id}`).valueAsNumber
+        let type = document.querySelector(`#Capacity_${id}`).getAttribute('data-pnr-type')
+
+        if (type == 0) {
+            let seats = parseInt(document.querySelector('#remaining_economy').innerHTML)
+            document.querySelector('#remaining_economy').innerHTML = seats + cap
+        }
+        else if (type == 1) {
+            let seats = parseInt(document.querySelector('#remaining_business').innerHTML)
+            document.querySelector('#remaining_business').innerHTML = seats + cap
+        }
+
+        document.getElementById(`pnr_${id}`).remove();
+    }
+</script>

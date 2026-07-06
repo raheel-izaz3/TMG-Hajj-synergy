@@ -1,0 +1,209 @@
+﻿@* @model IEnumerable<Invoice> *@
+@{
+    string modelName = "Receipt";
+    string modelNamePlural = "Receipts";
+    string modelControllerRoute = "Invoice";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <p>
+        <b>Unnsupervied: </b> @ViewBag.UnsupervisedCount <b>| Supervised: </b> @ViewBag.SupervisedCount
+        <b> | Pending: </b> @ViewBag.PendingCount <b> | Bounced: </b> @ViewBag.BouncedCount
+        <b> | Clearing In Transit: </b> @ViewBag.ClearingCount <b> | Cleared: </b> @ViewBag.ClearedCount
+    </p>
+    <hr class="mb-4" />
+
+    @if (ViewBag.CreateAllowed == true)
+    {
+
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+    }
+
+    @if (ViewBag.TrashAllowed == true)
+    {
+
+        <a asp-action="ViewTrash" class="btn btn-info float-end">
+            <i class="bx bx-trash me-1"></i> Trash
+            (@ViewBag.TrashCount)
+        </a>
+    }
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="invoiceTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>SPO</th>
+                        <th>Family Head</th>
+                        <th>Deposit Date</th>
+                        <th>Clear Date</th>
+                        <th>Remaining Day</th>
+                        <th>Currency</th>
+                        <th>USD R.O.E</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+
+                    @foreach (var invoice in Model)
+                    {
+                        DateTime startDate = invoice.DepositDate;
+                        DateTime endDate = DateTime.Today;
+
+                        TimeSpan timeDiff = endDate - startDate;
+                        int dayDiff = timeDiff.Days;
+
+                        if (invoice.InvoiceStatus == InvoiceStatus.Cleared)
+                        {
+                            dayDiff = 0;
+                        }
+
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@i</strong>
+                            </td>
+                            <td>@invoice.CompanyCode</td>
+                            <td>@invoice.PackageName</td>
+                            <td>@invoice.Name</td>
+                            <td>@invoice.FullName (@invoice.FcId)</td>
+                            <td>@DateTimeManager.GetDate(invoice.DepositDate)</td>
+                            <td>@DateTimeManager.GetDate(invoice.ClearanceDate)</td>
+                            <td>@dayDiff</td>
+                            <td>@invoice.Currency</td>
+                            <td>@invoice.USDROE</td>
+                            <td>@invoice.AmountRecived.ToString("N0")</td>
+                            <td>@invoice.InvoiceStatus</td>
+                            <td>
+                                <div class="dropdown">
+
+                                    @if (ViewBag.ChangeStatusAllowed == true)
+                                    {
+
+                                        <a class="btn btn-warning" target="_blank" asp-action="ChangeStatus"
+                                           asp-route-id="@invoice.InvoiceId">Change Status</a>
+                                    }
+
+                                    @if (ViewBag.SlipAllowed == true)
+                                    {
+
+                                        <a class="btn btn-info" asp-action="Print" target="_blank"
+                                           asp-route-id="@invoice.InvoiceId">Slip</a>
+                                    }
+
+                                    @if (ViewBag.SlipAllowed == true)
+                                    {
+                                        <a class="btn btn-info" asp-action="HajjPrint" target="_blank"
+                                           asp-route-id="@invoice.InvoiceId">Hajj Slip</a>
+                                    }
+                                    @if (ViewBag.EditAllowed == true)
+                                    {
+
+                                        <a class="btn btn-warning" asp-action="Edit"
+                                           asp-route-id="@invoice.InvoiceId">
+                                            <i class="bx bx-edit-alt me-1"></i>
+                                            Edit
+                                        </a>
+                                    }
+
+                                    @if (ViewBag.TrashAllowed == true)
+                                    {
+
+                                        <button onclick="confirmDelete(@invoice.InvoiceId)"
+                                                class="btn btn-outline-danger">
+                                            <i class="bx bx-trash me-1"></i> Trash
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#invoiceTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        }],
+        paging: false,
+        lengthChange: false,
+        order: [0, 'desc']
+    });
+</script>

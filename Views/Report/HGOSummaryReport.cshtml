@@ -1,0 +1,199 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>HGOSummary Report</title>
+	<style>
+		#downloadPdf {
+			padding: 8px 16px !important;
+			background-color: #f60000 !important;
+			color: white !important;
+			border: none !important;
+			border: none !important;
+			border-radius: 4px !important;
+			cursor: pointer !important;
+			margin-bottom: 10px !important;
+			font-size: 14px;
+		}
+
+		#columnSelectors {
+			margin-bottom: 10px;
+		}
+
+			#columnSelectors label {
+				margin-right: 15px;
+				font-size: 14px;
+			}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+
+		<div>
+			<label><input type="checkbox" class="toggle-col" data-col="1" checked /> Hajji Name</label>
+			<label><input type="checkbox" class="toggle-col" data-col="2" checked /> HbNo</label>
+			<label><input type="checkbox" class="toggle-col" data-col="3" checked /> Gender</label>
+			<label><input type="checkbox" class="toggle-col" data-col="4" checked /> Group Name</label>
+			<label><input type="checkbox" class="toggle-col" data-col="5" checked /> Package Name</label>
+			<label><input type="checkbox" class="toggle-col" data-col="6" checked /> Passport No</label>
+			<label><input type="checkbox" class="toggle-col" data-col="7" checked /> Mofa No</label>
+			<label><input type="checkbox" class="toggle-col" data-col="8" checked /> Visa No</label>
+			<label><input type="checkbox" class="toggle-col" data-col="9" checked /> Visa Image</label>
+		</div>
+
+		<div class="proforma_title">
+			<h4 id="miniStatement_Title">HGO Summary Report</h4>
+		</div>
+		<div class="Invoice_to_section">
+			<div>
+				<div class="Customer_Info">
+					<h2>Company Name: <span id="">@ViewBag.CompanyName</span></h2>
+				</div>
+			</div>
+		</div>
+
+		<div id="reportGrid"></div>
+
+	</div>
+
+	<script>
+		let data = @Html.Raw(jsonData);
+
+		data = data.map((item, index) => ({
+			SNo: index + 1,
+			...item
+		}));
+
+		let gridInstance;
+
+		$(function () {
+			gridInstance = $("#reportGrid").dxDataGrid({
+				dataSource: data,
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: false,
+				searchPanel: { visible: true },
+				filterRow: { visible: true, applyFilter: "auto" },
+				headerFilter: { visible: true },
+				export: {
+					enabled: true,
+					fileName: "HGOSummary Report"
+				},
+				columns: [
+					{
+						caption: "S.No",
+						width: 60,
+						cellTemplate: function (container, options) {
+							const visibleRows = options.component.getVisibleRows();
+							const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+							container.text(rowIndex + 1);
+						}
+					},
+					{ dataField: "HajjiName", caption: "Hajji Name" },
+					{ dataField: "HBNo", caption: "HBNo" },
+					{ dataField: "Gender", caption: "Gender" },
+					{ dataField: "GroupName", caption: "Group Name" },
+					{ dataField: "PackageName", caption: "Package Name" },
+					{ dataField: "PassportNo", caption: "Passport No" },
+					{ dataField: "MoufaaNo", caption: "Mofa No" },
+					{ dataField: "VisaNo", caption: "Visa No" },
+					{
+						caption: "Visa",
+						cellTemplate: function (container, options) {
+							if (options.data.VisaP) {
+								$("<a>")
+									.attr("href", options.data.VisaP)
+									.attr("target", "_blank")
+									.text("✔️")
+									.appendTo(container);
+							} else {
+								container.text("❌");
+							}
+						}
+					}
+				]
+			}).dxDataGrid("instance");
+
+			$("#downloadPdf").on("click", async function () {
+				const { jsPDF } = window.jspdf;
+				if (!jsPDF) {
+					alert("jsPDF library not loaded");
+					return;
+				}
+
+				const doc = new jsPDF({
+					orientation: "landscape",
+					unit: "pt",
+					format: "a3"
+				});
+
+				const loadImage = (src) => {
+					return new Promise((resolve, reject) => {
+						const img = new Image();
+						img.src = src;
+						img.onload = () => resolve(img);
+						img.onerror = reject;
+					});
+				};
+
+				try {
+					const img = await loadImage('/reportlogo/GroupLogo.png');
+					const imgWidth = 60;
+					const imgHeight = 25;
+					const pageWidth = doc.internal.pageSize.getWidth();
+					const x = pageWidth - imgWidth - 40;
+					const y = 10;
+					doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+				} catch (err) {
+					console.error("Image failed to load", err);
+				}
+
+				await DevExpress.pdfExporter.exportDataGrid({
+					jsPDFDocument: doc,
+					component: gridInstance,
+					margin: { top: 40, left: 20, right: 20, bottom: 20 },
+					customizeCell: function (options) {
+						if (options.gridCell.rowType === "data") {
+							if (options.gridCell.column.caption === "S.No") {
+								const visibleRows = gridInstance.getVisibleRows();
+								const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+								options.pdfCell.text = (rowIndex + 1).toString();
+							}
+
+							if (options.gridCell.column.caption === "Visa") {
+								options.pdfCell.text = options.gridCell.data.VisaP ? "Yes" : "No";
+							}
+						}
+						options.pdfCell.font = { size: 8 };
+					}
+				});
+
+				doc.save("HGOSummaryReport.pdf");
+			});
+		});
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+﻿@* @model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData> *@
+@model List<TMG.Models.AirlineModels.PNRData>
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Print</title>
+	<style>
+		#downloadPdf {
+			padding: 8px 16px !important;
+			background-color: #f60000 !important;
+			color: white !important;
+			border: none !important;
+			border-radius: 4px !important;
+			cursor: pointer !important;
+			margin-bottom: 10px !important;
+			font-size: 14px;
+		}
+
+		#columnSelectors {
+			margin-bottom: 10px;
+		}
+
+			#columnSelectors label {
+				margin-right: 15px;
+				font-size: 14px;
+			}
+
+        .details-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .details-row {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .label {
+            width: 150px;
+            font-weight: bold;
+        }
+
+        .value {
+            flex: 1;
+        }
+
+        .checkbox {
+            margin-right: 10px;
+        }
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+        <div>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'nameField')">Name</label>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'numberField')">Number</label>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'trainField')">Train Number</label>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'departureField')">Departure</label>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'arrivalField')">Arrival</label>
+            <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'priceField')">Price</label>
+            @* <label><input type="checkbox" class="checkbox" checked onchange="toggleField(this, 'creditCardField')">Credit Card</label> *@
+        </div>
+
+		<h1>Print</h1>
+
+        <div class="details-container">
+            <div class="details-row" id="nameField">
+                <div class="label">Camp Name:</div>
+                <div class="value">@ViewBag.Name</div>
+            </div>
+            <div class="details-row" id="numberField">
+                <div class="label">Camp Code:</div>
+                <div class="value">@ViewBag.Number</div>
+            </div>
+            <div class="details-row" id="trainField">
+                <div class="label">Camp Number:</div>
+                <div class="value">@ViewBag.TrainNumber</div>
+            </div>
+            <div class="details-row" id="departureField">
+                <div class="label">CheckIn:</div>
+                <div class="value">@ViewBag.Departure</div>
+            </div>
+            <div class="details-row" id="arrivalField">
+                <div class="label">CheckOut:</div>
+                <div class="value">@ViewBag.Arrival</div>
+            </div>
+            <div class="details-row" id="priceField">
+                <div class="label">Price:</div>
+                <div class="value">@ViewBag.Price</div>
+            </div>
+        </div>
+
+		<div id="reportGrid"></div>
+
+	</div>
+
+
+    <script>
+        let data = @Html.Raw(jsonData);
+
+        // Now add SNo
+        data = data.map((item, index) => ({
+            SNo: index + 1,
+            ...item
+        }));
+
+        let gridInstance;
+
+        $(function () {
+            gridInstance = $("#reportGrid").dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+                columnAutoWidth: true,
+                paging: false,
+                searchPanel: { visible: true },
+                filterRow: { visible: true, applyFilter: "auto" },
+                headerFilter: { visible: true },
+                export: {
+                    enabled: true,
+                    fileName: "Report"
+                },
+                columns: [
+                    { dataField: "SNo", caption: "S.No", width: 60 },
+                    { dataField: "Honorifics", caption: "Honorifics" },
+                    { dataField: "HajjiName", caption: "Hajji Name" },
+                    { dataField: "HBNo", caption: "HBNo" },
+                    { dataField: "Gender", caption: "Gender" },
+                    { dataField: "DOB", caption: "Date of Birth" },
+                    { dataField: "PackageName", caption: "Package Name" },
+                    { dataField: "PassportNo", caption: "Passport No" },
+                    { dataField: "PassportDOE", caption: "Passport Date of Expiry" },
+                    { dataField: "GroupName", caption: "Group Name" },
+                ]
+            }).dxDataGrid("instance");
+
+            $('.column-toggle').on('change', function () {
+                const column = $(this).data('col');
+                const visible = $(this).is(':checked');
+                gridInstance.columnOption(column, 'visible', visible);
+            });
+
+            $("#downloadPdf").on("click", async function () {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: "landscape",
+                    unit: "pt",
+                    format: "a3"
+                });
+
+                doc.setFontSize(18);
+                doc.text("Report", 40, 40);
+
+                const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+                doc.setFontSize(10);
+                doc.text(printedDate, 40, 60);
+
+                const detailsElement = document.querySelector(".details-container");
+
+                const canvas = await html2canvas(detailsElement, { scale: 2 });
+                const imgData = canvas.toDataURL("image/png");
+
+                const imgProps = doc.getImageProperties(imgData);
+                const pdfWidth = doc.internal.pageSize.getWidth() - 80;
+                const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                doc.addImage(imgData, 'PNG', 40, 80, pdfWidth, imgHeight);
+
+                const gridStartY = 100 + imgHeight;
+
+                await DevExpress.pdfExporter.exportDataGrid({
+                    jsPDFDocument: doc,
+                    component: gridInstance,
+                    topLeft: { x: 40, y: gridStartY + 20 },
+                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                    customizeCell: function (options) {
+                        options.pdfCell.font = { size: 8 };
+                    }
+                });
+
+                doc.save("Report.pdf");
+            });
+        });
+
+        function toggleField(checkbox, fieldId) {
+            var field = document.getElementById(fieldId);
+            field.style.display = checkbox.checked ? "flex" : "none";
+        }
+    </script>
+
+</body>
+
+</html>

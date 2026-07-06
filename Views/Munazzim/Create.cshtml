@@ -1,0 +1,85 @@
+﻿@model Munazzim
+@{
+    string modelName = "Munazzim";
+    string modelNamePlural = "Munazzims";
+    string modelControllerRoute = "Munazzim";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="ClusterNumber"></label>
+                                <span class="text-danger fw-bold"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ClusterNumber" class="form-control" min="1">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClusterNumber"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <span class="text-danger fw-bold"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="StampFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="StampFile" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="StampFile"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="SignatureFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="SignatureFile" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SignatureFile"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select
+                                    Companies</label>
+                                <br />
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (var company in ViewBag.Companies)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" value="@company.CompanyId" asp-for="CompaniesId" />
+
+                                        <input class="form-check-input" type="checkbox" id="@company.CompanyId"
+                                            asp-for="SelectedCompanies[i]">
+
+                                        <label class="form-check-label"
+                                            for="@company.CompanyId">@company.CompanyName</label>
+                                    </div>
+                                    i++;
+                                }
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,108 @@
+﻿@model RoeRequest
+
+@{
+    string modelName = "Family ROE Request";
+    string modelNamePlural = "Family ROE Requests";
+    string modelControllerRoute = "RoeRequest";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Currency"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <select class="form-control" asp-for="Currency"
+                                        asp-items="@Html.GetEnumSelectList<Currencies>()">
+
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currency"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PKRROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="PKRROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PKRROE"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SARROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="SARROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SARROE"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="USDROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="USDROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="USDROE"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="FamilyHeadId"></label>
+                                <div class="input-group input-group-merge">
+                                 
+                                    <select class="form-control" asp-for="FamilyHeadId" id="familyId">
+                                        @foreach (FamilyHead family in ViewBag.FamilyHead)
+                                        {
+                                            <option value="@family.FamilyHeadId">@family.GivenName @family.SurName</option>
+                                        }
+                                    </select>
+
+                                </div>
+                                <span class="text-danger" asp-validation-for="FamilyHeadId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Remarks"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                            class="bx bx-building"></i></span>
+                                    <input asp-for="Remarks" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Remarks"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+     $(document).ready(function () {
+        $('select[id="familyId"]').select2({
+            placeholder: "Select Family Head",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>

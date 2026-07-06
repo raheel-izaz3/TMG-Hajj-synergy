@@ -1,0 +1,105 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Thank You!";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .thanks-container {
+            text-align: center;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            color: #4caf50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* Confetti animation styles */
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff5722;
+            animation: confetti 1.5s ease-out infinite;
+        }
+
+        @@keyframes confetti {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="thanks-container">
+        <h1>Thank you for your Interest, kindly review your email for more information</h1>
+    </div>
+
+    <!-- Confetti effect -->
+    <div class="confetti"></div>
+
+    <script>
+        // Function to generate confetti pieces
+        function generateConfetti() {
+            const confettiContainer = document.querySelector('.confetti');
+            const numPieces = 50; // Number of confetti pieces to generate
+
+            for (let i = 0; i < numPieces; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.classList.add('confetti-piece');
+
+                // Randomize the position and rotation of each piece
+                confettiPiece.style.left = `${Math.random() * 100}%`;
+                confettiPiece.style.animationDuration = `${Math.random() * 2 + 2}s`; // Random duration
+                confettiPiece.style.animationDelay = `${Math.random() * 2}s`; // Random delay
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
+
+                confettiContainer.appendChild(confettiPiece);
+            }
+        }
+
+        // Trigger confetti effect on page load
+        window.onload = generateConfetti;
+    </script>
+
+</body>
+</html>

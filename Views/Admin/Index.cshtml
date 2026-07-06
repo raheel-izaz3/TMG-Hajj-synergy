@@ -1,0 +1,1541 @@
+﻿@using Newtonsoft.Json
+@model List<TMG.Models.FormModels.AziziaRoomCountModel>
+@inject TMG.Data.TMGDbContext _db
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@{
+    var hotels = ViewBag.Hotel as List<dynamic>;
+    var roomCounts = ViewBag.AziziaRoomCounts as List<dynamic>;
+}
+
+<!-- AnyChart Core and Bundle -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-bundle.min.js"></script>
+
+<!-- AnyChart Base -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js"></script>
+
+<!-- AnyChart UI and Exports -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-exports.min.js"></script>
+
+<!-- AnyChart CSS -->
+<link href="https://cdn.anychart.com/releases/8.12.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+<link href="https://cdn.anychart.com/releases/8.12.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+<!-- XLSX Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+
+
+<script>
+    // Bookings by Day Line Chart
+    document.addEventListener('DOMContentLoaded', function () {
+    // Access data from ViewBag
+    var bookingCountsDaybyDay = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.bookingCountsDaybyDay)));
+
+    // Extract labels and data values
+    var labels = [];
+    var dataValues = [];
+    for (var i = 0; i < bookingCountsDaybyDay.length; i++) {
+    labels.push(bookingCountsDaybyDay[i].BookingDate);
+    dataValues.push(bookingCountsDaybyDay[i].Bookings);
+    }
+
+    // Set chart theme
+    anychart.theme('wines');
+
+    // Create data set using the dynamic data
+    var dataSet = anychart.data.set(getData());
+
+    // Create line chart
+    var chart = anychart.line();
+
+    // Turn on chart animation
+    chart.animation(true);
+
+    // Turn on the crosshair
+    chart.crosshair().enabled(true).yLabel(false).yStroke(null);
+
+    // Set tooltip mode to point
+    chart.tooltip().positionMode('point');
+    chart.background("#f8f8f8");
+
+    // Set yAxis title
+    chart.yAxis().title('Number of Bookings');
+    chart.xAxis().labels().padding(5);
+
+    // Create series with mapped data
+    var firstSeriesData = dataSet.mapAs({ x: 0, value: 1 });
+    var firstSeries = chart.line(firstSeriesData);
+    firstSeries.name('Bookings By Day');
+    firstSeries.hovered().markers().enabled(true).type('circle').size(4);
+    firstSeries.tooltip().position('right').anchor('left-center').offsetX(5).offsetY(5);
+    firstSeries.stroke('#BB0000');
+
+    // Set container id for the chart
+    chart.container('BookingsByDayLine');
+
+    // Draw the chart
+    chart.draw();
+
+    // Function to get dynamic data
+    function getData() {
+    var data = [];
+    for (var i = 0; i < labels.length; i++) {
+    data.push([labels[i], dataValues[i]]);
+    }
+    return data;
+    }
+
+    // Over all Booking
+    var OverAllQuota = @Html.Raw(ViewBag.OverAllQuota);
+    var OverAllQuotaTotalBooking = @Html.Raw(ViewBag.OverAllQuotaTotalBooking);
+    var RemainingQuota = OverAllQuota - OverAllQuotaTotalBooking;
+
+    anychart.onDocumentReady(function () {
+    // create pie chart with passed data
+    var chart = anychart.pie3d([
+    ['Bookings', OverAllQuotaTotalBooking],
+    ['Remaining', RemainingQuota],
+
+    ]);
+
+    // set chart title text settings
+    chart
+    .title('Overall Company Quota')
+    // set chart radius
+    .radius('43%');
+    chart.background("#f8f8f8");
+    // set container id for the chart
+    chart.container('BookingsByDayPie');
+    // initiate chart drawing
+    chart.draw();
+    });
+    // Azziza Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Azizia Hotel Rooms');
+
+    // Access data from ViewBag
+    var AziziaRoom = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.AziziaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < AziziaRoom.length; i++) {
+    labelsA.push(AziziaRoom[i].RoomName);
+    dataValuesA.push(AziziaRoom[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('AziziaRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+
+
+    //AZIZIA BUILDING
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Azizia Building Rooms');
+
+    // Access data from ViewBag
+    var AziziaBuildingRoom = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.aziziaBuilding)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < AziziaBuildingRoom.length; i++) {
+    labelsA.push(AziziaBuildingRoom[i].RoomName);
+    dataValuesA.push(AziziaBuildingRoom[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('AziziaBuildingRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+
+
+
+    // Medina Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Medinah Hotel Rooms');
+
+    // Access data from ViewBag
+    var MadinaRooms = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.MadinaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < MadinaRooms.length; i++) {
+    labelsA.push(MadinaRooms[i].RoomName);
+    dataValuesA.push(MadinaRooms[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('MadinaRooms');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+    // Macca Rooms
+    anychart.onDocumentReady(function () {
+    // create column chart
+    var chart = anychart.column3d();
+
+    // turn on chart animation
+    chart.animation(true);
+
+    // set chart title text settings
+    chart.title('Makkah Hotel Rooms');
+
+    // Access data from ViewBag
+    var MaccaRooms = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.MaccaRooms)));
+
+    // Extract labels and data values
+    var labelsA = [];
+    var dataValuesA = [];
+    for (var i = 0; i < MaccaRooms.length; i++) {
+    labelsA.push(MaccaRooms[i].RoomName);
+    dataValuesA.push(MaccaRooms[i].TotalRooms);
+    }
+
+    // create area series with dynamic data
+    var series = chart.column(dataValuesA);
+
+    var darkenedColor = anychart.color.darken("#BB0000", 0.01);
+    series.fill(darkenedColor);
+    chart.background("#f8f8f8");
+
+    chart
+    .tooltip()
+    .position('center-top')
+    .anchor('center-bottom')
+    .offsetX(0)
+    .offsetY(5)
+    .format('{%Value}');
+
+    // set scale minimum
+    chart.yScale().minimum(0);
+
+    // set yAxis labels formatter
+    chart.yAxis().labels().format('{%Value}{groupsSeparator: }');
+
+    chart.xAxis().labels().format(function () {
+    return labelsA[this.index];
+    });
+
+    chart.tooltip().positionMode('point');
+    chart.interactivity().hoverMode('by-x');
+
+    chart.xAxis().title('Room Categories');
+    chart.yAxis().title('Bookings');
+
+    // set container id for the chart
+    chart.container('MaccaRoom');
+
+    // initiate chart drawing
+    chart.draw();
+    // console.log(AziziaRoom);
+    });
+    // Hotel Rooms
+    anychart.onDocumentReady(function () {
+    // Access data from ViewBag
+    var roomCounts = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.roomCounts)));
+
+    // Extract labels and data values
+    var dataValuesR = [];
+    for (var i = 0; i < roomCounts.length; i++) {
+    var roomName = roomCounts[i].RoomName;
+    var totalRooms = roomCounts[i].TotalRooms;
+    dataValuesR.push([roomName, totalRooms]);
+    }
+
+    // Create pie chart with dynamic data
+    var chart = anychart.pie3d(dataValuesR);
+
+    // set chart title text settings
+    chart
+    .title('Hotel Rooms')
+    // set chart radius
+    .radius('43%');
+    chart.background("#f8f8f8");
+    // set container id for the chart
+    chart.container('HotelRooms');
+    // initiate chart drawing
+    chart.draw();
+    });
+    // Booking by Munazzam
+    anychart.onDocumentReady(function () {
+    // Access data from ViewBag
+    var totalBookingsByMunazim = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.totalBookingsByMunazim)));
+
+    // Create data array for pie chart
+    var pieData = totalBookingsByMunazim.map(function (item) {
+    return [item.MunazzimName, item.TotalBookings];
+    });
+
+    // Create pie chart with dynamic data
+    var chart = anychart.pie3d(pieData);
+
+    // Set chart title text settings
+    chart.title('Booking by Munazzam');
+
+    // Set chart radius
+    chart.radius('43%');
+
+    // Set chart background color
+    chart.background("#f8f8f8");
+
+    // Set container id for the chart
+    chart.container('Munazzam');
+
+    // Initiate chart drawing
+    chart.draw();
+    });
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('GexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('GroupCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Group Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'GroupWiseCount.xlsx');
+    });
+
+    document.getElementById('PexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('PackageCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Package Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'PackageCount.xlsx');
+    });
+
+    document.getElementById('CexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('CompanyCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Company Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'CompanyCount.xlsx');
+    });
+
+    document.getElementById('MexportButton').addEventListener('click', function () {
+    // Get table data
+    var table = document.getElementById('MunnazimCount');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Munazzim Wise Count" });
+    // Save as Excel file
+    XLSX.writeFile(wb, 'MunnazimCount.xlsx');
+    });
+
+    });
+
+
+
+
+</script>
+
+<style>
+    .mb-4 {
+        width: 20vh !important;
+    }
+
+    .card-body {
+        background-color: #f8f8f8 !important;
+    }
+
+    .anychart-credits-text {
+        display: none !important;
+    }
+
+    .anychart-credits-logo {
+        display: none !important;
+    }
+
+    .charts-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .chart-container {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 10px;
+    }
+
+    .charts {
+        height: 300px;
+        width: 25%; /* Set width to 25% for all charts */
+    }
+
+
+    .charts {
+    }
+
+    /* Common styles */
+    .munazzam-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+        .munazzam-container .table-container {
+            width: 80%;
+            margin-top: 100px;
+            height: 300px;
+            overflow-y: auto;
+        }
+
+        .munazzam-container table {
+            width: 100%;
+            background-color: rgb(252, 251, 251);
+        }
+
+        .munazzam-container .charts {
+            height: 300px;
+            width: 40% !important; /* Decrease width of chart to 40% */
+        }
+
+    /* Common styles */
+    table {
+        background-color: rgb(252, 251, 251);
+        height: 200px;
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 15px;
+    }
+
+    #datatable {
+        margin: 0 auto;
+    }
+
+    div#datatable_length {
+        display: none;
+    }
+
+    div.dataTables_wrapper div.dataTables_info {
+        padding-top: .85em;
+        display: none;
+    }
+
+    a.page-link {
+        display: none;
+    }
+
+    .dataTables_scrollHead {
+        overflow: hidden;
+        position: sticky !important;
+        top: 0;
+        background-color: rgba(255,190,0,255);
+        z-index: 1000;
+    }
+
+    th[scope="row"],
+    tfoot tr {
+        position: sticky !important;
+        bottom: 0; /* Place the footer at the bottom */
+        left: 0;
+        z-index: 999;
+        background-color: #dedede;
+    }
+
+    th[scope="row"], thead tr {
+        color:white;
+        position: sticky !important;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        background-color: #7e3639 !important;
+    }
+    /* Card-container-start */
+
+    .card-boxes {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-content: start;
+    }
+
+    .item {
+        padding: 20px;
+        flex-basis: 0;
+        flex-grow: 1;
+        margin-bottom: 5px;
+        box-shadow: 10px 10px 30px #bebebe, -10px -10px 30px #ffffff;
+        text-align: center;
+    }
+
+
+    .icon i {
+        background-color: var(--theme-primary-color);
+        color: white;
+        padding: 10px;
+        border-radius: 7px;
+        display: inline-block;
+        margin-bottom: 10px;
+        font-size: 15px;
+    }
+    /* Card-Container-End  */
+
+
+    button {
+        background-color: #185B36 !important;
+        background-image: none !important;
+        color: aliceblue !important;
+        border-radius: 10px;
+        padding: 0.5em 24px;
+        margin-bottom: 1rem;
+    }
+
+    #EHajjContractCount {
+        text-align: center !important;
+    }
+</style>
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="row">
+        <div class="col-sm-12 order-1">
+
+
+            <div class="row" style="align-content: center !important; justify-content: center !important; margin-bottom: 15px !important">
+                <div class="row" style="align-content: center !important; justify-content: center !important;">
+
+                    @* card-boxes  *@
+                    <div class="card-boxes">
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-user"></i>
+                            </div>
+                            <h6>
+                                Users
+                            </h6>
+
+                            <h6>
+                                <a target="_blank" href="@Url.Action("Index", "User")">
+                                    @ViewBag.UserCount
+                                </a>
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-building"></i>
+                            </div>
+                            <h6>
+                                Companies
+                            </h6>
+
+                            <h6>
+                                <a target="_blank" href="@Url.Action("Index", "Company")">
+                                    @ViewBag.CompanyCount
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>
+                                Packages
+                            </h6>
+
+                            <h6>
+                                <a target="_blank" href="@Url.Action("Index", "Package")">
+                                    @ViewBag.PackageCount
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>
+                                Families
+                            </h6>
+
+                            <h6>
+                                <a target="_blank" href="@Url.Action("FamilyReport", "Report")">
+                                    @ViewBag.Families
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>
+                                Members
+                            </h6>
+
+                            <h6>
+                                @* <a target="_blank" href="@Url.Action("MemberReport", "Report"{ applicantType = ApplicantType.Overseas })">@ViewBag.Members *@
+                                <a target="_blank" href="@Url.Action("MemberReport", "Report")">
+                                    @ViewBag.Members
+                                </a>
+
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>
+                                Tentative
+                            </h6>
+
+                            <h6>
+                                <a target="_blank" href="@Url.Action("TentativeReport", "Report")">
+                                    @ViewBag.Tentative
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>
+                                Booked
+                            </h6>
+
+                            <h6>
+                                Regular: <a target="_blank" href="@Url.Action("ApplicantReport", "Report", new { applicantType = ApplicantType.Regular })">@ViewBag.BookRegular</a> <br />
+                                Overseas: <a target="_blank" href="@Url.Action("ApplicantReport", "Report", new { applicantType = ApplicantType.Overseas })">@ViewBag.BookOverseas</a> <br />
+                                Intercity: <a target="_blank" href="@Url.Action("ApplicantReport", "Report", new { applicantType = ApplicantType.Intercity })">@ViewBag.BookIntercity</a> <br />
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                Qurbani
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                @ViewBag.QurbaniCount <br />
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-user"></i>
+                            </div>
+                            <h6>Males & Females</h6>
+                            <h6>
+                                Males: <a target="_blank" href="@Url.Action("NewReport", "Report", new { gender = Gender.Male })">@ViewBag.MaleCount</a> <br />
+                                Females: <a target="_blank" href="@Url.Action("NewReport", "Report", new { gender = Gender.Female })">@ViewBag.FemaleCount</a>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="align-content: center !important; justify-content: center !important;">
+
+                    @* card-boxes  *@
+                    <div class="card-boxes mt-3">
+                        
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bxs-package"></i>
+                            </div>
+                            <h6>Adults, Children & Infants</h6>
+                            <h6>
+                                Adults:
+                                <a target="_blank" href="@Url.Action("AdultReport", "Report")">
+                                    @ViewBag.AdultCounts
+                                </a> <br />
+                                Children:
+                                <a target="_blank" href="@Url.Action("ChildReport", "Report")">
+                                    @ViewBag.ChildCount
+                                </a> <br />
+                                Infants:
+                                <a target="_blank" href="@Url.Action("InfantReport", "Report")">
+                                    @ViewBag.InfantCount
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>Groups</h6>
+                            <h6 id="suitCaseDistributed">
+                                <a target="_blank" href="@Url.Action("Index", "Group")">
+                                    @ViewBag.GroupsCount
+                                </a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>Queries</h6>
+                            <h6 id="suitCaseDistributed">
+                                Regular Queries:
+                                <a target="_blank" href="@Url.Action("QueriesReport", "Report", new { applicantType = ApplicantType.Regular })">
+                                    @ViewBag.RegularQuerys
+                                </a> <br />
+                                Overseas Queries:
+                                <a target="_blank" href="@Url.Action("QueriesReport", "Report", new { applicantType = ApplicantType.Overseas })">
+                                    @ViewBag.OverseasQuerys
+                                </a> <br />
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>Cancelled</h6>
+                            <h6 id="suitCaseDistributed">
+                                <a target="_blank" href="@Url.Action("CancelReport", "Report")">@ViewBag.Cancelled</a>
+                            </h6>
+                        </div>
+
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                Client Data
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                <a target="_blank" href="@Url.Action("ClientDataReport", "Report")">
+                                    @ViewBag.ClientData
+                                </a>
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                Mina Premium Bed
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                @ViewBag.PremiumBedCount
+                                <br />
+                                <br />
+                                <a asp-controller="Report" asp-action="OtherServiceReport" target="_blank">Other Services</a>
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                @* Tickets *@
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                Tickets: @ViewBag.POTicket <br/>
+                                GiveAways:
+                                <a asp-controller="Report" asp-action="GiveAway" target="_blank">
+                                    @ViewBag.GiveAway
+                                </a>
+                                <br/>
+                                Visa:
+                                <a asp-controller="Report" asp-action="VisaReport" target="_blank">
+                                    @ViewBag.Visa
+                                </a>
+                                <br />
+                                DD: @ViewBag.DD
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                Tickets
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                Issue: @ViewBag.POTicketIssue
+                                <br/>
+                                ReIssue: @ViewBag.POTicketReIssue
+                                <br/>
+                                Refund: @ViewBag.POTicketRefund
+                                <br/>
+                                Self: @ViewBag.POTicketSelf
+                                <br/>
+                                Void: @ViewBag.POTicketVoid
+                            </h6>
+                        </div>
+                        <div class="item">
+                            <div class="icon">
+                                <i class="bx bx-knife"></i>
+                            </div>
+                            <h6>
+                                Hajj 2026 Registration
+                            </h6>
+
+                            <h6 id="suitCaseDistributed">
+                                    @ViewBag.Hajj
+                            </h6>
+                        </div>
+                    </div>
+
+                </div>
+
+                @{
+                    int currentUserId = int.Parse(http.HttpContext.Session.GetString("UserId"));
+                    string currentUserEmail = http.HttpContext.Session.GetString("UserEmail");
+                }
+
+                @if (currentUserId == 1 || currentUserId == 12 || currentUserId == 5)
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+                                <table class="table mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>SPO Name</th>
+                                            <th>Booked / Tentative</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var spoC in ViewBag.SPOsCount)
+                                        {
+                                            <tr>
+                                                <td>@spoC.SPOName</td>
+                                                <td>
+                                                    <a target="_blank" href="@Url.Action("SPOSummaryReport", "Report", new { spoId = spoC.SPOId, status = HajjiBookingStatus.Booked })">@spoC.Booked</a> /
+                                                    <a target="_blank" href="@Url.Action("SPOSummaryReport", "Report", new { spoId = spoC.SPOId, status = HajjiBookingStatus.Tentative })">@spoC.Tentative</a>
+                                                </td>
+                                                <td>
+                                                    <a target="_blank" href="@Url.Action("SPOPaymentReport", "Report", new { spoId = spoC.SPOId })">P/S</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+                                <table class="table mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Company Name</th>
+                                            <th>HGO / Quota</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var hgoCount in ViewBag.HGOCount)
+                                        {
+                                            <tr>
+                                                <td>@hgoCount.CompanyName</td>
+                                                <td>
+                                                    <a target="_blank" href="@Url.Action("HGOSummaryReport", "Report", new { companyId = hgoCount.CompanyId })">@hgoCount.HGO</a>
+                                                    / @hgoCount.CompanyQuota
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+                                <table class="table mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Company Name</th>
+                                            <th>Quota / E-Hajj</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var eHajj in ViewBag.EHajjCount)
+                                        {
+                                            <tr>
+                                                <td>@eHajj.CompanyName</td>
+                                                <td>
+                                                    @eHajj.CompanyQuota / @eHajj.HGO
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd;">
+                                <table class="table mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>SPO Name</th>
+                                            <th>Booked / Tentative</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var spoC in ViewBag.SPOsCount)
+                                        {
+                                            if (spoC.SPOEmail == currentUserEmail)
+                                            {
+                                                <tr>
+                                                    <td>@spoC.SPOName</td>
+                                                    <td>
+                                                        <a target="_blank" href="@Url.Action("SPOSummaryReport", "Report", new { spoId = spoC.SPOId, status = HajjiBookingStatus.Booked })">@spoC.Booked</a> /
+                                                        <a target="_blank" href="@Url.Action("SPOSummaryReport", "Report", new { spoId = spoC.SPOId, status = HajjiBookingStatus.Tentative })">@spoC.Tentative</a>
+                                                    </td>
+                                                    <td>
+                                                        <a target="_blank" href="@Url.Action("SPOPaymentReport", "Report", new { spoId = spoC.SPOId })">P/S</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <select class="form-control" name="HotelId" id="hotelDropdown">
+                            <option value="">All Hotels</option>
+                            @foreach (var hotel in ViewBag.Hotels)
+                            {
+                                <option value="@hotel.HotelId">@hotel.HotelName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div id="roomCountContainer">
+                    @if (ViewBag.RoomCount != null)
+                    {
+                        @Html.Partial("_RoomCountTable", (List<AziziaRoomCountModel>)ViewBag.RoomCount)
+                    }
+                </div>
+
+
+                <div class="row" style="align-content: center !important; justify-content: center !important;">
+                </div>
+
+
+                @if (ViewBag.IsAdmin)
+                {
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="charts-container" style="margin-top: 5vh !important">
+                                    <div id="BookingsByDayLine" style="width: 100% !important; height: 35vh !important"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @* <div class="chart-container mt-3">
+                        <div id="MaccaRoom" class="charts"></div>
+                        <div id="MadinaRooms" class="charts"></div>
+                        <div id="AziziaRooms" class="charts"></div>
+                        <div id="AziziaBuildingRooms" class="charts"></div>
+                    </div> *@
+
+                    <div class="row mt-4">
+
+
+                        <div class="col-sm-12 col-md-6 my-2">
+                            <div id="Munazzam" class="charts" style="width: 100% !important;"></div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 my-2">
+                            <div id="BookingsByDayPie" style="width: 100% !important" class="charts"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-sm-12 col-md-6 my-2">
+                            <div class="card h-100">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <h5 class="card-title m-0 me-2">Receipts (Cleared)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="p-0 m-0">
+                                        @foreach (Invoice inv in ViewBag.RecentReceiptsCleared)
+                                        {
+                                            <li class="d-flex my-2 pb-1">
+                                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                                    <div class="me-2">
+                                                        <small class="text-muted d-block mb-1">R#@inv.ProformaNumber</small>
+                                                        <h6 class="mb-0">(@inv.FamilyHead.FcId) @inv.Remarks</h6>
+                                                    </div>
+                                                    <div class="user-progress d-flex align-items-center gap-1">
+                                                        <h6 class="mb-0 text-success">
+                                                            +@inv.AmountRecived.ToString("N0")
+                                                        </h6> <span class="text-muted">@inv.Currency</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 my-2">
+                            <div class="card h-100">
+                                <div class="card-header d-flex align-items-center justify-content-between">
+                                    <h5 class="card-title m-0 me-2">Receipts (In Transit)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="p-0 m-0">
+                                        @foreach (Invoice inv in ViewBag.RecentReceiptsInTransit)
+                                        {
+                                            <li class="d-flex my-2 pb-1">
+                                                <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
+                                                    <div class="me-2">
+                                                        <small class="text-muted d-block mb-1">R#@inv.ProformaNumber</small>
+                                                        <h6 class="mb-0">(@inv.FamilyHead.FcId) @inv.Remarks</h6>
+                                                    </div>
+                                                    <div class="user-progress d-flex align-items-center gap-1">
+                                                        <h6 class="mb-0 text-success">
+                                                            +@inv.AmountRecived.ToString("N0")
+                                                        </h6> <span class="text-muted">@inv.Currency</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @* <div class="munazzam-container row mt-3">
+                <div class="col-sm-12 col-md-8" style="margin-top: 35px !important;max-width: 100% !important; width: 68% !important">
+                <h5>Bookings details Cluster wise</h5>
+                <div style="margin: 5px; height: 300px; overflow-y: scroll;max-width: 100% !important; width: 100% !important;">
+                <table id="MunnazimCount" class="table table-bordered" style="max-width: 100% !important; width: 100% !important;">
+                <button id="MexportButton">Export to Excel</button>
+                <thead style="background-color: rgba(255,190,0,255) !important; color: white !important; ">
+                <tr>
+                <th>Cluster Company Name</th>
+                <th>Quota</th>
+                <th>Booked</th>
+                <th>Balance</th>
+                <th>Bio Verified Count</th>
+                <th>E Hajj Visa Verified Count</th>
+                <th>Data Form Verified Count</th>
+                <th>Data Form Signed Count</th>
+                <th>Agreement Signed</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (ViewBag.totalBookingsByCompany != null)
+                {
+                int balance = ViewBag.OverAllQuota - ViewBag.OverAllQuotaTotalBooking;
+                @foreach (var item in ViewBag.totalBookingsByCompany)
+                {
+                <tr>
+
+                <td>@item.CompanyName</td>
+                <td>@item.Quota</td>
+                <td>@item.TotalBookings</td>
+                <td>@item.Balance</td>
+                <td>@item.BioVerifiedCount</td>
+                <td>@item.EHajjVerified</td>
+                <td>@item.DataFormVerified</td>
+                <td>@item.DataFormSigned</td>
+                <td>@item.AgreementSigned</td>
+                </tr>
+                }
+                }
+                <tfoot style="font-weight: bold !important; ">
+                @if (ViewBag.totalBookingsByCompany != null)
+                {
+                int Quota = 0;
+                int TotalBookings = 0;
+                int Balance = 0;
+                int BioVerifiedCount = 0;
+                int EHajjVerified = 0;
+                int DataFormVerified = 0;
+                int DataFormSigned = 0;
+                int AgreementSigned = 0;
+
+
+                @foreach (var item in ViewBag.totalBookingsByCompany)
+                {
+                Quota += item.Quota;
+                TotalBookings += item.TotalBookings;
+                Balance += item.Balance;
+                BioVerifiedCount += item.BioVerifiedCount;
+                EHajjVerified += item.EHajjVerified;
+                DataFormVerified += item.DataFormVerified;
+                DataFormSigned += item.DataFormSigned;
+                AgreementSigned += item.AgreementSigned;
+
+                }
+                <tr>
+                <td style="border-right: solid 35px white !important;">Total</td>
+                <td>@Quota</td>
+                <td>@TotalBookings</td>
+                <td>@Balance</td>
+                <td>@BioVerifiedCount</td>
+                <td>@EHajjVerified</td>
+                <td>@DataFormVerified</td>
+                <td>@DataFormSigned</td>
+                <td>@AgreementSigned</td>
+                </tr>
+                }
+
+                </tfoot>
+                </tbody>
+                </table>
+                </div>
+                </div>
+
+                </div>
+
+                <div class="container">
+                <div class="munazzam-container">
+                <div style="margin-top: 35px !important; max-width: 80% !important">
+                <h5>Booking details Company wise</h5>
+                <div style="margin: 5px; height: 300px; overflow-y: scroll; max-width: 85% !important;">
+                <table id="CompanyCount" class="table table-bordered" style="max-width: 75% !important;">
+                <button id="CexportButton">Export to Excel</button>
+                <thead style="background-color: rgba(255,190,0,255) !important; color: #f8f8f8 !important;">
+                <tr>
+                <th>Company Name</th>
+                <th>Quota</th>
+                <th>Booked</th>
+                <th>Balance</th>
+                <th>M</th>
+                <th>C (M)</th>
+                <th>F</th>
+                <th>C (F)</th>
+                <th>I</th>
+                <th>Bio Verified Count</th>
+                <th>E Hajj Visa Verified Count</th>
+                <th>Data Form Verified Count</th>
+                <th>Data Form Signed Count</th>
+                <th>Agreement Signed</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (ViewBag.hajiStatsByCompany != null)
+                {
+                @foreach (var item in ViewBag.hajiStatsByCompany)
+                {
+                <tr>
+
+                <td>@item.CompanyName</td>
+                <td>@item.Quota</td>
+                <td>@item.HajisBooked</td>
+                <td>@item.RemainingHajis</td>
+                <td>@item.TotalMale</td>
+                <td>@item.TotalMaleChild</td>
+                <td>@item.TotalFemale</td>
+                <td>@item.TotalFemaleChild</td>
+                <td>@item.TotalInfant</td>
+                <td>@item.BioVerifiedCount</td>
+                <td>@item.EHajjVerified</td>
+                <td>@item.DataFormVerified</td>
+                <td>@item.DataFormSigned</td>
+                <td>@item.AgreementSigned</td>
+                </tr>
+                }
+                }
+
+                </tbody>
+                <tfoot style="font-weight: bold !important; ">
+                @if (ViewBag.hajiStatsByCompany != null)
+                {
+                int totalQuota = 0;
+                int totalHajisBooked = 0;
+                int totalRemainingHajis = 0;
+                int Male = 0;
+                int MaleChild = 0;
+                int TotalFemale = 0;
+                int TotalFemaleChild = 0;
+                int TotalInfant = 0;
+                int BioVerifiedCount = 0;
+                int EHajjVerified = 0;
+                int DataFormVerified = 0;
+                int DataFormSigned = 0;
+                int AgreementSigned = 0;
+
+                @foreach (var item in ViewBag.hajiStatsByCompany)
+                {
+                totalQuota += item.Quota;
+                totalHajisBooked += item.HajisBooked;
+                totalRemainingHajis += item.RemainingHajis;
+                Male += item.TotalMale;
+                MaleChild += item.TotalMaleChild;
+                TotalFemale += item.TotalFemale;
+                TotalFemaleChild += item.TotalFemaleChild;
+                TotalInfant += item.TotalInfant;
+                BioVerifiedCount += item.BioVerifiedCount;
+                EHajjVerified += item.EHajjVerified;
+                DataFormVerified += item.DataFormVerified;
+                DataFormSigned += item.DataFormSigned;
+                AgreementSigned += item.AgreementSigned;
+
+                }
+                <tr>
+                <td style="border-right: solid 35px white !important;">Total</td>
+                <td>@totalQuota</td>
+                <td>@totalHajisBooked</td>
+                <td>@totalRemainingHajis</td>
+                <td>@Male</td>
+                <td>@MaleChild</td>
+                <td>@TotalFemale</td>
+                <td>@TotalFemaleChild</td>
+                <td>@TotalInfant</td>
+                <td>@BioVerifiedCount</td>
+                <td>@EHajjVerified</td>
+                <td>@DataFormVerified</td>
+                <td>@DataFormSigned</td>
+                <td>@AgreementSigned</td>
+                </tr>
+                }
+
+                </tfoot>
+                </table>
+                </div>
+                </div>
+                <div id="BookingsByDayPie" style="max-width: 100% !important" class="charts"></div>
+                </div>
+
+                <div>
+                <div style="margin-top: 35px !important">
+                <h5>Male / Female Count By Package</h5>
+                <div style="margin: 5px; height: 300px; overflow-y: scroll;">
+                <table id="PackageCount" class="table table-bordered">
+                <button id="PexportButton">Export to Excel</button>
+                <thead style="background-color: rgba(255,190,0,255) !important; color: #f8f8f8 !important; ">
+
+                <tr>
+                <th>Package Name</th>
+                <th>M</th>
+                <th>C (M)</th>
+                <th>F</th>
+                <th>C (F)</th>
+                <th>I</th>
+                <th>PAX</th>
+                <th>Bio Verified Count</th>
+                <th>E Hajj Visa Verified Count</th>
+                <th>Data Form Verified Count</th>
+                <th>Data Form Signed Count</th>
+                <th>Agreement Signed</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (ViewBag.MalefemalechartbyPackage != null)
+                {
+                @foreach (var item in ViewBag.MalefemalechartbyPackage)
+                {
+                <tr>
+                <td>@item.PackageName</td>
+                <td>@item.TotalMale</td>
+                <td>@item.TotalMaleChild</td>
+                <td>@item.TotalFemale</td>
+                <td>@item.TotalFemaleChild</td>
+                <td>@item.TotalInfant</td>
+                <td>@item.TotalPax</td>
+                <td>@item.BioVerifiedCount</td>
+                <td>@item.EHajjVerified</td>
+                <td>@item.DataFormVerified</td>
+                <td>@item.DataFormSigned</td>
+                <td>@item.AgreementSigned</td>
+                </tr>
+                }
+                }
+
+                </tbody>
+                <tfoot style="font-weight: bold !important; ">
+                @if (ViewBag.MalefemalechartbyPackage != null)
+                {
+                int Male = 0;
+                int MaleChild = 0;
+                int TotalFemale = 0;
+                int TotalFemaleChild = 0;
+                int TotalInfant = 0;
+                int TotalPax = 0;
+                int BioVerifiedCount = 0;
+                int EHajjVerified = 0;
+                int DataFormVerified = 0;
+                int DataFormSigned = 0;
+                int AgreementSigned = 0;
+
+                @foreach (var item in ViewBag.MalefemalechartbyPackage)
+                {
+                Male += item.TotalMale;
+                MaleChild += item.TotalMaleChild;
+                TotalFemale += item.TotalFemale;
+                TotalFemaleChild += item.TotalFemaleChild;
+                TotalInfant += item.TotalInfant;
+                TotalPax += item.TotalPax;
+                BioVerifiedCount += item.BioVerifiedCount;
+                EHajjVerified += item.EHajjVerified;
+                DataFormVerified += item.DataFormVerified;
+                DataFormSigned += item.DataFormSigned;
+                AgreementSigned += item.AgreementSigned;
+
+                }
+                <tr>
+                <td style="border-right: solid 35px white !important;">Total</td>
+                <td>@Male</td>
+                <td>@MaleChild</td>
+                <td>@TotalFemale</td>
+                <td>@TotalFemaleChild</td>
+                <td>@TotalInfant</td>
+                <td>@TotalPax</td>
+                <td>@BioVerifiedCount</td>
+                <td>@EHajjVerified</td>
+                <td>@DataFormVerified</td>
+                <td>@DataFormSigned</td>
+                <td>@AgreementSigned</td>
+                </tr>
+                }
+
+                </tfoot>
+                </table>
+                </div>
+                </div>
+
+
+
+                <div style="margin-top: 35px !important">
+                <h5>Count By Group Table</h5>
+                <div style="margin: 5px; height: 300px; overflow-y: scroll;">
+                <table id="GroupCount" class="table table-bordered">
+                <thead style="background-color: rgba(255,190,0,255) !important; color: #f8f8f8 !important; ">
+                <button id="GexportButton">Export to Excel</button>
+                <tr>
+                <th>Group Name</th>
+                <th>Bio Verified Count</th>
+                <th>E Hajj Visa Verified Count</th>
+                <th>Data Form Verified Count</th>
+                <th>Data Form Signed Count</th>
+                <th>Agreement Signed</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (ViewBag.GroupCount != null)
+                {
+                @foreach (var item in ViewBag.GroupCount)
+                {
+                <tr>
+                <td>@item.GroupName</td>
+                <td>@item.BioVerifiedCount</td>
+                <td>@item.EHajjVerified</td>
+                <td>@item.DataFormVerified</td>
+                <td>@item.DataFormSigned</td>
+                <td>@item.AgreementSigned</td>
+                </tr>
+                }
+                }
+
+                </tbody>
+                <tfoot style="font-weight: bold !important; ">
+                @if (ViewBag.GroupCount != null)
+                {
+                int QurbaniCount = 0;
+                int BioVerifiedCount = 0;
+                int EHajjVerified = 0;
+                int DataFormVerified = 0;
+                int DataFormSigned = 0;
+                int AgreementSigned = 0;
+
+                @foreach (var item in ViewBag.GroupCount)
+                {
+                BioVerifiedCount += item.BioVerifiedCount;
+                EHajjVerified += item.EHajjVerified;
+                DataFormVerified += item.DataFormVerified;
+                DataFormSigned += item.DataFormSigned;
+                AgreementSigned += item.AgreementSigned;
+
+                }
+                <tr>
+                <td style="border-right: solid 35px white !important;">Total</td>
+                <td>@BioVerifiedCount</td>
+                <td>@EHajjVerified</td>
+                <td>@DataFormVerified</td>
+                <td>@DataFormSigned</td>
+                <td>@AgreementSigned</td>
+                </tr>
+                }
+                </tfoot>
+                </table>
+                </div>
+                </div>
+
+
+                </div>
+
+                </div> *@
+
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#hotelDropdown').change(function () {
+            var hotelId = $(this).val();
+
+            if (hotelId) {
+                $.ajax({
+                    url: '@Url.Action("Index", "Admin")',
+                    type: 'GET',
+                    data: { hotelId: hotelId },
+                    success: function (response) {
+                        $('#roomCountContainer').html(response);
+                    },
+                    error: function () {
+                        alert('Error fetching data.');
+                    }
+                });
+            }
+        });
+    });
+
+
+</script>
+

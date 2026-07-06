@@ -1,0 +1,39 @@
+﻿@model QurbaniSlipNotes
+
+@{
+    string modelName = "Qurbani Slip Note";
+    string modelNamePlural = "Qurbani Slip Notes";
+    string modelControllerRoute = "QurbaniSlipNotes";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Note"></label>
+                                <div class="input-group input-group-merge">
+                                    <textarea asp-for="Note" class="form-control"></textarea>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Note"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button tc="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

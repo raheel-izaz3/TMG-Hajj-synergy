@@ -1,0 +1,248 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Summary Report</title>
+
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js -->
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <!-- DevExtreme -->
+    <link href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css" rel="stylesheet" />
+    <script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            table th, table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                font-size: 12px;
+            }
+
+            table th {
+                background-color: #f6f3ee;
+                color: #b49164;
+            }
+
+            table caption {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #b49164;
+            }
+
+        /* Export button */
+        .export-btn {
+            background-color: #185B36;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+            .export-btn:hover {
+                background-color: #154c2b;
+            }
+    </style>
+</head>
+
+<body>
+    <h3>Bank Name : @ViewBag.BankName</h3>
+    <h3>Period : @ViewBag.Period</h3>
+    <h3>Account Number : @ViewBag.AccountNumber</h3>
+    <h3>Balance c/f : @ViewBag.BankCurrency @ViewBag.BalanceCF.ToString("N")</h3>
+
+    <button class="export-btn" id="exportPDF">Export to PDF</button>
+
+    <div class="package-div">
+        <div class="big-table-record" id="summaryData">
+            <div id="gridContainer" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $(document).ready(function () {
+        const dataSource = @Html.Raw(Json.Serialize(ViewBag.Result));
+
+        const bankCurrency = "@ViewBag.BankCurrency";
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+                { dataField: "date", caption: "Date", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "bankName", caption: "Bank Name" },
+                { dataField: "remarks", caption: "Remarks" },
+                {
+                    dataField: "debit",
+                    caption: "Debit",
+                    cellTemplate: function (container, options) {
+                        const amount = options.value;
+                        const formattedAmount = new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(amount);
+                        container.text(`${bankCurrency} ${formattedAmount}`).css("color", amount < 0 ? 'red' : 'black');
+                    }
+                },
+                {
+                    dataField: "credit",
+                    caption: "Credit",
+                    cellTemplate: function (container, options) {
+                        const amount = options.value;
+                        const formattedAmount = new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(amount);
+                        container.text(`${bankCurrency} ${formattedAmount}`).css("color", amount < 0 ? 'red' : 'black');
+                    }
+                },
+                {
+                    dataField: "balance",
+                    caption: "Balance",
+                    cellTemplate: function (container, options) {
+                        const amount = options.value;
+                        const formattedAmount = new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(amount);
+                        container.text(`${bankCurrency} ${formattedAmount}`).css("color", amount < 0 ? 'red' : 'black');
+                    }
+                },
+            ],
+            summary: {
+                totalItems: [
+                    {
+                        column: "debit",
+                        summaryType: "sum",
+                        displayFormat: `Total Debit: ${bankCurrency} {0}`,
+                        valueFormat: "currency"
+                    },
+                    {
+                        column: "credit",
+                        summaryType: "sum",
+                        displayFormat: `Total Credit: ${bankCurrency} {0}`,
+                        valueFormat: "currency"
+                    },
+                    {
+                        column: "balance",
+                        summaryType: "custom",
+                        displayFormat: `Closing Balance: ${bankCurrency} {0}`,
+                        valueFormat: "currency"
+                    }
+                ],
+                calculateCustomSummary: function (options) {
+                    if (options.summaryProcess === "finalize") {
+                        options.totalValue = @ViewBag.Balance;
+                    }
+                }
+            },
+        });
+
+        $('#exportPDF').click(function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const headers = [['Date', 'Bank Name', 'Remarks', 'Debit', 'Credit', 'Balance']];
+
+            const data = dataSource.map(row => {
+                const date = new Date(row.date);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = date.toLocaleString('en-US', { month: 'short' });
+                const year = date.getFullYear();
+
+                const formattedDate = `${day}/${month}/${year}`;
+
+                return [
+                    formattedDate,
+                    row.bankName,
+                    row.remarks,
+                    `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(row.debit)}`,
+                    `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(row.credit)}`,
+                    `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(row.balance)}`
+                ];
+            });
+
+            const closingBalance = dataSource.length > 0 ? dataSource[dataSource.length - 1].balance : 0;
+
+            const totalRow = [
+                '',
+                'Total',
+                '',
+                `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(dataSource.reduce((sum, row) => sum + (row.debit || 0), 0))}`,
+                `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(dataSource.reduce((sum, row) => sum + (row.credit || 0), 0))}`,
+                `${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(closingBalance)}`
+            ];
+            data.push(totalRow);
+
+            const currentDate = new Date();
+
+            const printedOnDate = `${currentDate.getDate().toString().padStart(2, '0')}/${currentDate.toLocaleString('en-US', { month: 'short' })}/${currentDate.getFullYear()}`;
+
+            const printedOnTime = currentDate.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+
+            doc.autoTable({
+                head: headers,
+                body: data,
+                styles: { fontSize: 8, cellPadding: 3 },
+                margin: { top: 50 },
+                didDrawPage: function (data) {
+                    const pageWidth = doc.internal.pageSize.width;
+                    const textWidth = doc.getTextWidth(`PRINTED ON: ${printedOnDate} ${printedOnTime}`);
+                    doc.text(`PRINTED ON: ${printedOnDate} ${printedOnTime}`, pageWidth - textWidth - 10, 10);
+
+                    doc.text('Bank Ledger Report', data.settings.margin.left, 20);
+                    doc.text(`Bank Name: @ViewBag.BankName`, data.settings.margin.left, 30);
+                    doc.text(`Period: @ViewBag.Period`, data.settings.margin.left, 35);
+                    doc.text(`Account Number: @ViewBag.AccountNumber`, data.settings.margin.left, 40);
+                    doc.text(`Balance c/f: ${bankCurrency} ${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(@ViewBag.BalanceCF)}`, data.settings.margin.left, 45);
+                }
+            });
+
+            const bankName = "@ViewBag.BankName".replace(/\s+/g, '_');
+            const period = "@ViewBag.Period".replace(/\s+/g, '_');
+
+            doc.save(`BankLedgerReport_${bankName}_${period}.pdf`);
+        });
+
+
+
+
+    });
+</script>
+
+
+
+
+
+
+

@@ -1,0 +1,177 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Package Roaming Report</title>
+	<style>
+		#downloadPdf {
+			padding: 8px 16px !important;
+			background-color: #f60000 !important;
+			color: white !important;
+			border: none !important;
+			border-radius: 4px !important;
+			cursor: pointer !important;
+			margin-bottom: 10px !important;
+			font-size: 14px;
+		}
+
+		#columnSelectors {
+			margin-bottom: 10px;
+		}
+
+			#columnSelectors label {
+				margin-right: 15px;
+				font-size: 14px;
+			}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+		@* <div id="columnSelectors">
+			<label><input type="checkbox" class="column-toggle" data-col="1" checked> Hajji Name</label>
+			<label><input type="checkbox" class="column-toggle" data-col="2" checked> HbNo</label>
+			<label><input type="checkbox" class="column-toggle" data-col="3" checked> Passport #</label>
+			<label><input type="checkbox" class="column-toggle" data-col="4" checked> Package Name</label>
+		</div> *@
+
+		<h1>Package Roaming Report</h1>
+		<div id="reportGrid"></div>
+
+	</div>
+
+
+    <script>
+        $(function () {
+            const places = @Html.Raw(Json.Serialize(ViewBag.Places));
+            const rawData = @Html.Raw(Json.Serialize(Model)); 
+
+            const data = rawData.map(m => {
+                const row = {
+                    HajjiName: m.hajjiName,
+                    HBNo: m.hbNo,
+                    PackageName: m.packageName,
+                    Gender: m.gender,
+                    RoomType: m.roomType,
+                    Maktab: m.maktabNumber,
+                    CheckIn: m.checkIn,
+                    CheckOut: m.checkOut,
+                };
+
+                places.forEach(place => {
+                    row[`${place} - Hotel`] = m.placeHotelMap[place]?.hotelName || "-";
+                    row[`${place} - CheckIn`] = m.placeHotelMap[place]?.checkIn || "-";
+                    row[`${place} - CheckOut`] = m.placeHotelMap[place]?.checkOut || "-";
+                });
+
+                return row;
+            });
+
+            console.log(data);
+
+            const gridInstance = $("#reportGrid").dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+                allowColumnResizing: true,
+                columnAutoWidth: true,
+                paging: false,
+                searchPanel: { visible: true },
+                filterRow: { visible: true, applyFilter: "auto" },
+                headerFilter: { visible: true },
+                export: {
+                    enabled: true,
+                    fileName: "Package Roaming Report"
+                },
+                columns: [
+                    { dataField: "HajjiName", caption: "Hajji Name" },
+                    { dataField: "HBNo", caption: "HBNo" },
+                    { dataField: "PackageName", caption: "Package Name" },
+                    { dataField: "Gender", caption: "Gender" },
+                    { dataField: "RoomType", caption: "Room Type" },
+                    { dataField: "Maktab", caption: "Maktab Number" },
+                    ...places.flatMap(p => [
+                        { dataField: `${p} - Hotel`, caption: `${p} - Hotel` },
+                        { dataField: `${p} - CheckIn`, caption: `${p} - CheckIn` },
+                        { dataField: `${p} - CheckOut`, caption: `${p} - CheckOut` }
+                    ])
+                ]
+            }).dxDataGrid("instance");
+
+            $('.column-toggle').on('change', function () {
+                const column = $(this).data('col');
+                const visible = $(this).is(':checked');
+                gridInstance.columnOption(column, 'visible', visible);
+            });
+
+            $("#downloadPdf").on("click", async function () {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: "landscape",
+                    unit: "pt",
+                    format: "a3"
+                });
+                
+                const loadImage = (src) => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.src = src;
+                        img.onload = () => resolve(img);
+                        img.onerror = reject;
+                    });
+                };
+
+                try {
+                    const img = await loadImage('/reportlogo/GroupLogo.png');
+                    const imgWidth = 60;
+                    const imgHeight = 25;
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const x = pageWidth - imgWidth - 40;
+                    const y = 10;
+                    doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+                } catch (err) {
+                    console.error("Image failed to load", err);
+                }
+
+                doc.setFontSize(18);
+                doc.text("Package Roaming Report", 40, 40);
+
+                const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+                doc.setFontSize(10);
+                doc.text(printedDate, 40, 60);
+
+                await DevExpress.pdfExporter.exportDataGrid({
+                    jsPDFDocument: doc,
+                    component: gridInstance,
+                    topLeft: { x: 40, y: 80 },
+                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                    customizeCell: function (options) {
+                        options.pdfCell.font = { size: 8 };
+                    }
+                });
+                doc.save("Package Roaming Report.pdf");
+            });
+        });
+    </script>
+
+
+
+</body>
+
+</html>

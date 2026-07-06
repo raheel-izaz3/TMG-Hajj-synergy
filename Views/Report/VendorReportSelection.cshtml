@@ -1,0 +1,140 @@
+﻿@{
+
+    string modelName = "Report";
+    string modelNamePlural = "";
+    string modelControllerRoute = "Report";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Bank Summary Report</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <form method="get" action="/Report/VendorReport">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" role="tabpanel">
+                                <div class="row">
+                                    <div class="vendor-row row mb-3">
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label">Vendor Type</label>
+                                            <div class="input-group input-group-merge">
+                                                <select class="form-control vendor-type" id="VendorType" onchange="getVendors(this)" name="VendorTypeId">
+                                                    <option value="">Select Type...</option>
+                                                    @foreach (VendorType type in ViewBag.VendorTypes)
+                                                    {
+                                                        <option value="@type.VendorTypeId">@type.TypeName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label">Vendor</label>
+                                            <div class="input-group input-group-merge">
+                                                <select class="form-control vendor-select" id="vendor" name="vendorId">
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname">Country</label>
+                                            <div class="input-group input-group-merge">
+                                                <select name="countryId" class="form-control">
+                                                    @foreach (Country country in ViewBag.Country)
+                                                    {
+                                                        <option value="@country.CountryId">@country.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname">City</label>
+                                            <div class="input-group input-group-merge">
+                                                <select name="cityId" class="form-control">
+                                                    @foreach (City city in ViewBag.City)
+                                                    {
+                                                        <option value="@city.CityId">@city.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="vendorId"]').select2({
+            placeholder: "Select Agent",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+        
+        $('select[name="VendorTypeId"]').select2({
+            placeholder: "Select Agent",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+
+        $('select[name="cityId"]').select2({
+            placeholder: "Select Agent",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+
+        $('select[name="countryId"]').select2({
+            placeholder: "Select Agent",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+    });
+
+    function getVendors(selectElement) {
+        const vendorTypeId = selectElement.value;
+        const vendorSelect = selectElement.closest(".vendor-row").querySelector(".vendor-select");
+
+        $.ajax({
+            url: `/VendorType/GetVendors/${vendorTypeId}`,
+            success: res => {
+                vendorSelect.innerHTML = "";
+                res.forEach(vendor => {
+                    const option = document.createElement("option");
+                    option.value = vendor.vendorId;
+                    option.text = vendor.vendorName;
+                    vendorSelect.appendChild(option);
+                });
+            },
+            error: err => {
+                console.error("Error fetching vendors:", err);
+            }
+        });
+    }
+</script>
+

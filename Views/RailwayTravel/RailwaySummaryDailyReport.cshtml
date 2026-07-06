@@ -1,0 +1,66 @@
+﻿@{
+
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Arrival Date</label>
+                        <input type="date" id="arrivalDate" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="place_id">Select City</label>
+                        <div class="input-group input-group-merge">
+                            <select class="form-control" id="placeId">
+                                <option value="">Select City</option>
+                                @foreach (var places in ViewBag.Place)
+                                {
+                                    <option value="@places.PlaceId" id="placeId">@places.PlaceName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <button id="getReportBtn" class="btn btn-primary" onclick="btnReport_Click()">Get Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    document.getElementById("getReportBtn").addEventListener("click", function () {
+        var placeId = document.getElementById("placeId").value;
+        var arrivalDate = document.getElementById("arrivalDate").value;
+
+        if (!placeId || !arrivalDate) {
+            toastr.error('Please fill out all the fields.');
+            return;
+        }
+    
+        $.ajax({
+            type: 'POST',
+            url: '/RailwayTravel/btnReport_Click',
+            data: {
+                id: placeId,
+                Date: arrivalDate
+            },
+            success: function (data) {
+                console.log(data);
+                window.location.href = data.redirectTo;
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
+

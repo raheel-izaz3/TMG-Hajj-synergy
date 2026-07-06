@@ -1,0 +1,92 @@
+﻿@{
+
+    string modelName = "Report";
+    string modelNamePlural = "";
+    string modelControllerRoute = "Report";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Bank Summary Report</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <form method="get" action="/Report/CompanyBankReport">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Company</label>
+                                        <select name="companyId" id="companyId" class="form-select"
+                                                aria-label="Default select example">
+                                            <option selected disabled hidden>Select Company</option>
+                                            <option value="0">All TMG</option>
+                                            @foreach (var company in ViewBag.Company)
+                                            {
+                                                <option value="@company.CompanyId">
+                                                    @company.CompanyName
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Bank</label>
+                                        <select name="companyBankAccountId" id="companyBankAccountId" class="form-select"
+                                                aria-label="Default select example">
+                                            <option selected disabled hidden>Select Bank</option>
+                                            @foreach (var banks in ViewBag.CompanyBankAccount)
+                                            {
+                                                <option value="@banks.BankId">
+                                                    @banks.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    @* <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Start Date</label>
+                                        <input type="date" class="form-control" name="startDate" />
+                                    </div> *@
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select End Date</label>
+                                        <input type="date" class="form-control" name="endDate" value="@DateTimeManager.DateToHtmlFormat(DateTime.Now)" />
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="companyId"]').select2({
+            placeholder: "Select Company",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+
+
+        $('select[name="companyBankAccountId"]').select2({
+            placeholder: "Select Company Bank",
+            allowClear: true,
+            width: '100%' ,// Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'
+        });
+    });
+</script>
+

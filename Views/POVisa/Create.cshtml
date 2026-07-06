@@ -1,0 +1,440 @@
+﻿@model POVisaFormModel
+@{
+    string modelName = "PO - Visa";
+    string modelNamePlural = "PO - Visas";
+    string modelControllerRoute = "POVisa";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Date of Issue</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" class="form-control" value="@DateTimeManager.Today"
+                                        max="@DateTimeManager.Today" asp-for="Date">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyId" onchange="getAccounts(this.value)">
+                                        <option value="">Select Company...</option>
+                                        @foreach (UserCompanies company in ViewBag.Companies)
+                                        {
+                                            <option value="@company.CompanyId">@company.Company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+@* 
+                            <div class="col-sm-12 col-md-2 mb-3" id="InstrumentDiv">
+                                <label class="form-label" for="basic-icon-default-fullname">PO-#</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" class="form-control" readonly value="PO-0001" asp-for="PONumber">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div> *@
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Terms</label>
+                                <div class="input-group input-group-merge">
+                                    <textarea class="form-control" asp-for="Terms"></textarea>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">VAT (%)</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="vatPerc" type="text" placeholder="VAT"
+                                     asp-for="VatPercentage">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Municipilty Tax (%)</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="municiPerc" type="text"
+                                        placeholder="Municipilty tax"
+                                        asp-for="MunicipilityPercentage">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Other Taxes</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="otherAmount" type="text" 
+                                    placeholder="Other taxes" asp-for="OtherTaxAmount">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <!-- Repeater container for Vendor Info -->
+                            <div id="vendorRepeaterContainer">
+                                <div class="vendor-row row mb-3">
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label">Vendor Type</label>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-control vendor-type" 
+                                            onchange="getVendors(this)"
+                                            asp-for="VendorTypeId">
+                                                <option value="">Select Type...</option>
+                                            @foreach (VendorType type in ViewBag.VendorTypes)
+                                            {
+                                                <option value="@type.VendorTypeId">@type.TypeName</option>
+                                            }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label">Vendor</label>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-control vendor-select"
+                                            asp-for="VendorId">
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-5 mb-3">
+                                        <label class="form-label">Description</label>
+                                        <div class="input-group input-group-merge">
+                                            <input class="form-control" type="text" 
+                                            placeholder="Enter description"
+                                            asp-for="Description">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <div class="input-group input-group-merge">
+                                            <input class="form-control amount-input" type="text" 
+                                            placeholder="Enter amount"
+                                            asp-for="Amount">
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div class="col-sm-12 col-md-7"></div>
+                            <div class="col-sm-12 col-md-5">
+                                <p><b>SUBTOTAL: </b> 
+                                @* <span id="subtotal">0.00</span> *@
+                                <input id="subtotal" readonly class="form-control" style="display: inline-block; width: auto;" asp-for="Subtotal">
+                                </p>
+                            </div>
+
+                            <div class="col-sm-12 col-md-7"></div>
+                            <div class="col-sm-12 col-md-5">
+                                <p><b>VAT: </b> 
+                                <input id="vatTotal" readonly class="form-control" style="display: inline-block; width: auto;" asp-for="VAT">
+                                </p>
+                            </div>
+                            <div class="col-sm-12 col-md-7"></div>
+                            <div class="col-sm-12 col-md-5">
+                                <p><b>MUNICIPLITY TAX: </b> 
+                                <input id="munciTotal" readonly class="form-control" style="display: inline-block; width: auto;" asp-for="MunicipilityTax">
+                                </p>
+                            </div>
+                            <div class="col-sm-12 col-md-7"></div>
+                            <div class="col-sm-12 col-md-5">
+                                <p><b>OTHER TAX(S): </b>
+                                <input id="otherTaxes" readonly class="form-control" style="display: inline-block; width: auto;" asp-for="OtherTaxes">
+                                </p>
+                            </div>
+                            <div class="col-sm-12 col-md-7"></div>
+                            <div class="col-sm-12 col-md-5">
+                                <p><b>TOTAL: </b>
+                                <input id="total" readonly class="form-control" style="display: inline-block; width: auto;" asp-for="Total">
+                                </p>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <p><b>Payment Schedule</b></p>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Due Date</th>
+                                        <th>Percentage</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentScheduleBody">
+                                    <!-- Empty tbody to start with no rows -->
+                                </tbody>
+                            </table>
+                            <div class="alert alert-warning d-none" id="percentageWarning">Total percentage must equal
+                                100%.</div>
+                            <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>
+
+                        </div>
+
+                        <div class="col-sm-12 mt-4">
+                            <button type="submit" id="submitButton" class="btn btn-success float-end">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    function addRow() {
+        const tableBody = document.getElementById('paymentScheduleBody');
+        const rowCount = tableBody.rows.length + 1;
+
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${rowCount}</td>
+            <td><input type="date" name="DueDates[]" class="form-control"></td>
+            <td><input type="number" name="Percentages[]" class="form-control percentage-input" placeholder="Enter %" oninput="validatePercentages()"></td>
+            <td><input type="text" readonly name="Amounts[]" class="form-control amount-output"></td>
+            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+        `;
+        tableBody.appendChild(newRow);
+    }
+
+    // Function to remove a specific row
+    function removeRow(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateRowNumbers();  // Update row numbering after removal
+        validatePercentages();  // Revalidate percentages after row removal
+    }
+
+    // Function to update row numbers after adding/removing rows
+    function updateRowNumbers() {
+        const rows = document.querySelectorAll('#paymentScheduleBody tr');
+        rows.forEach((row, index) => {
+            row.cells[0].innerText = index + 1;
+        });
+    }
+
+    // Function to validate the total percentage and update amounts
+    function validatePercentages() {
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        let totalPercentage = 0;
+
+        // Calculate the total percentage
+        percentageInputs.forEach(input => {
+            totalPercentage += parseFloat(input.value) || 0;
+        });
+
+        const warningElement = document.getElementById('percentageWarning');
+        const createButton = document.getElementById('submitButton');
+
+        if (totalPercentage > 100) {
+            // Show warning if total is above 100%
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage cannot exceed 100%.";
+            createButton.disabled = true; // Disable button
+        } else if (totalPercentage < 100) {
+            // Show warning if total is below 100%
+            warningElement.classList.remove('d-none');
+            warningElement.innerText = "Total percentage must equal 100%.";
+            createButton.disabled = true; // Disable button
+        } else {
+            // Hide warning and enable button if total is exactly 100%
+            warningElement.classList.add('d-none');
+            createButton.disabled = false; // Enable button
+        }
+
+        updateAmounts();
+    }
+
+    function updateAmounts() {
+        const totalAmount = parseFloat(document.getElementById('total').value.replace(/,/g, '')) || 0;
+        const percentageInputs = document.querySelectorAll('.percentage-input');
+        const amountOutputs = document.querySelectorAll('.amount-output');
+
+        percentageInputs.forEach((input, index) => {
+            const percentage = parseFloat(input.value) || 0;
+            const amount = Math.round((totalAmount * (percentage / 100)) * 100) / 100;
+            amountOutputs[index].value = amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        });
+    }
+
+    function addVendorRow() {
+        const container = document.getElementById("vendorRepeaterContainer");
+
+        // Create a new vendor row element with required fields
+        const newRow = document.createElement("div");
+        newRow.className = "vendor-row row mb-3";
+        newRow.innerHTML = `
+           
+
+            <div class="col-sm-12 col-md-3 mb-3">
+                <label class="form-label">Vendor</label>
+                <div class="input-group input-group-merge">
+                    <select class="form-control vendor-select">
+                    </select>
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="col-sm-12 col-md-5 mb-3">
+                <label class="form-label">Description</label>
+                <div class="input-group input-group-merge">
+                    <input class="form-control" type="text" placeholder="Enter description">
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label">Amount</label>
+                <div class="input-group input-group-merge">
+                    <input class="form-control amount-input" type="text" placeholder="Enter amount">
+                </div>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="col-sm-12 col-md-1 d-flex align-items-end mb-3">
+                <button type="button" class="btn btn-danger remove-row">Remove</button>
+            </div>
+        `;
+
+        // Append the new row to the container
+        container.appendChild(newRow);
+
+        // Add event listener to the new "Remove" button
+        newRow.querySelector(".remove-row").addEventListener("click", () => {
+            newRow.remove();
+        });
+
+        // Add event listener for amount formatting
+        @* newRow.querySelector(".amount-input").addEventListener("input", function () {
+            formatAmount(this);
+        }); *@
+    }
+
+    document.querySelector(".amount-input").addEventListener("input", function () {
+            formatAmount(this);
+        });
+
+    function getVendors(selectElement) {
+        const vendorTypeId = selectElement.value;
+        const vendorSelect = selectElement.closest(".vendor-row").querySelector(".vendor-select");
+
+        $.ajax({
+            url: `/VendorType/GetVendors/${vendorTypeId}`,
+            success: res => {
+                vendorSelect.innerHTML = "";
+                res.forEach(vendor => {
+                    const option = document.createElement("option");
+                    option.value = vendor.vendorId;
+                    option.text = vendor.vendorName;
+                    vendorSelect.appendChild(option);
+                });
+            },
+            error: err => {
+                console.error("Error fetching vendors:", err);
+            }
+        });
+    }
+
+    function formatNumberWithCommas(value) {
+
+        // Remove any non-numeric characters except decimal
+        value = value.replace(/[^0-9.]/g, '');
+
+        // Split the value into whole and decimal parts
+        let [whole, decimal] = value.split('.');
+
+        // Format the whole part with commas
+        whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Limit decimal to two places if it exists
+        if (decimal !== undefined) {
+            decimal = decimal.substring(0, 2);
+            return `${whole}.${decimal}`;
+        } else {
+            return whole;
+        }
+    }
+
+    // Apply event listener to each .amount-input field
+    document.addEventListener('input', function (event) {
+        if (event.target.classList.contains('amount-input')) {
+            event.target.value = formatNumberWithCommas(event.target.value);
+        }
+    });
+
+    function formatAmount(input) {
+        updateTotals(); // Call a function to recalculate totals after formatting
+    }
+
+    function updateTotals() {
+        let subtotalCents = 0;
+
+        // Sum amounts in cents
+        document.querySelectorAll('.amount-input').forEach(input => {
+            const amount = parseFloat(input.value.replace(/,/g, '')) || 0;
+            subtotalCents += Math.round(amount * 100); // Convert to cents
+        });
+
+        // Convert subtotal back to dollars with two decimal places
+        const subtotal = subtotalCents / 100;
+
+        const vatPerc = parseFloat(document.getElementById('vatPerc').value) || 0;
+        const municiPerc = parseFloat(document.getElementById('municiPerc').value) || 0;
+        const otherTaxes = parseFloat(document.getElementById('otherAmount').value) || 0;
+
+        // Calculate VAT and municipality tax in cents to avoid floating-point errors
+        const vatCents = Math.round((subtotal * vatPerc) * 100 / 100);
+        const municipalityTaxCents = Math.round((subtotal * municiPerc) * 100 / 100);
+        const otherTaxesCents = Math.round(otherTaxes * 100);
+
+        // Sum everything up in cents
+        const totalCents = subtotalCents + vatCents + municipalityTaxCents + otherTaxesCents;
+
+        // Convert everything back to dollars for display
+        const vat = vatCents / 100;
+        const municipalityTax = municipalityTaxCents / 100;
+        const total = totalCents / 100;
+
+        // Update the UI with formatted values
+        document.getElementById('subtotal').value = formatToLocaleString(subtotal);
+        document.getElementById('vatTotal').value = formatToLocaleString(vat);
+        document.getElementById('otherTaxes').value = formatToLocaleString(otherTaxes);
+        document.getElementById('total').value = formatToLocaleString(total);
+        document.getElementById('munciTotal').value = formatToLocaleString(municipalityTax);
+    }
+
+    function formatToLocaleString(amount) {
+        return amount.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+</script>

@@ -1,0 +1,434 @@
+﻿@model OnlineInquiry
+
+@{
+    Layout = "";
+}
+<style>
+    .d-width {
+        width: 111px;
+    }
+
+    .f-width {
+        width: 185px;
+    }
+
+    /* New style for conditional fields */
+    .conditional-field {
+        display: none;
+    }
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>TMG Hajj</title>
+
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.common.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+
+    <style>
+        .select2-search__field {
+            outline: none
+        }
+
+        .select2-dropdown {
+            background-color: #f66262;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding: 0px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            color: #000;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #eee;
+            color: black;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+
+    <style>
+        .menu-item .active {
+        }
+
+        .form-group-passport + .form-group-passport {
+            margin-top: 30px;
+            border-top: 1px dashed #ccc;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Inquiry Registration </h4>
+        <hr class="mb-4" />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-passport" aria-controls="navs-pills-justified-passport" aria-selected="false">
+                                Passport
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="card">
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="tab-content">
+                                <div class="tab-pane fade mt-5 active show" id="navs-pills-justified-passport" role="tabpanel">
+                                    <div id="formContainer">
+                                        <div class="row form-group-passport">
+                                            <div class="col-sm-12 col-md-1 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname">Adult</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="Adult" class="form-control" type="number" value="0" placeholder="Adult">
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-1 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname">Child</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="Child" class="form-control" type="number" value="0" placeholder="Child">
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-1 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname">Infant</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="Infant" class="form-control" type="number" value="0" placeholder="Infant">
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SurName"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <input asp-for="SurName" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="SurName"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GivenName"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                                    <input asp-for="GivenName" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="GivenName"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname">Mobile Number</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <input asp-for="MobileNo" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="MobileNo"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <input asp-for="Email" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Email"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-4">
+                                                <label class="form-label" for="basic-icon-default-fullname">Department</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="Department" class="form-control" id="departmentSelect" onchange="showDepartmentFields()">
+                                                        <option value="">Select Department</option>
+                                                        <option value="Hajj2026">Hajj 2026</option>
+                                                        <option value="Umrah">Umrah</option>
+                                                        <option value="UmrahRamadan">Umrah Ramadan</option>
+                                                        <option value="InternationalTour">International Tour</option>
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Department"></span>
+                                            </div>
+
+                                            <!-- Hajj Fields (hidden by default) -->
+                                            <div id="hajjFields" class="conditional-field col-sm-12 col-md-4">
+                                                <label class="form-label" for="hajjDays">Number of Days</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="NoOfDaysHajjId" class="form-control" id="hajjDays">
+                                                        <option value="">Select Days</option>
+                                                        @foreach (InquiryEmail hajj in ViewBag.NoOfDaysHajj)
+                                                        {
+                                                            <option value="@hajj.InquiryEmailId">@hajj.NoOfDays</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- Umrah Fields (hidden by default) -->
+                                            <div id="umrahFields" class="conditional-field col-sm-12 mt-3">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahMonth">Traveling Month</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="TravelingMonth" id="umrahMonth" class="form-control">
+                                                                <option value="" disabled selected>-- Select Month --</option>
+                                                                @for (int month = 1; month <= 12; month++)
+                                                                {
+                                                                    var monthName = new DateTime(DateTime.Now.Year, month, 1).ToString("MMMM");
+                                                                    var year = DateTime.Now.ToString("yy"); 
+                                                                    <option value="@($"{monthName} {year}")">@monthName @year</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahDays">Number of Days</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="NoOfDaysUmrahId" class="form-control" id="umrahDays">
+                                                                <option value="">Select Days</option>
+                                                                @foreach (InquiryEmail umrah in ViewBag.NoOfDaysUmrah)
+                                                                {
+                                                                    <option value="@umrah.InquiryEmailId">@umrah.NoOfDays</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahCategory">Category</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="AccomodationCategoryId" class="form-control" id="umrahCategory">
+                                                                <option value="">Select Category</option>
+                                                                @foreach (AccomodationCategory category in ViewBag.Categories)
+                                                                {
+                                                                    <option value="@category.AccomodationCategoryId">@category.Category</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Umrah Ramzan Fields (hidden by default) -->
+                                            <div id="umrahRamzanFields" class="conditional-field col-sm-12 mt-3">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahMonth">Traveling Month</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="TravelingMonth" id="umrahMonth" class="form-control">
+                                                                <option value="" disabled selected>-- Select Month --</option>
+                                                                @for (int month = 1; month <= 12; month++)
+                                                                {
+                                                                    var monthName = new DateTime(DateTime.Now.Year, month, 1).ToString("MMMM");
+                                                                    var year = DateTime.Now.ToString("yy");
+                                                                    <option value="@($"{monthName} {year}")">@monthName @year</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahDays">Number of Days</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="NoOfDaysUmrahId" class="form-control" id="umrahDays">
+                                                                <option value="">Select Days</option>
+                                                                @foreach (InquiryEmail umrah in ViewBag.NoOfDaysUmrahRamzan)
+                                                                {
+                                                                    <option value="@umrah.InquiryEmailId">@umrah.NoOfDays</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="umrahCategory">Category</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="AccomodationCategoryId" class="form-control" id="umrahCategory">
+                                                                <option value="">Select Category</option>
+                                                                @foreach (AccomodationCategory category in ViewBag.Categories)
+                                                                {
+                                                                    <option value="@category.AccomodationCategoryId">@category.Category</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- International Tour Fields (hidden by default) -->
+                                            <div id="internationalTourFields" class="conditional-field col-sm-12 mt-3">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <label class="form-label" for="tourCategory">Destination</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="DestinationId" class="form-control" id="tourCategory">
+                                                                <option value="">Select Destination</option>
+                                                                @foreach (Destination destination in ViewBag.Destination)
+                                                                {
+                                                                    <option value="@destination.DestinationId">@destination.Name</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label" for="tourCountry">Country</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="CountryId" class="form-control" id="tourCountry">
+                                                                <option value="">Select Country</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label" for="tourCity">City</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="CityId" class="form-control" id="tourCity">
+                                                                <option value="">Select City</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label" for="tourDays">Number of Days</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select asp-for="NoOfDaysTourId" class="form-control" id="tourDays">
+                                                                <option value="">Select Days</option>
+                                                                @foreach (InquiryEmail tour in ViewBag.NoOfDaysTour)
+                                                                {
+                                                                    <option value="@tour.InquiryEmailId">@tour.NoOfDays</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end">Create</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    @Html.AntiForgeryToken()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showDepartmentFields() {
+            const department = document.getElementById('departmentSelect').value;
+
+            document.getElementById('hajjFields').style.display = 'none';
+            document.getElementById('umrahFields').style.display = 'none';
+            document.getElementById('umrahRamzanFields').style.display = 'none';
+            document.getElementById('internationalTourFields').style.display = 'none';
+
+            if (department === 'Hajj2026') {
+                document.getElementById('hajjFields').style.display = 'block';
+            } else if (department === 'Umrah') {
+                document.getElementById('umrahFields').style.display = 'block';
+            } else if (department === 'UmrahRamadan') {
+                document.getElementById('umrahRamzanFields').style.display = 'block';
+            } else if (department === 'InternationalTour') {
+                document.getElementById('internationalTourFields').style.display = 'block';
+            }
+        }
+
+        $(document).ready(function () {
+
+            $('#tourCategory').on('change', function () {
+                var destinationId = $(this).val();
+                if (destinationId) {
+                    $.ajax({
+                        url: '@Url.Action("GetCountriesByDestination", "OnlineInquiry")',
+                        type: 'GET',
+                        data: { destinationId: destinationId },
+                        success: function (data) {
+                            $('#tourCountry').empty().append('<option value="">Select Country</option>');
+                            $.each(data, function (i, country) {
+                                $('#tourCountry').append('<option value="' + country.countryId + '">' + country.name + '</option>');
+                            });
+
+                            $('#tourCity').empty().append('<option value="">Select City</option>');
+                        }
+                    });
+                } else {
+                    $('#tourCountry').empty().append('<option value="">Select Country</option>');
+                    $('#tourCity').empty().append('<option value="">Select City</option>');
+                }
+            });
+
+            $('#tourCountry').on('change', function () {
+                var countryId = $(this).val();
+                if (countryId) {
+                    $.ajax({
+                        url: '@Url.Action("GetCitiesByCountry", "OnlineInquiry")',
+                        type: 'GET',
+                        data: { countryId: countryId },
+                        success: function (data) {
+                            $('#tourCity').empty().append('<option value="">Select City</option>');
+                            $.each(data, function (i, city) {
+                                $('#tourCity').append('<option value="' + city.cityId + '">' + city.name + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#tourCity').empty().append('<option value="">Select City</option>');
+                }
+            });
+
+        });
+
+    </script>
+
+    <partial name="~/Views/Shared/_CNICFormatScriptPartial.cshtml" />
+</body>
+</html>

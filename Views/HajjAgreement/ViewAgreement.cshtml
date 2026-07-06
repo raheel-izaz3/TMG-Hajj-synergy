@@ -1,0 +1,553 @@
+﻿@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Hajj 2024 Data Form & Agreement for Signature. ✍</title>
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+                "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+                "Noto Color Emoji";
+        }
+
+        body {
+            margin: 15px;
+        }
+
+        p {
+            font-size: 12px;
+            margin: 0;
+        }
+
+
+        .company_name_box h1 {
+            margin: 0;
+            padding: 10px 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .AgreementText {
+            background-color: rgb(68, 67, 67);
+            display: inline-block;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            /* padding-bottom: 0; */
+        }
+
+        .DateText p {
+            font-size: 10px;
+            margin-top: 5px;
+            margin-left: 1px;
+        }
+
+
+
+        .FirstPart {
+            margin: 10px 0;
+        }
+
+        .company_Info {
+            font-size: 8px;
+        }
+
+        .SecondPart_Table_box {
+            display: flex;
+            justify-content: space-between;
+
+
+        }
+
+        /* .Second_Part{
+        float: left !important;
+      } */
+        .Second_Part p {
+            font-size: 8px
+        }
+
+        .userInfoBoxs {
+
+            display: flex;
+            column-gap: 8px;
+            justify-content: center;
+
+        }
+
+        h1 {
+            text-align: center !important;
+        }
+
+        .profile_picture {
+            border: 1px solid black;
+        }
+
+        .userInfoBox {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Table_Style */
+        .table_container {
+            /* width: 335px; */
+            margin-top: 10px;
+            /* float: left !important; */
+        }
+
+
+        .table_profile {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table_profile tr {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px !important;
+            /* border-bottom: 1px solid black; */
+            border: 1px solid black;
+
+        }
+
+        .table_profile th {
+            font-size: 8px !important;
+
+        }
+
+        .table_profile td {
+            /* text-align: right; */
+            font-size: 8px !important;
+            padding: 2px 0;
+        }
+
+        .table_profile tr td:nth-child(2) {
+            text-align: right;
+        }
+
+        /* Package__Details ___ */
+        .packagesection {
+            margin-top: 30px;
+        }
+
+        .Our_Package {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid black;
+        }
+
+        .Our_Package td {
+            font-size: 8px !important;
+        }
+
+        .Our_Package th {
+            font-size: 8px !important;
+            padding: 3px 0;
+            text-align: left;
+        }
+
+        .Our_Package tr {
+            border-bottom: 1px solid black;
+        }
+
+        .Our_Package th:nth-child(2) {
+            padding-left: 100px;
+        }
+
+        .Our_Package td:nth-child(2) {
+            padding-left: 100px;
+        }
+
+        /* Package__Details ___ END*/
+
+        /* Terms_contidions_form  */
+        .termsConditions {
+            margin-top: 15px;
+        }
+
+        @*.termsConditionsp{text-align:justify;}.termsConditionsh5{font-size:10px;/*background-image:linear-gradient(315deg,#74d6800%,#378b2974%);*/background-color:lightblue;/*color:white;*/color:black;display:inline-block;padding:08px!important;}*@@*.termsConditionsh5,p,li{margin:0;padding:0;}.termsConditionsp{font-size:8px;}*@.profile_image img {
+            width: 100%;
+        }
+
+        .profile_image {
+            width: 130px !important;
+            height: 170px;
+            float: left !important;
+            /* width: 100%; */
+            border: 1px solid black;
+            /* margin-top: 15px; */
+            /* box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px; */
+            box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+            margin: 11px 0px;
+            text-align: left !important;
+        }
+
+        .UnOrded_list li {
+            font-size: 8px;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2px;
+        }
+
+        .QR_Code_logo {
+            text-align: right;
+        }
+
+        .footer-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+
+        }
+
+        .signature-part {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #signatureCanvas {
+            border: 1px solid black;
+        }
+    </style>
+
+</head>
+
+<body>
+
+     <button id="download-pdf" class="print-btn" style="margin-bottom: 10px !important;">Download PDF</button>
+
+
+  <div class="hajjAgreement">
+    <header>
+        <div class="agreement_Container">
+            <div class="AgreementText">
+                <h4 style="margin: 0; padding: 0;">AGREEMENT HAJJ 2024 - (1445-H)
+                </h4>
+            </div>
+            <div class="DateText">
+                <p> <span>DATE OF AGREEMENT: @DateTimeManager.GetDate(DateTime.Today)</p>
+            </div>
+
+        </div>
+        @* <div class="QR_Code_logo">
+        <img src="./qr-code.png" alt="" width="75px" height="75px">
+        <p style="font-size: 10px;"><span> C.I.D: </span>@Model.CID</p>
+
+        </div> *@
+    </header>
+
+    <div class="FirstPart">
+        <h6 style="margin: 0; padding: 0;">FIRST PART:</h6>
+        <p class="company_Info">M/S @Model.CompanyName. A CLUSTER PART OF
+            @Model.ClusterName. <br> A COLLABORATIVE CLUSTER-AFFILIATE HAJJ GROUP
+            MANAGEMENT COMPANY.</p>
+    </div>
+
+    <div class="SecondPart_Table_box">
+        <div class="Second_Part">
+            <h6 style="margin: 0; padding: 0;">SECOND PART:</h6>
+            <p style="margin: 0; padding: 0; font-weight: bold;">@Model.Title @Model.Name </p>
+            <p><span>Passport Number: </span>@Model.PassportNumber</p>
+            <p><span>Address: </span> @Model.Address</p>
+            <p><span>Contact: </span>@Model.Contact</p>
+            <p><span>Email: </span>@Model.Email</p>
+            <p><span>Category: </span>@Model.Category</p>
+            <p><span>Hajj Application No: </span>@Model.HajjAppNumber</p>
+        </div>
+
+
+
+        <!-- Table Info  -->
+        <div class="userInfoBoxs">
+
+            <div class="profiles-img-box">
+                <img src="~/@Model.HajjiImage" alt="" class="profile_image">
+            </div>
+
+            <div class="table_container" id="div1">
+                <table class="top_service_table table_profile title_table">
+                    <tr style="background-color: lightblue;">
+                        <th colspan="1" style="
+                      text-align: left;
+                      font-size: 10px;
+                      color: black;
+                      background-color: lightblue;
+                      font-weight: bolder;
+
+                    ">
+                            BASIC PACKAGE WITHOUT AIR TICKET, INCLUDING *I-ADF: (@Model.Package MEDINAH
+                            @Model.MedinahArrival)
+                        </th>
+
+
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;"> DESCRIPTION</td>
+                        <td style="font-weight: bold;"> AMOUNT (USD)</td>
+                    </tr>
+                    <tr>
+                        <td>@Model.IADFString </td>
+                        <td>@Model.IADFPriceWithPackage</td>
+                    </tr>
+                    <tr>
+                        <td>** EI-ADF (EXTRA INDIVIDUAL ADDITIONAL FACILITY) </td>
+                        <td>@Model.ExtraFacilitiesPriceUsd</td>
+                    </tr>
+                    <tr>
+                        <td>AIR TICKET </td>
+                        <td>@Model.FlightTicketPriceUsd</td>
+                    </tr>
+                    <tr>
+                        <td>AIR TICKET DIFFERENCE AMOUNT (IF APPLICABLE)</td>
+                        <td>@Model.FlightTicketDifferencePriceUsd</td>
+                    </tr>
+                    <tr id="AmountUSD_ROW">
+                        <td>TOTAL AMOUNT</td>
+                        <td contenteditable="true" id="editable-row">@Model.TotalPerPersonUsd</td>
+                    </tr>
+                    <tr>
+                        <td>DISCOUNT/REBATE/ROE ADJUSTMENT (IF APPLICABLE)</td>
+                        <td>@Model.DiscountUsd</td>
+                    </tr>
+                    <tr>
+                        <td>NET RECEIVABLE AMOUNT (USD)</td>
+                        <td>@Model.NetReceivable</td>
+                    </tr>
+                    <tr style="background-color: grey !important; color: white">
+                        <td>PAYMENT RECEIVED (USD) (REFER TO STATEMENT) </td>
+                        <td></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- Package Table Section Start  -->
+    <div class="packagesection">
+        <table class="Our_Package">
+            <thead>
+                <tr style="background-image: linear-gradient(315deg, #278533 0%, #378b29 74%); color: white;">
+                    <th>PACKAGE DETAIL (TABLE B)</th>
+                    <th>TRANSPORT ROUTE (TABLE C)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Package</td>
+                    <td>
+                        Upon Arrival in KSA, Airport to Hotel / Building by Airport Naqaba
+                        Sharing Group Bus
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        * Medina: @Model.MedinaFacilities
+                    </td>
+                    <td>
+                        Hotel to Train Station &amp; Train Station to Accommodation
+                        (Intercity) by Group Bus
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        * Makkah: @Model.MakkahFacilities
+                    </td>
+                    <td>
+                        Med to Mak / Mak to Med by Bus or by Train in Economy Class with
+                        Hand Carry only
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>* Azizia: @Model.AziziaFacilities</td>
+                    <td>
+                        Luggage will be Shuttled separately in a Truck with approximate
+                        8hrs journey (in-case of a train)
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>** EI-ADF: @Model.ExtraFacilities</td>
+                    <td>
+                        Mashair: Mina, Arafat, Muzdalfa &amp; Back to Azizia by Group Bus
+                        Seat to Seat
+                    </td>
+                </tr>
+                <tr>
+                    <td>Airline: @Model.Airline</td>
+                    <td>
+                        Makkah/Medinah Accommodation to Airport by Group Sharing Bus
+                    </td>
+                </tr>
+                <tr>
+                    <td>Medina Arrival: @Model.MedinahArrival</td>
+                    <td>
+                        Ziarat in Makkah &amp; Medinah (as per package) by Group Sharing
+                        Bus
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Terms And Condition Heading Section  -->
+    <div class="termsConditions">
+        @Html.Raw(Model.SharedAgreement)
+        <hr>
+        @Html.Raw(Model.SpecificAgreement)
+    </div>
+    <!-- Terms And Condition Heading  End -->
+
+    <form action="/HajjAgreement/Save" method="post" onsubmit="return confirm('Are You Sure?')">
+        <div class="signature-bottom" style="margin-top: 30px;">
+            <div class="footer-text">
+                <p><b> I HAVE CAREFULLY READ AND UNDERSTOOD THE TERMS AND CONDITIONS OF THIS AGREEMENT AND THESE ARE
+                        CORRECT
+                        <br>
+                        IN WITNESS WHEREOF </b> , the parties hereto have executed this Hajj Program Reservation
+                    Agreement
+                    as of the date first above written.</p>
+            </div>
+
+
+
+
+            <div class="signature-part">
+
+                <div
+                    style="margin-top: 175px; width: 200px; height: 200px;   text-align: center; float: left; padding: 20px;">
+                    <div style="margin-top: 50px;">
+                        <span>@DateTime.Now.ToString("dd/MM/yyyy")</span>
+                        <hr width="100px;" style="border: 1px solid black;">
+                        <p style="padding: 10px;">Date</p>
+                    </div>
+
+                </div>
+
+                <div style="float: left; padding: 20px; margin-top: 80px;">
+                    <div class="col-md-12 mt-3">
+                        @* <canvas id="signatureCanvas"></canvas> *@
+                        <img src='@Model.SignatureBase64' width=""220"" height=""200"" />
+                    </div>
+
+                    <p style="border-top: 2px solid black; text-align: center;">Applicant's Signature & Thumb Impression
+                    </p>
+
+                </div>
+
+                <div style="float: left; padding: 20px;">
+                    <img src="~/@Model.CompanySeal" id="signatureStamp" width="180px" height="200px">
+                    <p style="border-top: 2px solid black;">Company Seal Representative Sign</p>
+                </div>
+            </div>
+
+        </div>
+
+        @* <div class="container mt-5">
+            <div class="row">
+
+                <div class="col-sm-12 col-md-6">
+                    <label>Verify Email: </label>
+                    <input type="email" asp-for="Email" class="form-control" />
+                </div>
+            </div>
+            <!-- <div class="row mt-5"> -->
+                <div class="col-md-12 mt-3">
+                    <div class="form-check-inline" id="signatureBox">
+                        <input class="form-check-input" type="checkbox" checked id="dataform">
+                        <label class="form-check-label" for="dataform">
+                            I want to sign my Hajj Agreement
+                        </label>
+                    </div>
+                    <div class="form-check-inline" id="signatureBox">
+                        <input class="form-check-input" type="checkbox" asp-for="SignDataForm" checked id="medical">
+                        <label class="form-check-label" for="medical">
+                            I want to sign my Data Form
+                        </label>
+                    </div>
+                    <div class="form-check" id="signatureBox">
+                        <input class="form-check-input" type="checkbox" asp-for="SignMedicalAffidavit" checked
+                            id="medical">
+                        <label class="form-check-label" for="medical">
+                            <b>Medical Fitness Certificate:</b><br>
+                            I want to sign my Medical Affidavit as I am medically fit for Hajj journey & I do not
+                            require a helper for wheel chair.
+                        </label>
+                    </div>
+                    <div class="form-check" id="signatureBox">
+                        <input class="form-check-input" type="checkbox" value="" id="showhide"
+                            onchange="showHideSignatureBox()">
+                        <label class="form-check-label" for="showhide">
+                            I have reviewed the Hajj Data Form, confirmed the Hajj Agreement, and confirmed my medical
+                            fitness. <br> I hereby confirm all and affix my signature.
+                        </label>
+                    </div>
+
+                </div>
+
+
+               
+            </div> *@
+
+    </form>
+    <script src="~/assets/js/mainFromSign.js"></script>
+    <script src="~/assets/js/signature.js"></script>
+
+   
+    
+
+    </div>
+ <div style="page-break-after: always;"></div>
+
+
+ <script>
+    document.getElementById('download-pdf').addEventListener('click', function () {
+        var element = document.querySelector('.hajjAgreement');
+
+        // Hide buttons before generating the PDF
+        var buttons = document.querySelectorAll('.print-btn');
+        buttons.forEach(button => button.style.display = 'none');
+
+        html2pdf().from(element).set({
+            margin: 1,
+            filename: 'HajjAgreement.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        }).save().then(function () {
+            // Show buttons after PDF is generated
+            buttons.forEach(button => button.style.display = 'inline-block');
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

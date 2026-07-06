@@ -1,0 +1,54 @@
+﻿<script>
+
+    function getAdditionalFac(id) {
+        if (id != "") {
+            $.ajax({
+                url: "/Package/GetAdditionalFacilities/" + id,
+                method: "GET",
+                success: res => {
+                    console.log(res);
+                    let html = `<div class="col-4 mt-2">
+                                    <h4 class="">Package Facilities</h4>
+                                </div>
+                                <hr class="col-sm-12 mb-2">`;
+
+                    if (res.length == 0) {
+                        html += `<div class="col-sm-12">
+                                    <p>No Package Facilities</p>
+                                </div>`;
+                    } else {
+                        html += `<ol>`;
+                        let i = 0;
+                        for (let facility of res) {
+                            html += `
+                                <li>
+                                    <input value="${facility?.individualFacilityDescription.individualFacilityDescriptionId}" type="hidden" name="PackageAdditionalFacilitiesIds[${i}]"/>
+                                    <input value="false" type="hidden" id="addFac_${i}" name="PackageAdditionalFacilitiesChecked[${i}]"/>
+                                    <label class="mx-2" for="addFacCheck_${i}">
+                                        ${facility?.individualFacilityDescription?.description}
+                                    </label>
+                                </li>`;
+                            i++;
+                        }
+                        html += `</ol>`;
+                    }
+
+                    document.querySelector("#addFac").innerHTML = html;
+                },
+                error: err => {
+                    console.log(err);
+                }
+            });
+        }
+    }
+
+    function checkAddFac(id, elem) {
+        const other = document.querySelector("#addFac_" + id);
+        if (elem.checked) {
+            other.value = true;
+        } else {
+            other.value = false;
+        }
+    }
+
+</script>

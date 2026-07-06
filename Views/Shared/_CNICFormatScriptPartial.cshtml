@@ -1,0 +1,19 @@
+﻿<script>
+    function formatCnicInput(inputElement) {
+        let inputValue = inputElement.value;
+
+        // Remove any non-numeric characters
+        inputValue = inputValue.replace(/\D/g, '');
+
+        // Insert dashes at the specified positions
+        if (inputValue.length > 5) {
+            inputValue = inputValue.slice(0, 5) + '-' + inputValue.slice(5);
+        }
+        if (inputValue.length > 13) {
+            inputValue = inputValue.slice(0, 13) + '-' + inputValue.slice(13);
+        }
+
+        // Update the input value
+        inputElement.value = inputValue;
+    }
+</script>

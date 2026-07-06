@@ -1,0 +1,783 @@
+﻿@using TMG.Models.Updated_Accounts;
+@model TMG.Models.Updated_Accounts.PaymentVoucherViewModel
+
+@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title></title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			overflow-x: hidden;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			margin: 0;
+			padding: 0;
+		}
+
+		p {
+			font-size: 9px;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* Table styling  */
+		table tr th {
+			font-size: 10px;
+		}
+
+		table tr td {
+			font-size: 9px !important;
+		}
+
+		.AMounttotelvalue {
+			font-size: 12px !important;
+			color: white;
+			background-color: black;
+		}
+
+		.TotalAMountTitle {
+			font-size: 10px !important;
+			color: white;
+			background-color: black;
+		}
+
+		#discountRateHideShow {
+			display: none;
+		}
+
+		#totalAmountHideShow {
+			display: none;
+		}
+
+
+		/* Table styling  End */
+		.downloade_btn {
+			padding: 10px 45px;
+			background-color: lightblue;
+			outline: none;
+			border: 1px solid black;
+			font-weight: bold;
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+			.downloade_btn:hover {
+				background-color: white;
+			}
+
+		/* Check-Box Styling  */
+		.check_box_container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.check_box_container .CheckBox {
+				width: 20px;
+				height: 12px;
+				margin: 0;
+				padding: 0;
+			}
+
+		@@media print {
+			.check_box_container {
+				display: none !important;
+			}
+
+			button {
+				display: none;
+			}
+		}
+
+		/* Check-Box Styling End */
+		.parent {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+		}
+
+			.container .logo {
+				width: 55px;
+			}
+
+				.container .logo img {
+					width: 100%;
+				}
+
+		.AL_Khair_Title {
+			font-size: 18px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.title_break {
+			font-size: 12px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.qr-code p {
+			padding: 0;
+			margin: 0;
+		}
+
+		.qr-code {
+			padding: 0;
+			padding-top: 20px;
+		}
+
+		.qr_number {
+			text-align: right;
+			margin: 0px;
+			font-weight: bold;
+		}
+
+		.horizantal_line {
+			border: 1px solid black;
+		}
+
+
+		.Invoice_to_section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+
+		.proforma_title {
+			text-align: center;
+			padding-top: 10px;
+			margin-bottom: 15px;
+		}
+
+		.Customer_Info p {
+			padding: 1px 0;
+			font-weight: bold !important;
+		}
+
+		.Customer_Col_2 p {
+			padding: 1px 0;
+			font-weight: bold;
+		}
+
+		.Customer_Col_2 span {
+			font-weight: normal;
+		}
+
+		.Customer_Info span {
+			font-weight: normal;
+		}
+
+		.ALL_MEMBERS_NAMES p {
+			padding: 1px 0;
+		}
+
+		.ALL_MEMBERS_NAMES span {
+			font-weight: bold;
+		}
+
+		/* Table Styling Start  */
+		.Service_Table {
+			width: 100%;
+		}
+
+			.Service_Table tr th {
+				font-size: 10px;
+				text-align: right;
+			}
+
+			.Service_Table tr td {
+				border-bottom: 1px solid black;
+				font-size: 10px;
+			}
+
+				.Service_Table tr td:nth-child(2) {
+					text-align: right;
+					width: 130px;
+				}
+
+			.Service_Table tr:nth-last-child(1) {
+				font-weight: bold;
+			}
+
+		/* MEdia Querry  */
+		@@media (max-width :768px) {
+			.Bank_Table {
+				width: 100% !important;
+			}
+		}
+
+		.Bank_Table {
+			margin-top: 20px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 60%;
+		}
+
+			.Bank_Table tr {
+				border: 1px solid black;
+			}
+
+				.Bank_Table tr th {
+					border: 1px solid black !important;
+					background-color: lightblue;
+					text-align: left;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+				.Bank_Table tr td:nth-child(1) {
+					font-weight: bold;
+				}
+
+				.Bank_Table tr td {
+					text-align: left;
+					border: 1px solid black;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+		/* ADF_Details_Table styling Start  */
+		.Receipt_container {
+			margin-top: 7px;
+		}
+
+
+		.ADF_Container {
+			width: 60%;
+		}
+
+		.ADF_Details_Box {
+			margin-bottom: 10px;
+		}
+
+		.ADF_heading {
+			background-color: lightblue;
+			font-weight: bold;
+			font-size: 10px !important;
+			text-align: center;
+			color: black !important;
+		}
+
+		@@media (max-width:768px) {
+			.ADF_Container {
+				width: 100% !important;
+			}
+		}
+
+		.ADF_Details_Box table {
+			border-collapse: collapse;
+			border: 1px solid black;
+			width: 100%;
+		}
+
+		.ADF_Details_Box tr th {
+			border: 1px solid black;
+		}
+
+		.ADF_Details_Box tr td {
+			border: 1px solid black;
+		}
+
+
+		.totalText,
+		.amountText {
+			font-weight: bold !important;
+			background-color: lightblue;
+			font-size: 10px !important;
+			color: black !important;
+		}
+
+		/*############ ADF_Details_Table styling End ############## */
+		/* *********Note List ********** */
+		.terms_condition_list {
+			margin-left: 6px;
+			margin: 20px 0px !important;
+		}
+
+		.note_heading {
+			font-size: 10px;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.Notes_order_list {
+			padding: 0;
+			margin: 8px;
+		}
+
+			.Notes_order_list li {
+				font-size: 8px;
+				padding: 2px;
+			}
+
+		/* *********Note List  END********** */
+		footer {
+			position: fixed;
+			bottom: 0%;
+			left: 0;
+			width: 100% !important;
+			page-break-before: always;
+		}
+
+		.footer_address {
+			border-top: 1px solid black;
+			text-align: center;
+		}
+
+			.footer_address h6 {
+				font-weight: normal !important;
+			}
+
+
+
+
+		.top_service_table {
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 0px;
+			margin-top: 10px;
+		}
+
+			.top_service_table tr th,
+			td {
+				border: 1px solid black;
+			}
+
+			.top_service_table tr {
+				border: 1px solid black;
+			}
+
+				.top_service_table tr:nth-child(1) {
+					border: none !important;
+					outline: none;
+				}
+
+				.top_service_table tr td:nth-child(2) {
+					text-align: right;
+				}
+
+				.top_service_table tr:nth-last-child(1) {
+					font-weight: bold;
+					font-size: 10px !important;
+					background-color: lightblue;
+					color: white;
+				}
+
+		/* ________Content_Editable Row _____ */
+		[contenteditable] {
+			width: 100px;
+		}
+
+		/* ________Content_Editable Row _____ */
+		/* Hide And Show Table Styling  */
+		#Receipt_PaymentRecord,
+		#Payment_Subject {
+			display: none;
+		}
+
+
+		#Memberbreaktable {
+			display: none;
+			text-align: center;
+		}
+
+		.MembersName tr th:nth-child(1) {
+			text-align: left !important;
+		}
+
+		.MembersName tr,
+		th,
+		td:nth-child(1) {
+			text-align: left;
+		}
+
+			.MembersName tr th:nth-child(2),
+			.MembersName tr th:nth-child(3),
+			.MembersName tr th:nth-child(4),
+			.MembersName tr th:nth-child(5),
+			.MembersName tr th:nth-child(6) {
+				text-align: center !important;
+			}
+
+		.MembersName th:nth-child(1),
+		.MembersName th:nth-child(1),
+		.MembersName tH:nth-child(4) {
+			text-align: left;
+		}
+
+		.MembersName th,
+		td {
+			text-align: center;
+		}
+
+		/* Media Querry Check-box and Label button  */
+		label {
+			font-size: 14px !important;
+		}
+
+		@@media (max-width: 768px) {
+			label {
+				font-size: 14px;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(0.8);
+			}
+		}
+
+		.check_box_container span {
+			font-weight: bold;
+		}
+
+		.flex-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.start-iadf td {
+			text-align: left !important;
+		}
+
+		.Signature-part {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			height: 220px;
+			text-align: center;
+			align-items: end;
+			column-gap: 30px;
+			margin-top: 20px;
+		}
+
+			.Signature-part p {
+				margin-top: 70px;
+				font-weight: 500;
+				font-size: 14px;
+			}
+
+		#incoice_page_body {
+			height: 100%;
+		}
+
+	</style>
+	<!-- html2pdf CDN Link  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<!-- html2pdf CDN Link -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+</head>
+
+<body>
+	<button class="downloade_btn" onclick="downloadPDF()">Download PDF</button>
+	<div id="incoice_page_body">
+		<div class="title" style="padding-top : 5px">
+			<p id="companyName">@Model.PrintDate | @Model.PrintedBy</p>
+		</div>
+		<div class="parent">
+			<div class="container">
+				<div class="logo" style="padding-top : 5px">
+					<img src="~/@Model.CompanyLogo" id="companyLogo" alt="Logo" />
+				</div>
+
+				<div class="title" style="padding-top : 5px">
+					<p class="AL_Khair_Title" id="companyName">@Model.CompanyName</p>
+					<p style="margin-left: 15px;" id="companyAddress">@Model.CompanyAddress</p>
+					<p style="margin-left: 15px;" id="companyContact">@Model.CompanyContact</p>
+				</div>
+			</div>
+			<div class="qr-code">
+				<img src="~/Group Logo.png" alt="QR-Code" style="width: 75px; height: 75px" />
+			</div>
+		</div>
+		<div class="horizantal_line"></div>
+		<div class="proforma_title">
+			<h4 id="miniStatement_Title">PAYMENT VOUCHER</h4>
+		</div>
+		<div class="Invoice_to_section">
+			<div>
+				<h6>PAYMENT VOUCHER NO: <span id="invoiceToCustomer">@Model.PaymentVoucherNo</span></h6>
+				<div class="Customer_Info">
+					<p>DATE: <span id="headName">@Model.Date</span></p>
+					<p>PAYMENT MODE: <span id="headName">@Model.IsIBFT</span></p>
+					<p>INSTRUMENT NO: <span id="headName">@Model.InstrumentNumber</span></p>
+				</div>
+			</div>
+		</div>
+
+		<h6 style="padding-top: 20px;">DEBIT | RECEIVER</h6>
+
+		<!-- Top Service Section Start -->
+		<table class="top_service_table">
+
+			@{
+				var DebitCurrencySymbol = Model.Payments.FirstOrDefault(p => p.AccountNature == AccountNature.Debit)?.Accounts.Currencies.ToString();
+			}
+
+			<thead>
+				<tr>
+					<th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">DESCRIPTION</th>
+					<th style="text-align: center; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">ROE</th>
+					<th style="text-align: right; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">AMOUNT (@DebitCurrencySymbol)</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@foreach (var item in Model.Payments.Where(p => p.AccountNature == AccountNature.Debit))
+				{
+					float? totalDebitsTaxes = (Model.SalesTax ?? 0) + (Model.AdvanceTax ?? 0) + (Model.DebitOtherTaxes ?? 0) + (Model.WTH ?? 0);
+					float? totalDebitAmounts = (Model.TotalDebit ?? 0) - (totalDebitsTaxes ?? 0);
+
+					<tr>
+						<td style="text-align: left; font-size: 10px; background-color: white; color: black;">@item.Accounts.Name</td>
+						<td style="text-align: center; font-size: 10px; background-color: white; color: black;">@Model.ROE</td>
+						<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+							@DebitCurrencySymbol @totalDebitAmounts?.ToString("N2")
+						</td>
+					</tr>
+				}
+
+				@{
+					// if (Model.IsDebitBank)
+					// {
+					// if (Model.DebitBankCharges != 0)
+					// {
+					// 	<tr>
+					// 		<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Bank Charges</td>
+					// 		<td style="text-align: center; font-size: 10px; background-color: white; color: black;"></td>
+					// 		<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+					// 			@DebitCurrencySymbol @Model.DebitBankCharges?.ToString("N2")
+					// 		</td>
+					// 	</tr>
+					// }
+					if (Model.SalesTax != 0)
+					{
+						<tr>
+							<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Advance Sales Tax</td>
+							<td style="text-align: center; font-size: 10px; background-color: white; color: black;"></td>
+							<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+								@DebitCurrencySymbol @Model.SalesTax?.ToString("N2")
+							</td>
+						</tr>
+					}
+					if (Model.AdvanceTax != 0)
+					{
+						<tr>
+							<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Advance Tax</td>
+							<td style="text-align: center; font-size: 10px; background-color: white; color: black;"></td>
+							<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+								@DebitCurrencySymbol @Model.AdvanceTax?.ToString("N2")
+							</td>
+						</tr>
+					}
+					if (Model.WTH != 0)
+					{
+						<tr>
+							<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Other Taxes</td>
+							<td style="text-align: center; font-size: 10px; background-color: white; color: black;"></td>
+							<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+								@DebitCurrencySymbol @Model.WTH?.ToString("N2")
+							</td>
+						</tr>
+					}
+					if (Model.DebitOtherTaxes != 0)
+					{
+						<tr>
+							<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Other Taxes</td>
+							<td style="text-align: center; font-size: 10px; background-color: white; color: black;"></td>
+							<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+								@DebitCurrencySymbol @Model.DebitOtherTaxes?.ToString("N2")
+							</td>
+						</tr>
+					}
+
+					// float? totalDebitTaxes = (Model.SalesTax ?? 0) + (Model.AdvanceTax ?? 0) + (Model.DebitOtherTaxes ?? 0) + (Model.WTH ?? 0);
+					float? totalDebitAmount = (Model.TotalDebit ?? 0);
+					// float? totalDebitAmount = (Model.TotalDebit ?? 0) + (totalDebitTaxes ?? 0);
+
+					<!-- Add a row for the total sum -->
+					<tr style="font-weight: bold;">
+						<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;">Total Amount (@DebitCurrencySymbol)</td>
+						<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;"></td>
+						<td style="text-align: right; font-size: 10px; background-color: lightgray; color: black;">
+							@DebitCurrencySymbol @totalDebitAmount?.ToString("N2")
+						</td>
+					</tr>
+					// }
+					// else
+					// {
+					// 	<!-- Add a row for the total sum -->
+					// 	<tr style="font-weight: bold;">
+					// 		<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;">Total Amount (@DebitCurrencySymbol)</td>
+					// 		<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;"></td>
+					// 		<td style="text-align: right; font-size: 10px; background-color: lightgray; color: black;">
+					// 			@DebitCurrencySymbol @Model.TotalDebit?.ToString("N2")
+					// 		</td>
+					// 	</tr>
+					// }
+				}
+			</tbody>
+		</table>
+		<div class="Customer_Col_2">
+			<p>REMARKS: <span id="cnic"> @Model.DebitRemarks</span> </p>
+		</div>
+
+		<h6 style="padding-top: 20px;">CREDIT | SENDER</h6>
+
+		<!-- Top Service Section Start -->
+		<table class="top_service_table">
+
+			@{
+				var CreditCurrencySymbol = Model.Payments.FirstOrDefault(p => p.AccountNature == AccountNature.Credit)?.Accounts.Currencies.ToString();
+			}
+
+			<thead>
+				<tr>
+					<th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">DESCRIPTION</th>
+					<th style="text-align: right; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">AMOUNT (@CreditCurrencySymbol)</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.Payments.Where(p => p.AccountNature == AccountNature.Credit))
+				{
+					<tr>
+						<td style="text-align: left; font-size: 10px; background-color: white; color: black;">@item.Accounts.Name</td>
+						<td style="text-align: right; font-size: 10px; background-color: white; color: black;">@CreditCurrencySymbol @Model.TotalCredit?.ToString("N2")</td>
+					</tr>
+				}
+
+				@{
+					if (Model.IsCreditBank)
+					{
+						if (Model.DebitBankCharges != 0)
+						{
+							<tr class="credit-tax-inputs">
+								<td style="text-align: left; font-size: 10px; background-color: white; color: black;">Bank Charges</td>
+								<td style="text-align: right; font-size: 10px; background-color: white; color: black;">
+									@CreditCurrencySymbol @Model.DebitBankCharges?.ToString("N2")
+								</td>
+							</tr>
+						}
+
+						// float? totalCreditTaxes = Model.CreditBankCharges + Model.CreditOPAPTax + Model.CreditRemittanceTax + Model.CreditThirdPartyTax + Model.CreditOtherTaxes + (Model.CreditBouncePanelty ?? 0);
+						//float? totalsDebitTaxes = (Model.DebitBankCharges ?? 0) + (Model.DebitOPAPTax ?? 0) + (Model.DebitRemittanceTax ?? 0) + (Model.DebitThirdPartyTax ?? 0) + (Model.DebitOtherTaxes ?? 0) + (Model.DebitBouncePanelty ?? 0);
+						float? totalCreditAmount = (Model.TotalCredit ?? 0) + (Model.DebitBankCharges ?? 0);
+
+						<tr style="font-weight: bold;">
+							<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;">Total Amount (@CreditCurrencySymbol)</td>
+							<td style="text-align: right; font-size: 10px; background-color: lightgray; color: black;">
+								@CreditCurrencySymbol @totalCreditAmount?.ToString("N2")
+							</td>
+						</tr>
+					}
+					else
+					{
+						<tr style="font-weight: bold;">
+							<td style="text-align: left; font-size: 10px; background-color: lightgray; color: black;">Total Amount (@CreditCurrencySymbol)</td>
+							<td style="text-align: right; font-size: 10px; background-color: lightgray; color: black;">
+								@CreditCurrencySymbol @Model.TotalCredit?.ToString("N2")
+							</td>
+						</tr>
+					}
+				}
+
+
+			</tbody>
+		</table>
+		<div class="Customer_Col_2">
+			<p>REMARKS: <span id="cnic"> @Model.CreditRemarks</span> </p>
+		</div>
+
+		<section class="Signature-part" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 20px; padding-right: 20px; margin-top: 40px; margin-bottom: 80px;">
+			<div style="text-align: center;">
+				<img style="border-bottom: 1px solid black; height: 150px; width: 150px;" src="~/@Model.CreatorSignature" alt="">
+				<p style="margin-top: 0px;">PREPARED BY</p>
+			</div>
+
+			<div style="text-align: center;">
+				<img style="border-bottom: 1px solid black; height: 150px; width: 150px;" src="~/@Model.FinanceOfficerSignature" alt="">
+				<p style="margin-top: 0px;">FINANCE OFFICER</p>
+			</div>
+
+			<div style="text-align: center;">
+				<img style="border-bottom: 1px solid black; height: 150px; width: 150px;" src="~/@Model.AuthorizingAgentSignature" alt="">
+				<p style="margin-top: 0px;">AUTHORIZING AGENT</p>
+			</div>
+
+			<div style="text-align: center;">
+				<img style="border-bottom: 1px solid black; height: 150px; width: 150px;" src="~/@Model.CEOSignature" alt="">
+				<p style="margin-top: 0px;">CEO</p>
+			</div>
+		</section>
+
+		<!-- footer  -->
+
+		<div>
+			<div class="footer_address" id="footer">
+				<h6 style="position: relative; top: -15px; font-weight: bold !important;">
+					THIS IS SYSTEM GENERATED. IN CASE OF ANY DISCREPANCIES, PLEASE CONTACT YOUR COORDINATOR.
+				</h6>
+				<h6>
+					Address: @Model.CompanyAddress
+				</h6>
+				<h6>
+					Phone: @Model.CompanyContact Email: @Model.CompanyEmail Web: @Model.CompanySite
+				</h6>
+			</div>
+		</div>
+
+
+	</div>
+
+	<script>
+
+		function downloadPDF() {
+
+		  var element = document.getElementById('incoice_page_body');
+
+		  html2pdf()
+			.from(element)
+			.set({
+			  margin: 10,
+			  filename: 'Payment_Voucher.pdf',
+			  image: { type: 'jpeg', quality: 0.99 },
+			  html2canvas: { scale: 10 },
+			  jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+			})
+			.save();
+		}
+
+	</script>
+
+</body>
+
+</html>

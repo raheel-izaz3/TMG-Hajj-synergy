@@ -1,0 +1,132 @@
+@model IEnumerable<FamilyBiometricUploadModel>
+
+@{
+    Layout = "_InvoiceLayout";
+    ViewData["title"] = "Upload Biometric Screenshot";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Upload Screenshot of Biometric Confirmation Received via Email</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h5>Package Name: @ViewBag.PackageName</h5>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card p-3">
+                @{
+                    int i = 0;
+                }
+                <span id="error" class="text-danger"></span>
+                @foreach (var item in Model)
+                {
+                    <form method="post" enctype="multipart/form-data" onsubmit="submitForm(event, this, @i)">
+                        <div class="row mb-3 border-bottom" id="row_@i">
+                            <div class="col-1 col-md-1">
+                                <input type="hidden" name="FamilyHeadId" id="FamilyHeadId_@i" value="@item.FamilyHeadId">
+                                <p>@item.SNo .</p>
+                            </div>
+
+                            <div class="col-11 col-md-4">
+                                <p>@item.FullName <b>@item.CID</b></p>
+                            </div>
+                            @if (!item.Saved)
+                            {
+
+                                <div class="col-12 col-sm-12 col-md-3 mb-1" id="eno_div_@i">
+                                    <input type="text" name="ENo" minlength="8" maxlength="8" required class="form-control"
+                                        placeholder="Please Type your Enrollment ID" id="ENo_@i" required>
+                                </div>
+                                <div class="col-9 col-sm-9 col-md-3" id="file_div_@i">
+                                    <input type="file" name="File" class="form-control" id="File_@i" required>
+                                </div>
+                                <div class="col-3 col-sm-3 col-md-1" id="sub_div_@i">
+                                    <button class="btn btn-success float-end" id="submit">Submit</button>
+                                </div>
+                            }
+                            else{
+                                <div class="col-sm-12 col-md-7 mb-1" id="succ_div_@i">
+                                    <p class="fw-bold"><i class="bx text-success bxs-badge-check"></i> Biometric Uploaded!</p>
+                                </div>
+                            }
+                        </div>
+                    </form>
+                    i++;
+                }
+
+                <div class="row">
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+
+    function submitForm(e, elem, index) {
+        e.preventDefault();
+
+        var famHeadId = document.querySelector(`#FamilyHeadId_${index}`).value
+        var eno = document.querySelector(`#ENo_${index}`).value
+        var file = document.querySelector(`#File_${index}`).files[0]
+
+        var formData = new FormData();
+        formData.append("FamilyHeadId", famHeadId)
+        formData.append("ENo", eno)
+        formData.append("File", file)
+
+        $.ajax({
+            url: `/FamilyHeadReport/UploadBiometric`, // Replace with your server endpoint
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                console.log('File uploaded successfully');
+                console.log(res);
+                console.log(index)
+                document.getElementById(`sub_div_${index}`).remove()
+                document.getElementById(`eno_div_${index}`).remove()
+                document.getElementById(`file_div_${index}`).remove()
+                document.getElementById(`row_${index}`).innerHTML += `<div class="col-sm-12 col-md-7 mb-1" id="succ_div_${index}">
+                                    <p class="fw-bold"><i class="bx text-success bxs-badge-check"></i> Biometric Uploaded!</p>
+                                </div>`
+                
+                // Handle response from server
+            },
+            error: function (xhr, status, error) {
+                console.error('Error uploading file:', error);
+                // Handle error
+            }
+        });
+
+    @* formData.append('file', file); *@
+    }
+
+    function checkAllFileInputs() {
+        var fileInputs = document.getElementsByName('Files');
+        var allFilesSelected = true;
+
+        for (var i = 0; i < fileInputs.length; i++) {
+            if (fileInputs[i].files.length === 0) {
+                allFilesSelected = false;
+                break;
+            }
+        }
+
+        if (allFilesSelected) {
+            console.log("All file inputs have a file selected.");
+            return true
+        } else {
+            console.log("Not all file inputs have a file selected.");
+            return false
+        }
+    }
+</script>

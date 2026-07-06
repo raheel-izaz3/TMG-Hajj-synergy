@@ -1,0 +1,68 @@
+﻿@model IDCardList
+
+@{
+    string modelName = "IDCardList";
+    string modelNamePlural = "IDCardLists";
+    string modelControllerRoute = "IDCardList";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="IDCardListId">
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">
+                                    Select
+                                    FamilyHeads
+                                </label>
+                                <br />
+                                @{
+                                    int i = 0;
+                                    var selectedFamilyHeads = ViewBag.SelectedFamilyHeads as List<int>;
+                                }
+
+                                @foreach (var package in ViewBag.FamilyHeads)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" name="FamilyHeadIds" value="@package.FamilyHeadId" />
+
+                                        <input class="form-check-input" type="checkbox" id="@package.FamilyHeadId"
+                                               name="FamilyHeadSelected[@i]" value="true"
+                                        @(selectedFamilyHeads.Contains(package.FamilyHeadId) ? "checked" : "") />
+
+                                        <input type="hidden" name="FamilyHeadSelected[@i]" value="false" />
+
+                                        <label class="form-check-label" for="@package.FamilyHeadId">@package.FullName</label>
+                                    </div>
+
+                                    i++;
+                                }
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,143 @@
+﻿@model HajjAgreement
+@{
+    string modelName = "Hajj Agreement";
+    string modelNamePlural = "Hajj Agreements";
+    string modelControllerRoute = "HajjAgreement";
+}
+<script src="https://cdn.tiny.cloud/1/07z3b259p8qguvoio53njr42tea6nergta1ecldqbn2xv6w9/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+<!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+<script>
+  tinymce.init({
+    selector: 'textarea',
+    plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
+    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    tinycomments_mode: 'embedded',
+    tinycomments_author: 'Author name',
+    mergetags_list: [
+      { value: 'First.Name', title: 'First Name' },
+      { value: 'Email', title: 'Email' },
+    ],
+    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+  });
+
+    $(document).ready(function () {
+        $('#SelectAll').change(function () {
+            if (this.checked) {
+                // Checkbox is checked, check all checkboxes with class 'check'
+                $('.check').prop('checked', true);
+                console.log("All checkboxes are checked");
+            } else {
+                // Checkbox is unchecked, uncheck all checkboxes with class 'check'
+                $('.check').prop('checked', false);
+                console.log("All checkboxes are unchecked");
+            }
+        });
+    });
+</script>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="HajjAgreementId"/>
+                        <div class="row">
+                            @* <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PackageId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-select" asp-for="PackageId">
+                                        <option value="">Select a Package...</option>
+                                        @foreach (var package in ViewBag.Packages)
+                                        {
+                                                <option value="@package.PackageId">@package.Name (@package.Code)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="PackageId"></span>
+                            </div> *@
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Title"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Title" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Title"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ForTheYear"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ForTheYear" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ForTheYear"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" asp-for="SharedAgreement"></label>
+                                    <textarea asp-for="SharedAgreement" 
+                                    class="form-control"></textarea>
+                                <span class="text-danger" asp-validation-for="SharedAgreement"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" asp-for="SpecificAgreement"></label>
+                                    <textarea asp-for="SpecificAgreement" 
+                                    class="form-control"></textarea>
+                                <span class="text-danger" asp-validation-for="SpecificAgreement"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Select
+                                            Packages</label>
+                                        <br />
+                                        @{
+                                            int i = 0;
+                                        }
+                                        @foreach (var package in ViewBag.Packages)
+                                        {
+                                            bool found = false;
+                                            foreach (HajjAgreementPackages fp in ViewBag.AgreementPackages)
+                                            {
+                                                if (fp.PackageId == package.PackageId)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            <div class="form-check form-check-inline">
+                                                <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                                @if (found)
+                                                {
+                                            <input class="check form-check-input" type="checkbox" id="@package.PackageId"
+                                                        asp-for="PackagesSelected[i]" checked>
+                                                }
+                                                else
+                                                {
+                                            <input class="check form-check-input" type="checkbox" id="@package.PackageId"
+                                                        asp-for="PackagesSelected[i]">
+                                                }
+
+                                                <label class="form-check-label"
+                                                    for="@package.PackageId">@package.Name</label>
+                                            </div>
+                                            i++;
+                                        }
+                                <br />
+                                <input class="form-check-input" type="checkbox" id="SelectAll">
+                                <label class="form-check-label"
+                                       for="SelectAll">Select All</label>
+                            
+                                    </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

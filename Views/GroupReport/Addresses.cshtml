@@ -1,0 +1,258 @@
+﻿@model IEnumerable<TMG.Controllers.GroupControllers.GroupData>
+@{
+	Layout = "";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Report</title>
+	<style>
+		@@media print {
+
+			/* label,input,
+			.button {
+				display: none;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				font-size: 8px;
+			} */
+			label, input, .button {
+				display: none;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				font-size: 8px;
+				margin: 0;
+				padding: 0;
+			}
+
+			.main {
+				width: 100%; /* Fixed 900px ki jagah full page width */
+				float: none; /* Float hatake normal flow */
+				margin: 0 auto; /* Center content if needed */
+				page-break-inside: avoid; /* Crop se bachane ke liye */
+			}
+
+			.main-1, .main-2 {
+				width: 100%;
+				float: none;
+				margin: 0;
+			}
+
+			.sticker, .accommodation-detail {
+				width: 100%;
+			}
+
+			.main {
+				page-break-after: always;
+			}
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 10px;
+		}
+
+		.main {
+			margin: -8px 20px;
+			width: 900px;
+			height: 100vh;
+			float: left;
+		}
+
+		.main-1 {
+			width: 425px;
+			float: left;
+		}
+
+		.main-2 {
+			width: 400px;
+			float: right;
+			margin-right: -350px;
+		}
+
+		.mysticker {
+			width: 285px;
+			margin-top: 15px;
+			margin-left: -70px;
+		}
+
+		.mysticker2 {
+			width: 284px;
+			margin-left: -70px;
+		}
+
+			.mysticker2 table {
+				margin-left: -2px;
+				width: 100%;
+			}
+
+				.mysticker2 table td {
+					width: 50%;
+					margin-right: 10px;
+				}
+
+
+		.sticker {
+			padding: 2px;
+			width: 120%;
+		}
+
+			.sticker p {
+				margin: 5px 0;
+			}
+
+		.accommodation-detail {
+			padding: 2px;
+			width: 97%;
+		}
+
+			.accommodation-detail p {
+				margin: 5px 0;
+			}
+
+		.toggle-label {
+			cursor: pointer;
+		}
+
+		.hide {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div style="margin: 20px;" class="button">
+		<button id="increaseFontSizeBtn"> Font Increase (+)</button>
+		<button id="decreaseFontSizeBtn"> Font Decrease(-)</button>
+		<br>
+		<br>
+		<button onclick="increaseFontSize()">Name (+)</button>
+		<button onclick="decreaseFontSize()">Name (-)</button>
+	</div>
+
+
+	@foreach (var item in Model)
+	{
+		<div id="main-before" class="main">
+			<div class="main-1">
+				<div class="sticker">
+					<div class="toggle-section office">
+						<p>
+							<span style="text-decoration: underline; font-weight: bold;">FOR OFFICE USE ONLY</span> @* <span style="float: right;">HAJJ APP SERIAL: <span>@Model.HajjAppSerial</span></span> *@
+						</p>
+					</div>
+					@* <div class="toggle-section cid">
+                    <p>
+                        CID: <span>@Model.HeadCID</span> <span style="float: right; text-align: left;">
+                            HAJJ APP NO:
+                            <span>@Model.HajjAppNo</span>
+                        </span>
+                    </p>
+                </div> *@
+					<div class="toggle-section cnic">
+						<p>
+							CNIC# <span style="margin-right: 75px;">@item.CNIC</span> <span style=" float: right; text-align: left;">
+								MEGA REF:
+								<span>@item.ReferenceName</span>
+							</span>
+						</p>
+					</div>
+					<div class="toggle-section passport">
+						<p>
+							PASSPORT# <span style="margin-right: 80px;">@item.PassportNo</span> <span style=" float: right; text-align: left;">@ViewBag.GroupName<span></span></span>
+						</p>
+					</div>
+					<div class="toggle-section package">
+						<p>
+							PACKAGE: <span style="margin-right: 80px;">@item.PackageName</span> <span style="float: right; text-align: left;">PAX: <span>@item.PAX</span> &nbsp;&nbsp; <span style="float: right; text-align: left;">Male: <span>@item.MaleCount</span> &nbsp;&nbsp; <span style="float: right; text-align: left;">Female: <span>@item.FemaleCount</span></span>
+						</p>
+					</div>
+					<div class="toggle-section category">
+						<p> CATEGORY: <span>@item.ApplicantType</span> </p>
+					</div>
+				</div>
+
+				<div class="sticker">
+					<div class="toggle-section name">
+						<p class="nameSpan" style="font-weight: bold; margin-right: 78px;">@item.HajjiName</p>
+					</div>
+					<div class="toggle-section add">
+						<p>ADD: <span>@item.Address</span></p>
+					</div>
+					<div class="toggle-section mob">
+						<p> MOBILE#: <span>@item.Phone</span></p>
+					</div>
+					<div class="toggle-section email">
+						<p> EMAIL: <span>@item.Email</span> </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+
+
+	<script>
+		document.querySelectorAll('.toggle-checkbox').forEach(function (checkbox) {
+			checkbox.addEventListener('change', function () {
+				var sectionClass = this.id.replace('toggle', '').toLowerCase();
+				var toggleSections = document.querySelectorAll('.toggle-section.' + sectionClass);
+				toggleSections.forEach(function (section) {
+					if (checkbox.checked) {
+						section.classList.remove('hide');
+
+					} else {
+						section.classList.add('hide');
+					}
+				});
+			});
+		});
+
+		document.getElementById('increaseFontSizeBtn').addEventListener('click', function () {
+			var stickerContent = document.querySelectorAll('p,td');
+			stickerContent.forEach(function (element) {
+				var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+				element.style.fontSize = (currentFontSize + 1) + 'px';
+			});
+		});
+
+		document.getElementById('decreaseFontSizeBtn').addEventListener('click', function () {
+			var stickerContent = document.querySelectorAll('p,td');
+			stickerContent.forEach(function (element) {
+				var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+				element.style.fontSize = (currentFontSize - 1) + 'px';
+			});
+		});
+
+		function increaseFontSize() {
+			var spanElements = document.querySelectorAll('.nameSpan');
+			spanElements.forEach(function (spanElement) {
+				var currentSize = parseFloat(window.getComputedStyle(spanElement, null).getPropertyValue('font-size'));
+				var increaseFactor = 1; // You can adjust the increase factor as per your requirement
+				spanElement.style.fontSize = (currentSize + increaseFactor) + 'px';
+			});
+		}
+
+		function decreaseFontSize() {
+			var spanElements = document.querySelectorAll('.nameSpan');
+			spanElements.forEach(function (spanElement) {
+				var currentSize = parseFloat(window.getComputedStyle(spanElement, null).getPropertyValue('font-size'));
+				var decreaseFactor = 1; // You can adjust the decrease factor as per your requirement
+				spanElement.style.fontSize = (currentSize - decreaseFactor) + 'px';
+			});
+		}
+	</script>
+
+
+</body>
+
+</html>

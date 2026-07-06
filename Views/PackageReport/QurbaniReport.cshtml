@@ -1,0 +1,478 @@
+﻿@{
+    Layout = null;
+}
+@model PackageQurbaniReportModel
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+        <!-- DataTables JavaScript -->
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+        <!-- DataTables Buttons CSS -->
+        <link rel="stylesheet" type="text/css"
+            href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+        <!-- DataTables Buttons JavaScript -->
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+        <!-- Additional DataTables Extensions (optional) -->
+        <link rel="stylesheet" type="text/css"
+            href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+        <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+        <!-- Bootstrap CSS (optional) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+        <style>
+            body {
+                font-size: 10px !important;
+            }
+
+            .table {
+                border: solid 1px black !important;
+                font-size: 8.5px !important;
+            }
+
+            thead {
+                border: solid 1px black !important;
+            }
+
+            .chk-buttons {
+                display: flex;
+            }
+
+            @@media print {
+                body {
+                    overflow-x: hidden !important;
+                }
+
+                table {
+                    overflow-x: hidden !important;
+                }
+
+                .chk-buttons {
+                    display: none !important;
+                }
+
+                button {
+                    display: none !important;
+                }
+
+                label {
+                    display: none;
+                }
+            }
+        </style>
+</head>
+
+<body>
+
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold"><span class="text-muted fw-light"></span> Package Details</h4>
+        <h5 class="fw-bold">
+            <span class="text-muted fw-light"></span> @Model.PackageName <small>(@Model.PackageCode)</small>
+        </h5>
+        <p>
+            <b>DAYS:</b> @Model.PackageDays | <b>DURATION:</b> @Model.PackageDuration | <b>MEDINAH ARRIVAL:</b>
+            @Model.MedinahArrival | <b>QUOTA:</b> @Model.Quota
+        </p>
+
+        <hr class="mb-4" />
+        <div class="chk-buttons">
+
+            <p class="fw-bold">Choose Table Headers</p>
+
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">#</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">HB #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Full Name</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Gender</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Passport</label>
+            </div>
+            @* <div class="form-check form-check-inline mb-2">
+            <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+            checked value="option1">
+            <label class="form-check-label" for="inlineCheckbox1">Excluded</label>
+            </div>*@
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Paid</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox"
+                    id="inlineCheckbox1" checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Complimentry</label>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="display: flex">
+        <button id="printPage">Print</button>
+    </div>
+
+    <button onclick="exportToExcel('reportTable', 'exported_data')">Export to Excel</button>
+    <a href="@Url.Action("QurbaniLinkReport", "PackageReport", new { id = Model.PackageId})">Get Qurbani Links</a>
+
+
+    <form action="" method="post">
+        <input type="hidden" id="USDROE" value="@Model.USDROE">
+        <input type="hidden" id="SARROE" value="@Model.SARROE">
+        <input type="hidden" asp-for="PackageId" value="@Model.PackageId">
+        <br><br>
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <button onclick="copyTablee()" id="copyTable">Copy Table</button>
+                <button>Save</button>
+                <script>
+                    function allCheck(elem, attr) {
+                        const elems = document.querySelectorAll(`[${attr}]`)
+                        console.log(elems)
+                        if (elem.checked) {
+                            for (let e of elems) {
+                                e.checked = true
+                            }
+                        }
+                        else {
+                            for (let e of elems) {
+                                e.checked = false
+                            }
+                        }
+                    }
+
+                </script>
+                <table class="table table-hover table-bordered" id="reportTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>HB #</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Passport</th>
+                            <th>Paid <input type="checkbox" onchange="allCheck(this, 'data-paid')"></th>
+                            <th>Complimentry <input type="checkbox" onchange="allCheck(this, 'data-compl')"></th>
+                            <th>Cash (W.I.P)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1" style="border: solid 1px black !important;">
+                        @for (int i = 0; i < Model.Members.Count; i++)
+                        {
+                            var currentMember = Model.Members.ElementAt(i);
+
+                            <tr>
+                                <input type="hidden" asp-for="FamilyHeadIds[i]" value="@currentMember.FamilyHeadId">
+                                <td>@currentMember.SrNo</td>
+                                <td>@currentMember.FcId</td>
+                                <td>@currentMember.FullName</td>
+                                <td>@currentMember.Gender</td>
+                                <td>@currentMember.Passport</td>
+                                <td>
+                                    @if (currentMember.QurbaniType == QurbaniTypes.Paid)
+                                    {
+                                        <input checked type="checkbox" asp-for="QurbaniPaid[i]" data-paid
+                                            onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Paid')"
+                                            data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                            data-head-id="@currentMember.HeadId">
+                                    }
+                                    else
+                                    {
+                                        @if (currentMember.PaidQurbani)
+                                        {
+                                            <input type="checkbox" checked asp-for="QurbaniPaid[i]" data-paid
+                                                onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Paid')"
+                                                data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                                data-head-id="@currentMember.HeadId">
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" asp-for="QurbaniPaid[i]" data-paid
+                                                onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Paid')"
+                                                data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                                data-head-id="@currentMember.HeadId">
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @if (currentMember.QurbaniType == QurbaniTypes.Complimentry)
+                                    {
+                                        <input checked type="checkbox" asp-for="QurbaniComplimentry[i]" data-compl
+                                            onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Complimentry')"
+                                            data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                            data-head-id="@currentMember.HeadId">
+                                    }
+                                    else
+                                    {
+                                        @if (currentMember.ComplimentryQurbani)
+                                        {
+                                            <input checked type="checkbox" asp-for="QurbaniComplimentry[i]" data-compl
+                                            onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Complimentry')"
+                                            data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                            data-head-id="@currentMember.HeadId">
+                                        }
+                                        else
+                                        {
+                                             <input type="checkbox" asp-for="QurbaniComplimentry[i]" data-compl
+                                            onchange="updateSelected(this, @currentMember.FamilyHeadId, 'Complimentry')"
+                                            data-is-head="@currentMember.IsHead" data-HB #="@currentMember.FamilyHeadId"
+                                            data-head-id="@currentMember.HeadId">
+                                        }
+                                    }
+                                </td>
+                                <td>-</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+    </div>
+
+    <partial name="~/Views/Shared/_PackageROECalculationScript.cshtml" />
+
+    <script>
+
+        function updateSelected(elem, familyHeadId, type) {
+
+            const isHead = elem.getAttribute("data-is-head")
+            const headId = elem.getAttribute("data-head-id")
+            const elemFcId = elem.getAttribute("data-HB #")
+
+            if (isHead == "True" && elem.checked) {
+                const attributeName = 'data-head-id';
+                let elements = null
+                if (type == 'Excluded') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-ex]`);
+                }
+                if (type == 'Complimentry') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-compl]`);
+                }
+                if (type == 'Paid') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-paid]`);
+                }
+
+                if (elem.checked) {
+                    for (let check of elements) {
+                        if (check.hasAttribute('disabled')) continue;
+                        check.checked = true
+                        let fcId = check.getAttribute('data-HB #')
+        @* addMember(fcId) *@
+                            console.log(check)
+                    }
+                }
+                else {
+                    elem.checked = false;
+        @* removeMember(elemFcId) *@
+                        console.log(check)
+
+                }
+            }
+            else if (elem.checked && isHead == "False") {
+        @* addMember(elemFcId) *@
+        }
+            else {
+        @* removeMember(elemFcId) *@
+        }
+
+        }
+
+        $(document).ready(function () {
+            var table = $('#reportTable').DataTable({
+                dom: '<"dom_wrapper fh-fixedHeader"f>tip',
+                pageLength: 20,
+                fixedHeader: true,
+                paging: false,
+                info: false,
+                ordering: false
+            });
+
+            const checkHeaders = document.querySelectorAll(".check-header");
+            let i = 0;
+            for (let check of checkHeaders) {
+                check.setAttribute("data-column-index", i);
+                i++;
+            }
+
+            $(".check-header").change(function () {
+                colVis(this, table);
+            });
+
+            $("#printPage").click(function () {
+                window.print();
+            });
+
+            $("#saveState").click(function () {
+                saveDataTableState(table);
+            });
+        });
+
+        function exportToExcel(tableId, filename) {
+            var table = $('#' + tableId).DataTable();
+            var header = table.columns().header().toArray().map(function (th) {
+                return $(th).text();
+            });
+
+            var data = table.rows().data().toArray().map(function (row) {
+                var rowData = [];
+                $(row).find('td').each(function () {
+                    var input = $(this).find('input');
+                    if (input.length > 0) {
+                        rowData.push(input.val());
+                    } else {
+                        rowData.push($(this).text());
+                    }
+                });
+                return rowData;
+            });
+
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.aoa_to_sheet([header]);
+
+            for (var i = 0; i < data.length; i++) {
+                XLSX.utils.sheet_add_aoa(worksheet, [data[i]], { origin: -1 });
+            }
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+            XLSX.writeFile(workbook, filename + '.xlsx');
+        }
+
+
+
+        function colVis(elem, table) {
+            let index = elem.getAttribute('data-column-index');
+            if (elem.checked) {
+                table.column(index).visible(true);
+            } else {
+                table.column(index).visible(false);
+            }
+        }
+
+        function saveDataTableState(table) {
+            let state = {
+                columnsVisibility: table.columns().visible(),
+                rowData: []
+            };
+
+            table.rows().every(function () {
+                let rowData = this.data();
+                let inputs = $(this.node()).find('input');
+                if (inputs.length > 0) {
+                    inputs.each(function (index, input) {
+                        rowData[index + 1] = input.value;
+                    });
+                }
+                state.rowData.push(rowData);
+            });
+
+            let serializedState = JSON.stringify(state, function (key, value) {
+                if (key === '_fixedHeader') {
+                    return undefined;
+                }
+                return value;
+            });
+
+            localStorage.setItem('dataTableState', serializedState);
+
+            alert('Table state saved successfully!');
+        }
+
+
+
+
+
+
+        function colVis(elem, table) {
+            let index = elem.getAttribute('data-column-index');
+            if (elem.checked) {
+                table.column(index).visible(true);
+            } else {
+                table.column(index).visible(false);
+            }
+        }
+        function copyTablee() {
+            var table = document.getElementById('reportTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+        function copyTableContent() {
+            var table = document.getElementById('ThridTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+        function copyTable() {
+            var table = document.getElementById('SecondTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+
+
+
+        function adjustInputWidth(input) {
+
+            var length = input.value.length;
+
+            var newWidth = length + 3.5;
+
+            input.style.width = newWidth + 'ch';
+        }
+
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <title>Receipt </title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        p {
+            padding: 3px;
+            margin: 3px;
+            font-size: 12px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            margin: 0px;
+            padding: 0px;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table tr {
+            border: 2px solid black;
+        }
+
+        table th {
+            font-size: 12px;
+            text-align: left !important;
+            border: 1px solid black;
+        }
+
+        table td {
+            font-size: 12px;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .applicatn-copt-text {
+            text-align: right;
+        }
+
+        .govt-logo {
+            text-align: center;
+        }
+
+        .govt-logo img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .top-heading-section {
+            text-align: center;
+            line-height: 1.1;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .top-heading-section h3 {
+            margin-top: 8px;
+            padding: 8px;
+        }
+
+        .top-heading-section h1 {
+            margin-top: 12px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .receipt-no-date {
+            /* display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; */
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .enrollment-table {
+            margin-bottom: 20px;
+        }
+
+        .enrollment-table table th,
+        td {
+            padding: 8px;
+        }
+
+        .hajj-application-form table th,
+        td {
+            padding: 8px;
+        }
+
+        .image-row {
+            position: relative;
+            border: none !important;
+        }
+
+        .image-row img {
+            border: 2px solid black;
+            position: absolute;
+            top: 17px;
+            right: 0;
+        }
+
+        .Signature-part {
+            /* display: grid;
+            grid-template-columns: repeat(3, 1fr); */
+            height: 220px;
+            text-align: center;
+            /* align-items: end;
+            column-gap: 30px;
+            margin-top: 20px; */
+        }
+
+        .Signature-part p {
+            margin-top: 25px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .line {
+            background-color: black;
+            color: black;
+            border-top: 1px solid black;
+            width: 250px;
+            position: relative;
+            top: 80px;
+            bottom: 0;
+        }
+
+        .last-section {
+            /* display: flex;
+            justify-content: space-between;
+            align-items: center; */
+            /* align-items: end; */
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="receipt">
+        <header>
+            <div class="applicatn-copt-text">
+                <p>HGO COPY / APPLICANT COPY</p>
+            </div>
+
+            <div class="govt-logo">
+                <img src="[URL LINK]/Images/logo.jpg" alt="">
+
+            </div>
+
+            <div class="top-heading-section">
+                <h2>{1}</h2>
+                <p>{2}</p>
+                <span>{3}</span>
+                <span>{4}</span>
+                <h1>HAJJ RECEIPT - HAJJ 2024 (1445 AH)</h1>
+            </div>
+        </header>
+
+        <section class="receipt-no-date">
+            <div>
+                <span>RECEIPT NO: </span>
+                <span>{5}</span>
+            </div>
+            <div>
+                <span> DATE: </span>
+                <span>{6}</span>
+            </div>
+        </section>
+        <div class="enrollment-table">
+            <table>
+                <tr>
+
+                    <th>ENROLLMENT NO:</th>
+                    <td>{7}</td>
+                    <th>MUNAZAM COMPANY:</th>
+                    <td>{8}</td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="hajj-application-form">
+            <table>
+                <tr>
+                    <th>HAJJ APPLICATION NO:</th>
+                    <td>{10}</td>
+                    <td></td>
+                    <td style="width: 155px;" rowspan="6" style="text-align: right;" colspan="1">
+                            <img src="[URL LINK]/{9}" alt="Profile Image" style="width: 155px; height: 205px; ">
+                            <!-- <img src="https://img.freepik.com/free-psd/3d-rendering-avatar_23-2150833562.jpg?size=338&ext=jpg&ga=GA1.1.44546679.1716249600&semt=ais_user"
+                             alt="Profile Image" style="width: 155px; height: 205px; "> -->
+                    </td>
+                </tr>
+
+                <tr>
+
+                    <th>NAME OF APPLICANT:</th>
+                    <td>{11}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>SCHEME:</th>
+                    <td>{12}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th> HAJJ PACKAGE:</th>
+                    <td>{13}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th> MAKKAH ACCOMMODATION:</th>
+                    <td>{14}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th> PACKAGE AMOUNT:</th>
+                    <td>{15}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th> ADDITIONAL FACILITIES:</th>
+                    <td>{16}</td>
+                    <th> ADDITIONAL AMOUNT:</th>
+                    <td>{17}</td>
+
+                </tr>
+                <tr>
+                    <th> TOTAL AMOUNT:</th>
+                    <td>{18}</td>
+                    <th> AMOUNT RECEIVED:</th>
+                    <td>{19}</td>
+                </tr>
+                <tr>
+                    <th> PAYMENT MODE:</th>
+                    <td>{20}</td>
+                    <th> REFERENCE NO:</th>
+                    <td>{21}</td>
+                </tr>
+
+                <tr>
+                    <th> AMOUNT:</th>
+                    <td>{22}</td>
+                    <th> DATE:</th>
+                    <td>{23}</td>
+                </tr>
+                <tr>
+                    <th> REMARKS:</th>
+                    <td>{24}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <section>
+            <div>
+                <img src="{25}" class="img-fluid" alt="Image not Available" width="180px" height="300px" />
+            </div>
+        </section>
+
+        <section class="Signature-part">
+            <div style="float: left; width: 33%;">
+                <p> APPLICANT SIGNATURE</p>
+                <img src="{30}" class="img-fluid" alt="Image not Available" width="180px" height="120px" />
+            </div>
+
+            <div style="float: left; width: 33%;">
+                <p> SIGNATURE (ACCOUNTANT)</p>
+                <img style="border-bottom: 1px solid black;"  src="[URL LINK]/{31}" alt="">
+            </div>
+            <div style="float: left; width: 33%;">
+                <p> STAMP (ACCOUNTANT)</p>
+                <img src="[URL LINK]/{32}" style=" width: 150px; border-bottom: 1px solid black;" alt="">
+            </div>
+        </section>
+
+        <section class="last-section">
+            <div style="float: left; width: 33%;">
+                <span> Hajj Application No. </span>
+                <span>{26}</span>
+            </div>
+            <div style="float: left; text-align: center; width: 33%;">
+                <span>Page: </span>
+                <span> {28} of {29} </span>
+            </div>
+            <div style="text-align: right; float: left;  width: 33%;">
+                <span>Receipt No. </span>
+                <span>{27}</span>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+
+</html>

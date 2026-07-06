@@ -1,0 +1,276 @@
+@model IEnumerable<GroupUnAllocatedMembersModel>
+@{
+    Layout = "";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qurbani Batch Report</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+        table th {
+            /* border: 1px solid #fedf7b !important;
+              padding: 3px 4px !important;
+              font-size: 10px !important;
+              /* width: fit-content !important;
+              text-align: center !important;
+              background-color: #f6f3ee !important;
+              color: #b49164;
+              font-weight: bold;
+              border: 1px solid #b49164 !important; */
+
+            position: sticky;
+            top: 0;
+            padding: 3px 4px !important;
+            font-size: 10px !important;
+            text-align: center !important;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            font-weight: bold;
+            border: 1px solid #b49164 !important;
+        }
+
+        table tfoot {
+            position: sticky;
+            bottom: 0;
+            padding: 3px 4px !important;
+            font-size: 10px !important;
+            text-align: center !important;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            font-weight: bold;
+            border: 1px solid #b49164 !important;
+        }
+
+        table td {
+            font-size: 8px !important;
+            /* outline: 1px solid #fedf7b; */
+            /* border: 1px solid #fedf7b; */
+            padding: 5px 2px !important;
+            margin: 0 !important;
+            text-align: center;
+            border: 1px solid #b0872e;
+        }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr>*:nth-child(1) {
+            display: none;
+        }
+
+        #summaryData.hide2 tr>*:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr>*:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr>*:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr>*:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr>*:nth-child(6) {
+            display: none;
+        }
+
+
+        button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            /* background-image: linear-gradient(to bottom, #dbd4d4 0%, #e9e9e9 100%); */
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <!-- =======  Data-Table  = Start  ========================== -->
+    <div class="big-table-record" id="summaryData">
+        <table style="width:100%" id="myTable" class="table-responsive">
+            <div
+                style="display: flex; justify-content: space-between; padding: 4px; margin: 5px 0;  background-color: #b49164; color: white; border-radius: 2px; padding:7px;">
+                <h2>Group-Wise Unallocated Members</h2>
+            </div>
+            <button onclick="print()">Print</button>
+            <thead>
+                <th>Sr</th>
+                <th>Group Name</th>
+                <th>HB #</th>
+                <th>CID</th>
+                <th>Full Name</th>
+                <th>Gender</th>
+                <th>Room Type</th>
+            </thead>
+
+            <tbody>
+
+                @foreach(var item in Model){
+                    <tr>
+                        <td>@item.SrNo</td>
+                        <td>@item.GroupName</td>
+                        <td>@item.FcId</td>
+                        <td>@item.CID</td>
+                        <td>@item.FullName</td>
+                        <td>@item.Gender</td>
+                        <td>@item.RoomType</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+</body>
+<script>
+    // Initialize DataTable
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+            buttons: [
+                {
+                    extend: "excel",
+                    footer: true, // Include footer rows in Excel export
+                    text: "Excel",
+                },
+            ],
+            // "scrollY": "200px", // Adjust height as needed
+            "scrollCollapse": true,
+            "paging": false, // Disable pagination if necessary
+            "info": false,
+            // "sScrollY": false,
+            "ordering": true,
+        });
+
+    });
+</script>

@@ -1,0 +1,78 @@
+﻿@model EMarketing
+
+@{
+    string modelName = "EMarketing";
+    string modelNamePlural = "EMarketings";
+    string modelControllerRoute = "EMarketing";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="BackgroundImage"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" asp-for="BackgroundImage" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="BackgroundImage"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-2" id="license_0">
+                            <div class="col-sm-12 mb-2">
+                                <h4 class="underline float-start" style="margin: 0!important">Content</h4>
+                            </div>
+                            <hr />
+
+                            <div class="clearfix"></div>
+                            <div id="Terms">
+                                <textarea id="summernote" asp-for="Content"></textarea>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#summernote').summernote({
+            placeholder: 'Write your content here...',
+            tabsize: 2,
+            height: 200,
+            fontSizes: ['8', '10', '12', '14', '18', '24', '36'],
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']], // Font size dropdown enable karega
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ]
+        });
+    });
+</script>

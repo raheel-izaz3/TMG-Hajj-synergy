@@ -1,0 +1,71 @@
+﻿
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Chart of Accounts</h4>
+
+
+    <hr class="mb-4" />
+
+    <a asp-controller="SubHead" asp-action="Create" class="btn btn-info">Create Sub Head</a>
+    <a asp-controller="MainAccount" asp-action="Create" class="btn btn-info">Create Account</a>
+    @* <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.TrashCount)</a> *@
+
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>Head</th>
+                        <th>Sub Head</th>
+                        <th>Account</th>
+                        <th>Opening Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach(Type type in ViewBag.Types)
+                    {
+                        <tr>
+                            <td colspan="4">@type.Name</td>
+                        </tr>
+                        @foreach(AccountSubHead subHead in ViewBag.SubHeads)
+                        {
+                            if(subHead.TypeId == type.TypeId)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td colspan="3">@subHead.SubHeadName</td>
+                                </tr>
+
+                                @foreach(MainAccount account in ViewBag.Accounts)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>@account.AccountName</td>
+                                        <td>@account.OpeningBalance</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@* <script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script> *@
+

@@ -1,0 +1,187 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPO Summary Report</title>
+
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.5/css/dx.light.css" />
+    <style>
+        body {
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+        }
+
+        .downloade_btn {
+            padding: 10px 45px;
+            background-color: lightblue;
+            outline: none;
+            border: 1px solid black;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+            .downloade_btn:hover {
+                background-color: white;
+            }
+    </style>
+</head>
+<body>
+    <button class="downloade_btn" id="downloadPdf">Download PDF</button>
+
+    <div id="incoice_page_body">
+        <p>Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+        <div id="columnSelectors">
+            @{
+                string[] columnNames = {
+            "Hajji Name", "HbNo", "Company Code", "Gender", "DOB", "Age", "Passport #", "Email", "Contact",
+            "Package Name", "Group Name", "CNIC Image", "Passport Image", "Member Image", "Blood Proof",
+            "Vaccination Image", "Polio", "Covid", "Mangatitise", "Influenza", "NextOfKin"
+                };
+
+                for (int i = 0; i < columnNames.Length; i++)
+                {
+                    <label>
+                        <input type="checkbox" class="column-toggle" data-col="@i" checked />
+                        @columnNames[i]
+                    </label>
+                }
+            }
+        </div>
+
+        <h4>SPO Summary Report</h4>
+        <h2>SPO Name: <span>@ViewBag.SPOName</span></h2>
+
+        <div id="hajjiGrid"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.5/js/jszip.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.5/js/dx.all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <script>
+        let gridInstance;
+
+        $(function () {
+            const hajjiData = @Html.Raw(Json.Serialize(Model));
+
+            gridInstance = $("#hajjiGrid").dxDataGrid({
+                dataSource: hajjiData,
+                keyExpr: "hbNo",
+                showBorders: true,
+                columnAutoWidth: true,
+                searchPanel: {
+                    visible: true,
+                    highlightCaseSensitive: true
+                },
+                headerFilter: { visible: true },
+                filterRow: { visible: true, applyFilter: "auto" },
+                sorting: { mode: "multiple" },
+                paging: false,
+                columns: [
+                    {
+                        caption: "#",
+                        cellTemplate: function (cellElement, cellInfo) {
+                            cellElement.text(cellInfo.rowIndex + 1);
+                        }
+                    },
+                    { dataField: "hajjiName", caption: "Hajji Name" },
+                    { dataField: "hbNo", caption: "HbNo" },
+                    { dataField: "companyCode", caption: "Company Code" },
+                    { dataField: "gender", caption: "Gender" },
+                    { dataField: "dob", caption: "DOB", dataType: "date", format: "dd/MMM/yyyy" },
+                    {
+                        caption: "Age",
+                        calculateCellValue: function (data) {
+                            const dob = new Date(data.dob);
+                            const today = new Date();
+                            let age = today.getFullYear() - dob.getFullYear();
+                            if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) {
+                                age--;
+                            }
+                            return age;
+                        }
+                    },
+                    { dataField: "passportNo", caption: "Passport #" },
+                    { dataField: "email", caption: "Email" },
+                    { dataField: "number", caption: "Contact" },
+                    { dataField: "packageName", caption: "Package Name" },
+                    { dataField: "groupName", caption: "Group Name" },
+                    { dataField: "cnic", caption: "CNIC Image" },
+                    { dataField: "passport", caption: "Passport Image" },
+                    { dataField: "member", caption: "Member Image" },
+                    { dataField: "bloodGroup", caption: "Blood Proof" },
+                    { dataField: "vaccination", caption: "Vaccination Image" },
+                    { dataField: "polio", caption: "Polio" },
+                    { dataField: "covid", caption: "Covid" },
+                    { dataField: "mangatitise", caption: "Mangatitise" },
+                    { dataField: "influenza", caption: "Influenza" },
+                    { dataField: "nextOfKin", caption: "NextOfKin" }
+                ]
+            }).dxDataGrid("instance");
+
+            $('.column-toggle').on('change', function () {
+                const columnIndex = parseInt($(this).data('col')) + 1;
+                const visible = $(this).is(':checked');
+                gridInstance.columnOption(columnIndex, 'visible', visible);
+            });
+
+                   $('#downloadPdf').on('click', async function () {
+            const gridElement = document.getElementById("hajjiGrid");
+            const clone = gridElement.cloneNode(true);
+
+            const container = document.createElement("div");
+            container.appendChild(clone);
+            container.style.position = "absolute";
+            container.style.left = "-9999px";
+            document.body.appendChild(container);
+
+            
+            const logo = document.createElement("img");
+            logo.src = "/reportlogo/GroupLogo.png";
+            logo.style.width = "100px";
+            logo.style.marginBottom = "10px";
+            logo.style.float = "right"; 
+            logo.onload = () => {
+               
+                clone.insertBefore(logo, clone.firstChild);
+
+                
+                html2pdf().set({
+                    margin: 0.5,
+                    filename: 'SPOWiseSummaryReport.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 3, useCORS: true },
+                    jsPDF: { unit: 'in', format: 'a1', orientation: 'landscape' }
+                }).from(clone).save().then(() => {
+                    document.body.removeChild(container);
+                });
+            };
+
+            
+            logo.onerror = () => {
+                console.error("Logo failed to load");
+                html2pdf().set({
+                    margin: 0.5,
+                    filename: 'SPOWiseSummaryReport.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 3, useCORS: true },
+                    jsPDF: { unit: 'in', format: 'a1', orientation: 'landscape' }
+                }).from(clone).save().then(() => {
+                    document.body.removeChild(container);
+                });
+            };
+        });
+
+        });
+    </script>
+</body>
+</html>

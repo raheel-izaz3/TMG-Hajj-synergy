@@ -1,0 +1,546 @@
+@model TMG.Models.Updated_Accounts.NewPaymentVoucher
+@{
+    string modelName = "PaymentVoucher";
+    string modelNamePlural = "Payment Voucher";
+    string modelControllerRoute = "NewPaymentVoucher";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color: #404040;"><span class="text-muted fw-light"> @modelNamePlural / </span> Create</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="CreatePayroll" id="PVForm" enctype="multipart/form-data">
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-5 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" class="form-control" value="@DateTimeManager.Today" max="@DateTimeManager.Today" asp-for="Date">
+                                </div>
+                            </div>
+
+                            @* <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Amount</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" id="Amount" class="form-control" style="display: inline-block; width: auto;" oninput="formatNumber(this)" asp-for="Amount">
+                                </div>
+                                <span asp-validation-for="Amount" class="text-danger"></span>
+                            </div> *@
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Payment Mode</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="PaymentMode">
+                                        <option value="IBFT">IBFT</option>
+                                        <option value="Cheque">Cheque</option>
+                                        <option value="Pay Order">Pay Order</option>
+                                        <option value="Cash">Cash</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-9 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Instrument Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="instrumentNumber" type="text" placeholder="Enter Instrument Number..." asp-for="InstrumentNumber">
+                                </div>
+                                <span asp-validation-for="InstrumentNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Proof</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="file" name="image">
+                                </div>
+                                <span asp-validation-for="InstrumentNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Debit | Receiver Remarks</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="debitRemarks" type="text" placeholder="Debit Remarks..." asp-for="DebitRemarks">
+                                </div>
+                                <span asp-validation-for="DebitRemarks" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Credit | Sender Remarks</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="creditRemarks" type="text" placeholder="Credit Remarks..." asp-for="CreditRemarks">
+                                </div>
+                                <span asp-validation-for="CreditRemarks" class="text-danger"></span>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div class="row pb-3 p-0">
+                                <div class="col-sm-6">
+                                    <p><b>Payment List</b></p>
+                                </div>
+                            </div>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Type</th>
+                                        <th>Accounts</th>
+                                        <th>Currency</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentsBody">
+                                </tbody>
+                            </table>
+
+                           @*  <div class="col-sm-12 col-md-3 mb-3 mt-3">
+                                <label class="form-label" for="basic-icon-default-fullname">ROE</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="number" step="0.01" min="1" id="ROE" class="form-control" style="display: inline-block; width: auto;" asp-for="ROE">
+                                </div>
+                                <span asp-validation-for="ROE" class="text-danger"></span>
+                            </div> *@
+
+                            <hr class="my-3">
+
+                            <div class="col-sm-12 col-md-6">
+                                <p>
+                                    <b>TOTAL DEBIT | RECEIVER: </b>
+                                    <input id="totalDebit" readonly class="form-control" asp-for="TotalDebit" style="display: inline-block; width: auto;">
+                                </p>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 text-end">
+                                <p>
+                                    <b>TOTAL CREDIT | SENDER: </b>
+                                    <input id="totalCredit" readonly class="form-control" asp-for="TotalCredit" style="display: inline-block; width: auto;">
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 mt-4">
+                            <button type="button" onclick="submitForm()" class="btn btn-success float-end">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    const accounts = @Html.Raw(Json.Serialize(ViewBag.Accounts));
+    const accountNatures = @Html.Raw(Json.Serialize(ViewBag.AccountNatures));
+
+    let paymentRowIndex = 0;
+
+    // Function to add account row
+    function addRow() {
+        const $tableBody = $('#paymentsBody');
+
+        // Debit Row
+        const $DebitRow = $(`
+            <tr>
+                <td>${paymentRowIndex + 1}</td>
+                <td>
+                    <select id="fixedTypes" name="Payments[0].AccountNature" class="form-control" required readonly>
+                        <option value="1">Credit | Sender</option>
+                    </select>
+                </td>
+                <td>
+                    <div class="mb-2">
+                        ${generateDropdown('Payments[' + paymentRowIndex + '].AccountsId', accounts.filter(acc => acc.bank === true), 'accountsId', 'name', 'debitAccountSelect')}
+                    </div>
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="debitCurrency" readonly style="width: 80px; display: inline-block;">
+                </td>
+            </tr>
+        `);
+
+        const employeeOptions = `
+    @foreach (var employee in ViewBag.Employee)
+    {
+                <option value="@employee.EmployeeId">@employee.Name</option>
+    }
+    `;
+
+        // Credit Row
+        const $CreditRow = $(`
+            <tr>
+                <td>${paymentRowIndex + 2}</td>
+                <td>
+                    <select id="fixedTypes" name="Payments[1].AccountNature" class="form-control" required readonly>
+                        <option value="0">Debit | Receiver</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="creditAccountSelect" class="form-control creditAccountSelect" name="EmployeeId">
+                    <option value="">Select Employee</option>
+                       ${employeeOptions}
+                    </select>
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="creditCurrency" readonly style="width: 80px; display: inline-block;">
+                </td>
+            </tr>
+            <tr class="debit-tax-inputs">
+                <td colspan="4">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label>Bank Charges</label>
+                            <input type="text" value="0" class="form-control" name="DebitBankCharges" id="debitBankCharges">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Basic Salary</label>
+                            <input type="text" value="0" class="form-control" name="BasicSalary" id="Amount">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Fuel Allowance</label>
+                            <input type="text" value="0" class="form-control" name="Fuel" id="debitOPAPTax">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Medical</label>
+                            <input type="text" value="0" class="form-control" name="Medical" id="debitRemittanceTax">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Others</label>
+                            <input type="text" value="0" class="form-control" name="Others" id="debitThirdPartyTax">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Leaves</label>
+                            <input type="text" value="0" class="form-control" name="Leaves" id="leaves">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Taxes</label>
+                            <input type="text" value="0" class="form-control" name="DebitOtherTaxes" id="debitOtherTaxes">
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Receivale / Payable</label>
+                            <select class="form-control" name="TypeDropDown">
+                                <option value="Receivable">Receivable</option>
+                                <option value="Payable">Payable</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `);
+
+        $tableBody.append($DebitRow, $CreditRow);
+        paymentRowIndex += 2;
+    }
+
+    // // Function to create debit tax input fields with labels in one row
+    // function createDebitTaxInputs(rowIndex) {
+    //     return `
+    //         <tr class="debit-tax-inputs" data-row-index="${rowIndex}">
+    //             <td colspan="4">
+    //                 <div class="row">
+    //                     <div class="col-sm-2">
+    //                         <label>Bank Charges</label>
+    //                         <input type="text" value="0" class="form-control" name="DebitBankCharges" id="debitBankCharges">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>OPAP Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="DebitOPAPTax" id="debitOPAPTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Remittance Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="DebitRemittanceTax" id="debitRemittanceTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Third Party Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="DebitThirdPartyTax" id="debitThirdPartyTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Other Taxes</label>
+    //                         <input type="text" value="0" class="form-control" name="DebitOtherTaxes" id="debitOtherTaxes">
+    //                     </div>
+    //                 </div>
+    //             </td>
+    //         </tr>
+    //     `;
+    // }
+
+    // // Function to create credit tax input fields with labels in one row
+    // function createCreditTaxInputs(rowIndex) {
+    //     return `
+    //         <tr class="credit-tax-inputs" data-row-index="${rowIndex}">
+    //             <td colspan="4">
+    //                 <div class="row">
+    //                     <div class="col-sm-2">
+    //                         <label>Bank Charges</label>
+    //                         <input type="text" value="0" class="form-control" name="CreditBankCharges" id="creditBankCharges">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>OPAP Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="CreditOPAPTax" id="creditOPAPTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Remittance Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="CreditRemittanceTax" id="creditRemittanceTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Third Party Tax</label>
+    //                         <input type="text" value="0" class="form-control" name="CreditThirdPartyTax" id="creditThirdPartyTax">
+    //                     </div>
+    //                     <div class="col-sm-2">
+    //                         <label>Other Taxes</label>
+    //                         <input type="text" value="0" class="form-control" name="CreditOtherTaxes" id="creditOtherTaxes">
+    //                     </div>
+    //                 </div>
+    //             </td>
+    //         </tr>
+    //     `;
+    // }
+
+    // Add this event handler for the debit radio buttons
+    $(document).on('change', '.debit-account-type-radio', function() {
+        const $row = $(this).closest('tr');
+        const $select = $row.find('select[id="debitAccountSelect"]');
+        const selectedValue = $(this).val();
+        const rowIndex = paymentRowIndex - 2;
+
+        // Remove existing debit tax inputs if any
+        $row.next('.credit-tax-inputs').remove();
+
+        if (selectedValue === 'bank') {
+            $row.after(createCreditTaxInputs(rowIndex));
+        }
+
+        let filteredAccounts;
+        switch(selectedValue) {
+
+            case 'vendor':
+                filteredAccounts = accounts.filter(acc => acc.vendor === true);
+                break;
+
+            case 'bank':
+                filteredAccounts = accounts.filter(acc => acc.bank === true);
+                break;
+
+            case 'hajji':
+                filteredAccounts = accounts.filter(acc => acc.hajji === true);
+                break;
+
+            case 'expense':
+                filteredAccounts = accounts.filter(acc => acc.expense === true);
+                break;
+
+            default: // 'all'
+                filteredAccounts = accounts;
+                break;
+        }
+
+        updateDropdownOptions($select, filteredAccounts);
+    });
+
+    // Add this event handler for the radio buttons
+    $(document).on('change', '.credit-account-type-radio', function () {
+        const $row = $(this).closest('tr');
+        const $select = $row.find('select[id="creditAccountSelect"]');
+        const selectedValue = $(this).val();
+        const rowIndex = paymentRowIndex - 1;
+
+        // Remove existing credit tax inputs if any
+        $row.next('.debit-tax-inputs').remove();
+
+        if (selectedValue === 'bank') {
+            $row.after(createDebitTaxInputs(rowIndex));
+        }
+
+        let filteredAccounts;
+        switch(selectedValue) {
+
+            case 'vendor':
+                filteredAccounts = accounts.filter(acc => acc.vendor === true);
+                break;
+
+            case 'bank':
+                filteredAccounts = accounts.filter(acc => acc.bank === true);
+                break;
+
+            case 'hajji':
+                filteredAccounts = accounts.filter(acc => acc.hajji === true);
+                break;
+
+            case 'expense':
+                filteredAccounts = accounts.filter(acc => acc.expense === true);
+                break;
+
+            default: // 'all'
+                filteredAccounts = accounts;
+                break;
+        }
+
+        updateDropdownOptions($select, filteredAccounts);
+    });
+
+    // Helper function to update dropdown options
+    function updateDropdownOptions($select, filteredAccounts) {
+        const currentValue = $select.val(); // Store current selection
+        $select.empty();
+        $select.append('<option value="" disabled selected>Select Account</option>');
+        filteredAccounts.forEach(account => {
+            $select.append(`<option value="${account.accountsId}">${account.name}</option>`);
+        });
+        if (currentValue && filteredAccounts.some(acc => acc.accountsId == currentValue)) {
+            $select.val(currentValue); // Restore previous selection if it exists in new options
+        }
+    }
+
+    // Function to generate dropdown for accounts (Payments)
+    function generateDropdown(name, items, valueKey, displayKey, selector) {
+        const defaultOptionText = name.includes('AccountsId') ? 'Select Account' : 'Select Account Nature';
+        return `
+            <select name="${name}" id="${selector}" class="form-control" required>
+                <option value="" disabled selected>${defaultOptionText}</option>
+                ${items.map(item => `<option value="${item[valueKey]}">${item[displayKey]}</option>`).join('')}
+            </select>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        function handleCurrencyConversion() {
+            const basicSalary = parseFloat(document.querySelector('#Amount').value) || 0;
+            console.log(basicSalary);
+            const fuelAllowance = parseFloat(document.querySelector('#debitOPAPTax').value) || 0;
+            const medical = parseFloat(document.querySelector('#debitRemittanceTax').value) || 0;
+            const others = parseFloat(document.querySelector('#debitThirdPartyTax').value) || 0;
+            const otherTaxes = parseFloat(document.querySelector('#debitOtherTaxes').value) || 0;
+
+            let totalDebit = basicSalary;
+
+            totalDebit += fuelAllowance + medical + others - otherTaxes;
+
+            let totalCredit = totalDebit;
+
+            document.querySelector('#totalDebit').value = totalDebit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.querySelector('#totalCredit').value = totalCredit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        $(document).on('input', function () {
+            handleCurrencyConversion();
+        });
+
+        document.querySelector('#creditAccountSelect').addEventListener('change', function () {
+            handleCurrencyConversion();
+        });
+    });
+
+    // For formating input
+    function formatNumber(input) {
+
+        let value = input.value.replace(/,/g, ''); // Remove existing commas
+        if (value === "") return; // Do nothing if the field is empty
+
+        // Add commas
+        let formattedValue = parseFloat(value).toLocaleString('en-US');
+
+        input.value = formattedValue;
+    }
+
+    // Add event listeners for Amount and ROE inputs
+   
+
+    // Loading the page
+    $(document).ready(function () {
+        addRow();
+
+        // Initialize Select2 for the first account select
+        $('select[id="creditAccountSelect"], select[id="debitAccountSelect"]').select2({
+            placeholder: "Select Account",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+
+        $('select[id="creditAccountSelect"]').on('select2:select', function () {
+            const selectedAccountId = $(this).val();
+            const selectedAccount = accounts.find(acc => acc.accountsId == selectedAccountId);
+            const $row = $(this).closest('tr'); // Get the closest row containing the select element
+
+            if (selectedAccount && selectedAccount.currency) {
+                // If currency exists, set it
+                $row.find('#creditCurrency').val(selectedAccount.currency);
+                console.log(selectedAccount.currency);
+            } else {
+                // Default to PKR if no currency or 0
+                $row.find('#creditCurrency').val('PKR');
+                console.log('Default currency set to PKR');
+            }
+
+            // Trigger currency conversion
+            handleCurrencyConversion();
+        });
+
+
+        $('select[id="debitAccountSelect"]').on('select2:select', function () {
+            const selectedAccountId = $(this).val();
+            const selectedAccount = accounts.find(acc => acc.accountsId == selectedAccountId);
+            const $row = $(this).closest('tr');  // Get the closest row containing the select element
+
+            if (selectedAccount) {
+                $row.find('#debitCurrency').val(selectedAccount.currency);
+                handleCurrencyConversion();
+            } else {
+                $row.find('#debitCurrency').val('');
+            }
+        });
+
+        $(document).on('change', '#creditAccountSelect', function () {
+            const selectedEmployeeId = $(this).val();
+
+            if (selectedEmployeeId) {
+                $.ajax({
+                    url: '@Url.Action("BasicSalary", "NewPaymentVoucher")',
+                    type: 'GET',
+                    data: { id: selectedEmployeeId },
+                    success: function (basicSalary) {
+                        $('#Amount').val(basicSalary); 
+                    },
+                    error: function () {
+                        alert('Error fetching basic salary.');
+                    }
+                });
+            } else {
+                $('#Amount').val('');
+            }
+        });
+
+    });
+
+    // Function to submit the form
+    function submitForm() {
+        var totalDebit = parseFloat($('#totalDebit').val().replace(/,/g, '')) || 0;
+        var totalCredit = parseFloat($('#totalCredit').val().replace(/,/g, '')) || 0;
+        var accountSelected = true;
+
+        $('#paymentsBody tr').each(function() {
+            var account = $(this).find('select[id="accountselect"]').val();
+            if (account === '') {
+                accountSelected = false;
+                return false;
+            }
+        });
+
+        if (totalCredit === 0 && totalDebit === 0) {
+            alert('Total Debit and Total Credit cannot be 0!');
+            return false;
+        } else if (!accountSelected) {
+            alert('Select Account for all rows!');
+            return false;
+        }
+
+        $('#PVForm').submit();
+    }
+
+</script>

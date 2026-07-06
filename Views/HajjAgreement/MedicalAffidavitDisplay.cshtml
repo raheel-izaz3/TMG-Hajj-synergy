@@ -1,0 +1,426 @@
+﻿@model MedicalAffidavitModel
+
+@{
+    Layout = "";
+}
+
+
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css"
+        integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Hajj 2024 Data Form, Medical Letter & Agreement for Signature. ✍</title>
+
+    <style>
+    .user-img img,
+    .img-stamp {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .user-img {
+        height: 150px;
+    }
+
+    .doc-approval table {
+        height: 100px;
+        text-transform: capitalize;
+        text-align: center;
+    }
+
+    .doc-approval table td:not(td[class='seal-sig-doc']) {
+        vertical-align: middle;
+    }
+
+    .urdu {
+        src: url('https://www.fontsaddict.com/fontface/jameel-noori-nastaleeq.ttf');
+        font-family: 'Jameel Noori Nastaleeq';
+    }
+
+    @@media print {
+        .hide-in-print {
+            display: none;
+        }
+
+        .img-stamp {
+            object-fit: contain;
+        }
+
+        title {
+            display: none
+        }
+
+        @@page {
+    margin: 0;
+            margin-top: 20px;
+            margin-inline: 30px;
+
+        }
+
+    @*body{margin:5%;}*@@@top {
+            content: none;
+        }
+
+        @@bottom {
+            content: none;
+        }
+
+        .seal-sig-doc p {
+            text-wrap: nowrap;
+            font-size: 6pt !important;
+            font-weight: 100 !important;
+        }
+
+        .seal-sig-doc {
+            overflow-y: hidden !important;
+        }
+
+        .stamp-img {
+            border-top: .5px solid !important;
+        }
+    }
+
+    .mr-2 {
+        margin-right: 1%;
+    }
+
+    * {
+        font-size: 8pt;
+        line-height: 12px;
+    }
+
+    .fillable {
+        font-family: monospace;
+        text-transform: uppercase;
+    }
+
+    table td {
+        border: 0.5px solid black !important;
+    }
+
+    .seal-sig-doc {
+        vertical-align: bottom !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .seal-sig-doc p {
+        text-wrap: nowrap;
+        font-size: xx-small;
+        font-weight: 100 !important;
+    }
+
+    .halaf-nama {
+        direction: rtl !important;
+    }
+
+    .page-break {
+        page-break-after: always;
+        /* or 'auto' or 'avoid' */
+    }
+</style>
+
+</head>
+
+<body>
+
+    @foreach (MedicalAffidavitModelEntry entry in Model.Entries)
+{
+    <section class="container-fluid med-form-main border border-dark p-3">
+        <div class="wrapper">
+            <h2 class="h5 text-center fw-bolder"><u>MEDICAL CERTIFICATE - PRIVATE HAJJ SCHEME 2024</u></h2>
+            <h4 class="h4">Instructions for Medical Officer</h4>
+            <ol>
+                <li>
+                    Doctors are requested to be careful while filling the medical certificate. Uncontrolled
+                    diabetes,uncontrolled hypertension, severeischemic, heart diseases, very old/ weak persons, disabled
+                    (without
+                    helper), applicants suffering from any contagious disease andpregnant ladies (who will be five month
+                    pregnant at the time of departure for Hajj) may not be declared fit for Hajj.
+                </li>
+                <li>
+                    A medical checkup may also be held at Haji Camp and applicants having above symptoms will not be
+                    allowed to travel and the rentof buildings at Makkah and Madina may also be deducted.
+                </li>
+                <li>
+                    Any case of medical repatriation arising out of a mis-declaration of medical fitness have to be
+                    funded by the applicant.
+                </li>
+            </ol>
+            <p class="h6">
+                Note: ln case of mis-declaration or concealment of any medical condition, the Ministry reserves the
+                right to initiateproceeding against the applicant/ certifying doctor. Such concealment may culminate in
+                his deportation
+                on his expense and
+            </p>
+            <p class="text-capitalize">
+                (to be attested by medical officer of any federal/provincial government/semi government/armed forces
+                /autonomous bodies/corporation's hospitals.)
+
+            </p>
+            <div class="row">
+                <div class="col-6 d-flex">
+                    <span class="h6 text-capitalize  mr-2 text-nowrap">name of doctor:</span>
+                    <p class="col border-bottom border-dark px-2 fillable" id="doctor-name"></p>
+                </div>
+                <div class="col-6 d-flex">
+                    <span class="h6 text-capitalize  mr-2 text-nowrap">name of hospital:</span>
+                    <p class="col border-bottom border-dark px-2 fillable" id="doctor-hospital"></p>
+                </div>
+                <div class="col-12 d-flex">
+
+                    <span class="h6 text-capitalize mr-2">tehsil:</span>
+                    <p class="col border-bottom border-dark fillable" id="doctor-tehsil"></p>
+
+                    <span class="h6 text-capitalize mr-2">district:</span>
+                    <p class="col border-bottom border-dark fillable" id="doctor-district"></p>
+
+                    <span class="h6 text-capitalize mr-2">landline:</span>
+                    <p class="col border-bottom border-dark fillable" id="doctor-landline"></p>
+
+                    <span class="h6 text-capitalize mr-2">cell no.</span>
+                    <p class="col border-bottom border-dark fillable" id="doctor-cell"></p>
+                </div>
+                <div class="col-12 d-flex align-items-center">
+                    <span class="h6 text-capitalize mr-2">
+                        registration no of doctor with pakistan medical or dental
+                        council
+                    </span>
+                    <table class="col-3 border text-center text-capitalize">
+                        <tr id="doctor-pmdc">
+                            <td class="fillable text-uppercase">pmdc</td>
+                            <td class="p-2 fillable"></td>
+                            <td class="p-2 fillable"></td>
+                            <td class="p-2 fillable"></td>
+                            <td class="p-2 fillable"></td>
+                            <td class="p-2 fillable"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="d-flex">
+                    <p class="h6 text-nowrap mr-2"> it is certified that i have examined Mr./Ms.</p>
+                    <span class="col border-bottom border-dark fillable">@entry.Name</span>
+                </div>
+                <div class="col-12 d-flex align-items-center mt-2">
+                    <span class="h6 text-capitalize  text-capitalize text-center mr-2">S/o, W/o, d/o </span>
+                    <span class="col border-bottom border-dark fillable">@entry.FatherHusbandName</span>
+
+                    <span class="h6 text-capitalize  text-capitalize text-center mr-2">bearing CNIC </span>
+                    <span class="col border-bottom border-dark fillable">@entry.CNIC</span>
+
+                    <span class="h6 text-capitalize  text-capitalize text-center mr-2">& Passport No </span>
+                    <span class="col border-bottom border-dark fillable">@entry.PassportNumber</span>
+                </div>
+                <p>and my opinion is given below.</p>
+                <table class="table border">
+                    <tr>
+                        <td class="fw-bold text-capitalize">age</td>
+                        <td class="fw-bold text-capitalize">blood group</td>
+                        <td class="text-capitalize">allergy to following medicines chronic diseases</td>
+                        <td class="text-capitalize">chronic diseases requiring regular medication</td>
+                    </tr>
+                    <tr>
+                        <td class="fillable align-middle text-center" rowspan="3">@entry.Age</td>
+                        <td class="fillable align-middle text-center" rowspan="3">@entry.BloodGroup</td>
+                        <td style="padding-top: 12px;">
+                            <span>(i)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+                        </td>
+                        <td style="padding-top: 12px;">
+                            <span>(i)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td style="padding-top: 12px;">
+                            <span>(ii)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+                        </td>
+                        <td style="padding-top: 12px;">
+                            <span>(ii)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td style="padding-top: 12px;">
+
+                            <span>(iii)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+
+                        </td>
+                        <td style="padding-top: 12px;">
+
+                            <span>(iii)</span>
+                            <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+                </table>
+                
+                <div class="row">
+                <div id="coronadiv" style="display:none;">
+                <h5 class="h5">Detail of Corona Vaccine Administered </h5> 
+                <div class="col">
+                        <table class="table ">
+                            <tr>
+                                <td class="border-0 text-center">Dose</td>
+                                <td class="border-0 text-center">Covid-19 Vaccine Name </td>
+                                <td class="border-0 text-center">Batch</td>
+                                <td class="border-0 text-center">Date</td>
+                            </tr>
+                            <tr>
+                                <td class="h6 ">1st Dose</td>
+                                <td class="fillable ">@entry.Vaccine1</td>
+                                <td class="fillable "></td>
+                                <td class="fillable ">@entry.DoseDate1</td>
+                            </tr>
+                            <tr>
+                                <td class="h6 ">2nd Dose</td>
+                                <td class="fillable ">@entry.Vaccine2</td>
+
+
+                                <td class="fillable "></td>
+                                <td class="fillable ">@entry.DoseDate2</td>
+                            </tr>
+                            <tr>
+                                <td class="h6 ">
+                                    1st Booster
+                                    <small class="fw-light">(if applicable)</small>
+                                </td>
+                                <td class="fillable ">@entry.Vaccine3</td>
+                                <td class="fillable "></td>
+                                <td class="fillable ">@entry.DoseDate3</td>
+                            </tr>
+                            <tr>
+                                <td class="h6 ">
+                                    2nd Booster
+                                    <small class="fw-light">(if applicable)</small>
+                                </td>
+                                <td class="fillable ">@entry.Vaccine4</td>
+                                <td class="fillable "></td>
+                                <td class="fillable ">@entry.DoseDate4</td>
+                            </tr>
+                            <tr>
+                                <td class="h6 ">
+                                    3rd Booster
+                                    <small class="fw-light">(if applicable)</small>
+                                </td>
+                                <td class="fillable ">@entry.Vaccine5</td>
+                                <td class="fillable "></td>
+                                <td class="fillable ">@entry.DoseDate5</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                  
+                </div>
+                      <div class="col-3 user-img">
+                        <img src="~/@entry.ImagePath">
+                    </div>
+                    <div class="row">
+                        <p class="h6" style="display:none;">*Attach NADRA issued Corona Vaccination certificate </p>
+                        <div class="doc-approval col-6">
+                            <table class="table ">
+                                <tr>
+                                    <td class="col-4">applicant is fit for hajj journey</td>
+                                    <td class="col-6 seal-sig-doc bprder-dark align-end overflow-hidden">
+                                        <div id="stampPlaceholder" style="height: 100px;"></div>
+                                        <img src="" class="stamp-img " height="100px" id="doctor-seal-1">
+                                        <p class="fw-bold text-capitalize text-muted">
+                                            seal and signature of the doctor
+                                        </p>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="doc-approval col-6">
+                            <table class="table">
+                                <tr>
+                                    <td class="col-2">can perform hajj with helper</td>
+                                    <td class="col-2">requires the help of a wheel chair</td>
+                                    <td class="col-6 seal-sig-doc bprder-dark align-end overflow-hidden">
+                                        <div style="height: 100px;"></div>
+                                        <p class="fw-bold text-capitalize text-muted">
+                                            seal and signature of the doctor
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                    <p class="text-center h6 urdu">
+                        حلف نامه
+                    </p>
+                    <p class="text-end urdu">
+                        :میں حلفیہ اقرار کرتا / کرتی ہوں کہ
+                    </p>
+                    <ol class="halaf-nama urdu">
+                        <li class="">
+                            یں مسلمان ہوں اور حضرت محمد صلى الله عليه وسلم کو آخری نبی مانتا مانتی ہوں اور
+                            آپ ماہ کے آخری نبی ہونے پر دل و جان سے یقین رکھتا رکھتی ہوں۔
+                        </li>
+                        <li class="">
+                            مزید براں اس بات کی تصدیق کرتا / کرتی ہوں کہ خاتم النبیین والمرسلین حضرت محمد صلى
+                            الله عليه وسلم کی مکمل حتمی اور غیر مشروط ختم نبوت پر ایمان رکھتا رکھتی ہوں اور یہ کہ میں نہ
+                            کسی ایسے شخص پر ایمان رکھتا رکھتی ہوں اور نہ اسے بطور پیغمبر یا مذہبی مصلح مجدد مانتا امانتی
+                            ہوں جس نے حضرت محمد صلى الله عليه وسلم کے بعد نبی یا پیغمبر ہونے کا کسی بھی مفہوم یا کسی بھی
+                            تشریح کے لحاظ سے دعوی کیا یا کرتا کرتی ہو اور نہ ہی میں قادیانی گروپ یالا ہوری گروپ جو خود
+                            کو احمدی یا کسی اور نام سے موسوم کرتے ہیں سے تعلق رکھتا رکھتی ہوں۔ اور ایسے دعوے دار پر لعنت
+                            بھیجتا بھیجتی ہوں، بلکہ کسی بھی ایسے دعوے دار با شمول مرزا غلام احمد قادیانی کو جھوٹا
+                            سمجھتا/ سمجھتی ہوں۔
+                        </li>
+                    </ol>
+                    <p class="h6 text-end d-flex urdu">
+                        <span class="col border-bottom mx-3">
+                            @if (entry.ShowSignature)
+                            {
+                                <img src="@entry.SignatureBase64" width="100" height="50px">
+                            }
+                            else
+                            {
+                                <img style="visibility: hidden;" width="100" height="50px">
+                            }
+                        </span>
+                        <span class="urdu"> :دستخط درخواست گزار</span>
+                    </p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="page-break"></div>
+}
+ @* <a style="margin-left: 10px;" href="~/@Model.PdfPath">View MIS Data Form</a> *@
+
+ <a asp-controller="HajjAgreement" asp-action="NewDisplay"
+        asp-route-id="@ViewBag.HeadId">Proceed to Hajj Agreement</a>
+</body>
+
+</html>

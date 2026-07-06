@@ -1,0 +1,96 @@
+﻿@model IndividualFacilityDescription
+@{
+    string modelDescription = "Individual Facility Description";
+    string modelDescriptionPlural = "Individual Facility Descriptions";
+    string modelControllerRoute = "IndividualFacilityDescription";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelDescription / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="IndividualFacilityDescriptionId">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Room</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="RoomId" class="form-control">
+                                        @foreach (var item in ViewBag.RoomId)
+                                        {
+                                            <option value="@item.RoomId">@item.RoomName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="RoomId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Place</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="PlaceId" class="form-control">
+                                        @foreach (var item in ViewBag.PlaceId)
+                                        {
+                                            <option value="@item.PlaceId">@item.PlaceName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="PlaceId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Accomodation</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="AccomodationId" class="form-control">
+                                        @foreach (var item in ViewBag.AccomodationId)
+                                        {
+                                            <option value="@item.AccomodationId">@item.AccomodationName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="AccomodationId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-5 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Description"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Description" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Description"></span>
+                            </div>
+                            <div class="col-sm-6 col-md-5 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Price (SAR)</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Price" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Price"></span>
+                            </div>
+                            <div class="col-sm-6 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Is Price Include?</label>
+                                <div class="input-group input-group-merge">
+                                    @if(Model.IsSharing == true)
+                                    {
+                                        <input type="checkbox" name="IsSharingB" class="form-check-input" checked value="true" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="IsSharingB" class="form-check-input" value="true" />
+                                    }
+                                </div>
+                                <span class="text-danger" asp-validation-for="IsSharing"></span>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

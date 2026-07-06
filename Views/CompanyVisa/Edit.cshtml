@@ -1,0 +1,204 @@
+﻿@model CompanyVisaEditRequest
+
+@{
+    string modelName = "Fiqah";
+    string modelNamePlural = "Fiqahs";
+    string modelControllerRoute = "Fiqah";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="CompanyVisasId">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Vendor</label>
+                                <div class="input-group input-group-merge">
+                                    <select name="VendorId" id="VendorId" class="form-control">
+                                        <option value="">Select Vendor...</option>
+                                        @foreach (Vendor fh in ViewBag.Vendors)
+                                        {
+                                            <!option value="@fh.VendorId" @(fh.VendorId == Model.VendorId ? "selected" : "")>@fh.VendorName</!option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+
+                            <hr />
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="MaktabNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="MaktabNumber" value="@Model.MaktabNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="MaktabNumber"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Location"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Location" value="@Model.Location" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Location"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="CompanyName" value="@Model.CompanyName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyName"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Category"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Category" value="@Model.Category" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Category"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="OfficeAddress"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="OfficeAddress" value="@Model.OfficeAddress" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="OfficeAddress"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ContactPersonName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="ContactPersonName" value="@Model.ContactPersonName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ContactPersonName"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="MunazimName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="MunazimName" value="@Model.MunazimName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="MunazimName"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SaudiMunazimNo"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" value="@Model.SaudiMunazimNo" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="SaudiMunazimNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SaudiMunazimNo"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="HGO"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" value="@Model.HGO" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="HGO" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="HGO"></span>
+                            </div>
+
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="MoraNo"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" value="@Model.MoraNo" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="MoraNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="MoraNo"></span>
+                            </div>
+
+                            <hr />
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="button" onclick="addRow()" id="submitButton" class="btn btn-success float-end">Add Row</button>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 mt-3">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Contact Number</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="contactBody">
+                                            @if (ViewBag.Contacts != null)
+                                            {
+                                                foreach (var item in ViewBag.Contacts)
+                                                {
+                                                    <tr>
+                                                        <td><input type="text" name="ContactNumber" value="@item.ContactNumber" class="form-control" /></td>
+                                                        <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+                                                    </tr>
+
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+
+    function addRow() {
+         const tableBody = document.getElementById("contactBody");
+
+         const row = document.createElement("tr");
+
+         row.innerHTML = `
+             <td><input type="text" name="ContactNumber" class="form-control" /></td>
+             <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+         `;
+
+         tableBody.appendChild(row);
+     }
+
+     function removeRow(button) {
+         // This removes only the row where button was clicked
+         const row = button.closest("tr");
+         if (row) {
+             row.remove();
+         }
+     }
+
+    $(document).ready(function () {
+        $('select[name="VendorId"]').select2({
+            placeholder: "Select Vendor",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+    });
+</script>

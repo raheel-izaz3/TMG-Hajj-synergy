@@ -1,0 +1,284 @@
+﻿@{
+    Layout = null;
+}
+@model VisaInsuranceReportModel
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JavaScript -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Additional DataTables Extensions (optional) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Bootstrap CSS (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+
+    <style>
+        body {
+            font-size: 10px !important;
+        }
+
+        .table {
+            border: solid 1px black !important;
+            font-size: 8.5px !important;
+        }
+
+        thead {
+            border: solid 1px black !important;
+        }
+
+        .chk-buttons {
+            display: flex;
+        }
+
+        @@media print {
+            body {
+                overflow-x: hidden !important;
+            }
+
+            table {
+                overflow-x: hidden !important;
+            }
+
+            .chk-buttons {
+                display: none !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold"><span class="text-muted fw-light"></span>Upload Documents</h4>
+
+        <hr class="mb-4" />
+        <br><br>
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <table class="table table-hover table-bordered" id="reportTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>HB #</th>
+                            <th>Full Name</th>
+                            <th>Visa File</th>
+                            <th>Insurance File</th>
+                            <th>MIS File</th>
+                            <th>Airline Ticket File</th>
+                            <th>Train Ticket File</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1" style="border: solid 1px black !important;">
+                        @{
+                            int i = 0;
+                        }
+                        @foreach (var m in Model.Rows)
+                        {
+                            <tr style="border-top: @(m.IsHead ? "2px solid black" : "")" id="row_@i">
+                                <input type="hidden" value="@m.FamilyHeadId" id="FamilyHeadId_@i" />
+                                <td>@(i + 1)</td>
+                                <td>@m.FcId</td>
+                                <td>@m.FullName</td>
+                                <td>
+                                    @if (m.VisaImage is null)
+                                    {
+                                        <input type="file" id="VisaFile_@i" />
+                                    }
+                                    else
+                                    {
+                                        <input type="file" id="VisaFile_@i" style="visibility: hidden" />
+                                        <p class="text-success fw-bold">Uploaded!</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (m.InsuranceImage is null)
+                                    {
+                                        <input type="file" id="InsuranceFile_@i" />
+                                    }
+                                    else
+                                    {
+                                        <input type="file" id="InsuranceFile_@i" style="visibility: hidden" />
+                                        <p class="text-success fw-bold">Uploaded!</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (m.MISImage is null)
+                                    {
+                                        <input type="file" id="MISFile_@i" />
+                                    }
+                                    else
+                                    {
+                                        <input type="file" id="MISFile_@i" style="visibility: hidden" />
+                                        <p class="text-success fw-bold">Uploaded!</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (m.AirlineImage is null)
+                                    {
+                                        <input type="file" id="AirlineFile_@i" />
+                                    }
+                                    else
+                                    {
+                                        <input type="file" id="AirlineFile_@i" style="visibility: hidden" />
+                                        <p class="text-success fw-bold">Uploaded!</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (m.TrainImage is null)
+                                    {
+                                        <input type="file" id="TrainFile_@i" />
+                                    }
+                                    else
+                                    {
+                                        <input type="file" id="TrainFile_@i" style="visibility: hidden" />
+                                        <p class="text-success fw-bold">Uploaded!</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (m.TrainImage is null || m.AirlineImage is null || m.MISImage is null
+                                   || m.InsuranceImage is null || m.VisaImage is null)
+                                    {
+                                        <button class="btn btn-success" onclick="submitForm(event, @i)">Submit</button>
+                                        <button class="btn btn-info"
+                                            onclick="emailMember(event, @m.FamilyHeadId)">Email</button>
+                                        <a target="_blank" class="btn btn-primary" asp-action="ViewDocuments" asp-controller="Email" asp-route-id="@m.FamilyHeadId">  View Documents</a>
+                                       
+                                    }
+                                    else
+                                    {
+                                        <p class="text-success fw-bold">Documents Uploaded</p>
+                                    }
+                                </td>
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitForm(e, index) {
+            e.preventDefault();
+
+            console.log(index)
+
+            var famHeadId = document.querySelector(`#FamilyHeadId_${index}`).value
+            var visaFile = document.querySelector(`#VisaFile_${index}`).files[0]
+            var insuranceFile = document.querySelector(`#InsuranceFile_${index}`).files[0]
+            var misFile = document.querySelector(`#MISFile_${index}`).files[0]
+            var airlineFile = document.querySelector(`#AirlineFile_${index}`).files[0]
+            var trainFile = document.querySelector(`#TrainFile_${index}`).files[0]
+
+            console.log(visaFile)
+            console.log(insuranceFile)
+
+            var formData = new FormData();
+            formData.append("FamilyHeadId", famHeadId)
+            formData.append("VisaFile", visaFile)
+            formData.append("InsuranceFile", insuranceFile)
+            formData.append("MISFile", misFile)
+            formData.append("AirlineFile", airlineFile)
+            formData.append("TrainFile", trainFile)
+            console.log(formData)
+
+            $.ajax({
+                url: `/PackageReport/UploadDocuments`, // Replace with your server endpoint
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    console.log('File uploaded successfully');
+                    // console.log(res);
+                    if (visaFile != null) {
+                        document.querySelector(`#VisaFile_${index}`).style.visibility = 'hidden'
+                        document.querySelector(`#VisaFile_${index}`).parentElement.innerHTML += ` <p class="text-success fw-bold">Uploaded!</p>`
+                    }
+                    if (insuranceFile != null) {
+                        document.querySelector(`#InsuranceFile_${index}`).style.visibility = 'hidden'
+                        document.querySelector(`#InsuranceFile_${index}`).parentElement.innerHTML += ` <p class="text-success fw-bold">Uploaded!</p>`
+                    }
+                    if (misFile != null) {
+                        document.querySelector(`#MISFile_${index}`).style.visibility = 'hidden'
+                        document.querySelector(`#MISFile_${index}`).parentElement.innerHTML += ` <p class="text-success fw-bold">Uploaded!</p>`
+                    }
+                    if (airlineFile != null) {
+                        document.querySelector(`#AirlineFile_${index}`).style.visibility = 'hidden'
+                        document.querySelector(`#AirlineFile_${index}`).parentElement.innerHTML += ` <p class="text-success fw-bold">Uploaded!</p>`
+
+                    }
+                    if (trainFile != null) {
+                        document.querySelector(`#TrainFile_${index}`).style.visibility = 'hidden'
+                        document.querySelector(`#TrainFile_${index}`).parentElement.innerHTML += ` <p class="text-success fw-bold">Uploaded!</p>`
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error uploading file:', error);
+                }
+            });
+        }
+
+        function emailMember(e, familyHeadId) {
+            e.preventDefault();
+
+            toastr.success('Sending Email...')
+
+            $.ajax({
+                url: "/Email/SendDocuments/" + familyHeadId,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    if (res.status == 200) {
+                        toastr.success('Email Sent!')
+                    }
+                },
+                error: err => {
+                    console.log(err)
+                    toastr.error('Error')
+
+                }
+            })
+        }  
+        
+    </script>
+</body>
+
+</html>

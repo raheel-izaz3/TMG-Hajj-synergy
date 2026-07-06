@@ -1,0 +1,458 @@
+﻿@{
+    Layout = null;
+}
+@model PackageQurbaniReportModel
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JavaScript -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Additional DataTables Extensions (optional) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Bootstrap CSS (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <style>
+        body {
+            font-size: 10px !important;
+        }
+
+        .table {
+            border: solid 1px black !important;
+            font-size: 8.5px !important;
+        }
+
+        thead {
+            border: solid 1px black !important;
+        }
+
+        .chk-buttons {
+            display: flex;
+        }
+
+        @@media print {
+            body {
+                overflow-x: hidden !important;
+            }
+
+            table {
+                overflow-x: hidden !important;
+            }
+
+            .chk-buttons {
+                display: none !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold"><span class="text-muted fw-light"></span> Package Details</h4>
+        <h5 class="fw-bold">
+            <span class="text-muted fw-light"></span> @Model.PackageName <small>(@Model.PackageCode)</small>
+        </h5>
+        <p>
+            <b>DAYS:</b> @Model.PackageDays | <b>DURATION:</b> @Model.PackageDuration | <b>MEDINAH ARRIVAL:</b>
+            @Model.MedinahArrival | <b>QUOTA:</b> @Model.Quota
+        </p>
+
+        <hr class="mb-4" />
+
+    </div>
+
+    </div>
+
+    <div style="display: flex">
+        <button id="printPage">Print</button>
+    </div>
+    <br>
+    <button id="email" onclick="sendEmails()">Email Links</button>
+    <button style="display:none" onclick="sendTestEmails()">Test Email Links</button>
+    <br>
+    <br>
+    <button onclick="exportToExcel('reportTable', 'exported_data')">Export to Excel</button>
+
+
+    <form action="" method="post">
+        <input type="hidden" id="USDROE" value="@Model.USDROE">
+        <input type="hidden" id="SARROE" value="@Model.SARROE">
+        <input type="hidden" asp-for="PackageId" value="@Model.PackageId">
+        <br><br>
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <button onclick="copyTablee()" id="copyTable">Copy Table</button>
+                <button>Save</button>
+
+                <table class="table table-hover table-bordered" id="reportTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>HB #</th>
+                            <th>Full Name</th>
+                            <th>Gender</th>
+                            <th>Passport</th>
+                            <th>Link</th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1" style="border: solid 1px black !important;">
+                        @for (int i = 0; i < Model.Members.Count; i++)
+                        {
+                            var currentMember = Model.Members.ElementAt(i);
+
+                            <tr>
+                                <input type="hidden" class="members" asp-for="FamilyHeadIds[i]"
+                                    value="@currentMember.FamilyHeadId">
+                                <td>@currentMember.SrNo</td>
+                                <td>@currentMember.FcId</td>
+                                <td>@currentMember.FullName</td>
+                                <td>@currentMember.Gender</td>
+                                <td>@currentMember.Passport</td>
+                                <td><a
+                                        href="@Url.Action("QurbaniQueueForm", "PackageReport", new { id = currentMember.FamilyHeadId })">Qurbani
+                                        Link (@currentMember.FullName)</a> </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+
+    </div>
+
+    <partial name="~/Views/Shared/_PackageROECalculationScript.cshtml" />
+
+    <script>
+
+        function updateSelected(elem, familyHeadId, type) {
+
+            const isHead = elem.getAttribute("data-is-head")
+            const headId = elem.getAttribute("data-head-id")
+            const elemFcId = elem.getAttribute("data-HB #")
+
+            if (isHead == "True" && elem.checked) {
+                const attributeName = 'data-head-id';
+                let elements = null
+                if (type == 'Excluded') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-ex]`);
+                }
+                if (type == 'Complimentry') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-compl]`);
+                }
+                if (type == 'Paid') {
+                    elements = document.querySelectorAll(`[${attributeName}="${headId}"][data-paid]`);
+                }
+
+                if (elem.checked) {
+                    for (let check of elements) {
+                        if (check.hasAttribute('disabled')) continue;
+                        check.checked = true
+                        let fcId = check.getAttribute('data-HB #')
+        @* addMember(fcId) *@
+                            console.log(check)
+                    }
+                }
+                else {
+                    elem.checked = false;
+        @* removeMember(elemFcId) *@
+                        console.log(check)
+
+                }
+            }
+            else if (elem.checked && isHead == "False") {
+        @* addMember(elemFcId) *@
+                }
+            else {
+        @* removeMember(elemFcId) *@
+                }
+
+        }
+
+        $(document).ready(function () {
+            var table = $('#reportTable').DataTable({
+                dom: '<"dom_wrapper fh-fixedHeader"f>tip',
+                pageLength: 20,
+                fixedHeader: true,
+                paging: false,
+                info: false,
+                ordering: false
+            });
+
+            const checkHeaders = document.querySelectorAll(".check-header");
+            let i = 0;
+            for (let check of checkHeaders) {
+                check.setAttribute("data-column-index", i);
+                i++;
+            }
+
+            $(".check-header").change(function () {
+                colVis(this, table);
+            });
+
+            $("#printPage").click(function () {
+                window.print();
+            });
+
+            $("#saveState").click(function () {
+                saveDataTableState(table);
+            });
+        });
+
+        function exportToExcel(tableId, filename) {
+            var table = $('#' + tableId).DataTable();
+            var header = table.columns().header().toArray().map(function (th) {
+                return $(th).text();
+            });
+
+            var data = table.rows().data().toArray().map(function (row) {
+                var rowData = [];
+                $(row).find('td').each(function () {
+                    var input = $(this).find('input');
+                    if (input.length > 0) {
+                        rowData.push(input.val());
+                    } else {
+                        rowData.push($(this).text());
+                    }
+                });
+                return rowData;
+            });
+
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.aoa_to_sheet([header]);
+
+            for (var i = 0; i < data.length; i++) {
+                XLSX.utils.sheet_add_aoa(worksheet, [data[i]], { origin: -1 });
+            }
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+            XLSX.writeFile(workbook, filename + '.xlsx');
+        }
+
+
+
+        function colVis(elem, table) {
+            let index = elem.getAttribute('data-column-index');
+            if (elem.checked) {
+                table.column(index).visible(true);
+            } else {
+                table.column(index).visible(false);
+            }
+        }
+
+        function saveDataTableState(table) {
+            let state = {
+                columnsVisibility: table.columns().visible(),
+                rowData: []
+            };
+
+            table.rows().every(function () {
+                let rowData = this.data();
+                let inputs = $(this.node()).find('input');
+                if (inputs.length > 0) {
+                    inputs.each(function (index, input) {
+                        rowData[index + 1] = input.value;
+                    });
+                }
+                state.rowData.push(rowData);
+            });
+
+            let serializedState = JSON.stringify(state, function (key, value) {
+                if (key === '_fixedHeader') {
+                    return undefined;
+                }
+                return value;
+            });
+
+            localStorage.setItem('dataTableState', serializedState);
+
+            alert('Table state saved successfully!');
+        }
+
+
+
+
+
+
+        function colVis(elem, table) {
+            let index = elem.getAttribute('data-column-index');
+            if (elem.checked) {
+                table.column(index).visible(true);
+            } else {
+                table.column(index).visible(false);
+            }
+        }
+        function copyTablee() {
+            var table = document.getElementById('reportTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+        function copyTableContent() {
+            var table = document.getElementById('ThridTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+        function copyTable() {
+            var table = document.getElementById('SecondTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+
+
+
+        function adjustInputWidth(input) {
+
+            var length = input.value.length;
+
+            var newWidth = length + 3.5;
+
+            input.style.width = newWidth + 'ch';
+        }
+
+    </script>
+
+
+    <script>
+        function sendEmails() {
+            const packageMembers = document.querySelectorAll(".members")
+            toastr.success('Sending Email...')
+
+
+            for (let m of packageMembers) {
+                console.log("Sending to " + m.value)
+                $.ajax({
+                    url: "/Email/EmailQurbaniLinks/" + m.value,
+                    method: "POST",
+                    success: res => {
+                        console.log("Sent to " + m.value)
+                        toastr.success(`Email Sent to ${res}!`)
+                    },
+                    error: err => {
+                        console.error(err)
+                        toastr.error('Error')
+                    }
+                })
+            }
+
+
+        }
+
+        function sendTestEmails() {
+            const packageMembers = document.querySelectorAll(".members")
+            toastr.success('Sending Email...')
+
+
+            for (let m of packageMembers) {
+                console.log("Sending to " + m.value)
+                $.ajax({
+                    url: "/Email/TestEmailQurbaniLinks/" + m.value,
+                    method: "POST",
+                    success: res => {
+                        console.log("Sent to " + m.value)
+                        toastr.success(`Email Sent to ${res}!`)
+                    },
+                    error: err => {
+                        console.error(err)
+                        toastr.error('Error')
+                    }
+                })
+            }
+
+
+        }
+
+
+        @*
+            async function sendEmails() {
+            const packageMembers = document.querySelectorAll(".members");
+            toastr.success('Sending Email...');
+
+            for (let m of packageMembers) {
+            console.log("Sending to " + m.value);
+
+            try {
+            const response = await sendEmail(m.value);
+            console.log("Sent to " + m.value);
+            toastr.success('Email Sent!');
+            } catch (error) {
+            console.error(error);
+            toastr.error('Error');
+            }
+            }
+            }
+
+            function sendEmail(memberValue) {
+            return new Promise((resolve, reject) => {
+            $.ajax({
+            url: "/Email/EmailQurbaniLinks/" + memberValue,
+            method: "POST",
+            success: res => {
+            resolve(res);
+            },
+            error: err => {
+            reject(err);
+            }
+            });
+            });
+            } *@
+    </script>
+
+
+</body>
+
+</html>

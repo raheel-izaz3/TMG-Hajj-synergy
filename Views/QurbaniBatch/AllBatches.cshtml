@@ -1,0 +1,318 @@
+@model IEnumerable<QurbaniAllBatchesModel>
+@{
+    Layout = "_InvoiceLayout";
+}
+@{
+    string modelName = "Qurbani Batch";
+    string modelNamePlural = "Qurbani Batches";
+    string modelControllerRoute = "QurbaniBatch";
+
+    ViewData["title"] = "All Batches";
+}
+
+
+<!-- AnyChart Core and Bundle -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-core.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-bundle.min.js"></script>
+
+<!-- AnyChart Base -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js"></script>
+
+<!-- AnyChart UI and Exports -->
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/releases/8.12.0/js/anychart-exports.min.js"></script>
+
+<!-- AnyChart CSS -->
+<link href="https://cdn.anychart.com/releases/8.12.0/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+<link href="https://cdn.anychart.com/releases/8.12.0/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+
+
+<style>
+    html,
+    body,
+    #guageContainer {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural / All Batches</h4>
+
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-sm-12" style="height: 450px;">
+            <div id="guageContainer"></div>
+        </div>
+    </div>
+
+    <div id="rootDiv">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card p-2">
+                    <div class="table-responsive text-nowrap ">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Batch</th>
+                                    <th>Booked / Capacity</th>
+                                    <th>Booked %</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batchTable">
+                                @foreach (var batch in Model)
+                                {
+                                    <tr id="row_@batch.QurbaniBatchId">
+                                        <td>
+                                            <a target="_blank" style="text-decoration: underline;"
+                                                href="@batch.Link">@batch.Name</a>
+                                        </td>
+                                        <td>
+                                            <span id="booking_@batch.QurbaniBatchId"></span> / <span
+                                                id="capacity_@batch.QurbaniBatchId">@batch.Capacity</span>
+                                        </td>
+                                        <td id="bookPerc_@batch.QurbaniBatchId">-</td>
+                                        <td>
+                                            <button class="btn btn-success" id="btn_@batch.QurbaniBatchId"
+                                                onclick="stopBatch(this, @batch.QurbaniBatchId)">Stop!</button>
+                                            <a href="/QurbaniBatch/BatchMembers/@batch.QurbaniBatchId" target="_blank"
+                                                class="btn btn-primary text-white">List</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    var gauge = null;
+    anychart.onDocumentReady(function () {
+        gauge = anychart.gauges.circular();
+        gauge
+            .fill('#fff')
+            .stroke(null)
+            .padding(0)
+            .margin(100)
+            .startAngle(270)
+            .sweepAngle(180);
+
+        gauge
+            .axis()
+            .labels()
+            .padding(5)
+            .fontSize(14)
+            .position('outside')
+            .format('{%Value}%');
+
+        gauge
+            .axis()
+            .scale()
+            .minimum(0)
+            .maximum(100)
+            .ticks({ interval: 10 })
+            .minorTicks({ interval: 5 });
+
+        gauge
+            .axis()
+            .fill('#545f69')
+            .width(1)
+            .ticks({ type: 'line', fill: 'white', length: 2 });
+
+        gauge.title(
+            `Overall Qurbani Guage<br/>` +
+            `<small style="font-size: 0.8rem">Done: <span id="membersDone" style="font-size: 0.8rem"></span></small>
+             | <small style="font-size: 0.8rem">Overall: <span style="font-size: 0.8rem" id="totalMembers">@ViewBag.TotalMembers</span></small>`
+        );
+        gauge
+            .title()
+            .useHtml(true)
+            .padding(0)
+            .fontColor('#212121')
+            .hAlign('center')
+            .margin([0, 0, 10, 0]);
+
+        gauge
+            .needle()
+            .stroke('2 #545f69')
+            .startRadius('5%')
+            .endRadius('90%')
+            .startWidth('0.1%')
+            .endWidth('0.1%')
+            .middleWidth('0.1%');
+
+        gauge.cap().radius('3%').enabled(true).fill('#545f69');
+
+        gauge.range(0, {
+            from: 0,
+            to: 30,
+            position: 'inside',
+            fill: '#dd2c00 0.4',
+            startSize: 50,
+            endSize: 50,
+            radius: 98
+        });
+
+        gauge.range(1, {
+            from: 30,
+            to: 70,
+            position: 'inside',
+            fill: '#ffa000 0.4',
+            startSize: 50,
+            endSize: 50,
+            radius: 98
+        });
+
+        gauge.range(2, {
+            from: 70,
+            to: 100,
+            position: 'inside',
+            fill: '#009900 0.4',
+            startSize: 50,
+            endSize: 50,
+            radius: 98
+        });
+
+        gauge
+            .label(1)
+            .text('')
+            .fontColor('#212121')
+            .fontSize(14)
+            .offsetY('68%')
+            .offsetX(25)
+            .anchor('center');
+
+        gauge
+            .label(2)
+            .text('')
+            .fontColor('#212121')
+            .fontSize(14)
+            .offsetY('68%')
+            .offsetX(90)
+            .anchor('center');
+
+        gauge
+            .label(3)
+            .text('')
+            .fontColor('#212121')
+            .fontSize(14)
+            .offsetY('68%')
+            .offsetX(155)
+            .anchor('center');
+
+        gauge.container('guageContainer');
+        gauge.draw();
+    });
+</script>
+
+<script>
+    function stopBatch(elem, qurbaniBatchId) {
+        let confirmation = confirm("Are you sure you want stop this batch?")
+        if (!confirmation) return
+
+        $.ajax({
+            url: "/QurbaniBatch/StopBatch/" + qurbaniBatchId,
+            method: "POST",
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.error(err)
+            }
+        })
+
+        elem.disabled = true
+        document.getElementById('row_' + qurbaniBatchId).style.backgroundColor = '#adadad'
+
+    }
+
+    setInterval(() => {
+        $.ajax({
+            url: "/Qurbani/GetBookingCount",
+            method: "GET",
+            success: res => {
+                console.log(res)
+                updateBookings(res)
+            },
+            error: err => {
+                console.error(err)
+            }
+        })
+    }, 1000)
+
+    setInterval(() => {
+        $.ajax({
+            url: "/Qurbani/GetQurbaniDoneCount",
+            method: "GET",
+            success: res => {
+                console.log(res)
+                gauge.title(
+            `Overall Qurbani Guage<br/>` +
+            `<small style="font-size: 0.8rem">Done: <span id="membersDone" style="font-size: 0.8rem">${res}</span></small>
+             | <small style="font-size: 0.8rem">Overall: <span style="font-size: 0.8rem" id="totalMembers">@ViewBag.TotalMembers</span></small>`
+        );
+        gauge.data([(res / @ViewBag.TotalMembers) * 100]);
+
+            },
+            error: err => {
+                console.error(err)
+            }
+        })
+    }, 1000)
+
+    function updateBookings(res) {
+        for (let r of res) {
+            if (!document.getElementById("row_" + r.qurbaniBatchId)) {
+                console.log("no such elem")
+
+                const newElement = document.createElement('tr')
+                newElement.id = `row_${r.qurbaniBatchId}`
+                newElement.innerHTML = `
+                    <td>${r.name}</td>
+                                        <td >
+                                            <span id="booking_${r.qurbaniBatchId}"></span> / <span id="capacity_${r.qurbaniBatchId}">${r.capacity}</span> 
+                                        </td>
+                                        <td></td>
+                                        <td><button class="btn btn-success" id="btn_${r.qurbaniBatchId}"
+                                                onclick="stopBatch(this, ${r.qurbaniBatchId})">Stop!</button></td>
+                `
+
+                if (document.getElementById("batchTable").firstChild) {
+                    document.getElementById("batchTable").insertBefore(newElement, document.getElementById("batchTable").firstChild)
+                }
+                else {
+                    document.getElementById("batchTable").append(newElement)
+                }
+            }
+            else {
+                document.getElementById(`capacity_${r.qurbaniBatchId}`).innerText = r.capacity
+
+                document.getElementById(`booking_${r.qurbaniBatchId}`).innerText = r.memberCount
+
+                document.getElementById(`bookPerc_${r.qurbaniBatchId}`).innerText = ((r.memberCount / r.capacity) * 100) + '%'
+
+                document.getElementById(`row_${r.qurbaniBatchId}`).style.backgroundColor = (r.capacity == r.memberCount | r.stopped) ? '#adadad' : ''
+
+                document.getElementById(`btn_${r.qurbaniBatchId}`).disabled =
+                    (r.capacity == r.memberCount | r.stopped)
+            }
+
+
+
+        }
+
+
+
+    }
+</script>

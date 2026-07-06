@@ -1,0 +1,29 @@
+﻿<script>
+    function Addon_row() {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                                        <tr id="addon_${id}">
+                                            <td><input type="text" class="form-control" name="AddOnCode[]" placeholder="Enter Code "></td>
+                                            <td><input type="text" class="form-control" name="AddOnDescription[]" placeholder="Enter Description "></td>
+                                            <td><input type="text" class="form-control" name="AddOnPkr[]" id="addon-pkr-${id}"
+                                                        placeholder="Enter PKR" 
+                                                        oninput="pkrToOtherCurr('addon-pkr-${id}','addon-sar-${id}', 'addon-usd-${id}')"></td>
+                                                    <td><input type="text" class="form-control" name="AddOnSar[]" id="addon-sar-${id}"
+                                                        placeholder="Enter SAR "
+                                                                oninput="sarToOtherCurr('addon-sar-${id} ','addon-pkr-${id}', 'addon-usd-${id}')"></td>
+                                                    <td><input type="text" class="form-control" name="AddOnUsd[]" id="addon-usd-${id}"
+                                                        oninput="usdToOtherCurr('addon-usd-${id} ','addon-pkr-${id}', 'addon-sar-${id}')"
+                                                placeholder="Enter USD "></td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger"
+                                                onclick="RemoveAddon(${id})"><i class="bx bxs-trash - alt"></i></button>
+                                            </td>
+                                        </tr>`;
+
+        $("#addons").append(row);
+    }
+
+    function RemoveAddon(id) {
+        document.getElementById(`addon_${id}`).remove();
+    }
+</script>

@@ -1,0 +1,68 @@
+﻿@{
+    string modelName = "Report";
+    string modelNamePlural = "";
+    string modelControllerRoute = "Report";
+}
+
+<style>
+    /* Fix select2 styling issues */
+    .select2-container--default .select2-selection--multiple {
+        min-height: 38px; /* Set default height */
+        max-height: 200px; /* Limit dropdown height */
+        overflow-y: auto;
+        border: 1px solid #ced4da; /* Match Bootstrap form styles */
+        border-radius: 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Package Flight Report</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">   
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <form method="get" action="/Report/POTicketWiseReport">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Package</label>
+                                        <select name="id" id="PackageId" class="form-select" multiple>
+                                            @* <option value="0">All Packages</option> *@
+                                            @foreach (var package in ViewBag.Packages)
+                                            {
+                                                <option value="@package.PackageNumber">
+                                                    @package.PackageNumber - @package.Code
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery and Select2 Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#PackageId').select2({
+            placeholder: "Select Package",
+            allowClear: true,
+            width: '100%' // Ensure it takes full width
+        });
+    });
+</script>

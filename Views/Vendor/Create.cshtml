@@ -1,0 +1,137 @@
+﻿@model Vendor
+
+@{
+    string modelName = "Vendor";
+    string modelNamePlural = "Vendors";
+    string modelControllerRoute = "Vendor";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="VendorTypeId"></label>
+                                <select class="form-control" asp-for="VendorTypeId">
+                                    <option value="">Select Vendor Type</option>
+                                    @foreach (VendorType type in ViewBag.Types)
+                                    {
+                                        <option value="@type.VendorTypeId">@type.TypeName</option>
+                                    }
+                                </select>
+                                <span class="text-danger" asp-validation-for="VendorTypeId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="VendorName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="VendorName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="VendorName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Currencies"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <select class="form-control" asp-for="Currencies" asp-items="@Html.GetEnumSelectList<Currencies>()">
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currencies"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountTitle"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="AccountTitle" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountTitle"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="AccountNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountNumber"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="IBAN"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="IBAN" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="IBAN"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SwiftCode"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="SwiftCode" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SwiftCode"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="NTN"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="NTN" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="NTN"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="VATNo"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="VATNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="VATNo"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ClusterName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="ClusterName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClusterName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Logo"></label>
+                                <div class="input-group input-group-merge">
+                                    <input type="file" name="image" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Logo"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="BeneficiaryAddress"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="BeneficiaryAddress" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="BeneficiaryAddress"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="BankAddress"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="BankAddress" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="BankAddress"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

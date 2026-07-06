@@ -1,0 +1,70 @@
+﻿
+@{
+    string modelName = "Room Allocation";
+    string modelNamePlural = "Room Allocations";
+    string modelControllerRoute = "RoomAllocation";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light">@modelNamePlural / </span>Availablity Chart</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="row">
+            <div class="col-sm-12 col-md-5 mb-3">
+                <label class="form-label" for="basic-icon-default-fullname">Check In Date</label>
+                <div class="input-group input-group-merge">
+                    <input type="date" name="CheckIn" class="form-control"
+                           min="@DateTimeManager.Today" />
+                </div>
+                <span class="text-danger"></span>
+            </div>
+            <div class="col-sm-12 col-md-5 mb-3">
+                <label class="form-label" for="basic-icon-default-fullname">Check Out Date</label>
+                <div class="input-group input-group-merge">
+                    <input type="date" name="CheckOut" class="form-control"
+                           min="@DateTimeManager.Today" />
+                </div>
+                <span class="text-danger"></span>
+            </div>
+            <div class="col-sm-12 col-md-1 mb-3 d-flex justify-content-center align-items-end">
+                <button type="submit"class="btn btn-icon btn-info"><i class="bx bx-search"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Room</th>
+                        <th>Validity</th>
+                        <th>Bookings</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

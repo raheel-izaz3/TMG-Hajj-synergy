@@ -1,0 +1,200 @@
+﻿@model IEnumerable<DataFormMember>
+
+@{
+    Layout = "";
+}
+@{
+    string modelName = "Hajj 2026 Registration";
+    string modelNamePlural = "Hajj 2026 Registrations";
+    string modelControllerRoute = "DataForm";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>TMG Hajj</title>
+
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.common.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+
+    <style>
+        .select2-search__field {
+            outline: none
+        }
+
+        .select2-dropdown {
+            background-color: #f66262;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding: 0px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            color: #000;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #eee;
+            color: black;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+
+    <style>
+        .menu-item .active {
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="tooltip" id="tooltip">Link copied</div>
+
+        <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+        <hr class="mb-4" />
+        @*  <a class="btn btn-success float-start" asp-action="AddMember" asp-route-familyHeadId="@ViewBag.FamilyHeadId">
+        <i class="bx bx-add-to-queue me-1"></i> Add
+    </a> *@
+
+
+        @* @if (ViewBag.RestoreAllowed == true)
+    {
+        <a asp-action="ViewTrash" asp-route-id="@Model.ElementAtOrDefault(0)?.HeadId" class="btn btn-info float-end">
+            <i class="bx bx-trash me-1"></i> Trash
+            (@ViewBag.TrashCount)
+        </a>
+    } *@
+        @* <a asp-controller="DataForm" asp-action="Index" class="btn btn-warning">Back</a> *@
+        <br />
+        <br />
+        <div class="card p-2 mt-2">
+            <div class="table-responsive text-nowrap " style="padding-bottom: 200px;">
+                @Html.AntiForgeryToken()
+                <table class="table table-hover" id="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Actions</th>
+                            <th>Name</th>
+                            <th>Family Head</th>
+                            <th>Age</th>
+                            <th>D.O.B</th>
+                            <th>CNIC</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1">
+
+                        @{
+                            var SrNo = 1;
+                        }
+
+
+                        @foreach (DataFormMember fm in Model)
+                        {
+                            var today = DateTime.Today;
+
+                            var age = today.Year - fm.DataForm.DOB.Year;
+
+                            if (fm.DataForm.DOB.Date > today.AddYears(-age)) age--;
+
+                            <tr>
+                                <td>
+                                    <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                    <strong>@(SrNo++)</strong>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a class="btn btn-warning" asp-action="Update" asp-route-id="@fm.DataFormId">
+                                            <i class="bx bx-edit-alt me-1"></i> Edit
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>@fm.DataForm.GivenName</td>
+                                <td>@(fm.DataForm.IsHead ? "Yes" : "No")</td>
+                                <td>@age</td>
+                                <td>@DateTimeManager.GetDate(@fm.DataForm.DOB)</td>
+                                <td>@fm.DataForm.CNICNo</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        function confirmDelete(id) {
+            let del = confirm("Are you sure?")
+            if (del) {
+                location.href = `/@modelControllerRoute/Trash/${id}`;
+            }
+        }
+
+        @* let table = new DataTable('#table', {
+
+        }); *@
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+

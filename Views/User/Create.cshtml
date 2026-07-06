@@ -1,0 +1,107 @@
+﻿@model RegisterRequest
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Users / </span>  Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Username"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-user"></i></span>
+                                    <input asp-for="Username" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Username..." aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Username"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                    <input asp-for="Email" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Email..." aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Password"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-lock"></i></span>
+                                    <input asp-for="Password" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Password..." aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ConfirmPassword"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-lock"></i></span>
+                                    <input asp-for="ConfirmPassword" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Confirm Password..." aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ConfirmPassword"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PinCode"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-lock"></i></span>
+                                    <input asp-for="PinCode" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Pin Code..." aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PinCode"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="UserSignatureFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-image"></i></span>
+                                    <input type="file" asp-for="UserSignatureFile" class="form-control" id="basic-icon-default-fullname" aria-describedby="basic-icon-default-fullname2">
+                                </div>
+                                <span class="text-danger" asp-validation-for="UserSignatureFile"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Assign Role</label>
+                                <br />
+                                @foreach(Role role in ViewBag.Roles)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        @* <input class="form-check-input" type="radio" id="role_@role.RoleId" asp-for="RoleId" value="role_@role.RoleId"> *@
+                                        <input class="form-check-input" type="radio" asp-for="RoleId" value="@role.RoleId">
+                                        <label class="form-check-label" for="role_@role.RoleId">@role.RoleName</label>
+                                    </div>
+                                }
+                                <br />
+                                <span asp-validation-for="RoleId" class="text-danger"></span>
+
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Assign Companies</label>
+                                <br />
+                                @if(ViewBag.CompaniesCount == 0)
+                                {
+                                    <p>No Company Exists. <a asp-controller="Company" asp-action="Create">Create a company</a></p>
+                                }
+                                @foreach (Company company in ViewBag.Companies)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        @* <input class="form-check-input" type="checkbox" id="company_@company.CompanyId" name="CompanyId[]" value="company_@company.CompanyId"> *@
+                                        <input class="form-check-input" type="checkbox" name="CompanyId" value="@company.CompanyId">
+                                        <label class="form-check-label" for="company_@company.CompanyId">@company.CompanyName</label>
+                                    </div>
+                                }
+                                <span asp-validation-for="CompanyId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+                        <button type="submit" class="btn btn-success float-end">Create</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,200 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight-Report (Muallim)</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- DataTables.min.js -->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            /* border: none; */
+        }
+
+            table th {
+                /* border: 1px solid #fedf7b !important; */
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                /* width: fit-content !important; */
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table td {
+                font-size: 8px !important;
+                /* outline: 1px solid #fedf7b; */
+                /* border: 1px solid #fedf7b; */
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e;
+            }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-bottom: 30px;">Flight Report (Muallim)</h1>
+
+    @foreach (var group in ViewBag.Result)
+    {
+        <div class="myTable" style="margin-bottom: 30px;" id="summaryData">
+            <table id="roomData" class="display nowrap" style="width: 100%;">
+                <div style="background-color: #b49164; color: white; padding: 6px;">
+                    <p style="text-align: center; ">@(group[0].Munazzam)</p>
+                </div>
+                <thead>
+                <th>Sr.</th>
+                <th>HGO</th>
+                <th>Maktab</th>
+                <th>HB #</th>
+                <th>Full Name</th>
+                <th>#P.P</th>
+                <th>Gender</th>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                        int k = 0;
+                    }
+                    @foreach (var m in group)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td hidden>@m.MunazzimId</td>
+                            <td>@m.HGO</td>
+                            <td>@m.Maktab</td>
+                            <td>@m.FcId</td>
+                            <td>@m.FullName</td>
+                            <td>@m.PassportNumber</td>
+                            <td>@m.Gender</td>
+                        </tr>
+                        i++;
+                        k++;
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td colspan="3">@k</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+
+    <script>
+        let summaryData = new DataTable('#summaryData', {
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    text: 'Export to Excel',
+                    extend: 'excelHtml5',
+                    className: 'btn btn-dark',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                },
+                {
+                    text: 'Export to PDF',
+                    extend: 'pdfHtml5',
+                    className: 'btn btn-dark',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }
+            ],
+            paging: false,
+            lengthChange: false
+        });
+    </script>
+
+</body>
+</html>

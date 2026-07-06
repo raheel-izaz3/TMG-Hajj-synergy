@@ -1,0 +1,720 @@
+﻿@model TMG.Models.HajjReceiptModel
+
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            font-size: 9px;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Table styling  */
+        table tr th {
+            font-size: 10px;
+        }
+
+        table tr td {
+            font-size: 9px !important;
+        }
+
+        .AMounttotelvalue {
+            font-size: 12px !important;
+            color: white;
+            background-color: black;
+        }
+
+        .TotalAMountTitle {
+            font-size: 10px !important;
+            color: white;
+            background-color: black;
+        }
+
+        #discountRateHideShow {
+            display: none;
+        }
+
+        #totalAmountHideShow {
+            display: none;
+        }
+
+
+        /* Table styling  End */
+        .downloade_btn {
+            padding: 10px 45px;
+            background-color: lightblue;
+            outline: none;
+            border: 1px solid black;
+            font-weight: bold;
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            .downloade_btn:hover {
+                background-color: white;
+            }
+
+        /* Check-Box Styling  */
+        .check_box_container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .check_box_container .CheckBox {
+                width: 20px;
+                height: 12px;
+                margin: 0;
+                padding: 0;
+            }
+
+        /* @@media print {
+            .check_box_container {
+                display: none !important;
+            }
+
+            button {
+                display: none;
+            }
+        } */
+
+        /* Check-Box Styling End */
+        .parent {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+        }
+
+            .container .logo {
+                width: 55px;
+            }
+
+                .container .logo img {
+                    width: 100%;
+                }
+
+        .AL_Khair_Title {
+            font-size: 18px;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .title_break {
+            font-size: 12px;
+            margin-left: 15px;
+            font-weight: bold;
+        }
+
+        .qr-code p {
+            padding: 0;
+            margin: 0;
+        }
+
+        .qr-code {
+            padding: 0;
+            padding-top: 20px;
+        }
+
+        .qr_number {
+            text-align: right;
+            margin: 0px;
+            font-weight: bold;
+        }
+
+        .horizantal_line {
+            border: 1px solid black;
+        }
+
+
+        .Invoice_to_section {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .proforma_title {
+            text-align: center;
+            padding-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .Customer_Info p {
+            padding: 1px 0;
+            font-weight: bold !important;
+        }
+
+        .Customer_Col_2 p {
+            padding: 1px 0;
+            font-weight: bold;
+        }
+
+        .Customer_Col_2 span {
+            font-weight: normal;
+        }
+
+        .Customer_Info span {
+            font-weight: normal;
+        }
+
+        .ALL_MEMBERS_NAMES p {
+            padding: 1px 0;
+        }
+
+        .ALL_MEMBERS_NAMES span {
+            font-weight: bold;
+        }
+
+        /* Table Styling Start  */
+        .Service_Table {
+            width: 100%;
+        }
+
+            .Service_Table tr th {
+                font-size: 10px;
+                text-align: right;
+            }
+
+            .Service_Table tr td {
+                border-bottom: 1px solid black;
+                font-size: 10px;
+            }
+
+                .Service_Table tr td:nth-child(2) {
+                    text-align: right;
+                    width: 130px;
+                }
+
+            .Service_Table tr:nth-last-child(1) {
+                font-weight: bold;
+            }
+
+        /* MEdia Querry  */
+        @@media (max-width :768px) {
+            .Bank_Table {
+                width: 100% !important;
+            }
+        }
+
+        .Bank_Table {
+            margin-top: 20px;
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 60%;
+        }
+
+            .Bank_Table tr {
+                border: 1px solid black;
+            }
+
+                .Bank_Table tr th {
+                    border: 1px solid black !important;
+                    background-color: lightblue;
+                    text-align: left;
+                    padding-left: 5px;
+                    font-size: 10px;
+                }
+
+                .Bank_Table tr td:nth-child(1) {
+                    font-weight: bold;
+                }
+
+                .Bank_Table tr td {
+                    text-align: left;
+                    border: 1px solid black;
+                    padding-left: 5px;
+                    font-size: 10px;
+                }
+
+        /* ADF_Details_Table styling Start  */
+        .Receipt_container {
+            margin-top: 7px;
+        }
+
+
+        .ADF_Container {
+            width: 60%;
+        }
+
+        .ADF_Details_Box {
+            margin-bottom: 10px;
+        }
+
+        .ADF_heading {
+            background-color: lightblue;
+            font-weight: bold;
+            font-size: 10px !important;
+            text-align: center;
+            color: black !important;
+        }
+
+        @@media (max-width:768px) {
+            .ADF_Container {
+                width: 100% !important;
+            }
+        }
+
+        .ADF_Details_Box table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        .ADF_Details_Box tr th {
+            border: 1px solid black;
+        }
+
+        .ADF_Details_Box tr td {
+            border: 1px solid black;
+        }
+
+
+        .totalText,
+        .amountText {
+            font-weight: bold !important;
+            background-color: lightblue;
+            font-size: 10px !important;
+            color: black !important;
+        }
+
+        /*############ ADF_Details_Table styling End ############## */
+        /* *********Note List ********** */
+        .terms_condition_list {
+            margin-left: 6px;
+            margin: 20px 0px !important;
+        }
+
+        .note_heading {
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .Notes_order_list {
+            padding: 0;
+            margin: 8px;
+        }
+
+            .Notes_order_list li {
+                font-size: 8px;
+                padding: 2px;
+            }
+
+        .footer {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            margin-top: auto;
+        }
+@@media print {
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+    }
+     .Signature-part {
+        margin-bottom: 0 !important;
+    }
+     #incoice_page_body {
+        padding-bottom: 0;
+    }
+    .check_box_container {
+        display: none !important;
+    }
+    button {
+        display: none;
+    }
+}
+        /* Update existing footer styles */
+        .footer_address {
+            border-top: 1px solid black;
+            text-align: center;
+        }
+
+            .footer_address h6 {
+                font-weight: normal !important;
+            }
+
+        .top_service_table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 0px;
+            margin-top: 10px;
+        }
+
+            .top_service_table tr th,
+            td {
+                border: 1px solid black;
+            }
+
+            .top_service_table tr {
+                border: 1px solid black;
+            }
+
+                .top_service_table tr:nth-child(1) {
+                    border: none !important;
+                    outline: none;
+                }
+
+                .top_service_table tr td:nth-child(2) {
+                    text-align: right;
+                }
+
+                .top_service_table tr:nth-last-child(1) {
+                    font-weight: bold;
+                    font-size: 10px !important;
+                    background-color: lightblue;
+                    color: white;
+                }
+
+        /* ________Content_Editable Row _____ */
+        [contenteditable] {
+            width: 100px;
+        }
+
+        /* ________Content_Editable Row _____ */
+        /* Hide And Show Table Styling  */
+        #Receipt_PaymentRecord,
+        #Payment_Subject {
+            display: none;
+        }
+
+
+        #Memberbreaktable {
+            display: none;
+            text-align: center;
+        }
+
+        .MembersName tr th:nth-child(1) {
+            text-align: left !important;
+        }
+
+        .MembersName tr,
+        th,
+        td:nth-child(1) {
+            text-align: left;
+        }
+
+            .MembersName tr th:nth-child(2),
+            .MembersName tr th:nth-child(3),
+            .MembersName tr th:nth-child(4),
+            .MembersName tr th:nth-child(5),
+            .MembersName tr th:nth-child(6) {
+                text-align: center !important;
+            }
+
+        .MembersName th:nth-child(1),
+        .MembersName th:nth-child(1),
+        .MembersName tH:nth-child(4) {
+            text-align: left;
+        }
+
+        .MembersName th,
+        td {
+            text-align: center;
+        }
+
+        /* Media Querry Check-box and Label button  */
+        label {
+            font-size: 14px !important;
+        }
+
+        @@media (max-width: 768px) {
+            label {
+                font-size: 14px;
+            }
+
+            input[type="checkbox"] {
+                transform: scale(0.8);
+            }
+        }
+
+        .check_box_container span {
+            font-weight: bold;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .start-iadf td {
+            text-align: left !important;
+        }
+
+        .Signature-part {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            height: 220px;
+            text-align: center;
+            align-items: end;
+            column-gap: 30px;
+            margin-top: 20px;
+            /* margin-bottom: 100px; */
+        }
+
+            .Signature-part p {
+                margin-top: 70px;
+                font-weight: 500;
+                font-size: 14px;
+            }
+
+        /* Add these new styles */
+        
+       #incoice_page_body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    padding-bottom: 0;
+}
+
+        
+
+        .content-wrapper {
+            flex: 1;
+        }
+
+    </style>
+
+    <!-- html2pdf CDN Link -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+    <button class="downloade_btn" onclick="downloadPDF()">Download PDF</button>
+    <button class="downloade_btn" id="send-pdf">Send Email</button>
+    <div id="incoice_page_body">
+        <div class="content-wrapper">
+            <div class="title" style="padding-top : 5px">
+                <p id="companyName">@Model.PrintDate | @Model.PrintedBy</p>
+            </div>
+            <div class="parent">
+                <div class="container">
+                    <div class="logo" style="padding-top : 5px">
+                        <img src="~/@Model.CompanyLogo" id="companyLogo" alt="Logo" />
+                    </div>
+
+                    <div class="title" style="padding-top : 5px">
+                        <p class="AL_Khair_Title" id="companyName">@Model.CompanyName</p>
+                        <p style="margin-left: 15px;" id="companyAddress">@Model.CompanyAddress</p>
+                        <p style="margin-left: 15px;" id="companyContact">@Model.CompanyContact</p>
+                    </div>
+                </div>
+                <div class="qr-code">
+                    <img src="~/Group Logo.png" alt="QR-Code" style="width: 75px; height: 75px" />
+                </div>
+            </div>
+            <div class="horizantal_line"></div>
+            <div class="proforma_title">
+                <h4 id="miniStatement_Title">RECEIPT</h4>
+            </div>
+            <div class="Invoice_to_section">
+                <div>
+                    <h6>HAJJ APPLICATION NO: <span id="invoiceToCustomer">@Model.HajjApplicationNumber</span></h6>
+                    <h6>RV #: <span id="invoiceToCustomer">@Model.PerformaNumber</span></h6>
+                    <div class="Customer_Info">
+                        <p>NAME OF APPLICANT: <span id="headName">@Model.ApplicantName</span></p>
+                        @* <p>CONTACT: <span id="headContact">@Model.Contact</span></p> *@
+                        <p>CNIC: <span id="cnic"> @Model.CNIC</span> </p>
+                        <p>PASSPORT: <span id="passport">@Model.Passport</span> </p>
+                        <p>SCHEME: <span id="scheme">@Model.Scheme</span></p>
+                        <p>HAJJ PACKAGE: <span id="mega">@Model.HajjPackage</span> </p>
+                        <p>PACKAGE AMOUNT: <span id="passport">@Model.BaseCurrency @Model.PackageAmount</span> </p>
+                        <p>PAX: <span id="passport">@Model.PAX</span> </p>
+                    </div>
+                </div>
+                <div class="Customer_Col_2">
+                    <p>CHEQUE NUMBER: <span id="date"> @Model.ChequeNumber</span></p>
+                    <p>CHEQUE DATE: <span id="date"> @Model.ChequeDate</span></p>
+                    <p>BANK NAME: <span id="date"> @Model.BankName</span></p>
+                    <p>PAYMENT MODE: <span id="category">@Model.PaymentMode</span> </p>
+                    <p>MUNAZAM COMPANY: <span id="cnic"> @Model.MunazamCompany </span> </p>
+                </div>
+                <div class="Customer_Info">
+                    <div class="logo">
+                        <img src="~/@Model.MemberImage" id="companyLogo" height="150" width="150" alt="Logo" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Service Section Start   -->
+            <table class="top_service_table">
+                <tr>
+                    <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Date</th>
+                    <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">RV #</th>
+                    <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Instrument Number</th>
+                    <th style="text-align: right; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Amount Received (@Model.PaidCurrency)</th>
+                    <th style="text-align: center; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">R.O.E</th>
+                    <th style="text-align: right; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Amount (@Model.BaseCurrency)</th>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-size: 10px; background-color: white; color: black;">@Model.ReceiptDate</td>
+                    <td style="text-align: left; font-size: 10px; background-color: white; color: black;">@Model.PerformaNumber</td>
+                    <td style="text-align: left; font-size: 10px; background-color: white; color: black;">@Model.ReferenceNo</td>
+                    <td style="text-align: right; font-size: 10px; background-color: white; color: black;">@Model.PaidCurrency  @Model.Amount</td>
+                    <td style="text-align: center; font-size: 10px; background-color: white; color: black;">@Model.ROE</td>
+                    <td style="text-align: right; font-size: 10px; background-color: white; color: black;">@Model.BaseCurrency @Model.ConvertedAmmount</td>
+                </tr>
+            </table>
+
+            <img style="width: 10%; margin-top: 20px;" src="~/@Model.File"/>
+
+            <section class="Signature-part">
+                <div>
+                    <img style="width: 150px; height: 100px; border-bottom: 1px solid black" src="~/@Model.UserSignature" alt="">
+                    <p style="margin-top: 0px;"> CASHIER SIGNATURE</p>
+                </div>
+
+                <div>
+                    <img src="~/@Model.FinanceSignature" style="width: 150px; height: 100px; border-bottom: 1px solid black;" alt="">
+                    <p style="margin-top: 0px;"> FINANCE SIGNATURE</p>
+                </div>
+
+                <div>
+                    <img src="~/@Model.CompanyStamp" style="width: 100px; height: 100px; border-bottom: 1px solid black;" alt="">
+                    <p style="margin-top: 0px;"> COMAPNY STAMP </p>
+                </div>
+            </section>
+        </div>
+
+        <!-- footer  -->
+        <footer class="footer">
+            <div class="footer_address" id="footer">
+                <h6 style="position: relative; top: -15px; font-weight: bold !important;">
+                    THIS RECEIPT IS SUBJECT TO THE CLEARANCE & REALIZATION OF PAYMENT AS PER THE GIVEN CHEQUE.
+                </h6>
+                <h6>
+                    Add: @Model.CompanyAddress
+                </h6>
+                <h6>
+                    Phone: @Model.CompanyContact Email: @Model.CompanyEmail Web: @Model.CompanySite
+                </h6>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function downloadPDF() {
+            var element = document.getElementById('incoice_page_body');
+
+            html2pdf()
+    .from(element)
+    .set({
+        margin: [5, 5, 5, 5], // Reduced margins
+        filename: 'Hajj_Receipt.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            scrollY: -window.scrollY,
+            windowHeight: element.scrollHeight
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'landscape',
+            compress: true
+        }
+    })
+    .save();
+
+        }
+
+        document.getElementById('send-pdf').addEventListener('click', function () {
+    var element = document.getElementById('incoice_page_body');
+    const footer = document.querySelector('footer');
+
+    // Hide checkboxes, if any
+    document.querySelectorAll('.check_box_container').forEach(el => el.style.visibility = 'hidden');
+    
+    // For PDF generation, set footer to absolute
+    footer.style.position = 'absolute';
+    // footer.style.marginTop = "15px";
+
+    const filename = 'HajjSlip.pdf';
+
+    const options = {
+        margin: [25, 25, 25, 25],
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'pt', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(options).from(element).toPdf().get('pdf').then(function (pdf) {
+        var pdfBase64 = pdf.output('datauristring');
+        sendPdfToServer(pdfBase64);
+    }).finally(function () {
+        // Revert footer style for normal screen view if needed
+        document.querySelectorAll('.check_box_container').forEach(el => el.style.visibility = 'visible');
+        footer.style.position = 'fixed';
+        footer.style.marginTop = "0px";
+    });
+});
+        function sendPdfToServer(pdfBase64) {
+            const id = @ViewBag.ID
+
+            $.ajax({
+                url: `/Email/SendHajjSlip/${id}`,
+                type: 'POST',
+                data: { pdfBase64: pdfBase64 },
+                success: function (response) {
+                    alert("Email sent successfully!");
+                },
+                error: function (xhr, status, error) {
+                    alert("Error sending email: " + error);
+                }
+            });
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+﻿@model PackageEditRequest
+@{
+    int ifIter = 0;
+}
+
+<div class="form-check d-flex">
+    @foreach (var facility in ViewBag.Facilities)
+    {
+        bool found = false;
+        @foreach (var assignedFacility in ViewBag.AssignedFacility)
+        {
+            if (assignedFacility.IndividualFacilityDescriptionId == facility.IndividualFacilityDescriptionId)
+            {
+                found = true;
+                break;
+            }
+        }
+        @if (found)
+        {
+            <div class="col-sm-12">
+                <div style="margin-left: 30px;">
+                    <input type="hidden" asp-for="PackageFacilitiesIds[ifIter]" value="@facility.IndividualFacilityDescriptionId" />
+                    <input type="checkbox" asp-for="SelectedFacilities[ifIter]" class="form-check-input mr-1" id="addFac_@ifIter" checked onchange="checkAddFac(@ifIter, this)" />
+                    <label class="mx-2" for="addFac_@ifIter" style="font-size: 13px;">
+                        @facility.Description
+                    </label>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-sm-12">
+                <div>
+                    <input type="hidden" asp-for="PackageFacilitiesIds[ifIter]" value="@facility.IndividualFacilityDescriptionId" />
+                    <input type="checkbox" asp-for="SelectedFacilities[ifIter]" class="form-check-input mr-1" id="addFac_@ifIter" onchange="checkAddFac(@ifIter, this)" />
+                    <label class="mx-2" for="addFac_@ifIter" style="font-size: 13px;">
+                        @facility.Description
+                    </label>
+                </div>
+            </div>
+        }
+        ifIter++;
+    }
+
+</div>
+
+<script>
+    function checkAddFac(id, elem) {
+        const other = document.querySelector("#addFac_" + id);
+        other.value = elem.checked ? true : false;
+    }
+</script>

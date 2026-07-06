@@ -1,0 +1,61 @@
+@model IEnumerable<TrainDemandModel>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Train Demand</h4>
+
+    <hr class="mb-4" />
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 500px">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th># of Passengers</th>
+                        <th>MED-MAK</th>
+                        <th>MAK-MED</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (TrainDemandModel item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@item.SNo</strong>
+                            </td>
+                            <td>@item.Company</td>
+                            <td>@item.Package</td>
+                            <td>@item.NumberOfPassengers</td>
+                            <td>@item.OutboundArrival</td>
+                            <td>@item.InboundDeparture</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let table = new DataTable('#table', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+</script>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<User>
+@{
+    string modelName = "User";
+    string modelNamePlural = "Users";
+    string modelControllerRoute = "User";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("restored"))
+{
+    if ((bool)TempData["restored"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["restored"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelNamePlural</span> / Trash</h4>
+
+    <hr class="mb-4" />
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+
+                    @foreach (User user in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@user.UserId</strong>
+                            </td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.CreatedAt</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-info" asp-action="Restore" asp-route-id="@user.UserId"><i class="bx bx-recycle me-1"></i> Restore</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/User/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

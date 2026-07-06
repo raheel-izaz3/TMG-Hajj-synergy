@@ -1,0 +1,104 @@
+﻿@model QurbaniMemberModel
+@{
+    string modelName = "Qurbani Member";
+    string modelNamePlural = "Qurbani Members";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Group</th>
+                        <th>Name</th>
+                        <th>Passport</th>
+                        <th>Qurbani Type</th>
+                        <th>Qurbani Id</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (MemberEntry entry in Model.MemberEntries)
+                    {
+                        <tr>
+                            <td style="text-align: @entry.TextAlign"><i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@entry.SNumber</strong>                    </td>
+                            <td style="text-align: @entry.TextAlign">@entry.CompanyName</td>
+                            <td style="text-align: @entry.TextAlign">@entry.PackageName</td>
+                            <td style="text-align: @entry.TextAlign">@entry.Group</td>
+                            <td style="text-align: @entry.TextAlign">@entry.Name</td>
+                            <td style="text-align: @entry.TextAlign">@entry.Passport</td>
+                            <td style="text-align: @entry.TextAlign">
+                               
+                            </td>
+                            <td style="text-align: @entry.TextAlign" id="qid_@entry.FamilyHeadId">@entry.QurbaniId</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function qurbani(elem, familyHeadId, qurbaniTypeId){
+        const allCheckboxes = document.querySelectorAll(`#qurbani_${familyHeadId}`)
+        const namedBox = document.querySelector(`input[name='qurbani_${familyHeadId}-${qurbaniTypeId}']`)
+
+        if (elem.checked) {
+            for (let c of allCheckboxes) {
+                if (c.getAttribute('name') == namedBox.getAttribute('name')) {
+                    c.checked = true
+                }
+                else {
+                    c.checked = false
+                }
+            }
+            $.ajax({
+                url: "/Qurbani/Create",
+                method: "POST",
+                data: {
+                    memberId: familyHeadId,
+                    qurbaniTypeId: qurbaniTypeId
+                },
+                success: res => {
+                    console.log(res)
+                    const tdId = document.querySelector(`#qid_${familyHeadId}`)
+                    tdId.innerHTML = res.qurbaniId;
+                },
+                error: err => {
+                    console.log(res)
+                }
+            });
+        }
+        else {
+            $.ajax({
+                url: "/Qurbani/Delete",
+                method: "DELETE",
+                data: {
+                    memberId: familyHeadId,
+                    qurbaniTypeId: qurbaniTypeId
+                },
+                success: res => {
+                    console.log(res)
+                    const tdId = document.querySelector(`#qid_${familyHeadId}`)
+                    tdId.innerHTML = "";
+                },
+                error: err => {
+                    console.log(res)
+                }
+            });
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

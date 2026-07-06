@@ -1,0 +1,117 @@
+﻿@using TMG.Controllers.CompanyControllers
+@model DepartmentFilingModel
+
+@{
+    string modelName = "DepartmentFiling";
+    string modelNamePlural = "DepartmentFilings";
+    string modelControllerRoute = "DepartmentFiling";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="DepartmentFilingId">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company Name</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyId" name="companyId">
+                                        <option value="">Select Company</option>
+                                        @foreach (var item in ViewBag.Company)
+                                        {
+                                            if (item.CompanyId == Model.CompanyId)
+                                            {
+                                                <option value="@item.CompanyId" selected>@item.CompanyName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.CompanyId">@item.CompanyName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Department</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyDepartmentId" name="companyDepartmentId">
+                                        <option value="">Select Department</option>
+                                        @foreach (var item in ViewBag.Departments)
+                                        {
+                                            if (item.CompanyDepartmentId == Model.CompanyDepartmentId)
+                                            {
+                                                <option value="@item.CompanyDepartmentId" selected>@item.CompanyDepartmentName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.CompanyDepartmentId">@item.CompanyDepartmentName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyDepartmentId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Date"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Date" type="date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Date"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ImagePath"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="ImagePath" type="file" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ImagePath"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Note"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Note" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Note"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="companyDepartmentId"]').select2({
+            placeholder: "Select Depatment",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+
+        $('select[name="companyId"]').select2({
+            placeholder: "Select Company",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+    });
+</script>

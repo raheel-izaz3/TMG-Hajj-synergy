@@ -1,0 +1,159 @@
+﻿@model PNRTrainIndexModel
+@{
+    string modelName = "PNR";
+    string modelNamePlural = "PNRs";
+    string modelControllerRoute = "PNRTrain";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+   @*  @if (ViewBag.CreateAllowed == true)
+    { *@
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+    @* }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+    <a asp-action="ViewTrashPNR" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.TrashCount)</a>
+    @* } *@
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <div id="pnrGrid"></div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(function () {
+        $("#pnrGrid").dxDataGrid({
+            dataSource: @Html.Raw(Json.Serialize(Model.Entries)),
+            keyExpr: "pnrId",
+            showBorders: true,
+            columnAutoWidth: true,
+            searchPanel: {
+                visible: true,
+                highlightCaseSensitive: false
+            },
+            headerFilter: {
+                    visible: true
+            },
+            sorting: {
+                mode: "multiple"
+            },
+            paging: false,
+            summary: {
+                totalItems: [
+                    { column: "capacity", summaryType: "sum" },
+                    { column: "booked", summaryType: "sum" },
+                    { column: "balance", summaryType: "sum" }
+                ]
+            },
+            columns: [
+                {
+                    dataField: "pnrId",
+                    caption: "#",
+                    cellTemplate: function(container, options) {
+                        container.append(`<strong><i class="fab fa-bootstrap fa-lg text-primary me-2"></i>${options.value}</strong>`);
+                    }
+                },
+                { dataField: "name", caption: "PNR Name" },
+                { dataField: "number", caption: "PNR Number" },
+                { dataField: "type", caption: "PNR Type" },
+                { dataField: "flightName", caption: "Railway Name" },
+                { dataField: "pnrType", caption: "Type" },
+                { dataField: "trainNumber", caption: "Train Number" },
+                { dataField: "departure", caption: "Departure" },
+                { dataField: "arrival", caption: "Arrival" },
+                { dataField: "capacity", dataType: "number" },
+                { dataField: "booked", dataType: "number" },
+                { dataField: "balance", dataType: "number" },
+                {
+                    type: "buttons",
+                    caption: "Actions",
+                    cellTemplate: function (container, options) {
+                        var id = options.data.pnrId;
+                        container.append(`
+                            <a class="btn btn-success me-1" href="/PNRTrain/AddMembers/${id}">
+                                <i class="bx bx-add-to-queue me-1"></i> Add
+                            </a>
+                            <a class="btn btn-danger me-1" href="/PNRTrain/Print/${id}">
+                                <i class="bx bx-printer me-1"></i> Print
+                            </a>
+                            <a class="btn btn-warning me-1" href="/PNRTrain/Edit/${id}">
+                                <i class="bx bx-edit-alt me-1"></i> Edit
+                            </a>
+                            <button class="btn btn-outline-danger" onclick="confirmDelete(${id})">
+                                <i class="bx bx-trash me-1"></i> Trash
+                            </button>
+                        `);
+                    }
+                }
+            ]
+        });
+    });
+
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        bPaginate: false
+    });
+</script>
+

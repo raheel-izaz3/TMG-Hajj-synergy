@@ -1,0 +1,384 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@{
+    Layout = null;
+    var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hajj Summary Report</title>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+
+    <link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+    <script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+
+    <style>
+        #downloadPdf {
+            padding: 8px 16px;
+            background-color: #f60000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .downloade_btn {
+            padding: 8px 16px;
+            background-color: lightgreen;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        #columnSelectors {
+            margin-bottom: 20px;
+        }
+
+            #columnSelectors label {
+                margin-right: 15px;
+            }
+    </style>
+</head>
+
+<body>
+    <button id="downloadPdf">Download PDF</button>
+    <button class="downloade_btn" onclick="exportToExcel()">Export to Excel</button>
+
+    <p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+    <div id="columnSelectors">
+        <label><input type="checkbox" class="column-toggle" data-col="HajjiName" checked> Hajji Name</label>
+        <label><input type="checkbox" class="column-toggle" data-col="HBNo" checked> HBNo</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Gender" checked> Gender</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Age" checked> Age</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DOB" checked> Date of Birth</label>
+        <label><input type="checkbox" class="column-toggle" data-col="PassportNo" checked> Passport #</label>
+        <label><input type="checkbox" class="column-toggle" data-col="CompanyNames" checked> Tawafa / Third Party</label>
+        <label><input type="checkbox" class="column-toggle" data-col="PackageName" checked> Package Name</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Address"> Address</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ApplicantType"> Applicant Type</label>
+        <label><input type="checkbox" class="column-toggle" data-col="VisaNo"> Visa #</label>
+        <label><input type="checkbox" class="column-toggle" data-col="HGO"> HGO #</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MoufaaNo"> Mofa #</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MisUpload"> Mis Image</label>
+        <label><input type="checkbox" class="column-toggle" data-col="TicketImageOneway"> TicketImageOneway</label>
+        <label><input type="checkbox" class="column-toggle" data-col="TicketImageReturn"> TicketImageReturn</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ArrivalTicketNo"> Arrival Ticket No</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ArrivalAirportName"> Arrival Airport</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ArrivalFlightNumber"> Arrival Flight</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ArrivalTime"> Arrival Time</label>
+        <label><input type="checkbox" class="column-toggle" data-col="ArrivalDate"> Arrival Date</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DepartureTicketNo"> Departure Ticket No</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DepartureAirportName"> Departure Airport</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DepartureFlightNumber"> Departure Flight</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DepartureTime"> Departure Time</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DepartureDate"> Departure Date</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Makkah"> Makkah</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MakkahHotel"> Makkah Hotel</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MakkahCheckIn"> Makkah CheckIn</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MakkahCheckOut"> Makkah CheckOut</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Madinah"> Madinah</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MedinahHotel"> Madinah Hotel</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MedinahCheckIn"> Medinah CheckIn</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MedinahCheckOut"> Medinah CheckOut</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Azizias"> Azizias</label>
+        <label><input type="checkbox" class="column-toggle" data-col="AziziaHotel"> Azizia Hotel</label>
+        <label><input type="checkbox" class="column-toggle" data-col="AziziaCheckIn"> Azizia CheckIn</label>
+        <label><input type="checkbox" class="column-toggle" data-col="AziziaCheckOut"> Azizia CheckOut</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Mina"> Mina</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MinaHotel"> Mina Hotel</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MinaCheckIn"> Mina CheckIn</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MinaCheckOut"> Mina CheckOut</label>
+        <label><input type="checkbox" class="column-toggle" data-col="GroupName"> Group Name</label>
+        <label><input type="checkbox" class="column-toggle" data-col="GiveAway"> GiveAway</label>
+        <label><input type="checkbox" class="column-toggle" data-col="PNR"> PNR Airline</label>
+        <label><input type="checkbox" class="column-toggle" data-col="PNRTrain"> PNR Train</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Remarks"> Remarks</label>
+        <label><input type="checkbox" class="column-toggle" data-col="DD"> DD</label>
+        <label><input type="checkbox" class="column-toggle" data-col="RouteOne"> Madinah Airport to Hotel</label>
+        <label><input type="checkbox" class="column-toggle" data-col="CNIC"> CNIC</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Number"> Number</label>
+        <label><input type="checkbox" class="column-toggle" data-col="Email"> Email</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MoraNo"> MoraNo</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MunazzamName"> MunazzamName</label>
+        <label><input type="checkbox" class="column-toggle" data-col="MunazzamNo"> MunazzamNo</label>
+    </div>
+
+    <h3>Member Report</h3>
+    <div id="hajjSummaryGrid"></div>
+
+    <script>
+        let data = @Html.Raw(jsonData);
+        let gridInstance;
+
+        data.forEach((item) => {
+            if (item.DOB) {
+                let birthDate = new Date(item.DOB);
+                let today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                let m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                item.Age = age;
+
+                let day = String(birthDate.getDate()).padStart(2, '0');
+                let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                let formattedDOB = `${day}-${monthNames[birthDate.getMonth()]}-${birthDate.getFullYear()}`;
+                item.DOB = formattedDOB;
+            } else {
+                item.Age = "-";
+                item.DOB = "-";
+            }
+        });
+
+        $(function () {
+            $("#hajjSummaryGrid").dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+                columnAutoWidth: true,
+                paging: false,
+                searchPanel: { visible: true },
+                headerFilter: { visible: true },
+                filterRow: { visible: true, applyFilter: "auto" },
+                sorting: { mode: "multiple" },
+                export: {
+                    enabled: true,
+                    fileName: "HajjSummary"
+                },
+                onInitialized: function (e) {
+                    gridInstance = e.component;
+                },
+                onContentReady: function (e) {
+                    updateSerialNumbers();
+                },
+                columns: [
+                    {
+                        caption: "S.No",
+                        width: 60,
+                        cellTemplate: function (container, options) {
+                            const visibleRows = options.component.getVisibleRows();
+                            const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+                            container.text(rowIndex + 1);
+                        }
+                    },
+                    { dataField: "HajjiName", caption: "Hajji Name", visible: true },
+                    { dataField: "HBNo", caption: "HBNo", visible: true },
+                    { dataField: "Gender", caption: "Gender", visible: true },
+                    { dataField: "Age", caption: "Age", visible: true },
+                    { dataField: "DOB", caption: "Date of Birth", visible: true },
+                    { dataField: "PassportNo", caption: "Passport #", visible: true },
+                    { dataField: "CompanyNames", caption: "Tawafa / Third Party", visible: true },
+                    { dataField: "PackageName", caption: "Package Name", visible: true },
+                    { dataField: "Address", caption: "Address", visible: false },
+                    { dataField: "ApplicantType", caption: "Applicant Type", visible: false },
+                    { dataField: "VisaNo", caption: "Visa No", visible: false },
+                    { dataField: "HGO", caption: "HGO", visible: false },
+                    { dataField: "MoufaaNo", caption: "Mofa No", visible: false },
+                    { dataField: "Visa", caption: "Visa", visible: false },
+                    { dataField: "MisUpload", caption: "Mis Image", visible: false },
+                    { dataField: "TicketImageOneway", caption: "Ticket Image OneWay", visible: false },
+                    { dataField: "TicketImageReturn", caption: "Ticket Image Return", visible: false },
+                    { dataField: "ArrivalTicketNo", caption: "Arrival Ticket No", visible: false },
+                    { dataField: "ArrivalAirportName", caption: "Arrival Airport", visible: false },
+                    { dataField: "ArrivalFlightNumber", caption: "Arrival Flight", visible: false },
+                    { dataField: "ArrivalTime", caption: "Arrival Time", visible: false },
+                    { dataField: "ArrivalDate", caption: "Arrival Date", visible: false, dataType: "date", format: "dd/MMM/yyyy" },
+                    { dataField: "PNRTicketArrival", caption: "PNR Arrival", visible: false },
+                    { dataField: "DepartureTicketNo", caption: "Departure Ticket No", visible: false },
+                    { dataField: "DepartureAirportName", caption: "Departure Airport", visible: false },
+                    { dataField: "DepartureFlightNumber", caption: "Departure Flight", visible: false },
+                    { dataField: "DepartureTime", caption: "Departure Time", visible: false },
+                    { dataField: "DepartureDate", caption: "Departure Date", visible: false, dataType: "date", format: "dd/MMM/yyyy" },
+                    { dataField: "PNRTicketDeparture", caption: "PNR Departure", visible: false },
+                    { dataField: "GrossClient", caption: "Gross Client", visible: false , format: { type: "fixedPoint", precision: 0 }},
+                    { dataField: "GrossAirline", caption: "Gross Airline", visible: false , format: { type: "fixedPoint", precision: 0 } },
+                    { dataField: "Makkah", caption: "Makkah", visible: false },
+                    { dataField: "RouteOne", caption: "Madinah Airport to Hotel", visible: false },
+                    { dataField: "MakkahHotel", caption: "Makkah Hotel", visible: false },
+                    {
+                        dataField: "MakkahCheckIn",
+                        caption: "Makkah CheckIn",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    {
+                        dataField: "MakkahCheckOut",
+                        caption: "Makkah CheckOut",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    { dataField: "Madinah", caption: "Medinah", visible: false },
+                    { dataField: "MedinahHotel", caption: "Medinah Hotel", visible: false },
+                    {
+                        dataField: "MedinahCheckIn",
+                        caption: "Medinah CheckIn",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    {
+                        dataField: "MedinahCheckOut",
+                        caption: "Medinah CheckOut",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    { dataField: "Azizias", caption: "Azizia", visible: false },
+                    { dataField: "AziziaHotel", caption: "Azizia Hotel", visible: false },
+                    {
+                        dataField: "AziziaCheckIn",
+                        caption: "Azizia CheckIn",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    {
+                        dataField: "AziziaCheckOut",
+                        caption: "Azizia CheckOut",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    { dataField: "Mina", caption: "Mina", visible: false },
+                    { dataField: "MinaHotel", caption: "Mina Hotel", visible: false },
+                    {
+                        dataField: "MinaCheckIn",
+                        caption: "Mina CheckIn",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    {
+                        dataField: "MinaCheckOut",
+                        caption: "Mina CheckOut",
+                        visible: false,
+                        dataType: "date",
+                        format: "dd/MMM/yyyy"
+                    },
+                    { dataField: "GroupName", caption: "Group Name", visible: false },
+                    { dataField: "GiveAway", caption: "GiveAway", visible: false },
+                    { dataField: "PNR", caption: "PNR Airline", visible: false },
+                    { dataField: "PNRTrain", caption: "PNR Train", visible: false },
+                    { dataField: "Remarks", caption: "Remarks", visible: false },
+                    { dataField: "DD", caption: "DD", visible: false },
+                    { dataField: "CNIC", caption: "CNIC", visible: false },
+                    { dataField: "Number", caption: "Number", visible: false },
+                    { dataField: "Email", caption: "Email", visible: false },
+                    { dataField: "MoraNo", caption: "Mora No", visible: false },
+                    { dataField: "MunazzamName", caption: "Munazzam Name", visible: false },
+                    { dataField: "MunazzamNo", caption: "Munazzam No", visible: false },
+                ]
+
+            });
+
+            $('.column-toggle').on('change', function () {
+                const column = $(this).data('col');
+                const visible = $(this).is(':checked');
+                gridInstance.columnOption(column, 'visible', visible);
+            });
+
+
+            $("#downloadPdf").on("click", async function () {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: "landscape",
+                    unit: "pt",
+                    format: "a3"
+                });
+                const img = new Image();
+                img.src = '/reportlogo/GroupLogo.png';
+                        img.onload = function () {
+            const imgWidth = 60;
+            const imgHeight = 25;
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const x = pageWidth - imgWidth - 40;
+            let y = 10; 
+
+            doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+            doc.save("MemberReport.pdf");
+        };
+                doc.setFontSize(18);
+                doc.text("Member Report", 40, 40);
+
+
+                const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+                doc.setFontSize(10);
+                doc.text(printedDate, 40, 60);
+
+
+                DevExpress.pdfExporter.exportDataGrid({
+                    jsPDFDocument: doc,
+                    component: gridInstance,
+                    topLeft: { x: 40, y: 80 },
+                    margin: { top: 20, left: 20, right: 20, bottom: 20 },
+                     customizeCell: function (options) {
+                         if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+                             const visibleRows = gridInstance.getVisibleRows();
+                             const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+                             options.pdfCell.text = (rowIndex + 1).toString();
+                         }
+                         options.pdfCell.font = { size: 8 };
+                     }
+                }).then(() => {
+                    doc.save("MemberReport.pdf");
+                });
+            });
+
+            function updateSerialNumbers() {
+                if (gridInstance) {
+                    const visibleRows = gridInstance.getVisibleRows();
+                    visibleRows.forEach((row, index) => {
+                        if (row && row.data) {
+                            row.data.SerialNo = index + 1;
+                        }
+                    });
+                }
+            }
+        });
+
+    </script>
+    <script>
+        function exportToExcel() {
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Hajj Summary');
+
+            DevExpress.excelExporter.exportDataGrid({
+                component: gridInstance,
+                worksheet: worksheet,
+                autoFilterEnabled: true,
+                customizeCell: function(options) {
+                    if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+                        const visibleRows = gridInstance.getVisibleRows();
+                        const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+                        options.excelCell.value = rowIndex + 1;
+                    }
+                }
+            }).then(function() {
+                workbook.xlsx.writeBuffer().then(function(buffer) {
+                    saveAs(new Blob([buffer], { type: "application/octet-stream" }), "HajjSummary.xlsx");
+                });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+@if (http.HttpContext.Session.GetString("InvoiceModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bxs-purchase-tag-alt'></i>
+                                    <div data-i18n="Account Settings">Receipts</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewReceipt").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="NewInvoice" asp-action="Index" class="menu-link">
+                                                <div>Receipt List</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @* @if (http.HttpContext.Session.GetString("CanViewClientStatement").Equals("True"))
+                            {
+                            <li class="menu-item">
+                            <a asp-controller="MiniStatement" asp-action="Index" class="menu-link">
+                            <div>Client Statement</div>
+                            </a>
+                            </li>
+                            } *@
+                                    @if (http.HttpContext.Session.GetString("CanViewMiniStatement").Equals("True"))
+                                    {
+                                       @*  <li class="menu-item">
+                                            <a asp-controller="MiniStatement" asp-action="Client" class="menu-link">
+                                                <div>Mini Statement</div>
+                                            </a>
+                                        </li> *@
+                                    }
+                                    @*  @if (http.HttpContext.Session.GetString("CanViewMiniStatement").Equals("True"))
+                            {
+                            <li class="menu-item">
+                            <a asp-controller="NewInvoice" asp-action="Index" class="menu-link">
+                            <div>New Invoice</div>
+                            </a>
+                            </li>
+                            } *@
+                                </ul>
+                            </li>
+                        }

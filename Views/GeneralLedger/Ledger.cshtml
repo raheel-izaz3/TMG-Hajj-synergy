@@ -1,0 +1,90 @@
+﻿@using TMG.Models.Updated_Accounts
+@{
+    string modelName = "Report";
+    string modelNamePlural = "";
+    string modelControllerRoute = "Report";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">General Ledger</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                    <th>Balance</th>
+                                </tr>
+                                @if (ViewBag.IsBank == true)
+                                {
+                                    <tr>
+                                        <th colspan="5">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span style="text-align: left;">Opening Balance:</span>
+                                                <span style="text-align: right;">
+                                                    <strong>@ViewBag.OpeningBalance.ToString("N2")</strong>
+                                                </span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                }
+                            </thead>
+                            <tbody>
+                                @{
+                                    float totalDebit = 0, totalCredit = 0, balance = 0;
+                                }
+                                @foreach (var entry in Model)
+                                {
+                                    <tr>
+                                        <td>@entry.Date</td>
+                                        <td>@entry.Description</td>
+                                        <td style="text-align: right;">@entry.Debit.ToString("N2")</td>
+                                        <td style="text-align: right;">@entry.Credit.ToString("N2")</td>
+                                        <td style="text-align: right;">@entry.Balance.ToString("N2")</td>
+                                    </tr>
+
+                                    totalDebit += entry.Debit;
+                                    totalCredit += entry.Credit;
+                                    balance = entry.Balance;
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"><b>Total: </b></td>
+                                    <td colspan="1" style="text-align:right;"><b>@totalDebit.ToString("N2") </b></td>
+                                    <td colspan="1" style="text-align:right;"><b>@totalCredit.ToString("N2") </b></td>
+                                    <td colspan="1" style="text-align:right;"><b>@balance.ToString("N2")</b></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="groupId"]').select2({
+            placeholder: "Select Account Group",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+        $('select[name="companyId"]').select2({
+            placeholder: "Select Company",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>

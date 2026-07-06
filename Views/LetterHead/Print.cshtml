@@ -1,0 +1,757 @@
+﻿@model LetterHead
+
+@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title></title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			overflow-x: hidden;
+			padding-left: 230px;
+			padding-right: 230px;
+		}
+
+		/* Modal background (hidden by default) */
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1000;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			justify-content: center;
+			align-items: center;
+		}
+
+		/* Modal content */
+		.modal-content {
+			background-color: #fff;
+			padding: 20px;
+			width: 400px;
+			border-radius: 8px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+			position: relative;
+		}
+
+		/* Close button */
+		.close-btn {
+			position: absolute;
+			top: 10px;
+			right: 15px;
+			font-size: 20px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		/* Button styling */
+		.open-modal-btn {
+			padding: 10px 20px;
+			background-color: #007bff;
+			color: black;
+			border: none;
+			cursor: pointer;
+			border-radius: 5px;
+			font-size: 16px;
+		}
+
+			.open-modal-btn:hover {
+				background-color: #0056b3;
+			}
+
+		h1, h2, h3, h4, h5, h6 {
+			margin: 0;
+			padding: 0;
+		}
+
+		p {
+			font-size: 9px;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* Table styling  */
+		table tr th {
+			font-size: 10px;
+		}
+
+		table tr td {
+			font-size: 9px !important;
+		}
+
+		.AMounttotelvalue {
+			font-size: 12px !important;
+			color: white;
+			background-color: black;
+		}
+
+		.TotalAMountTitle {
+			font-size: 10px !important;
+			color: white;
+			background-color: black;
+		}
+
+		#discountRateHideShow {
+			display: none;
+		}
+
+		#totalAmountHideShow {
+			display: none;
+		}
+
+		/* Table styling  End */
+		.downloade_btn {
+			padding: 10px 45px;
+			background-color: lightblue;
+			outline: none;
+			border: 1px solid black;
+			font-weight: bold;
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+			.downloade_btn:hover {
+				background-color: white;
+			}
+
+		/* Check-Box Styling  */
+		.check_box_container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.check_box_container .CheckBox {
+				width: 20px;
+				height: 12px;
+				margin: 0;
+				padding: 0;
+			}
+
+		/* Check-Box Styling End */
+		.parent {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+		}
+
+			.container .logo {
+				width: 55px;
+			}
+
+				.container .logo img {
+					width: 100%;
+				}
+
+		.AL_Khair_Title {
+			font-size: 18px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.title_break {
+			font-size: 12px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.qr-code p {
+			padding: 0;
+			margin: 0;
+		}
+
+		.qr-code {
+			padding: 0;
+			padding-top: 20px;
+		}
+
+		.qr_number {
+			text-align: right;
+			margin: 0px;
+			font-weight: bold;
+		}
+
+		.horizantal_line {
+			border: 1px solid black;
+		}
+
+		.Invoice_to_section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+
+		.proforma_title {
+			text-align: center;
+			padding-top: 10px;
+			margin-bottom: 15px;
+		}
+
+		.Customer_Info p {
+			padding: 1px 0;
+			font-weight: bold !important;
+		}
+
+		.Customer_Col_2 p {
+			padding: 1px 0;
+			font-weight: bold;
+		}
+
+		.Customer_Col_2 span {
+			font-weight: normal;
+		}
+
+		.Customer_Info span {
+			font-weight: normal;
+		}
+
+		.ALL_MEMBERS_NAMES p {
+			padding: 1px 0;
+		}
+
+		.ALL_MEMBERS_NAMES span {
+			font-weight: bold;
+		}
+
+		/* Table Styling Start  */
+		.Service_Table {
+			width: 100%;
+		}
+
+			.Service_Table tr th {
+				font-size: 10px;
+				text-align: right;
+			}
+
+			.Service_Table tr td {
+				border-bottom: 1px solid black;
+				font-size: 10px;
+			}
+
+				.Service_Table tr td:nth-child(2) {
+					text-align: right;
+					width: 130px;
+				}
+
+			.Service_Table tr:nth-last-child(1) {
+				font-weight: bold;
+			}
+
+		/* Media Querry  */
+		.Bank_Table {
+			margin-top: 20px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 60%;
+		}
+
+			.Bank_Table tr {
+				border: 1px solid black;
+			}
+
+				.Bank_Table tr th {
+					border: 1px solid black !important;
+					background-color: lightblue;
+					text-align: left;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+				.Bank_Table tr td:nth-child(1) {
+					font-weight: bold;
+				}
+
+				.Bank_Table tr td {
+					text-align: left;
+					border: 1px solid black;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+		/* ADF_Details_Table styling Start  */
+		.Receipt_container {
+			margin-top: 7px;
+		}
+
+		.ADF_Container {
+			width: 60%;
+		}
+
+		.ADF_Details_Box {
+			margin-bottom: 10px;
+		}
+
+		.ADF_heading {
+			background-color: lightblue;
+			font-weight: bold;
+			font-size: 10px !important;
+			text-align: center;
+			color: black !important;
+		}
+
+		@@media (max-width:768px) {
+			.ADF_Container {
+				width: 100% !important;
+			}
+		}
+
+		.ADF_Details_Box table {
+			border-collapse: collapse;
+			border: 1px solid black;
+			width: 100%;
+		}
+
+		.ADF_Details_Box tr th {
+			border: 1px solid black;
+		}
+
+		.ADF_Details_Box tr td {
+			border: 1px solid black;
+		}
+
+		.totalText,
+		.amountText {
+			font-weight: bold !important;
+			background-color: lightblue;
+			font-size: 10px !important;
+			color: black !important;
+		}
+
+		/* ADF_Details_Table styling End  */
+		/* *********Note List ********** */
+		.terms_condition_list {
+			margin-left: 6px;
+			margin: 20px 0px !important;
+		}
+
+		.note_heading {
+			font-size: 10px;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.Notes_order_list {
+			padding: 0;
+			margin: 8px;
+		}
+
+			.Notes_order_list li {
+				font-size: 8px;
+				padding: 2px;
+			}
+
+		/* *********Note List  END********** */
+		footer {
+			position: fixed;
+			bottom: 0%;
+			left: 0;
+			width: 100% !important;
+			page-break-before: always;
+		}
+
+		.footer_address {
+			border-top: 1px solid black;
+			text-align: center;
+		}
+
+			.footer_address h6 {
+				font-weight: normal !important;
+			}
+
+		.top_service_table {
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 0px;
+			margin-top: 10px;
+		}
+
+			.top_service_table tr th,
+			td {
+				border: 1px solid black;
+			}
+
+			.top_service_table tr {
+				border: 1px solid black;
+			}
+
+				.top_service_table tr:nth-child(1) {
+					border: none !important;
+					outline: none;
+				}
+
+				.top_service_table tr td:nth-child(2) {
+					text-align: right;
+				}
+
+				.top_service_table tr:nth-last-child(1) {
+					font-weight: bold;
+					font-size: 10px !important;
+					background-color: lightblue;
+					color: white;
+				}
+
+		/* ________Content_Editable Row _____ */
+		[contenteditable] {
+			width: 100px;
+		}
+
+		/* Hide And Show Table Styling  */
+		#Receipt_PaymentRecord,
+		#Payment_Subject {
+			display: none;
+		}
+
+		#Memberbreaktable {
+			display: none;
+			text-align: center;
+		}
+
+		.MembersName tr th:nth-child(1) {
+			text-align: left !important;
+		}
+
+		.MembersName tr,
+		th,
+		td:nth-child(1) {
+			text-align: left;
+		}
+
+			.MembersName tr th:nth-child(2),
+			.MembersName tr th:nth-child(3),
+			.MembersName tr th:nth-child(4),
+			.MembersName tr th:nth-child(5),
+			.MembersName tr th:nth-child(6) {
+				text-align: center !important;
+			}
+
+		.MembersName th:nth-child(1),
+		.MembersName th:nth-child(1),
+		.MembersName tH:nth-child(4) {
+			text-align: left;
+		}
+
+		.MembersName th,
+		td {
+			text-align: center;
+		}
+
+		/* Media Querry Check-box and Label button  */
+		label {
+			font-size: 14px !important;
+		}
+
+		@@media (max-width: 768px) {
+			label {
+				font-size: 14px;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(0.8);
+			}
+		}
+
+		.check_box_container span {
+			font-weight: bold;
+		}
+
+		.flex-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.start-iadf td {
+			text-align: left !important;
+		}
+
+		.Signature-part {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			height: 220px;
+			text-align: center;
+			align-items: end;
+			column-gap: 30px;
+			margin-top: 20px;
+		}
+
+			.Signature-part p {
+				margin-top: 70px;
+				font-weight: 500;
+				font-size: 14px;
+			}
+
+		#incoice_page_body {
+			height: 100%;
+			padding-top: 20px;
+		}
+
+		@@page {
+			margin-top: 40px; /* Adjust this value for top padding on each page */
+		}
+
+		@@media print {
+			.no-print {
+				display: none !important;
+			}
+		}
+	</style>
+	<!-- html2pdf CDN Link  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- html2pdf CDN Link -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+</head>
+<body>
+	<button class="downloade_btn" onclick="downloadPDF()">Download PDF</button>
+	<button class="open-modal-btn downloade_btn">Open Modal</button>
+
+	<div id="header" style="text-align: center;">
+		<img src="~/@Model.Company.LetterHead" style="max-width: 100%; height: auto;" />
+	</div>
+	<div id="incoice_page_body" style="display: flex; flex-direction: column; min-height: 100vh;">
+		<!-- Main content -->
+		<div style="margin-top: 15px; flex: 1; text-align: start; display: flex; flex-direction: column; justify-content: start; font-size: 12px !important;">
+			@Html.Raw(Model.Data.Replace("<tr>", "<div>").Replace("</tr>", "</div>").Replace("<td>", "<div>").Replace("</td>", "</div>"))
+		</div>
+
+		<!-- Updated Signature & Stamp Section -->
+		<div class="hide-image" style="width: 100%; display: flex; justify-content: center; align-items: center; margin-top: 50px; margin-bottom: 30px;">
+			<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: nowrap; gap: 30px;">
+				<!-- Signature Section -->
+				<div style="margin-top: 25px;text-align: center;">
+					<img src="~/@Model.Company.Signature" style="max-width: 33%; height: auto; display: block; margin: 0 auto;" />
+					<p style="border-top: 1px solid black; width: 200px; margin: 0 auto;">Signature</p>
+				</div>
+				<!-- Stamp Section -->
+				<div style="text-align: center;">
+					<img src="~/@Model.Company.Stamp" style="max-width: 20%; height: auto; display: block; margin: 0 auto;" />
+					<p style="border-top: 1px solid black; width: 200px; margin: 0 auto;">Company Stamp</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="footer" class="hide-image" style="text-align: center;">
+			<img src="~/@Model.Company.LetterHeadFooter" style="max-width: 100%; height: auto;" />
+		</div>
+
+		<div class="modal" id="customModal">
+			<div class="modal-content">
+				<span class="close-btn">&times;</span>
+				<h2>Send Email</h2>
+				<input type="email" id="email" />
+				<button type="submit" onclick="sendPDFToController()">Send</button>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Get modal elements
+		var modal = document.getElementById("customModal");
+		var openModalBtn = document.querySelector(".open-modal-btn");
+		var closeModalBtn = document.querySelector(".close-btn");
+
+		// Open modal
+		openModalBtn.addEventListener("click", function () {
+			modal.style.display = "flex";
+		});
+
+		// Close modal
+		closeModalBtn.addEventListener("click", function () {
+			modal.style.display = "none";
+		});
+
+		// Close when clicking outside the modal content
+		window.addEventListener("click", function (event) {
+			if (event.target === modal) {
+				modal.style.display = "none";
+			}
+		});
+
+		var letterHeadUrl = 'https://hajj.tmgpk.com/@Model.Company.LetterHead';
+		var letterHeadFooterUrl = 'https://hajj.tmgpk.com/@Model.Company.LetterHeadFooter';
+
+		function downloadPDF() {
+			var element = document.getElementById('incoice_page_body');
+			document.querySelectorAll('.hide-image').forEach(el => el.style.visibility = 'hidden');
+
+			console.log("Downloading PDF...");
+			console.log("Letter Head URL: ", letterHeadUrl);
+			console.log("Letter Head Footer URL: ", letterHeadFooterUrl);
+
+			html2pdf()
+				.from(element)
+				.set({
+					margin: [20, 10, 20, 10],
+					filename: 'LetterHead.pdf',
+					image: { type: 'jpeg', quality: 0.99 },
+					html2canvas: { scale: 2 },
+					jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+					pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+				})
+				.toPdf()
+				.get('pdf')
+				.then(function (pdf) {
+					var totalPages = pdf.internal.getNumberOfPages();
+					console.log("Total Pages: ", totalPages);
+
+					// Use the images provided by the view (adjust the URLs as needed)
+					var stampUrl = 'https://hajj.tmgpk.com/@Model.Company.Stamp';
+					var signatureUrl = 'https://hajj.tmgpk.com/@Model.Company.Signature';
+
+					// Load images as Base64
+					Promise.all([getBase64Image(stampUrl), getBase64Image(signatureUrl)])
+						.then(function ([base64Stamp, base64Signature]) {
+							console.log("Base64 Stamp Loaded");
+							console.log("Base64 Signature Loaded");
+
+							for (var i = 1; i <= totalPages; i++) {
+								pdf.setPage(i);
+								// Add header on every page
+								pdf.addImage(letterHeadUrl, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), 30);
+								// Add footer on every page
+								pdf.addImage(letterHeadFooterUrl, 'JPEG', 0, pdf.internal.pageSize.getHeight() - 20, pdf.internal.pageSize.getWidth(), 20);
+							}
+
+							if (totalPages === 1) {
+								// Signature section
+								pdf.addImage(base64Signature, 'PNG', 10, pdf.internal.pageSize.getHeight() - 60, 30, 20);
+								// Add line and text below signature
+								pdf.setLineWidth(0.5);
+								pdf.line(10, pdf.internal.pageSize.getHeight() - 32, 40, pdf.internal.pageSize.getHeight() - 32);
+								pdf.setFontSize(10);
+								pdf.text('Signature', 15, pdf.internal.pageSize.getHeight() - 25);
+
+								// Stamp section
+								pdf.addImage(base64Stamp, 'PNG', pdf.internal.pageSize.getWidth() - 40, pdf.internal.pageSize.getHeight() - 60, 30, 20);
+								// Add line and text below stamp
+								pdf.line(pdf.internal.pageSize.getWidth() - 40, pdf.internal.pageSize.getHeight() - 32, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 32);
+								pdf.text('Company Stamp', pdf.internal.pageSize.getWidth() - 38, pdf.internal.pageSize.getHeight() - 25);
+							} else {
+								pdf.setPage(totalPages);
+								// Signature section
+								pdf.addImage(base64Signature, 'PNG', 10, pdf.internal.pageSize.getHeight() - 60, 30, 20);
+								// Add line and text below signature
+								pdf.setLineWidth(0.5);
+								pdf.line(10, pdf.internal.pageSize.getHeight() - 32, 40, pdf.internal.pageSize.getHeight() - 32);
+								pdf.setFontSize(10);
+								pdf.text('Signature', 15, pdf.internal.pageSize.getHeight() - 25);
+
+								// Stamp section
+								pdf.addImage(base64Stamp, 'PNG', pdf.internal.pageSize.getWidth() - 40, pdf.internal.pageSize.getHeight() - 60, 30, 20);
+								// Add line and text below stamp
+								pdf.line(pdf.internal.pageSize.getWidth() - 40, pdf.internal.pageSize.getHeight() - 32, pdf.internal.pageSize.getWidth() - 10, pdf.internal.pageSize.getHeight() - 32);
+								pdf.text('Company Stamp', pdf.internal.pageSize.getWidth() - 38, pdf.internal.pageSize.getHeight() - 25);
+							}
+
+							document.querySelectorAll('.hide-image').forEach(el => el.style.visibility = 'visible');
+							pdf.save();
+						})
+						.catch(function (error) {
+							console.error("Error loading images: ", error);
+						});
+				});
+		}
+
+		function sendPDFToController() {
+			var element = document.getElementById('incoice_page_body');
+
+			console.log("Generating PDF...");
+			console.log("Letter Head URL: ", letterHeadUrl);
+			console.log("Letter Head Footer URL: ", letterHeadFooterUrl);
+
+			html2pdf()
+				.from(element)
+				.set({
+					margin: [20, 10, 20, 10],
+					filename: 'LetterHead.pdf',
+					image: { type: 'jpeg', quality: 0.99 },
+					html2canvas: { scale: 2 },
+					jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+					pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+				})
+				.toPdf()
+				.get('pdf')
+				.then(function (pdf) {
+					var totalPages = pdf.internal.getNumberOfPages();
+					for (var i = 1; i <= totalPages; i++) {
+						pdf.setPage(i);
+						// Add header on every page
+						pdf.addImage(letterHeadUrl, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), 30);
+						// Add footer on every page
+						pdf.addImage(letterHeadFooterUrl, 'JPEG', 0, pdf.internal.pageSize.getHeight() - 20, pdf.internal.pageSize.getWidth(), 20);
+
+						pdf.addImage('~/@Model.Company.Signature', 'JPEG', 10, pdf.internal.pageSize.getHeight() - 60, 50, 30);
+						pdf.addImage('~/@Model.Company.Stamp', 'JPEG', pdf.internal.pageSize.getWidth() - 60, pdf.internal.pageSize.getHeight() - 60, 50, 30);
+					}
+
+					// Convert PDF to base64
+					var pdfBase64 = pdf.output('datauristring');
+					sendPdfToServer(pdfBase64);
+				});
+		}
+
+		function sendPdfToServer(pdfBase64) {
+			const email = $('#email').val();
+
+					$.ajax({
+				   url: '/Email/SendLetterHeadEmail',
+					type: 'POST',
+					data: {
+						pdfBase64: pdfBase64,
+						email: email
+					},
+					success: function (response) {
+					alert("Email sent successfully!");
+				},
+					error: function (xhr, status, error) {
+					alert("Error sending email: " + error);
+				}
+		});
+		}
+
+		// Function to convert image to Base64
+		function getBase64Image(imgUrl) {
+			return new Promise((resolve, reject) => {
+				var img = new Image();
+				img.crossOrigin = 'Anonymous';
+				img.onload = function() {
+					var canvas = document.createElement('canvas');
+					canvas.width = img.width;
+					canvas.height = img.height;
+					var ctx = canvas.getContext('2d');
+					ctx.drawImage(img, 0, 0);
+					var dataURL = canvas.toDataURL('image/png');
+					resolve(dataURL);
+				};
+				img.onerror = function() {
+					reject(new Error('Failed to load image: ' + imgUrl));
+				};
+				img.src = imgUrl;
+			});
+		}
+		
+	</script>
+</body>
+</html>

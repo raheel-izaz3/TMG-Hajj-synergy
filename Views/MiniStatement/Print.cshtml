@@ -1,0 +1,1381 @@
+@{
+    Layout = "_InvoiceLayout";
+
+    ViewData["title"] = "Mini Statement";
+}
+<script>
+    var opt = {
+        margin: 0.2,
+        filename: '',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    window.onload = function () {
+        document.getElementById("download")
+            .addEventListener("click", () => {
+                const invoice = this.document.getElementById("recipt");
+                console.log(invoice);
+                console.log(window);
+                html2pdf().from(invoice).set(opt).save();
+            })
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<style>
+    * {
+        font-size: 12px;
+    }
+
+    body {
+        background-color: white
+    }
+
+    .f-600 {
+        font-weight: 600;
+    }
+
+    .bg-custome {
+        background-color: #696969;
+    }
+
+    .table td,
+    .table th {
+        padding: 0;
+        padding-top: 5px;
+        vertical-align: top;
+    }
+
+    .table th {
+        text-transform: uppercase;
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 0px solid #dee2e6;
+    }
+
+    .pkr,
+    .sar {
+        display: none;
+    }
+
+
+    .pkr_recive,
+    .sar_recive,
+    .usd_recive {
+        display: none;
+    }
+
+
+
+    .bg-grey {
+        background-color: #696969;
+    }
+
+    .table td,
+    .table th {
+        padding: 0.1rem;
+        vertical-align: top;
+        border-top: 1px solid #6f6f6f;
+    }
+
+    td,
+    th {
+        border: 1px solid #6f6f6f;
+    }
+
+    @@media print {
+        .hideInPrint {
+            display: none;
+        }
+
+        body {
+            print-color-adjust: exact;
+        }
+
+        #recipt {
+            margin: 0;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="container hideInPrint">
+    <div class="row mt-1 ">
+        <div class="col-sm-6">
+            <button id="download" class="btn btn-success">Download</button>
+            <button class="btn btn-success" onclick="print()">Print</button>
+        </div>
+        <div class="col-sm-6 mt-2">
+            <input type="checkbox" id="sarCheckbox" onclick="showSar(this)" />
+            <label>SAR</label>
+            <input type="checkbox" id="usdCheckbox" onclick="showUsd(this)" checked />
+            <label>USD</label>
+            <input type="checkbox" id="pkrCheckbox" onclick="showPkr(this)" />
+            <label>PKR</label>
+            <input type="checkbox" onclick="toggleRecive('sar_recive')" id="sar_recive1" />
+            <label>SAR-Receive</label>
+            <input type="checkbox" onclick="toggleRecive('usd_recive')" id="usd_recive1" />
+            <label>USD-Receive</label>
+            <input type="checkbox" onclick="toggleRecive('pkr_recive')" id="pkr_recive1" />
+            <label>PKR-Receive</label>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" id="recipt">
+
+    <div class="row m-2">
+        <div class="col-md-12 text-center">
+            <h3 style="font-weight: 800;">MINI STATEMENT</h3>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+
+        <div class="col-sm-6">
+            <table class="table">
+                <thead>
+                    <tr class="text-center  bg-custome">
+                        <td colspan="2" class="text-center text-white"><b>FAMILY HEAD DETAIL</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="30%" style="background-color: rgb(232, 232, 232);"><b class="">Full Name</b></td>
+                        <td width="70%"><span id="givenName" class=""></span> <span id="surName"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b class="">Contact</b></td>
+                        <td><span id="contact" class=""></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b class="">Email</b></td>
+                        <td> <span id="email"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b class="">CNIC</b></td>
+                        <td><span id="cnic" class=""></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b class="">Passport</b></td>
+                        <td><span id="passport" class=""></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b class="">Address</b></td>
+                        <td><span id="address" class=""></span></td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="col-sm-6" id="pkrcurrency" style="display: none;">
+            <table class="table">
+                <thead class="text-center">
+                    <tr class="bg-custome">
+                        <td colspan="4" class="text-center text-white"><b>PACKAGE DETAIL (PKR)</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="30%" style="background-color: rgb(232, 232, 232);"><b>Package Detail</b></td>
+                        <td width="70%"><span id="pkrpackagename"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        <td><span id="pkrpackage"></span></td>
+                    </tr>
+                    @* <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td>
+                        <td><span id="pkradditional"></span></td>
+                    </tr> *@
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td><span id="pkrextra"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Basic Airline</b></td>
+                        <td><span id="basicAirlinePkr">0</span> (<span id="basicDifferencePkr">0</span>)</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Total Amount</b></td>
+                        <td><span id="pkrtotal"></span></td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="col-sm-6" style="display: none;" id="sarcurrency">
+            <table class="table">
+                <thead class="text-center">
+                    <tr class="bg-custome">
+                        <td colspan="2" class="text-center text-white"><b>PACKAGE DETAIL (SAR)</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="35%" style="background-color: rgb(232, 232, 232);"><b>Package Detail</b></td>
+                        <td width="65%"><span id="sarpackagename"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        <td><span id="sarpackage"></span></td>
+                    </tr>
+                    @* <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td>
+                        <td><span id="saradditional"></span></td>
+                    </tr> *@
+                    @* <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Package Addons</b></td>
+                        <td><span id="saraddons"></span></td>
+                    </tr> *@
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td><span id="sarextra"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Basic Airline</b></td>
+                        <td><span id="basicAirlineSar">0</span> (<span id="basicDifferenceSar">0</span>)</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Total Amount</b></td>
+                        <td><span id="sartotal"></span></td>
+                    </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+
+        <div class="col-sm-6" style="display: block;" id="usdcurrency">
+            <table class="table">
+                <thead class="text-center">
+                    <tr class="bg-custome">
+                        <td colspan="2" class="text-center text-white"><b>PACKAGE DETAIL (USD)</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td width="35%" style="background-color: rgb(232, 232, 232);"><b>Package Detail</b></td>
+                        <td width="65%" style="text-align: right"><span class="" id="usdpackagename"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        <td style="text-align: right"><span class="" id="usdpackage"></span></td>
+                    </tr>
+                    @* <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td>
+                        <td style="text-align: right"><span class="" id="usdadditional"></span></td>
+                    </tr> *@
+                    @* <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Package Addons</b></td>
+                        <td style="text-align: right"><span class="" id="usdaddons"></span></td>
+                    </tr> *@
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td style="text-align: right"><span class="" id="usdextra"></span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Basic Airline<br>Difference</b></td>
+                        <td style="text-align: right"><span class="" id="basicAirlineUsd">0</span> <br> <span class=""
+                                id="basicDifferenceUsd">0</span></td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(232, 232, 232);"><b>Total Amount</b></td>
+                        <td style="text-align: right"><span class="" id="usdtotal"></span></td>
+                    </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+    </div>
+
+
+    @* Mini Statement In PKR *@
+
+    <div class="row " id="miniStatement_pkr">
+        <div class="col-sm-12 mt-2">
+            <table class="table">
+                <thead>
+                    <tr class="bg-custome">
+                        <td colspan="11" class="text-left ">
+                            <b style="font-size:14px" class="text-white">RECEIPT DETAIL</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="background-color: rgb(232, 232, 232);"><b>Date</b></td>
+                        <td class="sar text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (SAR)</b>
+                        </td>
+                        <td class="sar_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="usd text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (USD)</b>
+                        </td>
+                        <td class="usd_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="pkr text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (PKR)</b>
+                        </td>
+                        <td class="pkr_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="roe text-center" style="background-color: rgb(232, 232, 232);"><b>ROE</b></td>
+                    </tr>
+                </thead>
+                <tbody id="pkr_miniStatement">
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="col-sm-12 mt-2">
+            <table class="table">
+                <thead>
+                    <tr class="bg-custome">
+                        <td colspan="11" class="text-left ">
+                            <b class="text-white" style="font-size:14px">Payment Subject To Realization</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="background-color: rgb(232, 232, 232);"><b>Date</b></td>
+                        <td class="sar text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (SAR)</b>
+                        </td>
+                        <td class="sar_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="usd text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (USD)</b>
+                        </td>
+                        <td class="usd_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="pkr text-center" style="background-color: rgb(232, 232, 232);"><b>Amount (PKR)</b>
+                        </td>
+                        <td class="pkr_recive text-center" style="background-color: rgb(232, 232, 232);"><b>Received
+                                Amount And Currency</b></td>
+                        <td class="roe text-center" style="background-color: rgb(232, 232, 232);"><b>ROE</b></td>
+                    </tr>
+                </thead>
+                <tbody id="pkr_realization">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-2" id="showpkrmember" border="1">
+
+        <div class="col-sm-12">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="bg-custome">
+                        <td colspan="16" class="text-left">
+                            <b style="font-size:14px" class="text-white"> MEMBER WISE BREAKDOWN (<span id="currency"
+                                    style="font-size:14px">USD</span>)</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" class="text-center"></td>
+                        <td colspan="7" class="text-center pkr"><b>PKR</b></td>
+                        <td colspan="7" class="text-center sar"><b>SAR</b></td>
+                        <td colspan="7" class="text-center usd"><b>USD</b></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="background-color: rgb(232, 232, 232);"><b>Name</b></td>
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td>
+                        @* <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>Addons</b></td> *@
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>Basic Airline</b>
+                        </td>
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>Discount</b></td>
+                        <td class="text-center pkr" style="background-color: rgb(232, 232, 232);"><b>Total</b></td>
+                        <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        @* <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td> *@
+                        @* <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>Addons</b></td> *@
+                        <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>Basic Airline</b>
+                        </td>
+                        <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>Discount</b></td>
+                        <td class="text-center sar" style="background-color: rgb(232, 232, 232);"><b>Total</b></td>
+                        <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>Package</b></td>
+                        @* <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>I-ADF</b></td> *@
+                        @* <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>Addons</b></td> *@
+                        <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>EI-ADF</b></td>
+                        <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>Basic Airline</b>
+                        </td>
+                        <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>Discount</b></td>
+                        <td class="text-center usd" style="background-color: rgb(232, 232, 232);"><b>Total</b></td>
+                    </tr>
+                </thead>
+                <tbody id="pkrmember">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h6 style="font-size:12px;font-weight: 600;">REMARKS: RATE OF EXCHANGE SHOULD BE CHANGED ON BALANCE USD AT A
+                TIME OF PAYMENT</h6>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+
+    function calculateAge(dateOfBirth) {
+        let full_date = new Date(dateOfBirth);
+        let only_date = full_date.toISOString().split('T')[0];
+
+        var dob = new Date(full_date);
+        var currentDate = new Date();
+        var age = currentDate.getFullYear() - dob.getFullYear();
+        if (
+            currentDate.getMonth() < dob.getMonth() ||
+            (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())
+        ) {
+            age--;
+        }
+        return age;
+    }
+
+
+    function getFamilyDetail(familyId) {
+        $.ajax({
+            url: `/MiniStatement/GetFamilyDetail/${familyId}`,
+
+            method: "GET",
+            success: res => {
+
+                opt.filename = res.headNameWithId + ' Mini Statement.pdf'
+                document.getElementById('givenName').innerText = res.familyHead[0].givenName
+                document.getElementById('surName').innerText = res.familyHead[0].surName
+                document.getElementById('cnic').innerText = res.familyHead[0].cnic
+                document.getElementById('passport').innerText = res.familyHead[0].passportNumber
+                document.getElementById('contact').innerText = res.familyHeadContact
+                document.getElementById('email').innerText = res.familyHeadEmail
+                document.getElementById('address').innerText = res.familyHeadAddress
+
+                document.getElementById('pkrpackagename').innerText = res.familyHead[0].package.name
+                document.getElementById('usdpackagename').innerText = res.familyHead[0].package.name
+                document.getElementById('sarpackagename').innerText = res.familyHead[0].package.name
+
+
+                let pkrpackageprice = 0
+
+                let sarpackageprice = 0
+
+                let usdpackageprice = 0
+
+                let basicAirlinePkr = 0;
+                let basicDifferentPkr = 0;
+
+                let basicAirlineSar = 0;
+                let basicDifferentSar = 0;
+
+                let basicAirlineUsd = 0;
+                let basicDifferentUsd = 0;
+
+                let pkrextras = 0
+                let sarextras = 0
+                let usdextras = 0;
+
+                for (let i of res.familyMember) {
+
+                    if (i.familyHead.flightTicketType == 0) {
+
+                        basicAirlinePkr += i.package.flightTicketPricePkr
+                        basicAirlineSar += i.package.flightTicketPriceSar
+                        basicAirlineUsd += i.package.flightTicketPriceUsd
+
+                        basicDifferentPkr += 0
+                        basicDifferentSar += 0
+                        basicDifferentUsd += 0
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+
+                        basicAirlinePkr += 0;
+                        basicAirlineSar += 0;
+                        basicAirlineUsd += 0;
+
+                        basicDifferentPkr += 0
+                        basicDifferentSar += 0
+                        basicDifferentUsd += 0
+
+                    } else if (i.familyHead.flightTicketType == 2) {
+
+                        basicAirlinePkr += i.package.flightTicketPricePkr
+                        basicAirlineSar += i.package.flightTicketPriceSar
+                        basicAirlineUsd += i.package.flightTicketPriceUsd
+
+                        basicDifferentPkr += i.familyHead.flightTicketDifferencesPkr
+                        basicDifferentSar += i.familyHead.flightTicketDifferencesSar
+                        basicDifferentUsd += i.familyHead.flightTicketDifferencesUsd
+
+                    }
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+
+                        pkrpackageprice += parseInt(i.package.infantPkr)
+                        sarpackageprice += parseInt(i.package.infantSar)
+                        usdpackageprice += parseInt(i.package.infantUsd)
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+
+                        pkrpackageprice += parseInt(i.package.childPkr)
+                        sarpackageprice += parseInt(i.package.childSar)
+                        usdpackageprice += parseInt(i.package.childUsd)
+
+                    } else {
+
+                        pkrpackageprice += parseInt(i.package.adultPkr)
+                        sarpackageprice += parseInt(i.package.adultSar)
+                        usdpackageprice += parseInt(i.package.adultUsd)
+
+                    }
+
+                }
+
+    //             for (let i of res.additionalFacility) {
+    //                 if (calculateAge(i.familyHead.dateOfBirth) < 2) {
+
+    //                     pkradditional += parseInt(i.additionalFacilities.infantPkr)
+    //                     saradditional += parseInt(i.additionalFacilities.infantSar)
+    //                     usdadditional += parseInt(i.additionalFacilities.infantUsd)
+
+    //                 } else if (calculateAge(i.familyHead.dateOfBirth) < 12) {
+
+    //                     pkradditional += parseInt(i.additionalFacilities.childPkr)
+    //                     saradditional += parseInt(i.additionalFacilities.childSar)
+    //                     usdadditional += parseInt(i.additionalFacilities.childUsd)
+
+    //                 } else {
+
+    //                     pkradditional += parseInt(i.additionalFacilities.adultPkr)
+    //                     saradditional += parseInt(i.additionalFacilities.adultSar)
+    //                     usdadditional += parseInt(i.additionalFacilities.adultUsd)
+
+    //                 }
+    // @* saradditional += parseInt(i.adultPkr)  /  parseInt(i.package.sarroe)
+    //                     usdadditional += parseInt(i.adultPkr) /  parseInt(i.package.usdroe)  *@
+
+    //             }
+
+
+                for (let i of res.extrasAdfs) {
+                    pkrextras += parseInt(i.price ?? 0)
+                    sarextras += parseInt(i.priceSar ?? 0)
+                    usdextras += parseInt(i.priceUsd ?? 0)
+                }
+
+
+                document.getElementById('pkrpackage').innerText = pkrpackageprice.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('pkrextra').innerText = pkrextras.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                document.getElementById('sarpackage').innerText = sarpackageprice.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('sarextra').innerText = sarextras.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                document.getElementById('usdpackage').innerText = usdpackageprice.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('usdextra').innerText = usdextras.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                document.getElementById('basicAirlinePkr').innerText = basicAirlinePkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('basicDifferencePkr').innerText = basicDifferentPkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                document.getElementById('basicAirlineSar').innerText = basicAirlineSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('basicDifferenceSar').innerText = basicDifferentSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                document.getElementById('basicAirlineUsd').innerText = basicAirlineUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('basicDifferenceUsd').innerText = basicDifferentUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                // PKR Member
+
+                let pkrmember = "";
+
+                let pkrtotalamount = 0;
+                let sartotalamount = 0;
+                let usdtotalamount = 0;
+
+                let pkrdiscount = 0;
+                let sardiscount = 0;
+                let usddiscount = 0;
+
+                var a = 0;
+                for (let i of res.familyMember) {
+
+                    var pkr_total_amount = 0;
+                    var sar_total_amount = 0;
+                    var usd_total_amount = 0;
+
+                    var pkr_discount_amount = 0;
+                    var sar_discount_amount = 0;
+                    var usd_discount_amount = 0;
+
+                    a += 1;
+                    pkrmember += `<tr>`
+                    pkrmember += `<td class="text-center">${i.familyMember.familyHead.givenName} ${i.familyMember.familyHead.surName}</td>`
+
+                    pkrdiscount += i.familyMember.familyHead.pkrDiscountAmount;
+                    sardiscount += i.familyMember.familyHead.sarDiscountAmount;
+                    usddiscount += i.familyMember.familyHead.usdDiscountAmount;
+
+                    pkr_discount_amount += i.familyMember.familyHead.pkrDiscountAmount;
+                    sar_discount_amount += i.familyMember.familyHead.sarDiscountAmount;
+                    usd_discount_amount += i.familyMember.familyHead.usdDiscountAmount;
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+
+                        // infant
+                        pkrtotalamount += i.package.infantPkr
+                        pkr_total_amount += i.package.infantPkr
+
+                        pkrmember += `<td class="text-center pkr">${i.package.infantPkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        var pkraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             pkraddfacility += parseInt(j.additionalFacilities.infantPkr)
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center pkr">${pkraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+
+                        // child
+                        pkrtotalamount += i.package.childPkr
+                        pkr_total_amount += i.package.childPkr
+                        pkrmember += `<td class="text-center pkr">${i.package.childPkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        var pkraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             pkraddfacility += parseInt(j.additionalFacilities.childPkr)
+                        //         }
+                        //     }
+                        // }
+                        pkrmember += `<td class="text-center pkr">${pkraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+
+
+                    } else {
+
+                        // adult
+                        pkrtotalamount += i.package.adultPkr
+                        pkr_total_amount += i.package.adultPkr
+
+                        pkrmember += `<td class="text-center pkr">${i.package.adultPkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        var pkraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             pkraddfacility += parseInt(j.additionalFacilities.adultPkr)
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center pkr">${pkraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    }
+
+                    pkrtotalamount += pkraddfacility;
+                    pkr_total_amount += pkraddfacility;
+                    var pkrpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            pkrpacaddon += parseInt(j.pkrPrice)
+                        }
+                    }
+                    // pkrtotalamount += pkrpacaddon;
+                    // pkr_total_amount += pkrpacaddon;
+                    // pkrmember += `<td class="text-center pkr">${pkrpacaddon.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    var pkr_extra = 0;
+                    for (let k of res.extrasAdfs) {
+                        if (k.familyHeadId == i.familyMember.familyHeadId) {
+                            pkr_extra += parseInt(k.price ?? 0)
+                        }
+                    }
+                    pkrtotalamount += pkr_extra
+                    pkr_total_amount += pkr_extra;
+                    pkrmember += `<td class="text-center pkr">${pkr_extra.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    if (i.familyHead.flightTicketType == 0) {
+                        console.log('a')
+                        pkrmember += `<td class="text-center pkr">
+                           ${i.package.flightTicketPricePkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                        </td>`
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+                        console.log('b')
+                        pkrmember += `<td class="text-center pkr">
+                           -
+                        </td>`
+                    } else if (i.familyHead.flightTicketType == 2) {
+                        console.log('c')
+                        pkrmember += `<td class="text-center pkr">
+                           ${i.package.flightTicketPricePkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} (${i.familyMember.familyHead.flightTicketDifferencesPkr ?? 0})
+                        </td>`
+                    }
+                    pkrmember += `<td class="text-center pkr">${i.familyMember.familyHead.pkrDiscountAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    if (i.familyHead.flightTicketType == 0) {
+                        pkrmember += `<td class="text-center pkr">${(pkr_total_amount + i.package.flightTicketPricePkr).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    } else if (i.familyHead.flightTicketType == 1) {
+                        pkrmember += `<td class="text-center pkr">${(pkr_total_amount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    } else if (i.familyHead.flightTicketType == 2) {
+                        pkrmember += `<td class="text-center pkr">${(pkr_total_amount + i.package.flightTicketPricePkr + i.familyHead.flightTicketDifferencesPkr).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    }
+
+                    // SAR Member
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+                        pkrmember += `<td class="text-center sar">${i.package.infantSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        sartotalamount += parseInt(i.package.infantSar)
+                        sar_total_amount += parseInt(i.package.infantSar)
+
+                        var saraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             saraddfacility += parseInt(j.additionalFacilities.infantSar)
+                        //         }
+                        //     }
+                        // }
+
+
+                        pkrmember += `<td class="text-center sar">${saraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+                        pkrmember += `<td class="text-center sar">${i.package.childSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        sartotalamount += parseInt(i.package.childSar)
+                        sar_total_amount += parseInt(i.package.childSar)
+
+                        var saraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             saraddfacility += parseInt(j.additionalFacilities.childSar)
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center sar">${saraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    } else {
+                        pkrmember += `<td class="text-center sar">${i.package.adultSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        sartotalamount += parseInt(i.package.adultSar)
+                        sar_total_amount += parseInt(i.package.adultSar)
+
+                        var saraddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             saraddfacility += parseInt(j.additionalFacilities.adultSar)
+                        //         }
+                        //     }
+                        // }
+
+
+                        pkrmember += `<td class="text-center sar">${saraddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    }
+
+                    sartotalamount += saraddfacility
+                    sar_total_amount += saraddfacility
+                    // var sarpacaddon = 0;
+                    // for (let j of res.packageAddons) {
+                    //     if (i.package.packageId == j.packageId) {
+                    //         sarpacaddon += parseInt(j.sarPrice)
+                    //     }
+                    // }
+                    // sartotalamount += sarpacaddon
+                    // sar_total_amount += sarpacaddon
+
+                    // pkrmember += `<td class="text-center sar">${sarpacaddon.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    var sar_extra = 0;
+                    for (let k of res.extrasAdfs) {
+                        if (k.familyHeadId == i.familyMember.familyHeadId) {
+                            sar_extra += parseInt(k.priceSar ?? 0)
+                        }
+                    }
+                    sartotalamount += sar_extra
+                    sar_total_amount += sar_extra
+
+                    pkrmember += `<td class="text-center sar">${sar_extra.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    if (i.familyHead.flightTicketType == 0) {
+
+                        pkrmember += `<td class="text-center sar">
+                           ${i.package.flightTicketPriceSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                        </td>`
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+
+                        pkrmember += `<td class="text-center sar">
+                           -
+                        </td>`
+                    } else if (i.familyHead.flightTicketType == 2) {
+
+                        pkrmember += `<td class="text-center sar">
+                           ${i.package.flightTicketPriceSar.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} (${i.familyMember.familyHead.flightTicketDifferencesSar ?? 0})
+                        </td>`
+
+                    }
+                    pkrmember += `<td class="text-center sar">${(i.familyMember.familyHead.sarDiscountAmount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    if (i.familyHead.flightTicketType == 0) {
+                        pkrmember += `<td class="text-center sar">${(sar_total_amount + sar_discount_amount + i.package.flightTicketPriceSar).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    } else if (i.familyHead.flightTicketType == 1) {
+                        pkrmember += `<td class="text-center sar">${(sar_total_amount + sar_discount_amount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    } else if (i.familyHead.flightTicketType == 2) {
+                        pkrmember += `<td class="text-center sar">${(sar_total_amount + sar_discount_amount + i.package.flightTicketPriceSar + i.familyHead.flightTicketDifferencesSar).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                    }
+
+                    // USD Member
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+                        pkrmember += `<td class="text-center usd">${i.package.infantUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        usdtotalamount += i.package.infantUsd
+                        usd_total_amount += i.package.infantUsd
+
+                        var usdaddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             usdaddfacility += parseInt(j.additionalFacilities.infantUsd)
+
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center usd">${usdaddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+                        pkrmember += `<td class="text-center usd">${i.package.childUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        usdtotalamount += i.package.childUsd
+                        usd_total_amount += i.package.childUsd
+
+                        var usdaddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             usdaddfacility += parseInt(j.additionalFacilities.childUsd)
+
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center usd">${usdaddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    } else {
+                        pkrmember += `<td class="text-center usd">${i.package.adultUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+                        usdtotalamount += i.package.adultUsd
+                        usd_total_amount += i.package.adultUsd
+
+                        var usdaddfacility = 0;
+                        // for (let j of res.additionalFacility) {
+                        //     if (i.familyMember.familyHeadId == j.familyHeadId) {
+                        //         if (i.package.packageId == j.additionalFacilities.packageId) {
+                        //             usdaddfacility += parseInt(j.additionalFacilities.adultUsd)
+
+                        //         }
+                        //     }
+                        // }
+
+                        pkrmember += `<td class="text-center usd">${usdaddfacility.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    }
+                    usdtotalamount += usdaddfacility
+                    usd_total_amount += usdaddfacility
+                    // var usdpacaddon = 0;
+                    // for (let j of res.packageAddons) {
+                    //     if (i.package.packageId == j.packageId) {
+                    //         usdpacaddon += parseInt(j.usdPrice)
+
+                    //     }
+                    // }
+                    // usdtotalamount += usdpacaddon
+                    // usd_total_amount += usdpacaddon
+
+                    // pkrmember += `<td class="text-center usd">${usdpacaddon.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    var usd_extra = 0;
+                    for (let k of res.extrasAdfs) {
+
+                        if (k.familyHeadId == i.familyMember.familyHeadId) {
+                            usd_extra += parseInt(k.priceUsd ?? 0)
+
+
+                        }
+                    }
+
+                    usdtotalamount += usd_extra
+                    usd_total_amount += usd_extra
+
+                    pkrmember += `<td class="text-center usd">${usd_extra.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    if (i.familyHead.flightTicketType == 0) {
+
+                        pkrmember += `<td class="text-center usd">
+                           ${i.package.flightTicketPriceUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                        </td>`
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+
+                        pkrmember += `<td class="text-center usd">
+                           -
+                        </td>`
+                    } else if (i.familyHead.flightTicketType == 2) {
+
+                        pkrmember += `<td class="text-center usd">
+                           ${i.package.flightTicketPriceUsd.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} (${i.familyMember.familyHead.flightTicketDifferencesUsd ?? 0})
+                        </td>`
+
+                    }
+
+
+                    pkrmember += `<td class="text-center usd">${(i.familyMember.familyHead.usdDiscountAmount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+
+                    if (i.familyHead.flightTicketType == 0) {
+
+                        pkrmember += `<td class="text-center usd">${((usd_total_amount - usd_discount_amount) + i.package.flightTicketPriceUsd).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+
+                        pkrmember += `<td class="text-center usd">${(usd_total_amount - usd_discount_amount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+                    } else if (i.familyHead.flightTicketType == 2) {
+
+                        pkrmember += `<td class="text-center usd">${((usd_total_amount - usd_discount_amount) + i.package.flightTicketPriceUsd + i.familyHead.flightTicketDifferencesUsd).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>`
+
+
+                    }
+                    pkrmember += `</tr>`
+                }
+
+                $('#pkrmember').html(pkrmember)
+
+                // PKR Mini Statement
+
+                let pkrminiStatement = "";
+
+                let totalpkr = 0;
+                let totalsar = 0;
+                let totalusd = 0;
+
+
+                let sar_totalpkr = 0;
+                let sar_totalsar = 0;
+                let sar_totalusd = 0;
+
+
+                let usd_totalpkr = 0;
+                let usd_totalsar = 0;
+                let usd_totalusd = 0;
+
+
+                let inline_totalpkr = 0;
+                let inline_sar_totalpkr = 0;
+                let inline_usd_totalpkr = 0;
+
+                let recivedAmount = 0;
+
+                const invoiceStatusMap = {
+                    0: 'Unsupervised', 1: 'Supervised', 2: 'Pending', 3: 'Bounce', 4: 'Clearing', 5: 'Cleared'
+                }
+
+                const currency = {
+                    0: 'PKR', 1: 'SAR', 2: 'USD', 3: 'AED', 4: 'GBP', 5: 'EURO'
+                }
+
+                for (let i of res.invoice) {
+                    if (i.invoice.invoiceStatus == 5) {
+
+                        recivedAmount = i.invoice.amountRecived;
+
+                        if (i.invoice.currency == 0) {
+                            totalpkr += i.invoice.amountRecived;
+                            sar_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                            usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            inline_totalpkr = i.invoice.amountRecived;
+                            inline_sar_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                            inline_usd_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+                        } else if (i.invoice.currency == 1) {
+                            totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                            sar_totalpkr += (i.invoice.amountRecived * i.invoice.sarroe);
+                            usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            inline_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                            inline_sar_totalpkr = (i.invoice.amountRecived * i.invoice.sarroe);
+                            inline_usd_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+
+                        } else if (i.invoice.currency == 2) {
+                            totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                            sar_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                            usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            inline_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                            inline_sar_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                            inline_usd_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+                        } else if (i.invoice.currency == 3) {
+                            totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                            sar_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                            usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            inline_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                            inline_sar_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                            inline_usd_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+
+                        } else if (i.invoice.currency == 4) {
+                            totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                            sar_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                            usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            inline_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                            inline_sar_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                            inline_usd_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                        }
+
+                        let fullDate = new Date(i.invoice.date);
+                        let onlyDate = fullDate.toISOString().split('T')[0];
+
+                        let invoiceStatusString = invoiceStatusMap[i.invoice.invoiceStatus];
+                        let currencyShow = currency[i.invoice.currency];
+
+                        pkrminiStatement += `
+                                                <tr>
+                                                            <td class="text-center">${onlyDate}</td>
+                                                            <td class="text-center sar" >${inline_sar_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} </td>
+                                                            <td class="text-center  sar_recive">${currencyShow} - ${recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center usd" >${inline_usd_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} </td>
+                                                            <td class="text-center  usd_recive">${currencyShow} - ${recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center pkr" >${inline_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} </td>
+                                                            <td class="text-center  pkr_recive">${currencyShow} - ${recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center roe" >${(i.invoice.usdroe).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+
+                                                </tr>`;
+                    }
+                }
+
+                // let minipkrbalance = (((pkrtotalamount + basicAirlinePkr + basicDifferentPkr + pkrextras) - pkrdiscount) - totalpkr);
+                // let minisarbalance = (((sartotalamount + basicAirlineSar + basicDifferentSar + sarextras) - sardiscount) - sar_totalpkr);
+                // let miniusdbalance = (((usdtotalamount + basicAirlineUsd + basicDifferentUsd + usdextras) - usddiscount) - usd_totalpkr);
+
+                let minipkrbalance = (((usdtotalamount + basicAirlineUsd + basicDifferentUsd) - usddiscount) - usd_totalpkr) * res.rateOfExchange[0].pkrroe;
+                let minisarbalance = (((usdtotalamount + basicAirlineUsd + basicDifferentUsd) - usddiscount) - usd_totalpkr) * res.rateOfExchange[0].sarroe;
+                let miniusdbalance = (((usdtotalamount + basicAirlineUsd + basicDifferentUsd) - usddiscount) - usd_totalpkr) * res.rateOfExchange[0].usdroe;
+
+                let minipkrtotal = totalpkr;
+                let minisartotal = sar_totalpkr;
+                let miniusdtotal = usd_totalpkr;
+
+                pkrminiStatement += `<tr class="text-center f-600">
+                                                    <td colspan=1 style="background-color: rgb(232, 232, 232);">Total</td>
+                                                        <td class="text-center sar" ><b>${minisartotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                    <td class="text-center pkr" ><b>${minipkrtotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                    <td class="text-center usd" ><b>${miniusdtotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                    <td  colspan=1 id="footer_mini"></td>
+                                             </tr>`
+                pkrminiStatement += `<tr class="text-center f-600">
+                                            <td colspan=1 style="background-color: rgb(232, 232, 232);">Balance</td>
+                                                <td class="text-center pkr" ><b>${minipkrbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                <td class="text-center sar" ><b>${minisarbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                <td class="text-center usd" ><b>${miniusdbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                <td class="pkr" colspan=1 id="footer_mini">${res.rateOfExchange[0].pkrroe}</td>
+                                                <td class="sar" colspan=1 id="footer_mini">${res.rateOfExchange[0].sarroe}</td>
+                                                <td class="usd" colspan=1 id="footer_mini">${res.rateOfExchange[0].usdroe}</td>
+                                        </tr>`
+
+
+                $('#pkr_miniStatement').html(pkrminiStatement)
+
+
+
+                // PKR Realization
+
+
+
+                let r_pkrminiStatement = ``;
+
+                let r_totalpkr = 0;
+                let r_totalsar = 0;
+                let r_totalusd = 0;
+
+                let sar_r_totalpkr = 0;
+                let sar_r_totalsar = 0;
+                let sar_r_totalusd = 0;
+
+                let usd_r_totalpkr = 0;
+                let usd_r_totalsar = 0;
+                let usd_r_totalusd = 0;
+
+                let inline_r_totalpkr = 0;
+                let inline_sar_r_totalpkr = 0;
+                let inline_usd_r_totalpkr = 0;
+
+                let r_recivedAmount = 0;
+
+                const r_invoiceStatusMap = {
+                    0: 'Unsupervised', 1: 'Supervised', 2: 'Pending', 3: 'Bounce', 4: 'Clearing', 5: 'Cleared'
+                }
+
+                if (res.invoice.length != 0) {
+                    let count_real = 0;
+                    for (let i of res.invoice) {
+                        if (i.invoice.invoiceStatus != 5) {
+
+                            count_real += 1;
+
+                            r_recivedAmount = i.invoice.amountRecived;
+
+                            if (i.invoice.currency == 0) {
+                                r_totalpkr += i.invoice.amountRecived;
+                                sar_r_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                                usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+
+                                inline_r_totalpkr = i.invoice.amountRecived;
+                                inline_sar_r_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                                inline_usd_r_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            } else if (i.invoice.currency == 1) {
+                                r_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                                sar_r_totalpkr += (i.invoice.amountRecived * i.invoice.sarroe);
+                                usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+
+                                inline_r_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                                inline_sar_r_totalpkr = (i.invoice.amountRecived * i.invoice.sarroe);
+                                inline_usd_r_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            } else if (i.invoice.currency == 2) {
+
+                                r_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                                sar_r_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                                usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                                inline_r_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                                inline_sar_r_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                                inline_usd_r_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+
+                            } else if (i.invoice.currency == 3) {
+                                r_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                                sar_r_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                                usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                                inline_r_totalpkr = i.invoice.amountRecived * i.invoice.pkrroe;
+                                inline_sar_r_totalpkr = (i.invoice.amountRecived / i.invoice.sarroe);
+                                inline_usd_r_totalpkr = (i.invoice.amountRecived / i.invoice.usdroe);
+
+                            } else if (i.invoice.currency == 4) {
+                                r_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                                sar_r_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                                usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+
+                                inline_r_totalpkr += i.invoice.amountRecived * i.invoice.pkrroe;
+                                inline_sar_r_totalpkr += (i.invoice.amountRecived / i.invoice.sarroe);
+                                inline_usd_r_totalpkr += (i.invoice.amountRecived / i.invoice.usdroe);
+                            }
+
+
+                            let r_fullDate = new Date(i.invoice.date);
+                            let r_onlyDate = r_fullDate.toISOString().split('T')[0];
+
+                            let r_invoiceStatusString = r_invoiceStatusMap[i.invoice.invoiceStatus];
+                            let r_currencyShow = currency[i.invoice.currency];
+
+                            r_pkrminiStatement += `<tr>
+                                                            <td class="text-center">${r_onlyDate}</td>
+                                                            <td class="text-center sar" >${inline_sar_r_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center  sar_recive">${r_currencyShow} - ${r_recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center usd" >${inline_usd_r_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })} </td>
+                                                            <td class="text-center  usd_recive">${r_currencyShow} - ${r_recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center pkr" >${inline_r_totalpkr.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center  pkr_recive">${r_currencyShow} - ${r_recivedAmount.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                            <td class="text-center roe" >${(i.invoice.usdroe).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</td>
+                                                       </tr>`;
+                        }
+                    }
+
+                    // let r_minipkrbalance = (minipkrbalance - r_totalpkr) ;
+                    // let r_minisarbalance = (minisarbalance - sar_r_totalpkr) ;
+                    // let r_miniusdbalance = (miniusdbalance - usd_r_totalpkr);
+
+                    let r_minipkrbalance = (miniusdbalance - usd_r_totalpkr) * res.rateOfExchange[0].pkrroe;
+                    let r_minisarbalance = (miniusdbalance - usd_r_totalpkr) * res.rateOfExchange[0].sarroe;
+                    let r_miniusdbalance = (miniusdbalance - usd_r_totalpkr) * res.rateOfExchange[0].usdroe;
+
+
+                    if (count_real != 0) {
+                        let r_minipkrtotal = r_totalpkr;
+                        let r_minisartotal = sar_r_totalpkr;
+                        let r_miniusdtotal = usd_r_totalpkr;
+
+                        r_pkrminiStatement += `<tr class="text-center f-600">
+                                                    <td colspan=1 style="background-color: rgb(232, 232, 232);">Total Payment Under Realization</td>
+                                                        <td class="text-center sar" ><b>${r_minisartotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                            <td class="text-center usd" ><b>${r_miniusdtotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                            <td class="text-center pkr" ><b>${r_minipkrtotal.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                        <td  colspan=1 id="footer_mini"></td>
+                                                 </tr>`
+
+                        r_pkrminiStatement += `<tr style="height:15px"><td colspan="5" ></td></tr> <tr class="text-center f-600">
+                                                        <td colspan=2 style="font-size: 14px; background-color: rgb(232, 232, 232);">Balance After Realization</td>
+
+                                                         <td style="font-size: 14px;" class="text-center sar" ><b> ${r_minisarbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                        <td style="font-size: 14px;" class="text-center usd" ><b> ${r_miniusdbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+                                                         <td style="font-size: 14px;" class="text-center pkr" ><b> ${r_minipkrbalance.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}</b></td>
+    @* <td class="pkr" colspan=1 id="footer_mini_pkr">${res.rateOfExchange[0].pkrroe}</td>
+                                                          <td class="sar" colspan=1 id="footer_mini_sar">${res.rateOfExchange[0].sarroe}</td>
+                                                         <td class="usd" colspan=1 id="footer_mini_usd">${res.rateOfExchange[0].usdroe}</td> *@
+
+                                                        </tr>`
+                    } else {
+                        r_pkrminiStatement += `<tr style="height:15px"><td colspan="5" ></td></tr> <tr class="text-center f-600">
+                                                        <td colspan=1 style="background-color: rgb(232, 232, 232);">Balance After Realization</td>
+                                                        <td class="text-center pkr" ><b> 0 </b></td>
+                                                        <td class="text-center sar" ><b> 0</b></td>
+                                                        <td class="text-center usd" ><b> 0</b></td>
+                                                             <td class="pkr" colspan=1 id="footer_mini">${res.rateOfExchange[0].pkrroe}</td>
+                                                            <td class="sar" colspan=1 id="footer_mini">${res.rateOfExchange[0].sarroe}</td>
+                                                            <td class="usd" colspan=1 id="footer_mini">${res.rateOfExchange[0].usdroe}</td>
+
+                                                        </tr>`
+                    }
+                    r_pkrminiStatement += ``
+                }
+
+                $('#pkr_realization').html(r_pkrminiStatement)
+
+                document.getElementById('pkrtotal').innerText = ((pkrtotalamount + basicAirlinePkr + basicDifferentPkr) - pkrdiscount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('sartotal').innerText = ((sartotalamount + basicAirlineSar + basicDifferentSar) - sardiscount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+                document.getElementById('usdtotal').innerText = ((usdtotalamount + basicAirlineUsd + basicDifferentUsd) - usddiscount).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+
+                console.log(usdtotalamount)
+                console.log(basicAirlineUsd)
+                console.log(basicDifferentUsd)
+                console.log(usdextras)
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+</script>
+
+
+<script>
+    getFamilyDetail(@ViewBag.familyId)
+</script>
+
+<script>
+
+    function showColumnAndRows(currency) {
+        var columns = document.querySelectorAll('.' + currency);
+        var rows = document.querySelectorAll('tr.dataRow td.' + currency);
+
+        columns.forEach(function (column) {
+            column.style.display = 'table-cell';
+        });
+
+        rows.forEach(function (row) {
+            row.style.display = 'table-row';
+        });
+    }
+
+    function toggleRecive(currency) {
+        var columns = document.querySelectorAll('.' + currency);
+        var rows = document.querySelectorAll('tr.dataRow td.' + currency);
+
+        columns.forEach(function (column) {
+            if (column.style.display === 'none' || column.style.display === '') {
+                column.style.display = 'table-cell';
+            } else {
+                column.style.display = 'none';
+            }
+        });
+
+        rows.forEach(function (row) {
+            if (row.style.display === 'none' || row.style.display === '') {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+
+    function hideColumnAndRows(currency) {
+        var columns = document.querySelectorAll('.' + currency);
+        var rows = document.querySelectorAll('tr.dataRow td.' + currency);
+
+        columns.forEach(function (column) {
+            column.style.display = 'none';
+        });
+
+        rows.forEach(function (row) {
+            row.style.display = 'none';
+        });
+    }
+
+
+    function showPkr(input) {
+        if (input.checked == false) {
+            hideColumnAndRows('pkr', 'pkr2');
+            document.getElementById('pkrcurrency').style.display = 'none'
+            document.getElementById('currency').innerText = ""
+        } else {
+            document.getElementById('pkrcurrency').style.display = 'block'
+            document.getElementById('currency').innerText = "PKR"
+            showColumnAndRows('pkr', 'pkr2')
+        }
+    }
+    function showUsd(input) {
+
+        if (input.checked == false) {
+            document.getElementById('usdcurrency').style.display = 'none'
+            document.getElementById('currency').innerText = ""
+            hideColumnAndRows('usd', 'usd2');
+        } else {
+            document.getElementById('usdcurrency').style.display = 'block'
+            document.getElementById('currency').innerText = "USD"
+            showColumnAndRows('usd', 'usd2');
+        }
+    }
+    function showSar(input) {
+        if (input.checked == false) {
+            hideColumnAndRows('sar', 'sar2');
+            document.getElementById('sarcurrency').style.display = 'none'
+            document.getElementById('currency').innerText = ""
+        } else {
+            document.getElementById('sarcurrency').style.display = 'block'
+            document.getElementById('currency').innerText = "SAR"
+            showColumnAndRows('sar', 'sar2')
+        }
+    }
+
+
+</script>

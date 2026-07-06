@@ -1,0 +1,224 @@
+﻿@model List<AziziaRoomCountModel>
+@{
+    Layout = null;
+    var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Report</title>
+    <style>
+        #downloadPdf {
+            padding: 8px 16px !important;
+            background-color: #f60000 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            margin-bottom: 10px !important;
+            font-size: 14px;
+        }
+
+        #columnSelectors {
+            margin-bottom: 10px;
+        }
+
+            #columnSelectors label {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+    <script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <button id="downloadPdf" onclick="exportToPDF()" class="btn btn-danger me-2">Export to PDF</button>
+
+
+    <div id="incoice_page_body">
+        <p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+        @* <div id="columnSelectors">
+			<label><input type="checkbox" class="column-toggle" data-col="1" checked> Hajji Name</label>
+			<label><input type="checkbox" class="column-toggle" data-col="2" checked> HbNo</label>
+			<label><input type="checkbox" class="column-toggle" data-col="4" checked> Package Name</label>
+		</div> *@
+
+        <h1>@ViewBag.HotelName Report</h1>
+        <div id="roomCountGrid" class="mt-3"></div>
+
+    </div>
+
+
+    <!-- TableExport Library (for Excel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
+
+    <!-- jsPDF (for PDF Export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        $(function () {
+    var dataSource = [
+        @if (Model != null && Model.Any())
+        {
+            var checkIns = Model.GroupBy(m => new { m.CheckIn, m.CheckOut });
+            var isFirst = true;
+            foreach (var hotelGroup in checkIns)
+            {
+                if (!isFirst)
+                {
+                    @:,
+                }
+                <text>
+        {
+            CheckIn: @Html.Raw(hotelGroup.Key.CheckIn.HasValue ? $"new Date('{hotelGroup.Key.CheckIn.Value:yyyy-MM-dd}')" : "null"),
+            CheckOut: @Html.Raw(hotelGroup.Key.CheckOut.HasValue ? $"new Date('{hotelGroup.Key.CheckOut.Value:yyyy-MM-dd}')" : "null"),
+                </text>
+                @foreach (var room in Model.GroupBy(r => r.RoomCode).Select(g => g.First()))
+                {
+                    var roomCount = hotelGroup
+                        .Where(h => h.RoomCode == room.RoomCode)
+                        .Sum(h => h.RoomCount);
+                    <text>
+                "@room.RoomCode": @roomCount,
+                    </text>
+                }
+                <text>}
+                </text>
+                isFirst = false;
+            }
+        }
+    ];
+
+    $("#roomCountGrid").dxDataGrid({
+        dataSource: dataSource,
+        keyExpr: "CheckIn",
+                columns: [
+                    { dataField: "CheckIn", caption: "Check-In", dataType: "date" },
+                    { dataField: "CheckOut", caption: "Check-Out", dataType: "date" },
+        @if (Model != null && Model.Any())
+        {
+            var rooms = Model.GroupBy(r => r.RoomCode).Select(g => g.First());
+            var isFirstRoom = true;
+            foreach (var room in rooms)
+            {
+                if (!isFirstRoom)
+                {
+                    @:,
+                }
+                <text>
+                                {
+                    caption: "@room.RoomCode",
+                    cellTemplate: function (container, options) {
+                        if (options.value !== null && options.value !== undefined) {
+                            const checkIn = new Date(options.data.CheckIn).toISOString();
+                            const checkOut = new Date(options.data.CheckOut).toISOString();
+                            const roomId = parseInt("@room.RoomId");
+                            const hotelId = parseInt("@ViewBag.Id"); // Add this line
+
+                            const url = `/Report/HotelClick?checkIn=${encodeURIComponent(checkIn)}&checkOut=${encodeURIComponent(checkOut)}&roomId=${roomId}&hotelId=${hotelId}`;
+
+                            $("<a>")
+                                .attr("href", url)
+                                .text(options.value)
+                                .appendTo(container);
+                        } else {
+                            container.text("-");
+                        }
+                    },
+                    dataField: "@room.RoomCode"
+                }
+
+
+                </text>
+                isFirstRoom = false;
+            }
+        }
+                ],
+        paging: {
+            pageSize: 10
+        },
+        pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [5, 10, 20],
+            showInfo: true
+        },
+        filterRow: {
+            visible: true
+        },
+        searchPanel: {
+            visible: true,
+            highlightCaseSensitive: true
+        },
+        sorting: {
+            mode: "multiple"
+        },
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        showBorders: true
+    });
+});
+
+
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4'); // A4 Landscape
+
+            doc.text("Room Count Report", 14, 10);
+
+            // Get the number of columns from the table
+            const table = document.getElementById('incoice_page_body');
+            const columnCount = table.rows[0].cells.length;
+
+            // Dynamic column width adjustment
+            const columnStyles = {};
+            for (let i = 0; i < columnCount; i++) {
+                columnStyles[i] = { cellWidth: 15 }; // Smaller column width to fit all on one page
+            }
+
+            // Keep the first column (Hotel Name) slightly wider for better clarity
+            columnStyles[0] = { cellWidth: 35 };
+
+            doc.autoTable({
+                html: '#incoice_page_body', // Table ID
+                startY: 20,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 123, 255] }, // Header Color
+                styles: { fontSize: 6 }, // Smaller font size for better fit
+                tableWidth: 'wrap', // Force table to fit within the page
+                horizontalPageBreak: false, // Disable page break to keep everything on one page
+                columnStyles: columnStyles, // Apply dynamic column widths
+                margin: { top: 20, left: 5, right: 5, bottom: 10 } // Adjust margins
+            });
+
+            doc.save('RoomCount.pdf');
+        }
+
+        // Export Table to Excel
+        function exportToExcel() {
+            const table = document.getElementById("incoice_page_body");
+            const exportInstance = new TableExport(table, {
+                exportButtons: false, // Hide default buttons
+                filename: "RoomCount",
+                sheetname: "Room Count"
+            });
+
+            const excelData = exportInstance.getExportData()['roomCountTable']['xlsx'];
+            exportInstance.export2file(excelData.data, excelData.mimeType, excelData.filename, excelData.fileExtension);
+        }
+    </script>
+
+</body>
+
+</html>

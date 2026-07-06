@@ -1,0 +1,218 @@
+﻿@model BatchSlipsModel
+@{
+    Layout = "_InvoiceLayout";
+}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Proceed with your Qurbani</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <h5> Name: @Model.Entries[0].Name</h5>
+        </div>
+        <div class="col-md-12">
+
+            @foreach (BatchSlipEntryModel entry in Model.Entries)
+            {
+                                 <div class="card mb-5">
+                    <div class="card-body">
+
+                        <div class="row mt-3">
+                                        <div class="container-fluid">
+                                            <p class="text-center d-flex">
+                                                <img src="~/alkurbani.png" width="100" style="margin: 10px auto 10px auto;">
+                                            </p>
+                                            <h4 style="text-decoration:underline; text-align:center;">QURBANI SLIP HAJJ <span
+                                                    id="year">2024</span></h4>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="table-responsive">
+                                                    <table style="width: 100%;" border=1 class="table">
+                                                        <tr>
+                                                            <td style="text-align:center"><b>HB #:</b> @entry.FCID</td>
+                                                            <td style="text-align:center"><b>Name:</b> @entry.Name</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="text-align:center"><b>CID:</b> @entry.CID</td>
+                                                            <td style="text-align:center" id="batchName_@entry.FamilyHeadId"><b>Batch:</b> @entry.BatchNumber 
+                                                        @Html.Raw(entry.BatchCompleted ? "<span style='color: green'>(Completed)</span>" : (entry.BatchNumber.Equals("") ? "" : "<span style='color: red'>(In Process)</span>"))</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="text-align: center;"><b>Mobile Number: </b> @entry.MobileNumber</td>
+                                                            <td style="text-align: center;"><b>KSA Number: </b> @entry.KSAMobileNumber</td>
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12 mt-2" id="div_@entry.FamilyHeadId">
+                                        @if (!entry.saved && entry.QurbaniEnabled)
+                                        {
+                                                            <button id="proceed_@entry.FamilyHeadId" class="btn btn-primary"
+                                                                onclick="proceedToQurbani(@entry.FamilyHeadId)">Proceed To Qurbani</button>
+                                        }
+                                        else if(entry.saved && entry.QurbaniEnabled)
+                                        {
+                                            if (entry.BatchCompleted)
+                                            {
+                                                @* <button class="btn btn-success" disabled>Qurbani Done</button> *@
+                                            }
+                                            else
+                                            {
+                                                                    <a class="btn btn-primary" target="_blank" href="/Qurbani/CheckTimer/@entry.FamilyHeadId">Check Timer</a>
+                                                                    <a class="btn btn-success" target="_blank" id="WhatsAppLink_@entry.FamilyHeadId" href="@entry.WhatsappGroupLink">
+                                                                        <i class="bx bxl-whatsapp"></i> Whatsapp Link</a>
+                                            }
+
+                                        }
+
+                                                </div>
+                                            </div>
+                                            <p style="font-weight: bold;margin-bottom:5px; margin-top: 10px;">Qurbani Hajj
+                                                <span>2024</span> Slip Terms & Conditions:</p>
+                                @Html.Raw(Model.TCsString)
+
+                                            <p style="font-weight: bold;margin-bottom:5px; margin-top: 10px;">Notes:</p>
+                                @Html.Raw(Model.NotesString)
+
+                                        </div>
+
+
+
+                                        <script>
+                                            var qr1;
+                                            var qr2;
+                                            (function () {
+                                                qr1 = new QRious({
+                                                    element: document.getElementById('1-HB #qr-@entry.TokenNumber'),
+                                                    size: 100,
+                                                    value: `['@entry.FCID']`
+                                                });
+                                                qr2 = new QRious({
+                                                    element: document.getElementById('2-HB #qr-@entry.TokenNumber'),
+                                                    size: 100,
+                                                    value: `['@entry.FCID']`
+                                                });
+                                            })();
+                                        </script>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function proceedToQurbani(id) {
+        let proceed = confirm("HAVE YOU COMPLETED RAMI?")
+        if (proceed) {
+            $.ajax({
+                url: "/Qurbani/ProceedQurbani/" + id,
+                method: "POST",
+                success: res => {
+                    console.log(res)
+
+                    if(res.status == 200){
+                        alert("Your Batch is: " + res.batchName)
+                        document.getElementById("div_" + id).innerHTML = `<a class="btn btn-primary" target="_blank" href="/Qurbani/CheckTimer/${id}">Check Timer</a>
+                                                    <a class="btn btn-success" target="_blank" id="WhatsAppLink_${id}" href="${res.whatsappGroupLink}">
+                                                        <i class="bx bxl-whatsapp"></i> Whatsapp Link</a>`;
+                        document.getElementById("batchName_" + id).innerHTML = `${res.batchName} <span style='color: red'>(In Process)</span>`;
+                    }
+                    else if (res.status == 201)
+                        alert("Your qurbani is already in process. Please refresh the page")
+
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+</script>
+
+<script>
+
+    function btnRami_Click(FamilyHeadId) {
+        var btnqurbani = document.getElementById("btnQurbani_" + FamilyHeadId);
+        btnqurbani.style.display = "block";
+        var btnRami = document.getElementById("btnRami_" + FamilyHeadId).setAttribute("disabled", "true");
+
+    }
+    function btnQurbani_Click() {
+
+        var FamilyheadId = @Html.Raw(Json.Serialize(ViewBag.FamilyheadId));
+        updateList()
+        $.ajax({
+            type: 'POST',
+            url: '/PackageReport/QurbaniQueueFormSave',
+            data: {
+                Ids: intList
+            },
+            success: function (data) {
+
+                var btncomfirm = document.getElementById("btncomfirm").setAttribute("disabled", "true");
+                localStorage.clear();
+                location.reload();
+                //var btnqurbani = document.getElementById("btnQurbani").setAttribute("disabled", "true");
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    }
+
+
+
+
+    //--------------------------------------------------------------//
+    function adjustInputWidth(input) {
+
+        var length = input.value.length;
+
+        var newWidth = length + 3.5;
+
+        input.style.width = newWidth + 'ch';
+    }
+
+    function submitForm(e, elem, index) {
+        e.preventDefault();
+
+        var famHeadId = document.querySelector(`#FamilyHeadId_${index}`).value
+        var eno = document.querySelector(`#ENo_${index}`).value
+
+        var formData = new FormData();
+        formData.append("FamilyHeadId", famHeadId)
+        formData.append("ENo", eno)
+
+        $.ajax({
+            url: `/FamilyHeadReport/VerifyBiometric`, // Replace with your server endpoint
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                console.log('File uploaded successfully');
+                console.log(res);
+                console.log(index)
+                document.getElementById(`sub_div_${index}`).remove()
+                document.getElementById(`eno_div_${index}`).remove()
+                document.getElementById(`file_div_${index}`).remove()
+                document.getElementById(`row_${index}`).innerHTML += `<div class="col-sm-12 col-md-7 mb-1" id="succ_div_${index}">
+                                            <p class="fw-bold"><i class="bx text-success bxs-badge-check"></i> Biometric Verified!</p>
+                                        </div>`
+
+                // Handle response from server
+            },
+            error: function (xhr, status, error) {
+                console.error('Error uploading file:', error);
+                // Handle error
+            }
+        });
+
+    }
+</script>

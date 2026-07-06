@@ -1,0 +1,70 @@
+﻿@model LoginRequest
+@{
+    Layout = "_AuthLayout";
+}
+
+
+<div class="container-xxl">
+    @if (TempData.ContainsKey("loggedOut"))
+    {
+        if ((bool)TempData["loggedOut"]! == true)
+        {
+            <script>
+                toastr.options.closeDuration = 100;
+                toastr.options.closeButton = true;
+                toastr.options.positionClass = "toast-top-left";
+                toastr.error('Logged Out Successfully', {timeOut: 1500}) 
+            </script>
+            TempData["loggedOut"] = false;
+        }
+    }
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <!-- Register -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center">
+                        <a asp-action="Login" class="app-brand-link gap-2">
+                            <span class="app-brand-text demo text-body fw-bolder">
+                                <img src="~/madnilogo.png" class="img-thumbnail" width="200">
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    @if(Model?.ErrorStatusCode == 0)
+                    {
+                        <div class="alert alert-danger">Invalid Credentials</div>
+                    }
+                    <form id="formAuthentication" class="mb-3"  method="POST">
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" 
+                                   class="form-control"
+                                   placeholder="Enter your email"
+                                   autofocus />
+                            <span class="text-danger" asp-validation-for="Email"></span>
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label" asp-for="Password"></label>
+                            </div>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="Password" 
+                                       class="form-control"
+                                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                       aria-describedby="password" />
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                            </div>
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+﻿@model BulkAllotmentRequest
+
+@{
+    string modelName = "Room Allotment";
+    string modelNamePlural = "Room Allotments";
+    string modelControllerRoute = "RoomAllotment";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / Book Floor / </span> @ViewBag.HotelName Floor #@ViewBag.FloorNumber</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" onsubmit="return confirm('Are you sure? This action cannot be reversed!');">
+                        <input type="hidden" asp-for="FloorId" />
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ValidFrom"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="ValidFrom" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ValidFrom"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ValidTill"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="ValidTill" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ValidTill"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Book</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

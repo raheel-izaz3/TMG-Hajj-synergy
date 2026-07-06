@@ -1,0 +1,80 @@
+@model FamilyHead
+@{
+    string modelName = "Family Head";
+    string modelNamePlural = "Family Heads";
+    string modelControllerRoute = "Family Head";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / @Model.FcId / </span> Stay
+        With</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input asp-for="FamilyHeadId" type="hidden">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Stay with Family Head Id</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" id="idSearch" placeholder="Enter HB #..."
+                                        oninput="getFamily(this.value)">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Family Members <span id="familyCode"></span></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="StayWithId" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function getFamily(id) {
+        $.ajax({
+            url: "/FamilyHead/GetFamily/" + id,
+            method: "GET",
+            success: res => {
+                console.log(res)
+                if (res.length != 0) {
+                    document.getElementById("familyCode").innerHTML = `of ${res[0].fcId}`
+                    let html = ``;
+                    for(let fm of res){
+                        if(@Model.FamilyHeadId == fm.familyHeadId) continue
+
+                        html += `<option value="${fm.familyHeadId}" ${@(Model.StayWithId ?? 0) == fm.familyHeadId ? "checked" : ""}>${fm.title} ${fm.givenName} ${fm.surName} (${fm.fcId})</option>`
+                    }
+                    document.getElementById("StayWithId").innerHTML = html
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+</script>
+
+@if(Model.StayWithId is not null){
+    <script>
+        document.getElementById("idSearch").value = @ViewBag.StayWithHead
+        getFamily(@ViewBag.StayWithHead)
+    </script>
+}

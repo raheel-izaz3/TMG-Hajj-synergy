@@ -1,0 +1,37 @@
+@model FamilyHead
+
+@{
+    Layout = "_InvoiceLayout";
+    ViewData["title"] = "Upload KSA Number";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Upload KSA Number</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="card p-3">
+                <form method="post" >
+                    <div class="row mb-3" id="row">
+                        <input type="hidden" asp-for="FamilyHeadId" >
+                        <div class="col-12">
+                            <p class="text-bold">@Model.FullName </p>
+                        </div>
+                        <div class="col-12 col-sm-12  mb-2" >
+                            <input  asp-for="KSAMobileNumber"  class="form-control"
+                                placeholder="Please Type your KSA Number" required>
+                        </div>
+                        <div class="col-12" id="sub_div">
+                            <button class="btn btn-success float-end" id="submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

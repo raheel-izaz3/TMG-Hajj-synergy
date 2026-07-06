@@ -1,0 +1,146 @@
+﻿@model BankAccountContactPerson
+@{
+    string modelName = "BankAccountContactPerson";
+    string modelNamePlural = "Company Bank Account Contact Persons";
+    string modelControllerRoute = "BankAccountContactPersons";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="Edit">
+                        <input type="hidden" asp-for="BankAccountContactPersonId" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyBankAccountId">Company Bank Account</label>
+                                <select class="form-control" asp-for="CompanyBankAccountId" asp-items="@ViewBag.CBA">
+                                    <option value="" disabled selected>Select bank Account</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="CompanyBankAccountId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Name" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Contact"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Contact" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="Contact"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Email" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="DesignationId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="DesignationId" class="form-control">
+                                        @foreach (Designation designation in ViewBag.Designation)
+                                        {
+                                            <option value="@designation.DesignationId">@designation.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="DesignationId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ActiveStatus"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <select class="form-control" asp-for="ActiveStatus" asp-items="@Html.GetEnumSelectList<ActiveStatus>()">
+                                        <option value="" disabled selected>Select Status</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ActiveStatus"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CountryId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CountryId" class="form-control">
+                                        @foreach (Country country in ViewBag.Country)
+                                        {
+                                            <option value="@country.CountryId">@country.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CountryId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CityId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CityId" class="form-control">
+                                        @foreach (City city in ViewBag.City)
+                                        {
+                                            <option value="@city.CityId">@city.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CityId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PoBox"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="PoBox" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PoBox"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mb-12">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Address"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Address" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="Address"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('select[name="CityId"]').select2({
+            placeholder: "Select City",
+            allowClear: true,
+            width: '100%'
+        });
+
+        $('select[name="CountryId"]').select2({
+            placeholder: "Select Country",
+            allowClear: true,
+            width: '100%'
+        });
+        
+        $('select[name="DesignationId"]').select2({
+            placeholder: "Select Designation",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>

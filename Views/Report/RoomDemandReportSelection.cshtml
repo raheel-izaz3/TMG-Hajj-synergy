@@ -1,0 +1,42 @@
+﻿<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Room Demand Report</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" action="RoomDemandReport">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" name="HotelId">
+                                        @foreach(Hotel h in ViewBag.Hotels){
+                                            <option value="@h.HotelId">@h.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" name="Date" class="form-control" id="">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Fetch</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

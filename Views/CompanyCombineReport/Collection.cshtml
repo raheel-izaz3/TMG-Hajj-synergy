@@ -1,0 +1,287 @@
+@model IEnumerable<CollectionCompanyModel>
+@{
+    Layout = "_InvoiceLayout";
+    ViewData["title"] = "Collection";
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<style>
+    * {
+        font-size: 12px;
+    }
+
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #0a0c46;
+        border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #525353;
+    }
+
+    html {
+        zoom: 70%;
+    }
+
+    .pkr,
+    .sar {
+        display: none;
+    }
+
+    td {
+        border: 1px solid #d9dee3
+    }
+</style>
+<div class="container-fluid">
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <form>
+                <input type="hidden" value="0" id="filterValue" name="filter" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Select Company</label>
+                        <select class="form-control" id="CompanyId" name="CompanyId" onchange="onFilter('company')">
+                            <option value="0">Select Company</option>
+                            @foreach (var company in ViewBag.Company)
+                            {
+                                <option value="@company.CompanyId">@company.CompanyName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Select Package</label>
+                        <select class="form-control" id="PackageId" name="PackageId" onchange="onFilter('package')">
+                            <option value="0">Select Package</option>
+                            @foreach (var package in ViewBag.Package)
+                            {
+                                <option value="@package.PackageId">@package.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Select SPO</label>
+                        <select class="form-control" id="SpoId" name="SpoId" onchange="onFilter('spo')">
+                            <option value="0">Select SPO</option>
+                            @foreach (var spo in ViewBag.SPO)
+                            {
+                                <option value="@spo.SPOId">@spo.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <input type="button" onclick="filterDate()" id="filterButton" disabled class="btn btn-success"
+                            value="Filter" />
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>USD
+                                        <input type="checkbox" onchange="oncheck_usd()" checked />
+                                    </td>
+                                    <td>SAR
+                                        <input type="checkbox" onchange="oncheck_sar()" />
+                                    </td>
+                                    <td>PKR
+                                        <input type="checkbox" onchange="oncheck_pkr()" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <script>
+                    function onFilter(value) {
+                        document.getElementById('filterButton').removeAttribute('disabled')
+                        document.getElementById('filterValue').value = value
+                    }
+                    function filterDate() {
+                        var Filter = document.getElementById('filterValue').value;
+                        var CompanyId = document.getElementById('CompanyId').value;
+                        var PackageId = document.getElementById('PackageId').value;
+                        var SpoId = document.getElementById('SpoId').value;
+
+                        location.href = `/CompanyCombineReport/FilterWise?filter=${Filter}&CompanyId=${CompanyId}&PackageId=${PackageId}&SpoId=${SpoId}`;
+                    }
+                </script>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        @foreach (var company in Model)
+        {
+
+            <div class="col-md-12 text-center">
+                <h4>@company.CompanyName (@company.CompanyCode) (@company.Package)</h4>
+            </div>
+            <div class="col-md-12 mb-5">
+                <div class="table-responsive text-nowrap ">
+                    <table class="table" border="1" id="table">
+                        <thead>
+
+                            <tr>
+                                <td class="text-center"><b>SNO</b></td>
+                                <td class="text-center"><b>Company</b></td>
+                                <td class="text-center"><b>Package</b></td>
+                                <td class="text-center"><b>SPO</b></td>
+                                <td class="text-center"><b>HB #</b></td>
+                                <td class="text-center"><b>Family Head</b></td>
+                                <td class="text-center"><b>Total Amount In USD</b></td>
+                                <td class="text-center"><b>Package In USD</b></td>
+                                <td class="text-center"><b>Addons In USD</b></td>
+                                <td class="text-center"><b>I-ADF In USD</b></td>
+                                <td class="text-center bg-warning text-white sar"><b>Total Receivable SAR</b></td>
+                                <td class="text-center bg-warning text-white"><b>Base Exchange Rate</b></td>
+                                <td class="text-center bg-warning text-white pkr"><b>Total Receivable PKR</b></td>
+                                <td class="text-center bg-warning text-white usd"><b>Total Receivable USD</b></td>
+                                <td class="text-center bg-info text-white sar"><b>Amount Received SAR</b></td>
+                                <td class="text-center bg-info text-white pkr"><b>Amount Received PKR</b></td>
+                                <td class="text-center bg-info text-white usd"><b>Amount Received USD</b></td>
+                                <td class="text-center bg-danger text-white sar"><b>Receivable SAR</b></td>
+                                <td class="text-center bg-danger text-white pkr"><b>Receivable PKR</b></td> @*According To
+                            Today ROE*@
+                                <td class="text-center bg-danger text-white usd"><b>Receivable USD</b></td> @*According To
+                            Today ROE*@
+                                <td class="text-center bg-primary text-white sar"><b>Under Realization SAR</b></td>
+                                <td class="text-center bg-primary text-white pkr"><b>Under Realization PKR</b></td>
+                                @*According To ROE*@
+                                <td class="text-center bg-primary text-white usd"><b>Under Realization PKR</b></td>
+                                @*According To ROE*@
+                                <td class="text-center bg-success text-white sar"><b>After Realization SAR</b></td>
+                                <td class="text-center bg-success text-white pkr"><b>After Realization PKR</b></td>
+                                <td class="text-center bg-success text-white usd"><b>After Realization PKR</b></td>
+                            </tr>
+                             @* <tr>
+                                <td class="text-center"><b>SNO</b></td>
+                                <td class="text-center"><b>Company</b></td>
+                                <td class="text-center"><b>Package</b></td>
+                                <td class="text-center"><b>SPO</b></td>
+                                <td class="text-center"><b>HB #</b></td>
+                                <td class="text-center"><b>Family Head</b></td>
+                                <td class="text-center"><b>Total Amount In SAR</b></td>
+                                <td class="text-center"><b>Package In SAR</b></td>
+                                <td class="text-center"><b>Addons In SAR</b></td>
+                                <td class="text-center"><b>ADF In SAR</b></td>
+                                <td class="text-center bg-warning text-white sar"><b>Total Receivable SAR</b></td>
+                                <td class="text-center bg-warning text-white"><b>Base Exchange Rate</b></td>
+                                <td class="text-center bg-warning text-white pkr"><b>Total Receivable PKR</b></td>
+                                <td class="text-center bg-warning text-white usd"><b>Total Receivable USD</b></td>
+                                <td class="text-center bg-info text-white sar"><b>Amount Recived SAR</b></td>
+                                <td class="text-center bg-info text-white pkr"><b>Amount Recived PKR</b></td>
+                                <td class="text-center bg-info text-white usd"><b>Amount Recived USD</b></td>
+                                <td class="text-center bg-danger text-white sar"><b>Receivable SAR</b></td>
+                                <td class="text-center bg-danger text-white pkr"><b>Receivable PKR</b></td> 
+                                <td class="text-center bg-danger text-white usd"><b>Receivable USD</b></td> 
+                                <td class="text-center bg-primary text-white sar"><b>Under Realization SAR</b></td>
+                                <td class="text-center bg-primary text-white pkr"><b>Under Realization PKR</b></td>
+                                <td class="text-center bg-primary text-white usd"><b>Under Realization PKR</b></td>
+                                <td class="text-center bg-success text-white sar"><b>After Realization SAR</b></td>
+                                <td class="text-center bg-success text-white pkr"><b>After Realization PKR</b></td>
+                                <td class="text-center bg-success text-white usd"><b>After Realization PKR</b></td>
+                            </tr> *@
+                        </thead>
+                        <tbody>
+                            @{
+                                int i = 0;
+                            }
+                            @foreach (CollectionCompanyModelEntry entry in company.Entries)
+                            {
+
+                                i++;
+
+                                <tr>
+                                    <td class="text-center">@i</td>
+                                    <td class="text-center">@entry.Company</td>
+                                    <td class="text-center">@entry.Package</td>
+                                    <td class="text-center">@entry.Spo</td>
+                                    <td class="text-center">@entry.FCID</td>
+                                    <td class="text-center">@entry.FamilyHead</td>
+                                    <td class="text-center">@entry.TotalAmountUSD</td>
+                                    <td class="text-center">@entry.PackageInUSD</td>
+                                    <td class="text-center">@entry.AddonsInUSD</td>
+                                    <td class="text-center">@entry.ADFInUSD</td>
+                                    <td class="text-center bg-warning text-white sar">@entry.TotalRecivableSAR</td>
+                                    <td class="text-center bg-warning text-white">@entry.BaseExchangeRate</td>
+                                    <td class="text-center bg-warning text-white pkr">@entry.TotalRecivablePKR</td>
+                                    <td class="text-center bg-warning text-white usd">@entry.TotalRecivableUSD</td>
+                                    <td class="text-center bg-info text-white sar">@entry.TotalRecivedSar</td>
+                                    <td class="text-center bg-info text-white pkr">@entry.TotalRecivedPkr</td>
+                                    <td class="text-center bg-info text-white usd">@entry.TotalRecivedUsd</td>
+                                    <td class="text-center bg-danger text-white sar">@entry.ReceivableSar</td>
+                                    <td class="text-center bg-danger text-white pkr">@entry.ReceivablePkr</td>
+                                    <td class="text-center bg-danger text-white usd">@entry.ReceivableUsd</td>
+                                    <td class="text-center bg-primary text-white sar">@entry.PrerealizationSar</td>
+                                    <td class="text-center bg-primary text-white pkr">@entry.PrerealizationPkr</td>
+                                    <td class="text-center bg-primary text-white usd">@entry.PrerealizationUsd</td>
+                                    <td class="text-center bg-success text-white sar">@entry.RealizationSar</td>
+                                    <td class="text-center bg-success text-white pkr">@entry.RealizationPkr</td>
+                                    <td class="text-center bg-success text-white usd">@entry.RealizationUsd</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        }
+
+    </div>
+
+
+    <script>
+
+        function toggleColumnAndRows(currency, currency2) {
+
+            var columns = document.querySelectorAll('.' + currency);
+            var rows = document.querySelectorAll('tr.dataRow td.' + currency);
+
+
+            columns.forEach(function (column) {
+                column.style.display = column.style.display === 'none' || column.style.display === '' ? 'table-cell' : 'none';
+            });
+
+            rows.forEach(function (row) {
+                row.style.display = row.style.display === 'none' || row.style.display === '' ? 'table-row' : 'none';
+            });
+
+            para.style.display = para.style.display === 'none' || para.style.display === '' ? 'block' : 'none';
+            para2.style.display = para2.style.display === 'none' || para2.style.display === '' ? 'block ' : 'none';
+
+            document.getElementById('pkrDetails').style.display = document.getElementById('pkrCheckbox').checked ? 'block' : 'none';
+            document.getElementById('sarDetails').style.display = document.getElementById('sarCheckbox').checked ? 'block' : 'none';
+            document.getElementById('usdDetails').style.display = document.getElementById('usdCheckbox').checked ? 'block' : 'none';
+
+        }
+
+
+        function oncheck_pkr() {
+            toggleColumnAndRows('pkr', 'pkr2');
+        }
+
+        function oncheck_sar() {
+            toggleColumnAndRows('sar', 'sar2');
+        }
+
+        function oncheck_usd() {
+            toggleColumnAndRows('usd', 'usd2');
+        }
+
+    </script>
+
+</div>

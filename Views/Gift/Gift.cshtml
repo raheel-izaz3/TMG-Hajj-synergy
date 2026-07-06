@@ -1,0 +1,62 @@
+﻿@{
+    Layout = "_Layout";
+}
+<script>
+   
+    function SubmitClick() {
+       
+        var txtfcid = document.getElementById('txtfcid').value;
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Gift/SubmitClick',
+            data: { txtfcid: txtfcid },
+            success: function (data) {
+
+                if (data.erromessage != "") {
+                    alert(data.erromessage);
+                    txtfcid = "";
+                }
+                else {
+                    alert("Record Saved");
+                    txtfcid = "";
+                }
+                
+            },
+            error: function (error) {
+                toastr.error(error);
+            }
+        });
+    }
+</script>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Gifts And Hampers</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    
+                        <div class="row">
+                            <div class="col-sm-6 col-md-3 mb-3">
+                                <label class="form-label" >HB #</label>
+                                <div class="input-group input-group-merge">
+                                <input id="txtfcid" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-12 mt-4">
+                            <button type="button" id="submit" class="btn btn-success float-end" onclick="SubmitClick()">Submit</button>
+                            </div>
+                        </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

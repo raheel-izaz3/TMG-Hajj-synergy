@@ -1,0 +1,179 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+
+@{
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Hajj Summary Report</title>
+
+
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+	<style>
+		#downloadPdf {
+			padding: 8px 16px;
+			background-color: #f60000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-bottom: 10px;
+		}
+
+		#columnSelectors {
+			margin-bottom: 20px;
+		}
+
+			#columnSelectors label {
+				margin-right: 15px;
+			}
+	</style>
+</head>
+<body>
+
+	<button id="downloadPdf">Download PDF</button>
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+		<h1>Gender Report</h1>
+		<div id="columnSelectors">
+			<label><input type="checkbox" class="column-toggle" data-col="1" checked> Hajji Name</label>
+			<label><input type="checkbox" class="column-toggle" data-col="2" checked> HBNo</label>
+			<label><input type="checkbox" class="column-toggle" data-col="3" checked> Gender</label>
+			<label><input type="checkbox" class="column-toggle" data-col="4" checked> Passport #</label>
+			<label><input type="checkbox" class="column-toggle" data-col="5" checked> Package Name</label>
+		</div>
+
+		<div id="hajjSummaryGrid"></div>
+	</div>
+
+	<script>
+		let data = @Html.Raw(jsonData);
+		let gridInstance;
+
+		$(function () {
+			$("#hajjSummaryGrid").dxDataGrid({
+				dataSource: data,
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: false,
+				searchPanel: { visible: true },
+				headerFilter: { visible: true },
+				filterRow: { visible: true, applyFilter: "auto" },
+				sorting: { mode: "multiple" },
+				export: {
+					enabled: true,
+					fileName: "GenderReport"
+				},
+				onInitialized: function (e) {
+					gridInstance = e.component;
+				},
+				columns: [
+					{
+						caption: "S.No",
+						width: 60,
+						cellTemplate: function (container, options) {
+							const index = gridInstance.getVisibleRows().findIndex(row => row === options.row) + 1;
+							container.text(index);
+						}
+					},
+					{ dataField: "HajjiName", caption: "Hajji Name", visible: true },
+					{ dataField: "HBNo", caption: "HBNo", visible: true },
+					{ dataField: "Gender", caption: "Gender", visible: true },
+					{ dataField: "PassportNo", caption: "Passport #", visible: true },
+					{ dataField: "PackageName", caption: "Package Name", visible: true }
+				]
+			});
+
+			$('.column-toggle').on('change', function () {
+				const column = $(this).data('col');
+				const visible = $(this).is(':checked');
+				gridInstance.columnOption(column, 'visible', visible);
+			});
+
+
+				$("#downloadPdf").on("click", async function () {
+			const { jsPDF } = window.jspdf;
+			const doc = new jsPDF({
+				orientation: "landscape",
+				unit: "pt",
+				format: "a3"
+			});
+			// Load image using Promise
+			const loadImage = (src) => {
+				return new Promise((resolve, reject) => {
+					const img = new Image();
+					img.src = src;
+					img.onload = () => resolve(img);
+					img.onerror = reject;
+				});
+			};
+
+			try {
+				const img = await loadImage('/reportlogo/GroupLogo.png');
+				const imgWidth = 60;
+				const imgHeight = 25;
+				const pageWidth = doc.internal.pageSize.getWidth();
+				const x = pageWidth - imgWidth - 40;
+				const y = 10;
+				doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+			} catch (err) {
+				console.error("Image failed to load", err);
+			}
+
+			doc.setFontSize(18);
+			doc.text("GenderReport", 40, 40);
+
+			const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+			doc.setFontSize(10);
+			doc.text(printedDate, 40, 60);
+
+			const dataGrid = $("#hajjSummaryGrid").dxDataGrid("instance");
+
+
+			const rows = dataGrid.getVisibleRows();
+
+
+			const exportData = rows.map((row, index) => ({
+				"S.No": index + 1,
+				"Hajji Name": row.data.HajjiName,
+				"HBNo": row.data.HBNo,
+				"Gender": row.data.Gender,
+				"Passport #": row.data.PassportNo,
+				"Package Name": row.data.PackageName
+			}));
+
+
+			const headers = Object.keys(exportData[0]);
+			const body = exportData.map(row => headers.map(header => row[header]));
+
+
+			doc.autoTable({
+				startY: 80,
+				head: [headers],
+				body: body,
+				styles: { fontSize: 8 },
+				margin: { top: 80, left: 40, right: 40, bottom: 40 }
+			});
+
+			doc.save("GenderReport.pdf");
+		});
+		});
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,228 @@
+﻿@* @model IEnumerable<FamilyMembers> *@
+
+@{
+    string modelName = "E Hajj Contract";
+    string modelNamePlural = "E Hajj Contracts";
+    string modelControllerRoute = "EHajj";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Add / Remove Members</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-6">
+            <label class="fw-bold">Company</label>
+            <p>@ViewBag.Company</p>
+        </div>
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Package</label>
+            <p>@ViewBag.Package</p>
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <label class="fw-bold">Hotel</label>
+            <p>@ViewBag.Hotel</p>
+        </div>
+
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Capacity</label>
+            <p>@ViewBag.Capacity</p>
+        </div>
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Used</label>
+            <p id="selected">@ViewBag.Used</p>
+        </div>
+        @* <div class="col-sm-12 col-md-2">
+        <label class="fw-bold">Unused</label>
+        <p>@ViewBag.UnUsed</p>
+        </div> *@
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Place</label>
+            <p>@ViewBag.Place</p>
+        </div>
+
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Check In</label>
+            <p>@ViewBag.CheckIn</p>
+        </div>
+        <div class="col-sm-12 col-md-2">
+            <label class="fw-bold">Check Out</label>
+            <p>@ViewBag.CheckOut</p>
+        </div>
+    </div>
+
+    <div class="card p-3">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Mega ID</th>
+                        <th>F ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Passport</th>
+                        <th>Friend ID</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (var fm in Model)
+                    {
+
+                        i++;
+                        bool found = false;
+                        foreach (var member in ViewBag.EHajjMembers)
+                        {
+                            if (fm.FamilyHeadId == member.FamilyHeadId)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        string check = "";
+                        if (found)
+                        {
+                            check = "checked";
+                        }
+
+                        string textAlign = fm.IsHead ? "left" : "right";
+
+                        <tr>
+                            <td>
+                                <input @check class="form-check-input" name="selected[]"
+                                    onchange="updateSelected(this, @fm.FamilyHeadId, @ViewBag.EHajjContractId)"
+                                    type="checkbox" />
+                            </td>
+                            <td style="text-align: @textAlign; ">@fm.CompanyCode</td>
+                            <td style="text-align: @textAlign; ">@fm.Name</td>
+                            <td style="text-align: @textAlign; ">@(fm.ReferenceId ?? "-")</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHeadId</td>
+                            <td style="text-align: @textAlign; ">@fm.GivenName @fm.SurName</td>
+                            <td style="text-align: @textAlign; ">@fm.Age</td>
+                            <td style="text-align: @textAlign; ">@fm.Gender</td>
+                            <td style="text-align: @textAlign; ">@fm.PassportNumber</td>
+                            <td style="text-align: @textAlign; ">@(fm.FriendId ?? "-")</td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateSelected(elem, familyHeadId, contractId) {
+
+        const MAX = @ViewBag.Capacity;
+
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+
+        const length = selectedCheckboxes.length;
+
+        if (length > MAX) {
+            alert("Limit Exceeded");
+            return;
+        }
+
+        $("#selected").html(selectedCheckboxes.length);
+
+        if (elem.checked) {
+            $.ajax({
+                url: "/@modelControllerRoute/AddMember",
+                method: "post",
+                data: {
+                    memberId: familyHeadId,
+                    contractId: contractId
+                },
+                success: res => {
+                    console.log(res)
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $.ajax({
+                url: "/@modelControllerRoute/RemoveMember",
+                method: "post",
+                data: {
+                    memberId: familyHeadId,
+                    contractId: contractId
+                },
+                success: res => {
+                    console.log(res)
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        }
+
+    }
+
+    let table = new DataTable('#table', {
+        paging: false,
+        lengthChange: false
+    });
+</script>

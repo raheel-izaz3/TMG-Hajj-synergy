@@ -1,0 +1,86 @@
+﻿@{
+
+    string modelName = "Report";
+    string modelNamePlural = "";
+    string modelControllerRoute = "Report";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Bank Wise - Receipt Report</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <form method="get" action="/Report/ReceiptReportBank">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" role="tabpanel">
+                                <div class="row">
+                                    @* <div class="col-sm-12 col-md-6 mb-3">
+                                        <label>Select Bank</label>
+                                        <select name="companyId" id="companyId" class="form-select"
+                                                aria-label="Default select example">
+                                            <option selected disabled hidden>Select Booking</option>
+                                            @foreach (var company in ViewBag.Company)
+                                            {
+                                                <option value="@company.CompanyId">
+                                                    @company.CompanyName
+                                                </option>
+                                            }
+                                        </select>
+                                    </div> *@
+                                    <div class="col-sm-12 col-md-12 mb-3">
+                                        <label>Select Company Bank</label>
+                                        <select name="id" id="id" class="form-select"
+                                                aria-label="Default select example">
+                                            <option selected disabled hidden>Select Booking</option>
+                                            @foreach (var banks in ViewBag.Banks)
+                                            {
+                                                <option value="@banks.CompanyBankAccountId">
+                                                    @banks.Title - (@banks.AccountCurrency.ToString() - @banks.Number)
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label>Select First Date</label>
+                                        <input type="date" class="form-control" name="startDate" value="@DateTimeManager.DateToHtmlFormat(DateTime.Now)" />
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label>Select Second Date</label>
+                                        <input type="date" class="form-control" name="endDate" value="@DateTimeManager.DateToHtmlFormat(DateTime.Now)" />
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="id"]').select2({
+            placeholder: "Select Company Bank",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+        
+        $('select[name="companyId"]').select2({
+            placeholder: "Select Bank",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>
+

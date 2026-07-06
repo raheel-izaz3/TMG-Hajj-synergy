@@ -1,0 +1,154 @@
+﻿@model Role
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+<link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+<link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+<link rel="stylesheet" href="~/assets/css/demo.css" />
+<link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+<style>
+    .custom-control-label {
+        font-weight: bold;
+    }
+
+    .custom-control-input:checked~.custom-control-label::before {
+    color: #fff;
+    border-color: #00e018;
+    background-color: #00e018;
+}
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Roles / </span> Set Priviliges</h4>
+
+    <hr class="mb-4" />
+
+    @* <form method="post"> *@
+        <input type="hidden" asp-for="RoleId">
+        @* <button type="submit" class="mb-3 btn btn-warning">Save Changes</button> *@
+
+        @if (Model.UserModuleAllowed)
+        {
+            <h5 class="fw-bold" style="margin-right: 15px">User Module</h5>
+            <hr class="" />
+            <div class="card mb-4">
+                <div class="card-body">
+                    <span class="fw-bold" style="margin-right: 15px">Users</span>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'user-switches')" id="">
+                        <label class="form-check-label" for="">Select All</label>
+                    </div>
+                    <hr class="" />
+
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input user-switches" id="user-list"
+                                           data-claim="@Privileges.ViewUser"
+                                    onchange="updatePriv(this)">
+                                    <label class="custom-control-label" for="user-list">List</label>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input user-switches" id="user-create"
+                                           data-claim="@Privileges.CreateUser"
+                                           onchange="updatePriv(this)">
+                                    <label class="custom-control-label" for="user-create">Create</label>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input user-switches" id="user-edit"
+                                           data-claim="@Privileges.EditUser"
+                                           onchange="updatePriv(this)">
+                                    <label class="custom-control-label" for="user-edit">Edit</label>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input user-switches" id="user-trash"
+                                           data-claim="@Privileges.TrashUser"
+                                           onchange="updatePriv(this)">
+                                    <label class="custom-control-label" for="user-trash">Trash</label>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input user-switches" id="user-restore"
+                                           data-claim="@Privileges.RestoreUser"
+                                           onchange="updatePriv(this)">
+                                    <label class="custom-control-label" for="user-restore">Restore</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+        }
+
+
+
+    @* </form> *@
+
+</div>
+
+<script>
+
+    function getPrivs(){
+        $.ajax({
+            url: "/Role/GetPriviliges/@Model.RoleId",
+            method: "GET",
+            success: res => {
+                console.log(res)
+                for(let claim of res){
+                    console.log(claim, document.querySelector(`[data-claim="${claim}"]`))
+                    document.querySelector(`[data-claim="${claim}"]`).checked = true;
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        })
+    }
+
+    getPrivs()
+
+    function checkAll(elem, id) {
+        const elementsToCheck = document.querySelectorAll(`.${id}`);
+        //console.log(elementsToCheck)
+        for (let e of elementsToCheck) {
+            e.checked = elem.checked;
+        }
+
+    }
+
+    function updatePriv(elem){
+        
+        var claim = elem.getAttribute('data-claim')
+
+        $.ajax({
+            url: "/Role/UpdatePrivilige/",
+            data: {
+                id: @Model.RoleId,
+                priv: claim
+            },
+            method: "GET",
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.error(err)
+            }
+        })
+    }
+</script>

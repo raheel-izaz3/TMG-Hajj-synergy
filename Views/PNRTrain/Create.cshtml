@@ -1,0 +1,197 @@
+﻿@model PNRTrain
+
+@{
+    string modelName = "PNRTrain";
+    string modelNamePlural = "PNRTrains";
+    string modelControllerRoute = "PNRTrain";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Railway</label>
+                                <span class="text-danger fw-bold">*</span>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="RailwayId"
+                                    class="form-control">
+                                        <option value="">Select a Railway...</option>
+                                        @foreach (Railway airline in ViewBag.Airline)
+                                        {
+                                            <option value="@airline.RailwayId">@airline.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="RailwayId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="Type"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="Type"
+                                    onchange="onTypeSelect(this.value)"
+                                    asp-items="Html.GetEnumSelectList<PNRType>()"
+                                    class="form-control">
+                                        <option value="">Select Class...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Type"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label">PNR Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="Type"
+                                    onchange="onTypeSelect(this.value)"
+                                    asp-items="Html.GetEnumSelectList<TMG.Models.AirlineModels.Type>()"
+                                    class="form-control">
+                                        <option value="">Select PNR Type...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Type"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Name</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">PNR Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="PNRNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PNRNo"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="Capacity"></label>
+                                <small id="RemainingCapacity"></small>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Capacity" min="0" value="0" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Capacity"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="TrainNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="TrainNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="TrainNumber"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label">Departure</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="Departure" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Departure"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label">Arrival</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="Arrival" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Arrival"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="Price"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Price" min="0" value="0" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Price"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Payment Mode</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CreditCardId" class="form-control">
+                                        @foreach (CreditCard creditCard in ViewBag.PaymentMode)
+                                        {
+                                            <option value="@creditCard.CreditCardId">@creditCard.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CreditCardId"></span>
+                            </div>
+
+                                <div class="col-sm-12 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">
+                                        Select
+                                        Packages
+                                    </label>
+                                    <br />
+                                    @{
+                                    int i = 0;
+                                }
+                                @foreach (var package in ViewBag.Packages)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                        <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                               asp-for="PackagesSelected[i]">
+
+                                        <label class="form-check-label"
+                                               for="@package.PackageId">@package.Name</label>
+                                    </div>
+                                    i++;
+                                }
+                            </div>
+
+
+                            <div class="col-sm-12 mb-3">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function onTypeSelect(typeId) {
+        let flightId = document.querySelector("#FlightId").value
+        if (typeId != '' && flightId != '') {
+            $.ajax({
+                url: "/PNR/GetRemainingCapacity/",
+                method: "GET",
+                data: {
+                    flightId: flightId,
+                    typeId: typeId
+                },
+                success: res => {
+                    console.log(res);
+                    document.querySelector(`#RemainingCapacity`).innerHTML = ` (${res})`;
+                    document.querySelector(`#Capacity`).setAttribute('max', res);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+</script>

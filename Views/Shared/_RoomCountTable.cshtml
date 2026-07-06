@@ -1,0 +1,140 @@
+﻿@model List<AziziaRoomCountModel>
+
+<div class="d-flex mb-3">
+    <button onclick="exportToPDF()" class="btn btn-danger me-2">Export to PDF</button>
+    @* <button onclick="exportToExcel()" class="btn btn-success">Export to Excel</button> *@
+</div>
+
+<div class="table-responsive">
+<table class="table mt-3" id="roomCountTable">
+    <thead style="color: blue;">
+        <tr>
+            <th>Hotel Name</th>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var room in Model.GroupBy(r => r.RoomCode).Select(g => g.First()))
+                {
+                    <th>@room.RoomCode</th>
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var hotelGroup in Model.GroupBy(m => m.HotelName))
+            {
+                <tr>
+                    <td>@hotelGroup.Key</td>
+                    @foreach (var room in Model.GroupBy(r => r.RoomCode).Select(g => g.First()))
+                    {
+                        var roomCount = hotelGroup
+                        .Where(h => h.RoomCode == room.RoomCode)
+                        .Sum(h => h.RoomCount);
+
+                        var maleRoomCount = hotelGroup
+                        .Where(h => h.RoomCode == room.RoomCode)
+                        .Sum(h => h.MaleRoomCount);
+
+                        var femaleRoomCount = hotelGroup
+                        .Where(h => h.RoomCode == room.RoomCode)
+                        .Sum(h => h.FemaleRoomCount);
+
+                        var hotelId = hotelGroup.First().HotelId;
+                        var roomId = room.RoomId;
+
+                        <td>
+                            <a href="@Url.Action("HotelSummary", "Report", new { hotelId = hotelId, roomId = roomId })">
+                                <div style="text-align: center;">
+                                    <strong>@roomCount</strong>
+                                    @* <div style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 5px;">
+                                        <span>M</span>
+                                        <span>F</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>@room.MaleRoomCount</span>
+                                        <span>@room.FemaleRoomCount</span>
+                                    </div> *@
+                                    @if (room.RoomCode.Contains("SHARING", StringComparison.OrdinalIgnoreCase)) // Only for SHARING rooms
+                                    {
+                                        <div style="display: flex; justify-content: space-around; font-weight: bold; margin-top: 5px;">
+                                            <span style="color:black;">M</span>
+                                            <span style="color:black;">F</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-around;">
+                                            <span style="color:black;">@maleRoomCount</span>
+                                            <span style="color:black;">@femaleRoomCount</span>
+                                        </div>
+                                    }
+                                </div>
+                            </a>
+                        </td>
+                    }
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="100%" class="text-center">No data available</td>
+            </tr>
+        }
+    </tbody>
+</table
+</div>
+
+<!-- TableExport Library (for Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/5.2.0/js/tableexport.min.js"></script>
+
+<!-- jsPDF (for PDF Export) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+<script>
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4'); // A4 Landscape
+
+        doc.text("Room Count Report", 14, 10);
+
+        // Get the number of columns from the table
+        const table = document.getElementById('roomCountTable');
+        const columnCount = table.rows[0].cells.length;
+
+        // Dynamic column width adjustment
+        const columnStyles = {};
+        for (let i = 0; i < columnCount; i++) {
+            columnStyles[i] = { cellWidth: 15 }; // Smaller column width to fit all on one page
+        }
+
+        // Keep the first column (Hotel Name) slightly wider for better clarity
+        columnStyles[0] = { cellWidth: 35 };
+
+        doc.autoTable({
+            html: '#roomCountTable', // Table ID
+            startY: 20,
+            theme: 'grid',
+            headStyles: { fillColor: [0, 123, 255] }, // Header Color
+            styles: { fontSize: 6 }, // Smaller font size for better fit
+            tableWidth: 'wrap', // Force table to fit within the page
+            horizontalPageBreak: false, // Disable page break to keep everything on one page
+            columnStyles: columnStyles, // Apply dynamic column widths
+            margin: { top: 20, left: 5, right: 5, bottom: 10 } // Adjust margins
+        });
+
+        doc.save('RoomCount.pdf');
+    }
+
+    // Export Table to Excel
+    function exportToExcel() {
+        const table = document.getElementById("roomCountTable");
+        const exportInstance = new TableExport(table, {
+            exportButtons: false, // Hide default buttons
+            filename: "RoomCount",
+            sheetname: "Room Count"
+        });
+
+        const excelData = exportInstance.getExportData()['roomCountTable']['xlsx'];
+        exportInstance.export2file(excelData.data, excelData.mimeType, excelData.filename, excelData.fileExtension);
+    }
+</script>

@@ -1,0 +1,1448 @@
+﻿@model PackageRegisterRequest
+
+<style>
+	.d-width {
+		width: 111px;
+	}
+
+	.f-width {
+		width: 185px;
+	}
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+	<h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Package / </span> Create</h4>
+
+	<hr class="mb-4" />
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="nav-align-top mb-4">
+				<ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+					<li class="nav-item">
+						<button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-company" aria-controls="navs-pills-justified-company"
+								aria-selected="true">
+							<i class='bx bx-package'></i>
+							PACKAGE
+						</button>
+					</li>
+					<li class="nav-item">
+						<button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-accommodation"
+								aria-controls="navs-pills-justified-accommodation" aria-selected="false">
+							<i class='bx bx-bed'></i>
+							ACCOMMODATION
+						</button>
+					</li>
+					<li class="nav-item">
+						<button type="button" class="nav-link  form-control" role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-career" aria-controls="navs-pills-justified-career"
+								aria-selected="false">
+							<i class='bx bx-medal'></i>
+							TRANSPORT
+						</button>
+					</li>
+					<li class="nav-item">
+					<li class="nav-item">
+						<button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-training"
+								aria-controls="navs-pills-justified-training" aria-selected="false">
+							<i class='bx bx-gift'></i>
+							TRAINING / GIFTS
+						</button>
+					</li>
+					<li class="nav-item">
+						<button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-terms" aria-controls="navs-pills-justified-terms"
+								aria-selected="false">
+							<i class='bx bx-medal'></i>
+							TERMS & CONDITION
+						</button>
+					</li>
+					<li class="nav-item">
+						<button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-itinerary" aria-controls="navs-pills-justified-itinerary"
+								aria-selected="false">
+							<i class='bx bx-medal'></i>
+							ITINERARY
+						</button>
+					</li>
+
+					<li class="nav-item">
+						<button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+								data-bs-target="#navs-pills-justified-address" aria-controls="navs-pills-justified-address"
+								aria-selected="false">
+							<i class='bx bx-medal'></i>
+							MAKTAB ADDRESS
+						</button>
+					</li>
+
+				</ul>
+				<form method="post" enctype="multipart/form-data">
+					<div class="card">
+						<div class="tab-content">
+							<div class="tab-pane fade  show active" id="navs-pills-justified-company" role="tabpanel">
+								<div class="col-xs-4">
+									<h4 class="underline">Package Details</h4>
+								</div>
+								<div class="clearfix"></div>
+								<hr>
+								<div class="row">
+									<div class="col-sm-6 col-md-3 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="CompanyId"></label>
+										<div class="input-group input-group-merge">
+											<select class="form-select" asp-for="CompanyId"
+													onchange="getQuota(this.value)">
+												<option value="">Select Company...</option>
+												@foreach (var c in ViewBag.Companies)
+												{
+													<option value="@c.CompanyId">@c.Company.CompanyName</option>
+												}
+											</select>
+										</div>
+										<span class="text-danger" asp-validation-for="CompanyId"></span>
+									</div>
+									<div class="col-sm-12 mb-3 col-md-2">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="PackageNumber"></label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" placeholder="Enter Package #..."
+												   asp-for="PackageNumber">
+										</div>
+										<span class="text-danger" asp-validation-for="PackageNumber"></span>
+									</div>
+									<div class="col-sm-12 mb-3 col-md-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="PackageCategoryZone"></label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" asp-for="PackageCategoryZone">
+										</div>
+										<span class="text-danger" asp-validation-for="PackageCategoryZone"></span>
+									</div>
+									<div class="col-sm-12 mb-3 col-md-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="NearBy"></label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" asp-for="NearBy">
+										</div>
+										<span class="text-danger" asp-validation-for="NearBy"></span>
+									</div>
+									<div class="col-sm-6 col-md-3 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="PackageName"></label>
+										<div class="input-group input-group-merge">
+											<input asp-for="PackageName" class="form-control">
+										</div>
+										<span class="text-danger" asp-validation-for="PackageName"></span>
+									</div>
+									<div class="col-sm-12 col-md-3 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="PackageCode"></label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" asp-for="PackageCode">
+										</div>
+										<span class="text-danger" asp-validation-for="PackageCode"></span>
+									</div>
+									@* <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                               asp-for="PackageNumber"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input class="form-control" asp-for="PackageNumber">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PackageNumber"></span>
+                                    </div> *@
+									<div class="col-sm-12 col-md-2 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="Days"></label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" asp-for="Days">
+										</div>
+										<span class="text-danger" asp-validation-for="Days"></span>
+									</div>
+									<div class="col-sm-12 col-md-5 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="TravelRouteId"></label>
+										<div class="input-group input-group-merge">
+											<select class="form-select" asp-for="TravelRouteId" id="travelRouteId">
+												<option value="">Select Route...</option>
+												@foreach (TravelRoute c in ViewBag.TravelRoutes)
+												{
+													<option value="@c.TravelRouteId">@c.RouteName</option>
+												}
+											</select>
+										</div>
+										<span class="text-danger" asp-validation-for="TravelRouteId"></span>
+									</div>
+									<div class="col-sm-12 col-md-2 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="Color"></label>
+										<div class="input-group input-group-merge">
+											<input type="color" class="form-control" asp-for="Color" />
+										</div>
+										<span class="text-danger" asp-validation-for="Color"></span>
+									</div>
+
+									<div class="col-sm-12 col-md-4  mb-3">
+										<label class="form-label" for="basic-icon-default-fullname" asp-for="Maktab"></label>
+										<span class="fw-bold text-danger"> *</span>
+										<div class="input-group input-group-merge">
+											<input asp-for="Maktab" id="Maktab" class="form-control">
+										</div>
+										<span class="text-danger" asp-validation-for="Maktab"></span>
+									</div>
+
+									<div class="col-sm-12 col-md-4 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname" asp-for="MaktabNumber"></label>
+										<span class="fw-bold text-danger"> *</span>
+										<div class="input-group input-group-merge">
+											<input asp-for="MaktabNumber" id="MaktabNumber" class="form-control">
+										</div>
+										<span class="text-danger" asp-validation-for="MaktabNumber"></span>
+									</div>
+
+									<div class="col-sm-12 col-md-3 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="MedinaArrival"></label>
+										<div class="input-group input-group-merge">
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" asp-for="MedinaArrival" type="radio"
+													   value="Before" id="before" checked>
+												<label class="form-check-label" for="before">Before Hajj</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" asp-for="MedinaArrival" type="radio"
+													   value="After" id="after">
+												<label class="form-check-label" for="after">After Hajj</label>
+											</div>
+										</div>
+										<span class="text-danger" asp-validation-for="MedinaArrival"></span>
+									</div>
+									<div class="col-sm-12 col-md-3 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname"
+											   asp-for="HajjDuration"></label>
+										<div class="input-group input-group-merge">
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" asp-for="HajjDuration" type="radio"
+													   value="Short" id="shortDurationRadio" checked>
+												<label class="form-check-label" for="shortDurationRadio">Short</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" asp-for="HajjDuration" type="radio"
+													   value="Long" id="longDurationRadio">
+												<label class="form-check-label" for="longDurationRadio">Long</label>
+											</div>
+										</div>
+										<span class="text-danger" asp-validation-for="HajjDuration"></span>
+									</div>
+
+									@* <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="PackageFoodIncluded"> </label>
+                                    <div class="input-group input-group-merge">
+                                    <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" checked
+                                    asp-for="PackageFoodIncluded" id="food">
+                                    <label class="form-check-label" for="food">Yes</label>
+                                    </div>
+
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="PackageFoodIncluded"></span>
+                                    </div>*@
+
+									@* <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                               asp-for="PackageQurbaniIncluded"> </label>
+                                        <div class="input-group input-group-merge">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox"
+                                                       asp-for="PackageQurbaniIncluded" id="qurbani">
+                                                <label class="form-check-label" for="qurbani">Yes</label>
+                                            </div>
+
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PackageQurbaniIncluded"></span>
+                                    </div> *@
+
+									<hr class="col-sm-12 my-4">
+									<div class="col-sm-12 mb-3">
+										<label class="form-label" for="basic-icon-default-fullname">
+											Upload Package
+											Image
+										</label>
+										<div class="input-group input-group-merge">
+											<input class="form-control" asp-for="FileImage">
+										</div>
+										<span class="text-danger" asp-validation-for="FileImage"></span>
+									</div>
+
+									<hr class="col-sm-12 my-4">
+
+									<div class="col-sm-12 mb-3">
+										<div class="row mb-2">
+											<div class="col-xs-4">
+												<h4 class="underline float-start">Package Category</h4>
+											</div>
+											<div class="col-sm-12 col-md-2">
+												<label class="form-label" asp-for="PKRROE"></label>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">PKR </span>
+													<input class="form-control" asp-for="PKRROE" id="PKRROE" value="@ViewBag.SARROE">
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-2">
+												<label class="form-label" asp-for="USDROE"></label>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">USD </span>
+													<input class="form-control" asp-for="USDROE" id="USDROE" value="@ViewBag.USDROE">
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-2">
+												<label class="form-label" asp-for="GBPROE"></label>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">GBP </span>
+													<input class="form-control" asp-for="GBPROE" id="GBPROE">
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-2">
+												<label class="form-label" asp-for="EUROROE"></label>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">EUR </span>
+													<input class="form-control" asp-for="EUROROE" id="EUROROE">
+												</div>
+											</div>
+											<div class="col-sm-12 col-md-2">
+												<label class="form-label" asp-for="AEDROE"></label>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">AED </span>
+													<input class="form-control" asp-for="AEDROE" id="AEDROE">
+												</div>
+											</div>
+										</div>
+
+										<div class="row mb-2 mt-2">
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Room Type</label>
+												<div class="input-group input-group-merge">
+													<select class="roomTypeSelect form-control" name="RoomIds">
+														<option value="">Select Room Type</option>
+														@foreach (var item in ViewBag.RoomName)
+														{
+															<option value="@item.RoomId">@item.RoomName</option>
+														}
+													</select>
+												</div>
+											</div>
+											@* <div class="facilityDescriptions mt-4"></div> *@
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Azizia Room Type</label>
+												<div class="input-group input-group-merge">
+													<select class="roomTypeSelect form-control" name="RoomTypesId">
+														<option value="">Select Room Type</option>
+														@foreach (var item in ViewBag.RoomName)
+														{
+															<option value="@item.RoomId">@item.RoomName</option>
+														}
+													</select>
+												</div>
+											</div>
+										</div>
+
+
+
+										<div class="row mb-2 mt-1">
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Makkah</label>
+												<div class="input-group input-group-merge">
+													<select class="form-control" name="PackageFacilitiesIds">
+														<option value="">Select Makkah Type</option>
+														@foreach (IndividualFacilityDescription makkah in ViewBag.MakkahRooms)
+														{
+															<option value="@makkah.IndividualFacilityDescriptionId">@makkah.Description</option>
+														}
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Medinah</label>
+												<div class="input-group input-group-merge">
+													<select class="form-control" name="PackageFacilitiesIds">
+														<option value="">Select Medinah Type</option>
+														@foreach (IndividualFacilityDescription medinah in ViewBag.Medinah)
+														{
+															<option value="@medinah.IndividualFacilityDescriptionId">@medinah.Description</option>
+														}
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Azizia</label>
+												<div class="input-group input-group-merge">
+													<select class="form-control" name="PackageFacilitiesIds">
+														<option value="">Select Azizia Type</option>
+														@foreach (IndividualFacilityDescription azizia in ViewBag.Azizia)
+														{
+															<option value="@azizia.IndividualFacilityDescriptionId">@azizia.Description</option>
+														}
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-3">
+												<label class="form-label mt-3">Mina</label>
+												<div class="input-group input-group-merge">
+													<select class="form-control" name="PackageFacilitiesIds">
+														<option value="">Select Camp</option>
+														@foreach (IndividualFacilityDescription mina in ViewBag.Mina)
+														{
+															<option value="@mina.IndividualFacilityDescriptionId">@mina.Description</option>
+														}
+													</select>
+												</div>
+											</div>
+										</div>
+
+										@* <div class="row mb-2 mt-2">
+                                            <div class="col-sm-10 col-md-3">
+                                                <label class="form-label mt-3">Camps</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select class="form-control" asp-for="Camps">
+                                                        <option value="">Select Camp</option>
+                                                        @foreach (IndividualFacilityDescription camp in ViewBag.Camps)
+                                                        {
+                                                            <option value="@camp.IndividualFacilityDescriptionId">@camp.Description</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div> *@
+
+										<div class="row mt-3">
+											<!-- Adult PKR and SAR -->
+											<div class="col-sm-12 col-md-4">
+												<label class="form-label" asp-for="AdultPkr"></label>
+												<span class="text-danger" asp-validation-for="AdultPkr"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">PKR</span>
+													<input class="form-control" asp-for="AdultPkr" readonly
+														   oninput="pkrToOtherCurr('AdultPkr', 'AdultSar', 'AdultUsd'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="AdultSar"></label>
+												<span class="text-danger" asp-validation-for="AdultSar"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">SAR</span>
+													<input class="form-control" asp-for="AdultSar"
+														   oninput="sarToOtherCurr('AdultSar', 'AdultPkr', 'AdultUsd', 'AdultEuro', 'AdultGbp', 'AdultAed'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="AdultUsd"></label>
+												<span class="text-danger" asp-validation-for="AdultUsd"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">USD</span>
+													<input class="form-control" asp-for="AdultUsd" readonly
+														   oninput="usdToOtherCurr('AdultUsd', 'AdultPkr', 'AdultSar'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="AdultEuro"></label>
+												<span class="text-danger" asp-validation-for="AdultEuro"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">EUR</span>
+													<input class="form-control" asp-for="AdultEuro" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="AdultGbp"></label>
+												<span class="text-danger" asp-validation-for="AdultGbp"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">GBP</span>
+													<input class="form-control" asp-for="AdultGbp" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="AdultAed"></label>
+												<span class="text-danger" asp-validation-for="AdultAed"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">AED</span>
+													<input class="form-control" asp-for="AdultAed" readonly value="0">
+												</div>
+											</div>
+
+											<!-- Child Section -->
+											<div class="col-sm-12 col-md-4">
+												<label class="form-label" asp-for="ChildPkr"></label>
+												<span class="text-danger" asp-validation-for="ChildPkr"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">PKR</span>
+													<input class="form-control" asp-for="ChildPkr" readonly
+														   oninput="pkrToOtherCurr('ChildPkr', 'ChildSar', 'ChildUsd'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="ChildSar"></label>
+												<span class="text-danger" asp-validation-for="ChildSar"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">SAR</span>
+													<input class="form-control" asp-for="ChildSar"
+														   oninput="sarToOtherCurr('ChildSar', 'ChildPkr', 'ChildUsd', 'ChildEuro', 'ChildGbp', 'ChildAed'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="ChildUsd"></label>
+												<span class="text-danger" asp-validation-for="ChildUsd"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">USD</span>
+													<input class="form-control" asp-for="ChildUsd" readonly
+														   oninput="usdToOtherCurr('ChildUsd', 'ChildPkr', 'ChildSar'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="ChildEuro"></label>
+												<span class="text-danger" asp-validation-for="ChildEuro"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">EUR</span>
+													<input class="form-control" asp-for="ChildEuro" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="ChildGbp"></label>
+												<span class="text-danger" asp-validation-for="ChildGbp"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">GBP</span>
+													<input class="form-control" asp-for="ChildGbp" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="ChildAed"></label>
+												<span class="text-danger" asp-validation-for="ChildAed"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">AED</span>
+													<input class="form-control" asp-for="ChildAed" readonly value="0">
+												</div>
+											</div>
+
+											<!-- Infant Section -->
+											<div class="col-sm-12 col-md-4">
+												<label class="form-label" asp-for="InfantPkr"></label>
+												<span class="text-danger" asp-validation-for="InfantPkr"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">PKR</span>
+													<input class="form-control" asp-for="InfantPkr" readonly
+														   oninput="pkrToOtherCurr('InfantPkr', 'InfantSar', 'InfantUsd'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="InfantSar"></label>
+												<span class="text-danger" asp-validation-for="InfantSar"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">SAR</span>
+													<input class="form-control" asp-for="InfantSar"
+														   oninput="sarToOtherCurr('InfantSar', 'InfantPkr', 'InfantUsd', 'InfantEuro', 'InfantGbp', 'InfantAed'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="InfantUsd"></label>
+												<span class="text-danger" asp-validation-for="InfantUsd"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">USD</span>
+													<input class="form-control" asp-for="InfantUsd" readonly
+														   oninput="usdToOtherCurr('InfantUsd', 'InfantPkr', 'InfantSar'); formatCurrency(this);"
+														   value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="InfantEuro"></label>
+												<span class="text-danger" asp-validation-for="InfantEuro"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">EUR</span>
+													<input class="form-control" asp-for="InfantEuro" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="InfantGbp"></label>
+												<span class="text-danger" asp-validation-for="InfantGbp"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">GBP</span>
+													<input class="form-control" asp-for="InfantGbp" readonly value="0">
+												</div>
+
+												<label class="form-label mt-2" asp-for="InfantAed"></label>
+												<span class="text-danger" asp-validation-for="InfantAed"></span>
+												<div class="input-group input-group-merge">
+													<span class="input-group-text">AED</span>
+													<input class="form-control" asp-for="InfantAed" readonly value="0">
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-accommodation" role="tabpanel">
+
+								<div class="col-xs-12 no-padding">
+
+									<div class="col-xs-4">
+										<h4 class="underline float-start">Accommodation Details</h4>
+										<button class="btn btn-outline-info float-end" type="button"
+												onclick="AddAccommodation()">
+											Add <i class="bx bx-add-to-queue"></i>
+										</button>
+									</div>
+
+									<div class="clearfix"></div>
+									<hr />
+									<div id="accomodations">
+										<span class="fw-bold text-danger"
+											  asp-validation-for="AccommodationError"></span>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-career" role="tabpanel">
+
+								<div class="col-xs-12 no-padding">
+
+									<div class="col-xs-4">
+										<h4 class="underline">Transport Details</h4>
+									</div>
+
+									<div class="clearfix"></div>
+									<hr>
+									@* <div class="row">
+                                    <div class="col-sm-6 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="FlightType"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+
+                                    <select class="form-select" asp-for="FlightType">
+                                    <option value="">Select flight type...</option>
+                                    <option value="Direct">Direct</option>
+                                    <option value="Indirect">Indirect</option>
+
+                                    </select>
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="FlightType"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="FlightClass"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="FlightClass">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="FlightClass"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TransportIntercity"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TransportIntercity">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="TransportIntercity"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="WithInCity"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="WithInCity">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="WithInCity"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="POD"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="POD">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="POD"></span>
+                                    </div>
+
+                                    <div class="col-sm-12  col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="AirportTransfer"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="AirportTransfer">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="AirportTransfer"></span>
+                                    </div>
+
+
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TransportWithMashair"></label>
+                                    <span class="fw-bold text-danger">*</span>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TransportWithMashair">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="TransportWithMashair"></span>
+                                    </div>
+                                    <div class="col-sm-12 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TicketPeriod"></label>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TicketPeriod">
+                                    </div>
+                                    <span class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TicketPricePkr"></label>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TicketPricePkr" value="0"
+                                    oninput="pkrToOtherCurr('TicketPricePkr', 'TicketPriceSar', 'TicketPriceUsd')">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="TicketPricePkr"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TicketPriceSar"></label>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TicketPriceSar" value="0"
+                                    oninput="sarToOtherCurr('TicketPriceSar', 'TicketPricePkr', 'TicketPriceUsd')">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="TicketPriceSar"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="TicketPriceUsd"></label>
+                                    <div class="input-group input-group-merge">
+                                    <span class="input-group-text"></span>
+                                    <input class="form-control" asp-for="TicketPriceUsd" value="0"
+                                    oninput="usdToOtherCurr('TicketPriceUsd', 'TicketPricePkr', 'TicketPriceSar')">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="TicketPriceUsd"></span>
+                                    </div>
+                                    </div> *@
+									<div class="clearfix"></div>
+									<div class="row table-responsive">
+										<table class="table" id="travelRouteTable">
+											<thead>
+												<tr>
+													<th>Route</th>
+													<th>Arrival</th>
+													<th>Departure</th>
+													<th>Type</th>
+													<th>Vehicle</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+
+										</table>
+									</div>
+
+									<div class="clearfix"></div>
+
+									<div class="table-responsive mt-5">
+										<h5 class="float-start">
+											Flight
+										</h5>
+										<button class="btn btn-outline-info float-end" type="button" onclick="addFlights()">Add <i class="bx bx-add-to-queue"></i></button>
+										<table class="table" id="flightsTable"></table>
+									</div>
+
+									<div class="clearfix"></div>
+
+									<div class="table-responsive mt-5">
+										<h5 class="float-start">
+											Train
+										</h5>
+										<button class="btn btn-outline-info float-end" type="button" onclick="addTrain()">Add <i class="bx bx-add-to-queue"></i></button>
+										<table class="table" id="trainTable"></table>
+									</div>
+
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-training" role="tabpanel">
+								<div class="col-xs-12 no-padding">
+
+									<div class="col-4">
+										<h4 class=""> Training Session </h4>
+									</div>
+									<hr class="col-sm-12 my-4">
+
+									<div class="clearfix"></div>
+									<div class="row">
+										@if (ViewBag.TrainingSessionsCount == 0)
+										{
+											<p class="text-danger">
+												No Training Sessions Exists! <a asp-controller="Training"
+																				asp-action="Create">Please create training sessions first</a>
+											</p>
+										}
+										@{
+											int i = 0;
+										}
+										@foreach (Training ts in ViewBag.TrainingSessions)
+										{
+											<div class="col-sm-12">
+												<div>
+													<input asp-for="TrainingIds[i]" value="@ts.TrainingId" type="hidden" />
+													<input type="checkbox" asp-for="TrainingSelected[i]"
+														   class="form-check-input mr-1" id="trainingCheckbox_@i">
+													<label class="mx-2" for="trainingCheckbox_@i">
+														@ts.TrainingCode -
+														@ts.TrainingSession
+													</label>
+												</div>
+											</div>
+											i++;
+										}
+									</div>
+									<div class="clearfix"></div>
+									<div class="col-sm-12">
+										<h4 class="mt-4"> Giveaways </h4>
+									</div>
+
+									<hr class="col-sm-12 my-4">
+
+									<div class="clearfix"></div>
+
+									<span class="text-danger" asp-validation-for="GiftError"></span>
+									<div class="col-sm-12">
+										<div class="row">
+
+											@if (ViewBag.GiftsCount == 0)
+											{
+												<p class="text-danger">
+													No Gifts Exists! <a asp-controller="Gift"
+									asp-action="Create">Please create gift first</a>
+												</p>
+											}
+											@{
+												int j = 0;
+											}
+											@foreach (Gift gift in ViewBag.Gifts)
+											{
+												<div>
+													<input type="hidden" asp-for="GiftId[j]" value="@gift.GiftId">
+													<input type="checkbox" class="form-check-input" id="giftCheckbox_@j"
+														   asp-for="GiftSelected[j]">
+													<label class="mx-2" for="giftCheckbox_@j">
+														@gift.GiftCode -
+														@gift.Giveaway
+													</label>
+												</div>
+												j++;
+											}
+
+										</div>
+									</div>
+
+
+
+
+								</div>
+
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-terms" role="tabpanel">
+								<div class="col-xs-12 no-padding">
+									<div id="licenses">
+										<div class="row mt-2" id="license_0">
+											<div class="col-sm-12 mb-2">
+												<h4 class="underline float-start" style="margin: 0!important">Terms & Condition</h4>
+												@* <button class="btn btn-outline-info float-end" type="button" onclick="addTerms()">Add <i class="bx bx-add-to-queue"></i></button> *@
+											</div>
+											<hr />
+
+											<div class="clearfix"></div>
+											<div id="Terms">
+												<div class="row mt-2">
+													<div class="col-sm-11 mt-2">
+														<textarea id="summernote" asp-for="TermsnCondition"></textarea>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-itinerary" role="tabpanel">
+
+								<div class="col-xs-12 no-padding">
+
+									<div class="col-xs-4">
+										<h4 class="underline float-start">Description</h4>
+										@* <button class="btn btn-outline-info float-end" type="button"
+                                                onclick="additinerary()">
+                                            Add <i class="bx bx-add-to-queue"></i>
+                                        </button> *@
+									</div>
+
+									<div class="clearfix"></div>
+									<hr />
+									<div id="Description">
+										<div class="row mt-2" id="">
+											<textarea id="description" asp-for="Description"></textarea>
+										</div>
+									</div>
+									<div class="col-xs-4 mt-2">
+										<h4 class="underline float-start">Images</h4>
+									</div>
+									<div class="clearfix"></div>
+									<hr />
+									<div class="">
+										<div class="row">
+											<div class="col-sm-4 mb-3">
+												<label for="mina">MINA</label>
+												<input class="form-control" asp-for="MINA" />
+											</div>
+											<div class="col-sm-4 mb-3">
+												<label for="arafat">ARAFAT</label>
+												<input type="file" class="form-control" asp-for="ARAFAT" />
+											</div>
+											<div class="col-sm-4 mb-3">
+												<label for="muzdalifah">MUZDALIFAH</label>
+												<input type="file" class="form-control" asp-for="MUZDALIFAH" />
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-sm-4 mb-3">
+												<label for="makka-mina-rami-day1">MAKKAH / MINA RAMI - DAY - ONE</label>
+												<input type="file" class="form-control" asp-for="RamiDayOne" />
+											</div>
+											<div class="col-sm-4 mb-3">
+												<label for="mina-rami-day2">MINA RAMI - DAY - TWO</label>
+												<input type="file" class="form-control" asp-for="RamiDayTwo" />
+											</div>
+											<div class="col-sm-4 mb-3">
+												<label for="mina-makka-rami-day3">MINA / MAKKAH RAMI - DAY - THREE</label>
+												<input type="file" class="form-control" asp-for="RamiDayThree" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="tab-pane fade" id="navs-pills-justified-address" role="tabpanel">
+
+								<div class="col-xs-12 no-padding">
+
+									<div class="col-xs-4">
+										<h4 class="underline float-start">Maktab Address</h4>
+										@* <button class="btn btn-outline-info float-end" type="button"
+                                                onclick="addaddress()">
+                                            Add <i class="bx bx-add-to-queue"></i>
+                                        </button> *@
+									</div>
+
+									<div class="clearfix"></div>
+									<hr />
+									<div class="">
+										<div class="row">
+											<div class="col-sm-12 col-md-4 mb-3">
+												<label class="form-label" for="basic-icon-default-fullname" asp-for="MaktabAddress"></label>
+												<span class="fw-bold text-danger"> *</span>
+												<div class="input-group input-group-merge">
+													<input asp-for="MaktabAddress" id="MaktabAddress" class="form-control">
+												</div>
+												<span class="text-danger" asp-validation-for="MaktabAddress"></span>
+											</div>
+											<div class="col-sm-12 col-md-4 mb-3">
+												<label class="form-label" for="basic-icon-default-fullname" asp-for="OfficeAddress"></label>
+												<span class="fw-bold text-danger"> *</span>
+												<div class="input-group input-group-merge">
+													<input asp-for="OfficeAddress" id="OfficeAddress" class="form-control">
+												</div>
+												<span class="text-danger" asp-validation-for="OfficeAddress"></span>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="col-sm-12">
+										<button class="btn btn-success float-end mt-3">Create</button>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						@Html.AntiForgeryToken()
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	function addaddress() {
+		let addressContainer = document.createElement("div");
+		addressContainer.className = "row mb-3";
+
+		addressContainer.innerHTML = `
+			<div class="col-sm-12 col-md-4 mb-3">
+				<label class="form-label" for="MaktabAddress">Maktab Address</label>
+				<span class="fw-bold text-danger"> *</span>
+				<div class="input-group input-group-merge">
+					<input name="MaktabAddress" class="form-control">
+				</div>
+			</div>
+			<div class="col-sm-12 col-md-4 mb-3">
+				<label class="form-label" for="OfficeAddress">Office Address</label>
+				<span class="fw-bold text-danger"> *</span>
+				<div class="input-group input-group-merge">
+					<input name="OfficeAddress" class="form-control">
+				</div>
+			</div>
+		`;
+
+		document.querySelector("#navs-pills-justified-address .row").appendChild(addressContainer);
+	}
+
+
+
+
+
+	$(document).ready(function () {
+		$('#summernote').summernote({
+			placeholder: 'Write your content here...',
+			tabsize: 2,
+			height: 200,
+			fontSizes: ['8', '10', '12', '14', '18', '24', '36'],
+			toolbar: [
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']], // Font size dropdown enable karega
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
+		});
+
+		$('#description').summernote({
+			placeholder: 'Write your content here...',
+			tabsize: 2,
+			height: 200,
+			fontSizes: ['8', '10', '12', '14', '18', '24', '36'],
+			toolbar: [
+				['style', ['bold', 'italic', 'underline', 'clear']],
+				['font', ['strikethrough', 'superscript', 'subscript']],
+				['fontsize', ['fontsize']], // Font size dropdown enable karega
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']]
+			]
+		});
+
+		$('select[name="PackageFacilitiesIds"]').select2({
+			placeholder: "Select Type",
+			allowClear: true,
+			width: '100%',
+			dropdownCssClass: 'form-control',
+			selectionCssClass: 'form-control'
+		});
+
+		$('select[name="Camps"]').select2({
+			placeholder: "Select Mina",
+			allowClear: true,
+			width: '100%',
+			dropdownCssClass: 'form-control',
+			selectionCssClass: 'form-control'
+		});
+	});
+
+
+
+	let firstRowTemplate = null;
+
+	function addFlights() {
+		var table = document.getElementById("flightsTable");
+		if (!table) {
+			console.error("Table element with ID 'flightsTable' not found.");
+			return;
+		}
+
+		var tbody = table.getElementsByTagName('tbody')[0];
+		if (!tbody) {
+			// Create and append <tbody> if it doesn't exist
+			tbody = document.createElement('tbody');
+			table.appendChild(tbody);
+		}
+
+		// Initialize firstRowTemplate if not already done
+		if (!firstRowTemplate) {
+			firstRowTemplate = document.createElement('tr');
+			firstRowTemplate.innerHTML = `
+												<td>
+													<button class="btn btn-icon btn-danger" type="button" onclick="deleteRow(this, null)">
+														<i class='bx bxs-trash'></i>
+													</button>
+												</td>
+												<td>
+													<label class="form-label">Flight Type</label>
+														<select class="form-control f-width" name="FlightTypes">
+	@foreach (var item in ViewBag.FlightType)
+	{
+																										<option value="@item.Value">@item.Name</option>
+	}
+													</select>
+												</td>
+												<td>
+													<label class="form-label">Airline</label>
+														<select class="form-control f-width" name="AirlineIds">
+	@foreach (var item in ViewBag.Airline)
+	{
+																										<option value="@item.AirlineId">@item.Name</option>
+	}
+													</select>
+												</td>
+												<td>
+													<label class="form-label">Flight No.</label>
+													<input type="text" class="form-control f-width" name="FlightNos" />
+												</td>
+												<td>
+													<label class="form-label">Flight Class</label>
+													<select class="form-control f-width" name="FlightClasses">
+	@foreach (var item in ViewBag.FlightClass)
+	{
+																										<option value="@item.Value">@item.Name</option>
+	}
+													</select>
+												</td>
+												<td>
+													<label class="form-label">Origin</label>
+													<input type="text" class="form-control f-width" name="Origins" />
+												</td>
+												<td>
+													<label class="form-label">Destination</label>
+													<input type="text" class="form-control f-width" name="Destinations" />
+												</td>
+												<td>
+													<label class="form-label">Departure Date</label>
+														<input type="date" class="form-control f-width" name="DepartureDate" />
+												</td>
+												<td>
+													<label class="form-label">Arrival Time</label>
+														<input type="date" class="form-control f-width" name="ArrivalDate" />
+												</td>
+													<td>
+														<label class="form-label">Departure Time</label>
+															<input type="time" class="form-control f-width" name="DepartureTime" />
+													</td>
+													<td>
+														<label class="form-label">Arrival Time</label>
+															<input type="time" class="form-control f-width" name="ArrivalTime" />
+													</td>
+												<td>
+													<label class="form-label">PNR No.</label>
+													<input type="text" class="form-control f-width" name="PNRNos" />
+												</td>
+												<td>
+													<label class="form-label">Ticket Amount (SAR)</label>
+														<input type="number" class="form-control f-width" name="TicketAmount" />
+												</td>
+												<td>
+													<label class="form-label">Is Preffered</label>
+													<select class="form-control f-width" name="IsPreffereds">
+														<option value="true">Yes</option>
+														<option value="false">No</option>
+													</select>
+
+												</td>
+											`;
+		}
+
+		var newRow = firstRowTemplate.cloneNode(true);
+		var inputs = newRow.querySelectorAll('input');
+		inputs.forEach(input => {
+			input.value = '';
+			if (input.type === 'file') {
+				input.value = null;
+			}
+		});
+
+		var selects = newRow.querySelectorAll('select');
+		selects.forEach(select => select.selectedIndex = 0);
+
+		tbody.appendChild(newRow);
+	}
+
+
+
+	let trainRowTemplate = null; // Use this to store the train row template
+
+	function addTrain() {
+		var table = document.getElementById("trainTable");
+		if (!table) {
+			console.error("Table element with ID 'trainTable' not found.");
+			return;
+		}
+
+		var tbody = table.getElementsByTagName('tbody')[0];
+		if (!tbody) {
+			// Create and append <tbody> if it doesn't exist
+			tbody = document.createElement('tbody');
+			table.appendChild(tbody);
+		}
+
+		// Initialize trainRowTemplate if not already done
+		if (!trainRowTemplate) {
+			trainRowTemplate = document.createElement('tr');
+			trainRowTemplate.innerHTML = `
+												<td>
+													<button class="btn btn-icon btn-danger" type="button" onclick="deleteRow(this)">
+														<i class='bx bxs-trash'></i>
+													</button>
+												</td>
+												<td>
+													<label class="form-label">Railway</label>
+													<select class="form-control f-width" name="RailwayIds">
+	@foreach (var item in ViewBag.Railway)
+	{
+																										<option value="@item.RailwayId">@item.Name</option>
+	}
+													</select>
+												</td>
+												<td>
+													<label class="form-label">Train No.</label>
+													<input type="text" class="form-control f-width" name="TrainNos" />
+												</td>
+												<td>
+													<label class="form-label">Train Class</label>
+													<select class="form-control f-width" name="TrainClasses">
+	@foreach (var item in ViewBag.TrainClass)
+	{
+																										<option value="@item.Value">@item.Name</option>
+	}
+													</select>
+												</td>
+												<td>
+													<label class="form-label">Origin</label>
+													<input type="text" class="form-control f-width" name="TrainOrigins" />
+												</td>
+												<td>
+													<label class="form-label">Destination</label>
+													<input type="text" class="form-control f-width" name="TrainDestinations" />
+												</td>
+													<td>
+														<label class="form-label">Departure Date</label>
+															<input type="date" class="form-control f-width" name="TrainDepartureDate" />
+													</td>
+													<td>
+														<label class="form-label">Arrival Time</label>
+															<input type="date" class="form-control f-width" name="TrainArrivalDate" />
+													</td>
+														<td>
+															<label class="form-label">Departure Time</label>
+																<input type="time" class="form-control f-width" name="TrainDepartureTime" />
+														</td>
+														<td>
+															<label class="form-label">Arrival Time</label>
+																<input type="time" class="form-control f-width" name="TrainArrivalTime" />
+														</td>
+												<td>
+													<label class="form-label">PNR No.</label>
+													<input type="text" class="form-control f-width" name="TrainPNRNos" />
+												</td>
+												<td>
+													<label class="form-label">Ticket Amount (SAR)</label>
+														<input type="number" class="form-control f-width" name="TrainTicketAmount" />
+												</td>
+											`;
+		}
+
+		var newRow = trainRowTemplate.cloneNode(true);
+		var inputs = newRow.querySelectorAll('input');
+		inputs.forEach(input => {
+			input.value = '';
+			if (input.type === 'file') {
+				input.value = null;
+			}
+		});
+
+		var selects = newRow.querySelectorAll('select');
+		selects.forEach(select => select.selectedIndex = 0);
+
+		tbody.appendChild(newRow);
+	}
+
+	function deleteRow(button, id) {
+		var row = button.closest('tr');
+		var table = row.parentNode;
+		row.remove();
+
+		if (id != null) {
+			$.ajax({
+				url: `/FamilyHeadForm/DeleteFlightDetails/${id}`,
+				type: 'POST',
+				success: function (response) {
+					console.log(response);
+					if (response.status === 200) {
+						alert(response.msg);
+					} else {
+						alert("Error: " + response.msg);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert("An error occurred: " + xhr.responseText);
+				}
+			});
+		}
+	}
+
+	function deleteTrainRow(button, id) {
+		var row = button.closest('tr');
+		var table = row.parentNode;
+		row.remove();
+
+		if (id != null) {
+			$.ajax({
+				url: `/FamilyHeadForm/DeleteTrainDetails/${id}`,
+				type: 'POST',
+				success: function (response) {
+					console.log(response);
+					if (response.status === 200) {
+						alert(response.msg);
+					} else {
+						alert("Error: " + response.msg);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert("An error occurred: " + xhr.responseText);
+				}
+			});
+		}
+	}
+
+	$(document).ready(function () {
+
+		var travelRouteStops = @Html.Raw(Json.Serialize(ViewBag.Transportation));
+
+		$('#travelRouteId').change(function () {
+			var selectedTravelRouteId = $(this).val();
+			var tableBody = $('#travelRouteTable tbody');
+			tableBody.empty(); // Clear the table
+
+			if (selectedTravelRouteId) {
+				var filteredStops = travelRouteStops.filter(function (stop) {
+					return stop.travelRouteId == selectedTravelRouteId;
+				});
+
+				if (filteredStops.length > 0) {
+					$.each(filteredStops, function (index, stop) {
+						var row = `<tr>
+										<td>${stop.startPlace} to ${stop.destination}</td>
+										<td>${stop.checkIn}</td>
+										<td>${stop.checkOut}</td>
+										<td>${stop.transportType}</td>
+										<td>${stop.vehicleType}</td>
+									</tr>`;
+						tableBody.append(row);
+						console.log(row);
+					});
+				} else {
+					tableBody.append('<tr><td colspan="3">No data found.</td></tr>');
+				}
+			}
+		});
+
+		$(document).on('change', '.roomTypeSelect', function () {
+			var roomId = $(this).val();
+			var $currentSelect = $(this);
+			if (roomId) {
+				$.ajax({
+					url: '@Url.Action("GetDescriptionsForRoom", "Package")',
+					type: 'POST',
+					data: { roomId: roomId },
+					success: function (data) {
+						$currentSelect.closest('.row').find('.facilityDescriptions').html(data);
+					},
+					error: function (xhr, status, error) {
+						console.log("An error occurred: " + xhr.responseText);
+					}
+				});
+			} else {
+				$currentSelect.closest('.row').find('.facilityDescriptions').empty();
+			}
+		});
+	});
+
+	function addTerms() {
+		const id = Date.now() + Math.floor(Math.random() * 10000)
+		let row = "";
+
+		row += `
+																				<div class="row mt-2" id="terms_${id}">
+																					<div class="col-sm-11 mt-2">
+																						<input type="text" name="Terms[]" placeholder="Enter Terms & Condition..." class="form-control">
+																					</div>
+																					<div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+																						<button type="button" class="btn btn-icon btn-danger" onclick="removeTerms(${id})"><i class='bx bxs-trash'></i></button>
+																					</div>
+																				</div>
+																			`
+
+		$("#Terms").append(row);
+	}
+
+	function removeTerms(id) {
+		document.getElementById(`terms_${id}`).remove();
+	}
+
+	function additinerary() {
+		const id = Date.now() + Math.floor(Math.random() * 10000)
+		let row = "";
+
+		row += `
+																					<div class="row mt-2" id="itinerary_${id}">
+																						<div class="col-sm-11 mt-2">
+																									<input type="text" name="Description[]" placeholder="Enter Itinerary..." class="form-control">
+																						</div>
+																						<div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+																							<button type="button" class="btn btn-icon btn-danger" onclick="removeitinerary(${id})"><i class='bx bxs-trash'></i></button>
+																						</div>
+																					</div>
+																				`
+
+		$("#Description").append(row);
+	}
+
+	function removeitinerary(id) {
+		document.getElementById(`itinerary_${id}`).remove();
+	}
+
+</script>
+@* <script>
+    function formatCurrency(input) {
+        let value = input.value.replace(/,/g, ''); 
+        if (!isNaN(value) && value !== "") {
+            input.value = parseFloat(value).toLocaleString(); 
+        }
+    }
+</script> *@
+
+
+
+<partial name="~/Views/Shared/_PackageROECalculationScript.cshtml" />
+<partial name="~/Views/Shared/_AccomodationScriptPartial.cshtml" />
+<partial name="~/Views/Shared/_AdditionalFacilityScriptPartial.cshtml" />
+<partial name="~/Views/Shared/_AddonScriptPartial.cshtml" />
+
+
+

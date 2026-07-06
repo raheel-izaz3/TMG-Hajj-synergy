@@ -1,0 +1,95 @@
+﻿@model IEnumerable<EHajjContract>
+
+
+@{
+    string modelName = "E Hajj Contract";
+    string modelNamePlural = "E Hajj Contracts";
+    string modelControllerRoute = "EHajj";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+@if (TempData.ContainsKey("restored"))
+{
+    if ((bool)TempData["restored"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Restored Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["restored"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural / Trash</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Hotel</th>
+                        <th>In</th>
+                        <th>Out</th>
+                        <th>PAX</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+
+                    @{
+                        int i = 0;
+                    }
+
+
+                     @foreach (EHajjContract contract in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@i</strong>
+                            </td>
+                            <td>@contract.Company.CompanyCode</td>
+                            <td>@contract.Package.Name</td>
+                            <td>@contract.Hotel.HotelName</td>
+                            <td>@contract.CheckIn</td>
+                            <td>@contract.CheckOut</td>
+                            <td>@contract.Used / @contract.Capacity</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info" onclick="confirmRestore(@contract.EhajjContractId)">
+                                        <i class="bx bx-recycle me-1"></i> Restore
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    function confirmRestore(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Restore/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

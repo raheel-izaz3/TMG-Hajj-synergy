@@ -1,0 +1,245 @@
+﻿@model CompanyIndexModel
+@{
+    string modelName = "Company";
+    string modelNamePlural = "Companies";
+    string modelControllerRoute = "Company";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+@if (TempData.ContainsKey("logo"))
+{
+    if ((bool)TempData["logo"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Logo Changed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["logo"] = false;
+    }
+}
+@if (TempData.ContainsKey("stamp"))
+{
+    if ((bool)TempData["stamp"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Stamp Changed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["stamp"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+    @if (ViewBag.CreateAllowed == true)
+    {
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+    }
+
+    @if (ViewBag.CombineAllowed == true)
+    {
+        <div class="btn-group" id="dropdown-icon-demo">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bx bxs-report"></i> Combine Reports
+            </button>
+            <ul class="dropdown-menu" style="">
+@*                 <li>
+                    <a href="#" class="dropdown-item d-flex align-items-center">1. Combined Payment Summary</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center">2. Mega Reference Payment Summary</a>
+                </li> *@
+                <li>
+                    <a asp-controller="CompanyCombineReport" asp-action="Collection" class="dropdown-item d-flex align-items-center">1. Company Collection Summary</a>
+                </li> 
+            </ul>
+        </div>
+    }
+    @if (ViewBag.TrashAllowed == true)
+    {
+
+        <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.TrashCount)</a>
+    }
+
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 200px">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Quota</th>
+                        <th>Remaining Quota</th>
+                        <th>Website</th>
+                        <th>Packages</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{int i = 1;}
+                    @foreach (CompanyIndexModelEntry entry in Model.Entries)
+                    {
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@i</strong>
+                            </td>
+                            <td>@entry.Code</td>
+                            <td>@entry.Name</td>
+                            <td>@entry.ActualQuota</td>
+                            @if (entry.RemainingQuota < 0)
+                            {
+                                <td style="color: red">@entry.RemainingQuota</td>
+                            }
+                            else
+                            {
+                                <td>@entry.RemainingQuota</td>
+                            }
+                            <td><a target="_blank" href="@entry.Website">@entry.Website</a></td>
+                            <td>
+                                @if (entry.Packages.Count == 0)
+                                {
+                                    <b>No Packages</b>
+                                }
+                                else
+                                {
+                                    <ul>
+                                        @foreach (var package in entry.Packages)
+                                        {
+                                                <li>
+                                                    <a asp-controller="Package"
+                                                       asp-action="Detail"
+                                                       asp-route-id="@package.PackageId">
+                                                        @package.Name <small>(@package.HajjBookingCount)</small>
+                                                    </a>
+                                                </li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    @if (ViewBag.EditAllowed == true)
+                                    {
+                                        <div class="btn-group" id="dropdown-icon-demo">
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bx bxs-report"></i> Reports
+                                            </button>
+                                            <ul class="dropdown-menu" style="">
+                                                <li>
+                                                    <a asp-controller="CompanyReport" asp-action="RequiredDocuments" asp-route-id="@entry.CompanyId"
+                                                    class="dropdown-item d-flex align-items-center">1. Documents Received</a>
+                                                </li>
+                                                @* <li>
+                                                    <a asp-controller="CompanyReport" asp-action="CompanySummaryReport" asp-route-id="@entry.CompanyId"
+                                                       target="_blank" class="dropdown-item d-flex align-items-center">2. Company Summary Report</a>
+                                                </li> *@
+                                                <li>
+                                                    <a asp-controller="CompanyReport" asp-action="CompanySummaryReportV2" asp-route-id="@entry.CompanyId"
+                                                       target="_blank" class="dropdown-item d-flex align-items-center">2. Company Summary Report</a>
+                                                </li>
+                                                <li>
+                                                    <a asp-controller="CompanyReport" asp-action="Report" asp-route-id="@entry.CompanyId"
+                                                       target="_blank" class="dropdown-item d-flex align-items-center">3. Haji Report</a>
+                                                </li>
+                                                <li>
+                                                    <a asp-controller="FlightReport" asp-action="FlightReportFilter" asp-route-id="@entry.CompanyId"
+                                                       target="_blank" class="dropdown-item d-flex align-items-center">4. Flight Summary Report</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <a class="btn btn-outline-secondary" asp-controller="Company" asp-action="Detail" asp-route-id="@entry.CompanyId"><i class='bx bx-low-vision'></i> Detail</a>
+
+                                        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@entry.CompanyId"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+
+                                    }
+
+                                    @if (ViewBag.TrashAllowed == true)
+                                    {
+                                        <button onclick="confirmDelete(@entry.CompanyId)" class="btn btn-outline-danger"><i class="bx bx-trash me-1"></i> Trash</button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

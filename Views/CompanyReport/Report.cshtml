@@ -1,0 +1,609 @@
+﻿@{
+    Layout = null;
+}
+@model PackageReportModel
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JavaScript -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Additional DataTables Extensions (optional) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Bootstrap CSS (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+    <style>
+        body {
+            font-size: 10px !important;
+        }
+
+        .table {
+            border: solid 1px black !important;
+            font-size: 8.5px !important;
+        }
+
+        thead {
+            border: solid 1px black !important;
+        }
+
+        .chk-buttons {
+            display: flex;
+        }
+
+        @@media print {
+            body {
+                overflow-x: hidden !important;
+            }
+
+            table {
+                overflow-x: hidden !important;
+            }
+
+            .chk-buttons {
+                display: none !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            label {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold"><span class="text-muted fw-light"></span> Report</h4>
+        <h5 class="fw-bold">
+            <span class="text-muted fw-light"></span> @Model.PackageName <small>(@Model.PackageCode)</small>
+        </h5>
+        @* <p>
+            <b>DAYS:</b> @Model.PackageDays | <b>DURATION:</b> @Model.PackageDuration | <b>MEDINAH ARRIVAL:</b>
+            @Model.MedinahArrival | <b>Booking:</b> @Model.Bookings
+        </p> *@
+
+        <hr class="mb-4" />
+        <div class="chk-buttons">
+
+            <p class="fw-bold">Choose Table Headers</p>
+
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">#</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">MEGA ID</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">CATEGORY</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">HB #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">C ID</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Image</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Name</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Father (F) / Husband (N) Name</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Gender</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Passport #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Mehram</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Mehram Relation</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">E Hajj ID</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">MOFA #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Hajj Serial #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Hajj App #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Visa #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Ticket App #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">File #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">G #</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Form No.</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Mobile Number</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Address</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Age</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Makkah</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Medinah</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Azizia</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Mina</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Friend ID</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Total Amount</label>
+            </div>
+            <div class="form-check form-check-inline mb-2">
+                <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+                       checked value="option1">
+                <label class="form-check-label" for="inlineCheckbox1">Invoices</label>
+            </div>
+        </div>
+
+        <div style="display: flex">
+            <button id="printPage">Print</button>
+        </div>
+
+        <hr class="mb-4" />
+
+
+        <form action="" method="post">
+            <input type="hidden" name="PackageId" value="@Model.PackageId">
+            <br><br>
+            <div class="card p-2">
+                <div class="table-responsive text-nowrap ">
+                    @* <button onclick="copyTablee()" id="copyTable">Copy Table</button> *@
+                    <button>Save</button>
+                    <table class="table table-hover table-bordered" id="reportTable" border="1">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Mega ID</th>
+                                <th>Category</th>
+                                <th>HB #</th>
+                                <th>CID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Father (F) / Husband (H) Name</th>
+                                <th>Gender</th>
+                                <th>Passport #</th>
+                                <th>Mehram</th>
+                                <th>Mehram Relation</th>
+                                <th>E Hajj ID</th>
+                                <th>MOFA #</th>
+                                <th>Hajj Serial #</th>
+                                <th>Hajj App #</th>
+                                <th>Visa #</th>
+                                <th>Ticket #</th>
+                                <th>File #</th>
+                                <th>G #</th>
+                                <th>Form No.</th>
+                                <th>Mobile Number</th>
+                                <th>Address</th>
+                                <th>Age</th>
+                                <th>Makkah</th>
+                                <th>Medinah</th>
+                                <th>Azizia</th>
+                                <th>Mina</th>
+                                <th>Friend ID</th>
+                                <th>Total Amount</th>
+                                <th>Invoices</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-1" style="border: solid 1px black !important;">
+                            @for (int i = 0; i < Model.FamilyMembers.Count; i++)
+                            {
+                                var currentMember = Model.FamilyMembers.ElementAt(i);
+
+                                <tr>
+                                    <input type="hidden" name="FamilyHeadIds[@i]" value="@currentMember.FamilyHeadId">
+                                    <td>@(i + 1)</td>
+                                    <td>@currentMember.MegaId</td>
+                                    <td>
+                                        <select name="Categories[@i]" id="">
+                                            @if (currentMember.ApplicantType == ApplicantType.Regular)
+                                            {
+                                                <option value="0" selected>Regular</option>
+                                                <option value="1">Sponser</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="0">Regular</option>
+                                                <option value="1" selected>Sponser</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>@currentMember.FID</td>
+                                    <td>@currentMember.CID</td>
+                                    <td><img src="~/@currentMember.Image" width="30" /></td>
+                                    <td>@Html.Raw(currentMember.Name)</td>
+                                    <td>@Html.Raw(currentMember.FatherHusbandName)</td>
+                                    <td>@currentMember.Gender</td>
+                                    <td>@currentMember.PassportNumber</td>
+                                    <td>@Html.Raw(@currentMember.Mehram)</td>
+                                    <td>@currentMember.MehramRelation</td>
+                                    <td>
+                                        @* <input type="text" name="EHajjIds[@i]" id="EHajjIdInput" class="form-control" value="@currentMember.EHajjId" *@
+                                        @*        style="width: 11ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.EHajjId
+                                    </td>
+                                    <td>
+                                        @* <input type="text" name="MOFAs[@i]" id="" class="form-control" value="@currentMember.MOFA" *@
+                                        @*        style="width: 11ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.MOFA
+                                    </td>
+                                    <td>
+                                        @* <input type="text" name="HajjSerials[@i]" id="" class="form-control" value="@currentMember.HajjSerialNumber" *@
+                                        @*        style="width: 11ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.HajjSerialNumber
+                                    </td>
+                                    <td>
+                                        @* <input type="text" name="HajjAppNumbers[@i]" id="" class="form-control" value="@currentMember.HajjAppNumber" *@
+                                        @*        style="width: 11ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.HajjAppNumber
+                                    </td>
+                                    <td>
+                                        @* <input type="text" name="VisaNumbers[@i]" id="" class="form-control" value="@currentMember.VisaNumber" *@
+                                        @*        style="width: 17ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.VisaNumber
+                                    </td>
+                                    <td>
+                                        @* <input type="text" name="TicketNumbers[@i]" id="" class="form-control" value="@currentMember.TicketNumber" *@
+                                        @*        style="width: 11ch !important;" oninput="adjustInputWidth(this)"> *@
+                                        @currentMember.TicketNumber
+                                    </td>
+                                    <td>@currentMember.FileNumber</td>
+                                    <td>@currentMember.GNumber</td>
+                                    <td>@currentMember.FormNumber</td>
+                                    <td>@currentMember.MobileNumber</td>
+                                    <td>@currentMember.Address</td>
+                                    <td>@currentMember.Age</td>
+                                    <td>@currentMember.Makkah</td>
+                                    <td>@currentMember.Medinah</td>
+                                    <td>@currentMember.Azizia</td>
+                                    <td>@currentMember.Mina</td>
+                                    <td>@currentMember.FriendId</td>
+                                    <td>@currentMember.TotalAmount</td>
+                                    <td>@currentMember.Invoices</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </form>
+
+        <hr class="mb-4" />
+
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <button onclick="copyTable()" id="copyTable">Copy Table</button>
+                <table class="table table-hover" id="SecondTable">
+                    <thead>
+                        <tr>
+                            <th colspan="11">Package Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1">
+                        <tr>
+                            <td class="text-center" colspan="6">
+                                Families: @Model.PackageSummary.FamiliesCount | Members:
+                                @Model.PackageSummary.MembersCount | Males: @Model.PackageSummary.MalesCount | Females:
+                                @Model.PackageSummary.FemalesCount
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="text-center">Adults: @Model.PackageSummary.AdultsCount</td>
+                            <td colspan="2" class="text-center">Childs: @Model.PackageSummary.ChildsCount</td>
+                            <td colspan="2" class="text-center">Infants: @Model.PackageSummary.InfantsCount</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">Male: @Model.PackageSummary.AdultMales </td>
+                            <td class="text-center">Female: @Model.PackageSummary.AdultFemales </td>
+
+                            <td class="text-center">Male: @Model.PackageSummary.ChildMales </td>
+                            <td class="text-center">Female: @Model.PackageSummary.ChildFemales </td>
+
+
+                            <td class="text-center">Male: @Model.PackageSummary.InfantMales </td>
+                            <td class="text-center">Female: @Model.PackageSummary.InfantFemales </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr class="mb-4" />
+
+        @* <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <button onclick="copyTableContent()" id="copyTableContent">Copy Table</button>
+                <table class="table table-hover" id="ThridTable">
+                    <thead>
+                        <tr>
+                            <th colspan="11">Room Calculation</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table border-bottom-1 table-hover">
+                        <tr class="">
+                            <th>MAKKAH</th>
+                            @foreach (var item in Model.RoomCalculation.Makkah)
+                            {
+                                <td>@item.RoomType: @item.TotalMembers / @item.Pax = @item.Total</td>
+                            }
+                        </tr>
+                        <tr class="">
+                            <th>MEDINA</th>
+                            @foreach (var item in Model.RoomCalculation.Medina)
+                            {
+                                <td>@item.RoomType: @item.TotalMembers / @item.Pax = @item.Total</td>
+                            }
+                        </tr>
+                        <tr class="">
+                            <th>AZIZIA</th>
+                            @foreach (var item in Model.RoomCalculation.Azizia)
+                            {
+                                <td>@item.RoomType: @item.TotalMembers / @item.Pax = @item.Total</td>
+                            }
+                        </tr>
+                        <tr class="">
+                            <th>MASHAIR</th>
+                            @foreach (var item in Model.RoomCalculation.Mashair)
+                            {
+                                <td>@item.RoomType: @item.TotalMembers / @item.Pax = @item.Total</td>
+                            }
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div> *@
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            const checkHeaders = document.querySelectorAll(".check-header");
+            let i = 0;
+            for (let check of checkHeaders) {
+                check.setAttribute("data-column-index", i);
+                i++;
+            }
+
+
+            $("#printPage").click(function () {
+                window.print();
+            });
+
+            $("#saveState").click(function () {
+                saveDataTableState(table);
+            });
+        });
+
+
+        function exportToExcel(tableId, filename) {
+            var table = $('#' + tableId).DataTable();
+            var header = table.columns().header().toArray().map(function (th) {
+                return $(th).text().trim();
+            });
+
+            var data = table.rows().nodes().toArray().map(function (row) {
+                var rowData = [];
+                $(row).find('td').each(function () {
+                    var cellValue = "";
+                    var input = $(this).find('input, select'); 
+
+                    if (input.length > 0) {
+                        cellValue = input.val() || ""; 
+                    } else {
+                        cellValue = $(this).text().trim(); 
+                    }
+
+                    rowData.push(cellValue);
+                });
+                return rowData;
+            });
+
+            var workbook = XLSX.utils.book_new();
+            var worksheet = XLSX.utils.aoa_to_sheet([header]);
+
+            XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+            XLSX.writeFile(workbook, filename + '.xlsx');
+        }
+
+
+
+        function colVis(elem) {
+            let index = elem.getAttribute('data-column-index');
+            let table = document.getElementById('reportTable')
+            if (elem.checked) {
+                table.column(index).visible(true);
+            } else {
+                table.column(index).visible(false);
+            }
+        }
+
+        function saveDataTableState(table) {
+            let state = {
+                columnsVisibility: table.columns().visible(),
+                rowData: []
+            };
+
+            table.rows().every(function () {
+                let rowData = this.data();
+                let inputs = $(this.node()).find('input');
+                if (inputs.length > 0) {
+                    inputs.each(function (index, input) {
+                        rowData[index + 1] = input.value;
+                    });
+                }
+                state.rowData.push(rowData);
+            });
+
+            let serializedState = JSON.stringify(state, function (key, value) {
+                if (key === '_fixedHeader') {
+                    return undefined;
+                }
+                return value;
+            });
+
+            localStorage.setItem('dataTableState', serializedState);
+
+            alert('Table state saved successfully!');
+        }
+
+
+
+        function adjustInputWidth(input) {
+
+            var length = input.value.length;
+
+            var newWidth = length + 3.5;
+
+            input.style.width = newWidth + 'ch';
+        }
+
+    </script>
+
+    <script>
+        let reportTable = new DataTable('#reportTable', {
+            dom: 'Bfrtip',
+            buttons: [{
+                text: 'Export to Excel',
+                extend: 'excelHtml5',
+                className: 'btn btn-dark',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+            {
+                text: 'Copy Table',
+                extend: 'copyHtml5',
+                className: 'btn btn-dark',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            }],
+            paging: false,
+            lengthChange: false
+        });
+    </script>
+
+
+</body>
+</html>
+
+
+
+

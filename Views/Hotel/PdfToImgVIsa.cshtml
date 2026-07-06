@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "PdfToImgVIsa";
+    var imagePaths = ViewBag.ImagePaths as List<string>;
+    Layout = null;
+}
+
+<h2>Converted Images</h2>
+
+@foreach (var imagePath in ViewBag.ImagePaths)
+{
+    <img src="@imagePath" alt="Image" />
+}

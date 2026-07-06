@@ -1,0 +1,119 @@
+﻿@{
+
+    string modelName = "SendEmail";
+    string modelNamePlural = "";
+    string modelControllerRoute = "SendEmail";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Send Email</span></h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <form>
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Company</label>
+                                        <select name="companyId" id="companyId" class="form-select"
+                                                aria-label="Default select example">
+                                            <option selected disabled hidden>Select Company</option>
+                                            <option value="0">All TMG</option>
+                                            @foreach (var company in ViewBag.Company)
+                                            {
+                                                <option value="@company.CompanyId">
+                                                    @company.CompanyName
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Bank</label>
+                                        <select name="companyBankAccountId" id="companyBankAccountId" class="form-select"
+                                                aria-label="Default select example">
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select Start Date</label>
+                                        <input type="date" class="form-control" name="startDate" value="@DateTimeManager.DateToHtmlFormat(DateTime.Now)" />
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label>Select End Date</label>
+                                        <input type="date" class="form-control" name="endDate" value="@DateTimeManager.DateToHtmlFormat(DateTime.Now)" />
+                                    </div>
+                                    <div class="col-sm-12 mt-3">
+                                        <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select[name="companyId"]').select2({
+            placeholder: "Select Company",
+            allowClear: true,
+            width: '100%', // Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'  // For the selected item
+        });
+
+
+        $('select[name="companyBankAccountId"]').select2({
+            placeholder: "Select Company Bank",
+            allowClear: true,
+            width: '100%',// Adjust the width as needed
+            dropdownCssClass: 'form-control',  // For the dropdown
+            selectionCssClass: 'form-control'
+        });
+
+        $("#companyId").on("change", function () {
+            const id = $("#companyId").val();
+            const bankSelect = $("#companyBankAccountId");
+
+            console.log("Selected Company ID: ", id);
+
+            bankSelect.empty().append('<option selected disabled hidden>Select Bank</option>');
+
+            $.ajax({
+                url: "/Report/GetCompanyBankAccount",
+                type: 'GET',
+                data: { id: id },
+                success: response => {
+                    if (response.success && Array.isArray(response.data)) {
+                        response.data.forEach(function (bank) {
+                            bankSelect.append(
+                                $('<option>', {
+                                    value: bank.bankId,
+                                    text: `${bank.title} - ${bank.number} (${bank.accountCurrency})`
+                                })
+                            );
+                        });
+                    } else {
+                        console.warn("No banks found or response format incorrect.");
+                    }
+
+                    bankSelect.trigger('change');
+                },
+                error: error => {
+                    console.error('Error: ', error);
+                }
+            });
+        });
+    });
+</script>
+

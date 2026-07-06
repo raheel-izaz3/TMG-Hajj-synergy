@@ -1,0 +1,30 @@
+﻿@model IEnumerable<CustomerRemarksLogs>
+
+<div class="container">
+    <h4 class="mt-5">
+        Remarks Logs Of
+        <span>
+            @ViewBag.Name
+        </span>
+    </h4>
+    <a class="btn btn-success" asp-controller="FamilyHead" asp-action="IndexCustomerProfile">Back</a>
+    <div class="card mt-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <th>Remarks</th>
+                <th>Date</th>
+                </thead>
+                <tbody>
+                    @foreach (CustomerRemarksLogs item in Model)
+                    {
+                        <tr>
+                            <td>@item.Remarks</td>
+                            <td>@item.CreatedAt.ToString("dd/MMM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

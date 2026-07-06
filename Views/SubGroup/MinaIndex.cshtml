@@ -1,0 +1,234 @@
+﻿@model IEnumerable<SubGroup>
+
+
+@{
+    string modelName = "Sub Group";
+    string modelNamePlural = "Sub Groups";
+    string modelControllerRoute = "SubGroup";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    @* @if (ViewBag.CreateAllowed == true)
+    { *@
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+    @* }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end">
+        <i class="bx bx-trash me-1"></i> Trash
+        (@ViewBag.TrashCount)
+    </a>
+    @* } *@
+
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 200px">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Group</th>
+                        <th>Place</th>
+                        <th>Contract</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>PAX</th>
+                        <th>Selected</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (SubGroup subGroup in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@subGroup.SubGroupId</strong>
+                            </td>
+                            <td>@subGroup.Group.Name</td>
+                            <td>@subGroup.Place.PlaceName</td>
+                            <td>@subGroup.Contract</td>
+                            <td>@subGroup.Code</td>
+                            <td>@subGroup.Name</td>
+                            <td>@subGroup.PAX</td>
+                            <td>@subGroup.Selected</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-success" asp-action="AddMember"
+                                       asp-route-subGroupId="@subGroup.SubGroupId">
+                                        <i class="bx bx-add-to-queue me-1"></i>
+                                        Add
+                                    </a>
+
+                                    <div class="btn-group" id="dropdown-icon-demo">
+                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bxs-report"></i> Reports
+                                        </button>
+                                        <ul class="dropdown-menu" style="">
+                                            @if (subGroup.PlaceId == 4)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="AziziaRoomListingSource" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">1. Room Listing Azizia Source</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="AziziaRoomListing" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">2. Azizia Room Listing</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="RiyazUlJaanahReport" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">3. Riaz-Ul-Jannah Male</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="RiyazUlJaanahReportFemale" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">4. Riaz-Ul-Jannah Female</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="GroupReport"
+                                                       asp-action="MedinaRoomListingSource" asp-route-id="@subGroup.GroupId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        5. Medina Room
+                                                        Listing
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="GroupReport"
+                                                       asp-action="MakkahRoomListingSource" asp-route-id="@subGroup.GroupId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        6. Makkah Room
+                                                        Listing
+                                                    </a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+@*                                                 <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="MakkahMedinaRoomListingSource" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">1. Makkah / Medina Room Listing Source</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="MakkahMedinaRoomListing" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">2. Makkah / Medina Room Listing</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="RiyazUlJaanahReport" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">3. Riaz-Ul-Jannah Male</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="SubGroupReport" asp-action="RiyazUlJaanahReportFemale" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">4. Riaz-Ul-Jannah Female</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="GroupReport"
+                                                       asp-action="MedinaRoomListingSource" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        5. Medina Room
+                                                        Listing
+                                                    </a>
+                                                </li> *@
+                                                <li>
+                                                    <a target="_blank" asp-controller="GroupReport"
+                                                       asp-action="MinaRoomListingSource" asp-route-id="@subGroup.SubGroupId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        1. Mina Room Listing
+                                                    </a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </div>
+                                    @* @if (ViewBag.EditAllowed == true)
+                                { *@
+                                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@subGroup.SubGroupId">
+                                        <i class="bx bx-edit-alt me-1"></i> Edit
+                                    </a>
+
+                                    @* }
+                                @if (ViewBag.TrashAllowed == true)
+                                { *@
+                                    <button onclick="confirmDelete(@subGroup.SubGroupId)" class="btn btn-outline-danger">
+                                        <i class="bx bx-trash me-1"></i> Trash
+                                    </button>
+                                    @* } *@
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        paging: false
+    });
+    s
+</script>

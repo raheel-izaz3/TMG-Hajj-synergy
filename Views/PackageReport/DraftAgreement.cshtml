@@ -1,0 +1,23 @@
+@model HajjAgreement
+@{
+    Layout = "_PrintLayout";
+}
+
+@* <style>
+    @@media print{
+        *{
+            font-size: 10px;
+        }
+
+    }
+</style> *@
+
+<div class="">
+    <h2 style="text-align: center; font-family:sans-serif">DRAFT AGREEMENT HAJJ 2024 (1445H)</h2>
+
+    @Html.Raw(Model.SharedAgreement)
+    <div class="" style="margin-block: 10px;"></div>
+    @Html.Raw(Model.SpecificAgreement)
+</div>
+
+<script>print()</script>

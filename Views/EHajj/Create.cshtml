@@ -1,0 +1,277 @@
+﻿
+@model EHajjModelRequest
+
+
+@{
+    string modelName = "E Hajj Contract";
+    string modelNamePlural = "E Hajj Contracts";
+    string modelControllerRoute = "EHajj";
+    TMG.Data.TMGDbContext _db;
+}
+
+<script>
+    function getPackages(id) {
+        $.ajax({
+            url: "/EHajj/GetPackages/" + id,
+            success: res => {
+                console.log(res)
+                const elem = document.getElementById("packages")
+                for (let p of res) {
+                    elem.innerHTML += `<option value="${p.packageId}">${p.name}</option>`
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        })
+    }
+
+
+    function setPax(selectElement) {
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var pax = parseInt(selectedOption.getAttribute('data-pax'));
+        document.getElementById('paxValue').value = pax;
+    }
+
+    function calcPax(inputElement) {
+        var quantity = parseInt(inputElement.value);
+        var pax = parseInt(document.getElementById('paxValue').value);
+        var totalPax = quantity * pax;
+        console.log('Total PAX:', totalPax);
+    }
+
+    function capacity(element) {
+        var capa = parseInt(element.value);
+        console.log(capa)
+    }
+
+
+    function formSubmit() {
+    let cap = parseInt(document.getElementById("Capacity").value);
+    let pax = parseInt(document.getElementById('paxValue').value);
+    let totalPax = 0;
+
+    let quantityInputs = document.getElementsByName("IndividualRoomsQuantity[]");
+    for (let input of quantityInputs) {
+        let quantity = parseInt(input.value);
+        let roomPax = parseInt(input.closest('.row').querySelector('select').selectedOptions[0].getAttribute('data-pax'));
+        totalPax += quantity * roomPax;
+    }
+
+    console.log("Total PAX:", totalPax);
+
+    if (cap === totalPax) {
+        return true;
+    } else {
+        alert("Quantities do not match");
+        return false;
+    }
+}
+</script>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" onsubmit="return formSubmit()">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyId" onchange="getPackages(this.value)">
+                                        <option value="">Select Company...</option>
+                                        @foreach (var c in ViewBag.Companies)
+                                        {
+                                            <option value="@c.CompanyId">@c.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Package</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="packages" asp-for="PackageId">
+                                        <option value="">Select Package</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="HotelId">
+                                        <option value="">Select Hotel...</option>
+                                        @foreach (var c in ViewBag.Hotels)
+                                        {
+                                            <option value="@c.HotelId">@c.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Food Package</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="FoodPackageId">
+                                        <option value="">Select Food Package...</option>
+                                        @foreach (var c in ViewBag.FoodPackages)
+                                        {
+                                            <option value="@c.FoodPackageId">@c.Package</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Capacity</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="number" min="1" value="0" asp-for="Capacity" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="CheckIn" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check Out</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="CheckOut" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Contract ID</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" asp-for="EhajjContractNumber" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Voucher Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" asp-for="VoucherNumber" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Amount</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" asp-for="Amount" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Contract File</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Contractpath"  class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Voucher File</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Voucherpath"  class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">QR Code</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="QrPath"  class="form-control">
+                                </div>
+                            </div>
+
+
+                            <div id="rooms" class="my-3">
+                                <div class="row" id="room_0">
+                                    <div class="col-sm-12 mb-2">
+                                        <h5 class="float-start">Rooms</h5>
+                                        <button class="btn btn-outline-info float-end" type="button"
+                                            onclick="addRoom(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                    class="bx bx-building"></i></span>
+                                            <select class="form-select" name="RoomIds[]" onchange="setPax(this)" >
+                                                <option value="">Select Rooms...</option>
+                                                @foreach (Room r in ViewBag.Rooms)
+                                                {
+                                                    <option data-pax="@r.PAX" value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                            name="">Quantity</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" name="IndividualRoomsQuantity[]" class="form-control" onchange="calcPax(this)" 
+                                                placeholder="Enter Quantity" min="1" value="0"  required />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <span id="paxValue"></span>
+</div>
+
+<script>
+    function addRoom(e) {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                    <div class="row" id="room_${id}">
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                    class="bx bx-building"></i></span>
+                                                <select class="form-select" name="RoomIds[]" onchange="setPax(this)">
+                                                <option value="">Select Rooms...</option>
+                                                @foreach (Room r in ViewBag.Rooms)
+                                                {
+                                                    <option value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                            name="">Quantity</label>
+                                        <div class="input-group input-group-merge">
+                                                <input type="text" name="IndividualRoomsQuantity[]" class="form-control onchange="calcPax(this)"
+                                                placeholder="Enter Quantity" min="1" value="1" required />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                            <div class="col-sm-12 col-md-1 d-flex align-items-center">
+                                                <label class="form-label"></label>
+                                                <button type="button" class="btn btn-icon btn-danger" onclick="removeRoom(${id})"><i class='bx bxs-trash'></i></button>
+                                            </div>
+                                            <span id="paxValue"></span>
+                                            <hr />`;
+
+        $("#rooms").append(row);
+    }
+
+    function removeRoom(id) {
+        // console.log(id)
+        // console.log(document.getElementById("room_"+id))
+        document.getElementById(`room_${id}`).remove();
+    }
+
+</script>

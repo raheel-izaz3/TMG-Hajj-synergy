@@ -1,0 +1,67 @@
+﻿<script>
+    function addSector() {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+            <div class="row" id="sector_${id}">
+                <div class="col-sm-12 col-md-2 mb-3">
+                                                    <label class="form-label">FlightNo</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control"
+                                                               placeholder="FlightNo..."
+                                                               name="FlightNo[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select name="FlightTypes[]"
+                                                            class="form-control">
+                                                        <option value="0">Inbound</option>
+                                                        <option value="1">Outbound</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                                <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">Destination</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control"
+                                                    placeholder="Destination..."
+                                                    name="Destinations[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Departure</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" type="datetime-local" name="SectorDepartures[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">Arrival</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" type="datetime-local" name="SectorArrivals[]">
+                                                </div>
+                                            </div>
+
+                                                <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+                                                                            <label class="form-label"></label>
+                                                                            <button type="button" 
+                                                                            class="btn btn-icon btn-danger" 
+                                                                            onclick="removeSector(${id})"><i class='bx bxs-trash'></i></button>
+                                                                        </div>
+                                                                        <hr>
+
+                                           
+                                        </div>
+                                        `;
+
+        $("#sectors").append(row);
+    }
+
+    function removeSector(id) {
+        document.getElementById(`sector_${id}`).remove();
+    }
+</script>

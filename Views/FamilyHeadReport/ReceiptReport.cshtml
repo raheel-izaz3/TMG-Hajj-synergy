@@ -1,0 +1,292 @@
+﻿@{
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Summary Report</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <link href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css" rel="stylesheet" />
+    <script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+
+    <style>
+        #gridContainer {
+            /* height: 1040px; */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+            table th {
+                position: sticky;
+                top: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table tfoot {
+                position: sticky;
+                bottom: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table td {
+                font-size: 8px !important;
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e;
+            }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+
+        button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>@ViewBag.HajiName</h1>
+    <h3>@ViewBag.PackageName</h3>
+    <h3>Package Amount: @ViewBag.BaseCurrency @ViewBag.PackageAmount</h3>
+    <h3>Amount Received: @ViewBag.BaseCurrency @ViewBag.ReceivedAmount</h3>
+    <h3>Remaining: @ViewBag.BaseCurrency @ViewBag.RemainingAmount</h3>
+
+    <div id="" class="package-div" style="">
+        <div class="big-table-record" id="summaryData">
+            <div id="gridContainer" style="margin-top: 20px;"></div>
+        </div>
+
+    </div>
+</body>
+
+
+<script>
+
+    $(document).ready(function () {
+        const dataSource = @Html.Raw(Json.Serialize(Model));
+        console.log(dataSource);
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+                {
+                    caption: "#", // Serial Number Column Header
+                    cellTemplate: function (cellElement, cellInfo) {
+                        cellElement.text(cellInfo.rowIndex + 1); // Row index starts from 0, so add 1
+                    },
+                    width: 50, // Adjust the width as needed
+                    allowSorting: false, // Optional: Disable sorting for this column
+                },
+                { dataField: "date", caption: "Date" },
+                { dataField: "bankName", caption: "Bank" },
+                { dataField: "currency", caption: "Collection Currency" },
+                {
+                    dataField: "amount",
+                    caption: "Amount",
+                    cellTemplate: function (container, options) {
+                        const amount = options.value;
+
+                        // Format the amount with commas
+                        const formattedAmount = new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(amount);
+
+                        // Apply red color for negative values
+                        const color = amount < 0 ? 'red' : 'black';
+
+                        // Display formatted amount with appropriate color
+                        container.text(formattedAmount).css("color", color);
+                    }
+                },
+                { dataField: "roe", caption: "ROE" },
+                {
+                    dataField: "convertedAmount", // Assuming this field exists in your data
+                    caption: `Converted to Base Currency (@ViewBag.BaseCurrency)`, // Use template literals
+                    cellTemplate: function (container, options) {
+                        const convertedAmount = options.value;
+
+                        // Format the converted amount with commas
+                        const formattedConvertedAmount = new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }).format(convertedAmount);
+
+                        // Apply red color for negative values
+                        const color = convertedAmount < 0 ? 'red' : 'black';
+
+                        // Display formatted amount with appropriate color
+                        container.text(formattedConvertedAmount).css("color", color);
+                    },
+                }
+            ],
+            // paging: {
+            //     pageSize: 15000,
+            // },
+            // scrolling: {
+            //     mode: 'infinite',
+            // },
+            headerFilter: {
+                visible: true
+            },
+            filterRow: {
+                visible: false,
+                applyFilter: "auto"
+            },
+            sorting: {
+                mode: "multiple"
+            },
+            export: {
+                enabled: true,
+                fileName: "FamilyMembers",
+                allowExportSelectedData: true
+            },
+            summary: {
+                totalItems: [
+                    {
+                        column: "convertedAmount", // Column to summarize
+                        summaryType: "sum", // Type of summary
+                        displayFormat: "Total: {0}", // Display format for the summary
+                        valueFormat: { type: "fixedPoint", precision: 2 } // Format for the total
+                    }
+                ]
+            },
+        });
+
+    });
+
+
+</script>
+
+

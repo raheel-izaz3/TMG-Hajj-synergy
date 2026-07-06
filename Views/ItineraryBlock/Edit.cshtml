@@ -1,0 +1,110 @@
+﻿@model ItineraryBlock
+
+@{
+    string modelName = "ItineraryBlock";
+    string modelNamePlural = "ItineraryBlocks";
+    string modelControllerRoute = "ItineraryBlock";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="ItineraryBlockId" />
+                        <div class="row">
+                            <div class="col-sm-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PackageId"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <select asp-for="POHotelsId" class="form-control">
+                                        <option value="">Select Package...</option>
+                                        @foreach (POHotels hotelcode in ViewBag.POHotelCode)
+                                        {
+                                            <!option value="@hotelcode.POHotelsId" @(hotelcode.POHotelsId == Model.POHotelsId ? "selected" : "") >@hotelcode.Code</!option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="POHotelsId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PAX"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="PAX" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PAX"></span>
+                            </div>
+                            @* <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PackageId"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <select asp-for="PackageId" class="form-control">
+                                        <option value="">Select Package...</option>
+                                        @foreach (Package package in ViewBag.Packages)
+                                        {
+                                            <option value="@package.PackageId">@package.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="PackageId"></span>
+                            </div> *@
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">
+                                    Select
+                                    Packages
+                                </label>
+                                <br />
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (var package in ViewBag.Packages1)
+                                {
+                                    bool found = false;
+                                    foreach (ItineraryBlockGroup fp in ViewBag.GroupPackages)
+                                    {
+                                        if (fp.PackageId == package.PackageId)
+                                        {
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                        @if (found)
+                                        {
+                                            <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                   asp-for="PackagesSelected[i]" checked>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                   asp-for="PackagesSelected[i]">
+                                        }
+
+                                        <label class="form-check-label"
+                                               for="@package.PackageId">@package.Name</label>
+                                    </div>
+                                    i++;
+                                }
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

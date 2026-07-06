@@ -1,0 +1,114 @@
+﻿@model RequiredDocumentsReportModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Required Documents</h4>
+    <h5 class="fw-bold"><span class="text-muted fw-light"></span> @Model.PackageName <small>(@Model.PackageCode)</small></h5>
+    
+    <div class="card my-2 p-2 mb-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="fw-bold">Total Members: @Model.FamilyMembersCount</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                    @foreach(string h in Model.RequiredDocHeaders){
+                        <th>@h</th>
+                    }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Received</td>
+                        @foreach(int p in Model.TotalReceived){
+                            <td>@p</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td>Pending</td>
+                        @foreach(int p in Model.TotalPending){
+                            <td>@p</td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <form method="post">
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <hr class="mb-4" />
+
+    @{
+        int i = 0;
+    }
+    @foreach (RequiredDocumentFamilyMemberGroupModel group in Model.Groups)
+    {
+        int j = 0;
+
+        <h3 class="mb-3 mt-4">@group.FCId</h3>
+        <div class="card mb-3 p-2">
+            <div class="table-responsive text-nowrap ">
+                <table class="table table-hover" id="">
+                    <thead>
+                        <tr>
+                            <th>HB #</th>
+                            @Html.Raw(Model.TableHeader)
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1">
+                        @foreach (FamilyMemberRequiredDocuments docs in group.Documents)
+                        {
+                            int k = 0;
+
+                            <tr>
+                                <th>@docs.FcId</th>
+                                <th>@docs.Name</th>
+                                @foreach (DocumentEntry entry in docs.Entries)
+                                {
+
+                                    <td>
+                                        <input type="hidden" name="DocumentSelected[]"  value="@(entry.Checked ? "true" : "false")" id="ds-@i-@j-@k" />
+                                        <input type="hidden" value="@docs.FamilyHeadId" name="FamilyHeadIds[]"/>
+                                        <input type="hidden" value="@entry.RequiredDocument.RequiredDocumentId" name="DocumentIds[]"/>
+                                        <div class="form-check form-check-inline mb-2">
+                                            <input class="form-check-input check-header"
+                                                type="checkbox" @(entry.Checked ? "checked" : "") 
+                                                onchange="document.getElementById('ds-@i-@j-@k').value = this.checked">
+                                            <label class="form-check-label">@entry.RequiredDocument.Documents</label>
+                                        </div>
+                                    </td>
+                                    k++;
+                                }
+                            </tr>
+                            j++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        i++;
+    }
+
+    </form>
+
+
+</div>
+
+<script>
+    let table = new DataTable('#reportTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible:not(:last-child)'
+            }
+        }]
+    });
+
+</script>

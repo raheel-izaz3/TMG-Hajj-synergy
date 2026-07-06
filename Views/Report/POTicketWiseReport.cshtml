@@ -1,0 +1,707 @@
+﻿@model IEnumerable<TMG.Controllers.PackageSummary>
+@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title></title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			overflow-x: hidden;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			margin: 0;
+			padding: 0;
+		}
+
+		p {
+			font-size: 9px;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* Table styling  */
+		table tr th {
+			font-size: 10px;
+		}
+
+		table tr td {
+			font-size: 12px !important;
+		}
+
+		.AMounttotelvalue {
+			/* font-size: 12px !important; */
+			color: white;
+			background-color: black;
+		}
+
+		.TotalAMountTitle {
+			/* font-size: 10px !important; */
+			color: white;
+			background-color: black;
+		}
+
+		/*   #discountRateHideShow {
+		display: table;}
+		#totalAmountHideShow {
+			display: none;
+			} */
+
+
+		/* Table styling  End */
+		.downloade_btn {
+			padding: 10px 45px;
+			background-color: lightblue;
+			outline: none;
+			border: 1px solid black;
+			font-weight: bold;
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+			.downloade_btn:hover {
+				background-color: white;
+			}
+
+		/* Check-Box Styling  */
+		.check_box_container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.check_box_container .CheckBox {
+				width: 20px;
+				height: 12px;
+				margin: 0;
+				padding: 0;
+			}
+
+		@@media print {
+			.check_box_container {
+				display: none !important;
+			}
+
+			button {
+				display: none;
+			}
+		}
+
+		/* Check-Box Styling End */
+		.parent {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+		}
+
+			.container .logo {
+				width: 55px;
+			}
+
+				.container .logo img {
+					width: 100%;
+				}
+
+		/* Table Styling Start  */
+		.Service_Table {
+			width: 100%;
+		}
+
+			.Service_Table tr th {
+				font-size: 10px;
+				text-align: right;
+			}
+
+			.Service_Table tr td {
+				border-bottom: 1px solid black;
+				font-size: 10px;
+			}
+
+				.Service_Table tr td:nth-child(2) {
+					text-align: right;
+					width: 130px;
+				}
+
+			.Service_Table tr:nth-last-child(1) {
+				font-weight: bold;
+			}
+
+		/* MEdia Querry  */
+		@@media (max-width :768px) {
+			.Bank_Table {
+				width: 100% !important;
+			}
+		}
+
+		.Bank_Table {
+			margin-top: 20px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 60%;
+		}
+
+			.Bank_Table tr {
+				border: 1px solid black;
+			}
+
+				.Bank_Table tr th {
+					border: 1px solid black !important;
+					background-color: lightblue;
+					text-align: left;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+				.Bank_Table tr td:nth-child(1) {
+					font-weight: bold;
+				}
+
+				.Bank_Table tr td {
+					text-align: left;
+					border: 1px solid black;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+		/* ADF_Details_Table styling Start  */
+		.Receipt_container {
+			margin-top: 7px;
+		}
+
+
+		.ADF_Container {
+			width: 60%;
+		}
+
+		.ADF_Details_Box {
+			margin-bottom: 10px;
+		}
+
+		.ADF_heading {
+			background-color: lightblue;
+			font-weight: bold;
+			font-size: 10px !important;
+			text-align: center;
+			color: black !important;
+		}
+
+		@@media (max-width:768px) {
+			.ADF_Container {
+				width: 100% !important;
+			}
+		}
+
+		.ADF_Details_Box table {
+			border-collapse: collapse;
+			border: 1px solid black;
+			width: 100%;
+		}
+
+		.ADF_Details_Box tr th {
+			border: 1px solid black;
+		}
+
+		.ADF_Details_Box tr td {
+			border: 1px solid black;
+		}
+
+
+		.totalText,
+		.amountText {
+			font-weight: bold !important;
+			background-color: lightblue;
+			font-size: 10px !important;
+			color: black !important;
+		}
+
+		/*############ ADF_Details_Table styling End ############## */
+		/* *********Note List ********** */
+		.terms_condition_list {
+			margin-left: 6px;
+			margin: 20px 0px !important;
+		}
+
+		.note_heading {
+			font-size: 10px;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.Notes_order_list {
+			padding: 0;
+			margin: 8px;
+		}
+
+			.Notes_order_list li {
+				font-size: 8px;
+				padding: 2px;
+			}
+
+		/* *********Note List  END********** */
+		footer {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100% !important;
+		}
+
+		.footer_address {
+			border-top: 1px solid black;
+			text-align: center;
+		}
+
+			.footer_address h6 {
+				font-weight: normal !important;
+			}
+
+
+
+		.top_service_table {
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 0px;
+			margin-top: 10px;
+		}
+
+			.top_service_table tr th,
+			td {
+				border: 1px solid black;
+			}
+
+			.top_service_table tr {
+				border: 1px solid black;
+			}
+
+				.top_service_table tr:nth-child(1) {
+					border: none !important;
+					outline: none;
+				}
+
+
+				.top_service_table tr:nth-last-child(1) {
+					font-weight: bold;
+					font-size: 14px !important;
+					background-color: black;
+					color: white;
+				}
+
+		/* ________Content_Editable Row _____ */
+		[contenteditable] {
+			width: 100px;
+		}
+
+		/* ________Content_Editable Row _____ */
+		/* Hide And Show Table Styling  */
+		#Receipt_PaymentRecord,
+		#Payment_Subject {
+			display: none;
+		}
+
+
+		#Memberbreaktable {
+			display: none;
+			text-align: center;
+		}
+
+		/* Media Querry Check-box and Label button  */
+		label {
+			font-size: 14px !important;
+		}
+
+		@@media (max-width: 768px) {
+			label {
+				font-size: 14px;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(0.8);
+			}
+		}
+
+		.check_box_container span {
+			font-weight: bold;
+		}
+
+		.flex-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.start-iadf td {
+			text-align: left !important;
+		}
+	</style>
+	<!-- html2pdf CDN Link  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+	<button class="downloade_btn" id="downloadExcel">Export To Excel</button>
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+		<div class="horizantal_line"></div>
+		<div class="proforma_title">
+			<h4 id="miniStatement_Title">Package Report</h4>
+		</div>
+		<div class="Invoice_to_section">
+			<div>
+				<div class="Customer_Info">
+					@* <h2>No of Persons : <span id="">@ViewBag.PersonCount</span></h2> *@
+				</div>
+			</div>
+		</div>
+
+		<!-- Top Service Section Start   -->
+		<table class="top_service_table" id="reportTable">
+			<thead>
+				<tr>
+					<th style="
+            text-align: left;
+            font-size: 10px;
+            color: black;
+            background-color: lightblue;
+            font-weight: bolder;
+			">
+						#
+					</th>
+					<th style="
+            text-align: left;
+            font-size: 10px;
+            color: black;
+            background-color: lightblue;
+            font-weight: bolder;
+			">
+						Package Name
+					</th>
+					<th style="
+            text-align: left;
+            font-size: 10px;
+            color: black;
+            background-color: lightblue;
+            font-weight: bolder;
+			">
+						Hajji Count
+					</th>
+					@* <th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						Booked 
+					</th> *@
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						Tentative
+					</th>
+					@* <th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						BookedF
+					</th>
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						BookedE
+					</th>
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						BookedB
+					</th> *@
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						TMG Issued
+					</th>
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						To Issue
+					</th>
+					<th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+			">
+						Self
+					</th>
+					@* 		<th style=" *@
+					@*            text-align: left; *@
+					@*            font-size: 10px; *@
+					@*            color: black; *@
+					@*            background-color: lightblue; *@
+					@*            font-weight: bolder; *@
+					@* "> *@
+					@* 			Ticket Tentative *@
+					@* 		</th> *@
+				</tr>
+			</thead>
+			@{
+				int i = 1;
+			}
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@i</td>
+					<td>@item.PackageName</td>
+					<td>
+						<a href="@Url.Action("Summary", "Report", new { type = "HajjiCount", packageId = item.PackageId })">
+							@item.HajjiCount
+						</a>
+					</td>
+					@* <td>
+						<a href="@Url.Action("Summary", "Report", new { type = "Booked", packageId = item.PackageId })">
+							@item.BookedCount
+						</a> 
+					</td> *@
+					<td>
+						<a href="@Url.Action("Summary", "Report", new { type = "Tentative", packageId = item.PackageId })">
+							@item.TentativeCount
+						</a>
+					</td>
+					<td>
+						<a href="@Url.Action("Summary", "Report", new { type = "TMGIssued", packageId = item.PackageId })">
+							@item.TMGIssued
+						</a>
+					</td>
+					<td>
+						<a href="@Url.Action("Summary", "Report", new { type = "ToIssued", packageId = item.PackageId })">
+							@item.ToIssued
+						</a>
+					</td>
+					<td>
+						<a href="@Url.Action("Summary", "Report", new { type = "Self", packageId = item.PackageId })">
+							@item.Self
+						</a>
+					</td>
+					@* 	<td> 
+					 	<a href="@Url.Action("Summary", "Report", new { type = "Tent", packageId = item.PackageId })">
+					 		@item.Tent 
+					 	</a> 
+					 </td>  *@
+				</tr>
+				i++;
+			}
+
+			@* <tr class="AMounttotelvalue">
+				<td></td>
+				<td>Total</td>
+				<td>@Model.Sum(x => x.HajjiCount)</td>
+				<td>@Model.Sum(x => x.BookedCount)</td>
+				<td>@Model.Sum(x => x.TentativeCount)</td>
+				<td>@Model.Sum(x => x.TMGIssued)</td>
+				<td>@Model.Sum(x => x.ToIssued)</td>
+				<td>@Model.Sum(x => x.Self)</td>
+			 @* <td>@Model.Sum(x => x.Tent)</td> 
+			</tr> *@
+			<tr></tr>
+			<tr class="AMounttotelvalue">
+				<td></td>
+				<td>Total</td>
+
+				<td>
+					@{
+						var hajjiIds = string.Join(",", Model.Where(x => x.HajjiCount > 0).Select(x => x.PackageId));
+					}
+					<a style="color: white;" href="@Url.Action("ListSummaries", "Report", new { type = "HajjiCount", packageIds = hajjiIds })">
+						@Model.Sum(x => x.HajjiCount)
+					</a>
+				</td>
+
+				@* <td>
+					@{
+						var bookedIds = string.Join(",", Model.Where(x => x.BookedCount > 0).Select(x => x.PackageId));
+					}
+					<a href="@Url.Action("ListSummaries", "Report", new { type = "Booked", packageIds = bookedIds })">
+						@Model.Sum(x => x.BookedCount)
+					</a>
+				</td> *@
+
+				<td>
+					@{
+						var tentativeIds = string.Join(",", Model.Where(x => x.TentativeCount > 0).Select(x => x.PackageId));
+					}
+					<a style="color: white;" href="@Url.Action("ListSummaries", "Report", new { type = "Tentative", packageIds = tentativeIds })">
+						@Model.Sum(x => x.TentativeCount)
+					</a>
+				</td>
+
+				<td>
+					@{
+						var tmgIds = string.Join(",", Model.Where(x => x.TMGIssued > 0).Select(x => x.PackageId));
+					}
+					<a style="color: white;" href="@Url.Action("ListSummaries", "Report", new { type = "TMGIssued", packageIds = tmgIds })">
+						@Model.Sum(x => x.TMGIssued)
+					</a>
+				</td>
+
+				<td>
+					@{
+						var toIds = string.Join(",", Model.Where(x => x.ToIssued > 0).Select(x => x.PackageId));
+					}
+					<a style="color: white;" href="@Url.Action("ListSummaries", "Report", new { type = "ToIssued", packageIds = toIds })">
+						@Model.Sum(x => x.ToIssued)
+					</a>
+				</td>
+
+				<td>
+					@{
+						var selfIds = string.Join(",", Model.Where(x => x.Self > 0).Select(x => x.PackageId));
+					}
+					<a style="color: white;" href="@Url.Action("ListSummaries", "Report", new { type = "Self", packageIds = selfIds })">
+						@Model.Sum(x => x.Self)
+					</a>
+				</td>
+			</tr>
+
+		</table>
+
+
+
+		@* <footer>
+        <div class="footer_address" id="footer">
+        <h6 style="position: relative; top: -15px; font-weight: bold !important;">THIS IS A SYSTEM GENERATED INVOICE. IN CASE OF ANY DISCREPANCIES, PLEASE CONTACT YOUR COORDINATOR.</h6>
+        <h6>
+        Add: @ViewBag.CompanyAddress
+        </h6>
+        <h6>
+        Phone: @ViewBag.Contact  Email: @ViewBag.Email  Web: @Model.CompanyBankAccount.Company.Website
+        </h6>
+        </div>
+        </footer> *@
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<script>
+				document.getElementById("downloadPdf").addEventListener("click", async () => {
+			// Select the element to export
+			const element = document.getElementById("incoice_page_body");
+
+			// Clone it to avoid modifying original DOM
+			const clone = element.cloneNode(true);
+			const container = document.createElement("div");
+			container.appendChild(clone);
+			container.style.position = "absolute";
+			container.style.left = "-9999px";
+			document.body.appendChild(container);
+
+			// Add logo at the top of the cloned content
+			const logo = document.createElement("img");
+			logo.src = "/reportlogo/GroupLogo"; // 🔁 Use your correct path
+			logo.style.width = "100px";
+			logo.style.float = "right";
+			logo.style.marginBottom = "20px";
+
+			// Insert logo before everything in the clone
+			clone.insertBefore(logo, clone.firstChild);
+
+			// Configure options
+			const options = {
+				margin: 0.2,
+				filename: 'VendorReport.pdf',
+				image: { type: 'jpeg', quality: 0.98 },
+				html2canvas: { scale: 2, useCORS: true },
+				jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+			};
+
+			// Convert and save
+			await html2pdf().set(options).from(clone).save();
+
+			// Clean up cloned container
+			document.body.removeChild(container);
+		});
+
+
+		// Toggle column visibility based on checkbox state
+		document.querySelectorAll('.column-toggle-checkbox').forEach(checkbox => {
+			checkbox.addEventListener('change', function() {
+				const columnIndex = this.getAttribute('data-column');
+				const table = document.getElementById('reportTable');
+				const rows = table.querySelectorAll('tr');
+
+				rows.forEach(row => {
+					const cell = row.cells[columnIndex];
+					if (cell) {
+						cell.style.display = this.checked ? '' : 'none';
+					}
+				});
+			});
+		});
+
+		// excel export
+
+			  document.getElementById("downloadExcel").addEventListener("click", function () {
+			var table = document.getElementById("reportTable");
+			var wb = XLSX.utils.book_new();
+			var ws = XLSX.utils.table_to_sheet(table);
+
+			XLSX.utils.book_append_sheet(wb, ws, "Package Report");
+			XLSX.writeFile(wb, "Package_Report.xlsx");
+		});
+
+	</script>
+
+</body>
+
+</html>

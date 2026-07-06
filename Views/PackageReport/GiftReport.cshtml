@@ -1,0 +1,298 @@
+﻿@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Pack </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+
+
+        body {
+            height: 80vh;
+            overflow-x: hidden;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            z-index: -99999;
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+            table th {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 3px 4px !important;
+                font-size: 12px !important;
+                /* width: fit-content !important; */
+                text-align: center !important;
+                background-color: #b0872e !important;
+                color: white;
+                font-weight: bold;
+            }
+
+            table td {
+                font-size: 12px !important;
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e !important;
+                background: transparent;
+                color: #b0872e !important;
+            }
+
+        caption {
+            color: #b0872e;
+            text-align: left important;
+            /* padding: 4px; */
+            font-size: 18px !important;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        @@media print {
+            button {
+                display: none;
+            }
+        }
+
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            /* background-image: linear-gradient(to bottom, #dbd4d4 0%, #e9e9e9 100%); */
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+
+        .pt-btn {
+            margin-bottom: 15px;
+        }
+
+        .logo-heading {
+            display: flex;
+            align-items: center;
+            margin-left: 18px;
+            /* padding: 18px 0; */
+            margin-bottom: 10px;
+        }
+
+            .company-headings  {
+                font-size: 20px;
+                font-weight: bold;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                margin-left: 25px;
+                text-align: center;
+            }
+
+        .logo-tmg-brown {
+            width: 100%;
+        }
+
+            .logo-tmg-brown img {
+                width: 100%;
+            }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+<body>
+
+
+
+
+
+    @{
+        var dynamicResults = (IEnumerable<dynamic>)ViewBag.Results;
+        var groupedResults = dynamicResults.GroupBy(x => x.ffcId);
+    }
+
+    @foreach (var group in groupedResults)
+    {
+        @* Top-heading *@
+        <div class="logo-heading">
+            <div class="logo-tmg-brown">
+                <img src="~/Images/CompanyLogos/hajj-with-khair-header.png" alt="">
+            </div>
+
+        </div>
+
+
+
+        <table id="example" class="display " style="width: 100% !important;">
+
+            <caption>
+                <h2>Gift Pack</h2>
+            </caption>
+            <button onclick="print()">Print</button>
+
+            <thead style="background-color: #f6f3ee; font-weight: bold;">
+                <tr>
+                    <th>Sr</th>
+                    <th>Package</th>
+                    <th>FcId</th>
+                    <th>CID</th>
+                    <th>Name</th>
+                    <th hidden>Total Members</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @{
+                    int i = 0;
+                    int totalFamilyMembers = 0;
+                    int totalMale = 0;
+                    int totalFemale = 0;
+                }
+
+                @foreach (var m in group)
+                {
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@m.PackageName</td>
+                        <td>@m.ffcId</td>
+                        <td>@m.CID</td>
+                        <td>@m.FullName</td>
+                        <td hidden>@m.Total</td>
+                        <td hidden>@m.Gender</td>
+                        <td hidden>@m.TotalFemale</td>
+                        <td hidden>@m.TotalMale</td>
+                    </tr>
+                    totalFamilyMembers += m.Total;
+                    totalMale += m.TotalMale;
+                    totalFemale += m.TotalFemale;
+                    i++;
+                }
+            </tbody>
+
+            <tfoot style="color: #b49164; font-weight: bolder;">
+                <tr>
+                    <td colspan="4" style="text-align: center !important">Total</td>
+                    <td>@totalFamilyMembers</td>
+                </tr>
+            </tfoot>
+        </table>
+
+
+        <h4>Total Males: @totalMale</h4>
+        <h4>Total Females: @totalFemale</h4>
+
+        // DUPLLICATE TABLE
+
+        <div style="border-top: dotted 2px black !important; width: 100%; margin-top:100px;  height:100px;!important;"></div>
+
+
+        <table id="example" class="display " style="width: 100% !important; margin-top: 20px !important ; ">
+            <caption>
+                <h2>Gift Pack </h2>
+            </caption>
+            <button onclick="print()">Print</button>
+            <div class="logo-heading">
+                <div class="logo-tmg-brown">
+                    <img src="~/Images/CompanyLogos/hajj-with-khair-header.png" alt="">
+                </div>
+
+            </div>
+
+            <thead style="background-color: #f6f3ee; font-weight: bold;">
+                <tr>
+                    <th>Sr</th>
+                    <th>Package</th>
+                    <th>FcId</th>
+                    <th>CID</th>
+                    <th>Name</th>
+                    <th hidden>Total Members</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @{
+                    int k = 0;
+                    int ktotalFamilyMembers = 0;
+                    int ktotalMale = 0;
+                    int ktotalFemale = 0;
+                }
+
+                @foreach (var m in group)
+                {
+                    <tr>
+                        <td>@(k + 1)</td>
+                        <td>@m.PackageName</td>
+                        <td>@m.ffcId</td>
+                        <td>@m.CID</td>
+                        <td>@m.FullName</td>
+                        <td hidden>@m.Total</td>
+                        <td hidden>@m.Gender</td>
+                        <td hidden>@m.TotalFemale</td>
+                        <td hidden>@m.TotalMale</td>
+                    </tr>
+                    ktotalFamilyMembers += m.Total;
+                    ktotalMale += m.TotalMale;
+                    ktotalFemale += m.TotalFemale;
+                    k++;
+                }
+            </tbody>
+
+            <tfoot style="color: #b49164; font-weight: bolder;">
+                <tr>
+                    <td colspan="4" style="text-align: center !important">Total</td>
+                    <td>@ktotalFamilyMembers</td>
+                </tr>
+            </tfoot>
+        </table>
+
+
+        <h4>Total Males: @ktotalMale</h4>
+        <h4>Total Females: @ktotalFemale</h4>
+
+        <div class="page-break"></div>
+
+    }
+
+</body>
+
+</html>

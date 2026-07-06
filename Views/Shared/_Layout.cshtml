@@ -1,0 +1,1463 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+<!DOCTYPE html>
+
+<html lang="en" class="light-style layout-menu-fixed">
+
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Dashboard | Madani</title>
+
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.common.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+
+    <style>
+        .select2-search__field {
+            outline: none
+        }
+
+        .select2-dropdown {
+            background-color: #f66262;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding: 0px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            color: #000;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #eee;
+            color: black;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="~/madnifavicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+
+    <style>
+        .menu-item .active {
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+
+        <div class="layout-container">
+            <!-- Menu -->
+
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+
+                <ul class="menu-inner py-1">
+                    <!-- Dashboard -->
+                    <li class="menu-item active">
+                        <a asp-controller="Admin" asp-action="Index" class="menu-link">
+                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            <div data-i18n="Analytics" style="font-size: 15px;font-weight: bold;">
+                                 Madani Dashboard
+                            </div>
+                        </a>
+                    </li>
+                    <li class="menu-header small text-uppercase">
+                        <span class="menu-header-text">Modules </span>
+                    </li>
+                    @if (http.HttpContext.Session.GetString("RoleName").Equals("null"))
+                    {
+                        <li class="menu-header small text-uppercase">
+                            <span class="menu-header-text">No Role Assigned</span>
+                        </li>
+                    }
+                    else
+                    {
+                        @if (http.HttpContext.Session.GetString("UserId").Equals("1"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bxs-user'></i>
+                                    <div data-i18n="Account Settings">Admin Module</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    <li class="menu-item">
+                                        <a asp-controller="HajjSeason" asp-action="Index" class="menu-link">
+                                            <div>Hajj Season</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("UserModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bxs-user'></i>
+                                    <div data-i18n="Account Settings">Users</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewUser").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="User" asp-action="Index" class="menu-link">
+                                                <div>Users</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewRole").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Role" asp-action="Index" class="menu-link">
+                                                <div>Roles</div>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("CompanyModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bx-buildings'></i>
+                                    <div data-i18n="Account Settings">Companies</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewCompany").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Company" asp-action="Index" class="menu-link">
+
+                                                <div>Companies</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewCompanyAddress").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="CompanyAddress" asp-action="Index" class="menu-link">
+
+                                                <div>Address Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewCompanyContact").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="CompanyContact" asp-action="Index" class="menu-link">
+
+                                                <div>Contact Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewCompanyEmail").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="CompanyEmail" asp-action="Index" class="menu-link">
+
+                                                <div>Email Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewCompanyLicense").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="CompanyLicense" asp-action="Index" class="menu-link">
+
+                                                <div>License Types</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewStaffMembers").Equals("True"))
+                                    {
+                                        @* <li class="menu-item">
+                            <a asp-controller="StaffMember" asp-action="Index" class="menu-link">
+
+                            <div>Staff Members</div>
+                            </a>
+                            </li> *@
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewDesignation").Equals("True"))
+                                    {
+                                        @* <li class="menu-item">
+                            <a asp-controller="Designation" asp-action="Index" class="menu-link">
+
+                            <div>Designations</div>
+                            </a>
+                            </li> *@
+                                    }
+                                    <li class="menu-item">
+                                        <a asp-controller="Munazzim" asp-action="Index" class="menu-link">
+                                            <div>Munazzims</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a asp-controller="CompanyDepartment" asp-action="Index" class="menu-link">
+                                            <div>Company Department</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a asp-controller="DepartmentFiling" asp-action="Index" class="menu-link">
+                                            <div>Documents / E-Filing</div>
+                                        </a>
+                                    </li>
+                                    @* <li class="menu-item">
+                            <a asp-controller="CongratulationLetter" asp-action="CongratulationLetter"
+                            class="menu-link">
+                            <div>Congratulation Letter</div>
+                            </a>
+                            </li> *@
+                                </ul>
+                            </li>
+                        }
+
+                        @if (http.HttpContext.Session.GetString("AccomodationModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bx-bed'></i>
+                                    <div data-i18n="Account Settings">Accomodations</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewRoom").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Room" asp-action="Index" class="menu-link">
+                                                <div>Room Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewPlace").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Place" asp-action="Index" class="menu-link">
+                                                <div>Places</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewAccomodation").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Accomodation" asp-action="Index" class="menu-link">
+                                                <div>Accomodation</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewAccomodationCategory").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="AccomodationCategory" asp-action="Index" class="menu-link">
+                                                <div>Saudi Star Ratings</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewFoodPackage").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="FoodPackage" asp-action="Index" class="menu-link">
+                                                <div>Food Packages</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li class="menu-item">
+                                        <a asp-controller="ExtraFacilityDescription" asp-action="Index" class="menu-link">
+                                            <div>Add-ons</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="IndividualFacilityDescription" asp-action="Index" class="menu-link">
+                                            <div>Rooming Description</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="RoomBedType" asp-action="Index" class="menu-link">
+                                            <div>Room Bed Types</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="RoomView" asp-action="Index" class="menu-link">
+                                            <div>Room Views</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("MiscModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bxs-hdd'></i>
+                                    <div data-i18n="Account Settings">Misc.</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    <li class="menu-item">
+                                        <a asp-controller="PNR" asp-action="Index" class="menu-link">
+                                            <div>PNR Airline</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="PNRTrain" asp-action="Index" class="menu-link">
+                                            <div>PNR Train</div>
+                                        </a>
+                                    </li>
+                                    @* <li class="menu-item">
+                                        <a asp-controller="GiveAway" asp-action="Index" class="menu-link">
+                                            <div>Give Away</div>
+                                        </a>
+                                    </li> *@
+                                    <li class="menu-item">
+                                        <a asp-controller="CompanyVisa" asp-action="Index" class="menu-link">
+                                            <div>Company Visa</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="IDCardList" asp-action="Index" class="menu-link">
+                                            <div>ID Card List</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="EIslamic" asp-action="Index" class="menu-link">
+                                            <div>E-Islamic</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="EMarketing" asp-action="Index" class="menu-link">
+                                            <div>E-Marketing</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="CityTax" asp-action="Index" class="menu-link">
+                                            <div>City Taxes</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="SubClasses" asp-action="Index" class="menu-link">
+                                            <div>Sub Classes</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="LetterHead" asp-action="Index" class="menu-link">
+                                            <div>Letter Head</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Employee" asp-action="Index" class="menu-link">
+                                            <div>Staff</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="SPOTaskManagement" asp-action="Index" class="menu-link">
+                                            <div>SPO Task Management</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="HajjDepartment" asp-action="Index" class="menu-link">
+                                            <div>Hajj Department</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Cordinator" asp-action="Index" class="menu-link">
+                                            <div>Cordinator</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="ApplicantTypes" asp-action="Index" class="menu-link">
+                                            <div>Applicant Types</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Doctor" asp-action="Index" class="menu-link">
+                                            <div>Doctor</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="CreditCard" asp-action="Index" class="menu-link">
+                                            <div>CreditCard</div>
+                                        </a>
+                                    </li>
+                                    @if (http.HttpContext.Session.GetString("CanViewGift").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Gift" asp-action="Index" class="menu-link">
+                                                <div>Giveaways / Gifts</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewTraining").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Training" asp-action="Index" class="menu-link">
+                                                <div>Training Sessions</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewHonorifics").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Honorifics" asp-action="Index" class="menu-link">
+                                                <div>Honorifics</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewFiqah").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Fiqah" asp-action="Index" class="menu-link">
+                                                <div>Fiqahs</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewTehsil").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Tehsil" asp-action="Index" class="menu-link">
+                                                <div>Tehsils</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewReference").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Reference" asp-action="Index" class="menu-link">
+                                                <div>References</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewFamilyHeadRel").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="FamilyHeadRelation" asp-action="Index" class="menu-link">
+                                                <div>Family Heads</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewMehramRel").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="MehramRelation" asp-action="Index" class="menu-link">
+                                                <div>Mehram Relations</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewNominee").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="NomineeRelation" asp-action="Index" class="menu-link">
+                                                <div>Nominee Relations</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewReqDocs").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="RequiredDocument" asp-action="Index" class="menu-link">
+                                                <div>Required Documents</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="EVideoFiling" asp-action="Index" class="menu-link">
+                                                <div>Media</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="MediaDocument" asp-action="Index" class="menu-link">
+                                                <div>Media Department</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewPaymentNotes").Equals("True"))
+                                    {
+
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewVaccine").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Vaccine" asp-action="Index" class="menu-link">
+                                                <div>Vaccines</div>
+                                            </a>
+                                        </li>
+                                    }
+
+                                    @if (http.HttpContext.Session.GetString("CanViewQuotationPayPol").Equals("True"))
+                                    {
+                                        @* <li class="menu-item">
+                            <a asp-controller="QuotationPaymentPolicy" asp-action="Index" class="menu-link">
+                            <div>Quotation Payment Policies</div>
+                            </a>
+                            </li> *@
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewQuotationTC").Equals("True"))
+                                    {
+                                        @* <li class="menu-item">
+                            <a asp-controller="QuotationTC" asp-action="Index" class="menu-link">
+                            <div>Quotation T&Cs</div>
+                            </a>
+                            </li> *@
+                                    }
+
+
+                                    <li class="menu-item">
+                                        <a asp-controller="SPO" asp-action="Index" class="menu-link">
+                                            <div>SPOs</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a asp-controller="BoardingStamp" asp-action="Index" class="menu-link">
+                                            <div>Boarding Stamps</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="MisStamp" asp-action="Index" class="menu-link">
+                                            <div>MIS Stamps / Signatures</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a asp-controller="Airport" asp-action="Index" class="menu-link">
+                                            <div>Airports</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="POTicketFlight" asp-action="Index" class="menu-link">
+                                            <div>Flights</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("PackageModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bxs-package'></i>
+                                    <div data-i18n="Account Settings">Packages</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    <li class="menu-item">
+                                        <a asp-controller="Package" asp-action="Index" class="menu-link">
+                                            <div>Packages</div>
+                                        </a>
+                                    </li>
+
+                                    <li class="menu-item">
+                                        <a asp-controller="HajjAgreement" asp-action="Index" class="menu-link">
+                                            <div>Hajj Agreements</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="PackageTerm" asp-action="Index" class="menu-link">
+                                            <div>Terms & Condition</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("PurchaseOrderModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bxs-user-account'></i>
+                                    <div data-i18n="Account Settings">Purchase Orders</div>
+                                </a>
+                                <ul class="menu-sub">
+
+                                    <li class="menu-item">
+                                        <a asp-controller="POVisa" asp-action="Index" class="menu-link">
+                                            <div>PO - Visa</div>
+                                        </a>
+                                    </li>
+                                    @if (http.HttpContext.Session.GetString("CanViewPOTicket").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="POTicket" asp-action="Index" class="menu-link">
+                                                <div>PO - Ticket</div>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("AccountsModuleAllowed").Equals("True"))
+                        {
+
+                        }
+                        @if (http.HttpContext.Session.GetString("TransportationModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                    <i class='menu-icon tf-icons bx bxs-plane-take-off'></i>
+                                    <div data-i18n="Account Settings">Transportation</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewVehicle").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Vehicle" asp-action="Index" class="menu-link">
+                                                <div>Vehicle Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewRoute").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Route" asp-action="Index" class="menu-link">
+                                                <div>Routes</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewTravelRoute").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="TravelRoute" asp-action="Index" class="menu-link">
+                                                <div>Travel Routes</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewAirlines").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Airline" asp-action="Index" class="menu-link">
+                                                <div>Airlines</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @* <li class="menu-item">
+                            <a asp-controller="Flight" asp-action="Index" class="menu-link">
+                            <div>Flights</div>
+                            </a>
+                            </li> *@
+
+                                    @* <li class="menu-item">
+                            <a asp-controller="FlightReport" asp-action="FlightSummary" class="menu-link" target="_blank">
+                            <div>Flight Summary</div>
+                            </a>
+                            </li>
+                            <li class="menu-item">
+                            <a asp-controller="FlightReport" asp-action="FlightSummaryDailyReport" class="menu-link"
+                            target="_blank">
+                            <div>Flight Summary Daily Report (Arrival)</div>
+                            </a>
+                            </li> *@
+
+                                    <li class="menu-item">
+                                        <a asp-controller="Railway" asp-action="Index" class="menu-link">
+                                            <div>Trains</div>
+                                        </a>
+                                    </li>
+
+                                    @*<li class="menu-item">
+                            <a asp-controller="RailwayTravel" asp-action="Index" class="menu-link">
+                            <div>Train Travel</div>
+                            </a>
+                            </li>*@
+
+
+                                    @* <li class="menu-item">
+                            <a asp-controller="RailwayTravel" target="_blank" asp-action="RailwaySummaryDailyReport"
+                            class="menu-link">
+                            <div>Train Travel Daily Report</div>
+                            </a>
+                            </li>
+
+                            <li class="menu-item">
+                            <a asp-controller="FlightReport" target="_blank" asp-action="RiyazUlJaanahCheckInSelect"
+                            class="menu-link">
+                            <div>Riaz-ul-Jannah Check In Report</div>
+                            </a>
+                            </li>*@
+                                    <li class="menu-item">
+                                        <a asp-controller="IssuingAgent" asp-action="Index" class="menu-link">
+                                            <div>Issuing Agents</div>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+
+                        @if (http.HttpContext.Session.GetString("FamilyModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bx-group'></i>
+                                    <div data-i18n="Account Settings">Hajji Booking</div>
+                                </a>
+                                <ul class="menu-sub">
+
+                                    @if (http.HttpContext.Session.GetString("CanViewFamilies").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="FamilyHead" asp-action="Index" class="menu-link">
+                                                <div>Hajji</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="DataForm" asp-action="Index" class="menu-link">
+                                                <div>Hajj 2026 Form</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="FamilyHead" asp-action="IndexCustomerProfile" class="menu-link">
+                                                <div>Enquiry</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="OnlineInquiry" asp-action="OnlineIndex" class="menu-link">
+                                                <div>Online Enquiry</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="InquiryEmail" asp-action="Index" class="menu-link">
+                                                <div>Online Enquiry Email</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="ClientData" asp-action="Index" class="menu-link">
+                                                <div>Client Data</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="CustomerRemarks" asp-action="Index" class="menu-link">
+                                                <div>Customer Remarks</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="CustomerStatus" asp-action="Index" class="menu-link">
+                                                <div>Customer Status</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @*  @if (http.HttpContext.Session.GetString("CanViewMemberType").Equals("True"))
+                            {
+                            <li class="menu-item">
+                            <a asp-controller="MemberType" asp-action="Index" class="menu-link">
+                            <div>Types</div>
+                            </a>
+                            </li>
+                            } *@
+                                    @if (http.HttpContext.Session.GetString("CanViewMemberAddress").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="MemberAddress" asp-action="Index" class="menu-link">
+                                                <div>Address Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewMemberContact").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="MemberContact" asp-action="Index" class="menu-link">
+                                                <div>Contact Types</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewMemberEmail").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="MemberEmail" asp-action="Index" class="menu-link">
+                                                <div>Email Types</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="PassportType" asp-action="Index" class="menu-link">
+                                                <div>Passport Type</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Destination" asp-action="Index" class="menu-link">
+                                                <div>Destinations</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="City" asp-action="Index" class="menu-link">
+                                                <div>City</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Country" asp-action="Index" class="menu-link">
+                                                <div>Country</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Nationality" asp-action="Index" class="menu-link">
+                                                <div>Nationality</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="CountryCode" asp-action="Index" class="menu-link">
+                                                <div>Country Code</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Designation" asp-action="Index" class="menu-link">
+                                                <div>Designation</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @*  @if (http.HttpContext.Session.GetString("CanViewFamilies").Equals("True"))
+                            {
+                            <li class="menu-item">
+                            <a asp-controller="Gift" asp-action="Gift" class="menu-link">
+                            <div>Gift Packs</div>
+                            </a>
+                            </li>
+                            }
+                            @if (http.HttpContext.Session.GetString("CanViewFamilies").Equals("True"))
+                            {
+                            <li class="menu-item">
+                            <a asp-controller="Gift" asp-action="Suitcase" class="menu-link">
+                            <div>Suit Case</div>
+                            </a>
+                            </li>
+                            } *@
+                                </ul>
+                            </li>
+
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bx-group'></i>
+                                    <div data-i18n="Account Settings">Emails</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewFamilies").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="InquiryEmail" asp-action="Index" class="menu-link">
+                                                <div>Online Enquiry Email</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="EmailData" asp-action="Index" class="menu-link">
+                                                <div>Email & Whatsapp</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Email" asp-action="BookedHajjiForm" class="menu-link">
+                                                <div>Booked Hajji Email</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Email" asp-action="InquiryHajjiForm" class="menu-link">
+                                                <div>Inquiry Hajji Email</div>
+                                            </a>
+                                        </li>
+                                        <li class="menu-item">
+                                            <a asp-controller="Email" asp-action="HajjiForm" class="menu-link">
+                                                <div>Hajj 2026 Hajji Email</div>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("QurbaniModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bx-knife'></i>
+                                    <div data-i18n="Account Settings">Qurbani</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    <li class="menu-item">
+                                        <a asp-controller="Batch" asp-action="Index" class="menu-link">
+                                            <div>Batches</div>
+                                        </a>
+                                    </li>
+                                    @* <li class="menu-item">
+                                        <a asp-controller="QurbaniReport" asp-action="PackageWiseSummary" class="menu-link">
+                                            <div>Package-wise Summary Report</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="QurbaniReport" asp-action="HajjiWiseSummary" class="menu-link">
+                                            <div>Haji-wise Summary Report</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Qurbani" asp-action="SearchReceipt" class="menu-link">
+                                            <div>Search Receipt</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="QurbaniSlipTC" asp-action="Index" class="menu-link">
+                                            <div>Qurbani Slip T & Cs</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="QurbaniSlipNote" asp-action="Index" class="menu-link">
+                                            <div>Qurbani Slip Notes</div>
+                                        </a>
+                                    </li> *@
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("GroupsModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bxs-group'></i>
+                                    <div data-i18n="Account Settings">Groups</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    <li class="menu-item">
+                                        <a asp-controller="Group" asp-action="Index" class="menu-link">
+                                            <div>Groups</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="SubGroup" asp-action="Index" class="menu-link">
+                                            <div>Sub Groups Medina</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="SubGroup" asp-action="MakkahIndex" class="menu-link">
+                                            <div>Sub Groups Makkah</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="SubGroup" asp-action="MinaIndex" class="menu-link">
+                                            <div>Sub Groups Mina</div>
+                                        </a>
+                                    </li>
+                                    @*   <li class="menu-item">
+                            <a asp-controller="GroupReport" asp-action="AziziaUnAllocatedMembers" class="menu-link">
+                            <div>Azzia UnAllocated Members</div>
+                            </a>
+                            </li> *@
+                                    <li class="menu-item">
+                                        <a asp-controller="GroupReport" asp-action="UnAllocatedMember" class="menu-link">
+                                            <div>Group-Wise Un Allocated Members</div>
+                                        </a>
+                                    </li>
+                                    @* <li class="menu-item">
+                            <a asp-controller="CoordinatorRole" asp-action="Index" class="menu-link">
+                            <div>Coordinator Roles</div>
+                            </a>
+                            </li>
+                            <li class="menu-item">
+                            <a asp-controller="Coordinator" asp-action="Index" class="menu-link">
+                            <div>Coordinators</div>
+                            </a>
+                            </li> *@
+                                </ul>
+                            </li>
+                        }
+                        @if (http.HttpContext.Session.GetString("ReservationModuleAllowed").Equals("True"))
+                        {
+                            <li class="menu-item">
+                                <a href="javascript:void(0);" class="menu-link menu-toggle">
+
+                                    <i class='menu-icon tf-icons bx bxs-bookmark'></i>
+                                    <div data-i18n="Account Settings">Reservation</div>
+                                </a>
+                                <ul class="menu-sub">
+                                    @if (http.HttpContext.Session.GetString("CanViewHotel").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="Hotel" asp-action="Index" class="menu-link">
+                                                <div>Hotels</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @* @if (http.HttpContext.Session.GetString("CanViewPOHotel").Equals("True"))
+                                    { *@
+                                    <li class="menu-item">
+                                        <a asp-controller="POHotel" asp-action="Index" class="menu-link">
+                                            <div>PO - Hotel</div>
+                                        </a>
+                                    </li>
+                                    @* } *@
+                                    <li class="menu-item">
+                                        <a asp-controller="ItineraryBlock" asp-action="Index" class="menu-link">
+                                            <div>Itinerary Block</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="TransportationBlocks" asp-action="Index" class="menu-link">
+                                            <div>Transportation Blocks</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Mina" asp-action="Index" class="menu-link">
+                                            <div>Mina</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Report" target="_blank" asp-action="HotelSelection"
+                                           class="menu-link">
+                                            <div>Hotel Rooming</div>
+                                        </a>
+                                    </li>
+                                    @if (http.HttpContext.Session.GetString("CanViewRoomAllotment").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a asp-controller="RoomAllotment" asp-action="Index" class="menu-link">
+                                                <div>Room Allotments</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @* <li class="menu-item">
+                                        <a asp-controller="Reservation" asp-action="Index" class="menu-link">
+                                            <div>Room Allocations</div>
+                                        </a>
+                                    </li> *@
+                                    @if (http.HttpContext.Session.GetString("CanViewRoomSummaryReport").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a target="_blank" asp-controller="ReservationReport"
+                                               asp-action="HotelRoomSummarySelect" class="menu-link">
+                                                <div>Hotel Room Summary</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("CanViewDailyRoomSummaryReport").Equals("True"))
+                                    {
+                                        <li class="menu-item">
+                                            <a target="_blank" asp-controller="ReservationReport"
+                                               asp-action="DailyHotelRoomSummarySelect" class="menu-link">
+                                                <div>Daily Hotel Room Summary</div>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li class="menu-item">
+                                        <a target="_blank" asp-controller="ReservationReport" asp-action="PlaceWiseCheckInOut"
+                                           class="menu-link">
+                                            <div>Place Wise Check In / Out</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a target="_blank" asp-controller="ReservationReport"
+                                           asp-action="PackageCheckInCheckOutSummarySelect" class="menu-link">
+                                            <div>Package Wise Check In / Out</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a target="_blank" asp-controller="EHajj" asp-action="Index" class="menu-link">
+                                            <div>E Hajj Contracts</div>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+@* 
+                        <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class='menu-icon tf-icons bx bxs-user-account'></i>
+                                <div data-i18n="Account Settings">New COA</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item">
+                                    <a asp-controller="CurrencyTypes" asp-action="Index" class="menu-link">
+                                        <div>Chart Of Accounts</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+ *@
+                        @* <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class='menu-icon tf-icons bx bxs-purchase-tag-alt'></i>
+                    <div data-i18n="Account Settings">Demand</div>
+                    </a>
+                    <ul class="menu-sub">
+                    @*  <li class="menu-item">
+                    <a asp-controller="Demand" asp-action="Flight" class="menu-link">
+                    <div>Flight Demand</div>
+                    </a>
+                    </li>
+                    <li class="menu-item">
+                    <a asp-controller="Demand" asp-action="Train" class="menu-link">
+                    <div>Train Demand</div>
+                    </a>
+                    </li>
+                    <li class="menu-item">
+                    <a target="_blank" asp-controller="Report" asp-action="RoomDemandReportSelection" class="menu-link">
+                    <div>Room Demand</div>
+                    </a>
+                    </li>
+
+                    </ul>
+                    </li> *@
+                        <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class='menu-icon tf-icons bx bx-buildings'></i>
+                                <div data-i18n="Account Settings">Reports</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item">
+                                    <a asp-controller="Report" target="_blank" asp-action="VendorReportSelection"
+                                       class="menu-link">
+                                        <div>Vendor Report</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" target="_blank" asp-action="PackageSelection"
+                                       class="menu-link">
+                                        <div>Package Report</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" target="_blank" asp-action="PackageCodeSelection"
+                                       class="menu-link">
+                                        <div>Package Rooming</div>
+                                    </a>
+                                </li>
+                                @* <li class="menu-item">
+                            <a asp-controller="BankReport" target="_blank" asp-action="LedgerReportSelection"
+                            class="menu-link">
+                            <div>Bank Account Ledger</div>
+                            </a>
+                            </li> *@
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="CompanyWiseSummary" class="menu-link">
+                                        <div>Company Wise Summary</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="CompanyWiseHaji" class="menu-link">
+                                        <div>Company Wise Hajji</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="PackageWiseReport" class="menu-link">
+                                        <div>Package Wise - Haji Report</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="PackageWiseFlightSummarySelection" class="menu-link" target="_blank">
+                                        <div>Package Wise - Flight Summary</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="PackageWiseTrainSummarySelection" class="menu-link" target="_blank">
+                                        <div>Package Wise - Train Summary</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="GroupWiseFlightSummarySelection" class="menu-link" target="_blank">
+                                        <div>Group Wise - Flight Summary</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a asp-controller="Report" asp-action="GroupWiseTrainSummarySelection" class="menu-link" target="_blank">
+                                        <div>Group Wise - Train Summary</div>
+                                    </a>
+                                </li>
+                                @*  <li class="menu-item">
+                            <a asp-controller="FlightReport" asp-action="FlightReportFilter" class="menu-link"
+                            target="_blank">
+                            <div>Flight Summary</div>
+                            </a>
+                            </li>
+                            <li class="menu-item">
+                            <a asp-controller="Report" target="_blank" asp-action="PackageWiseFlightSummarySelection"
+                            class="menu-link">
+                            <div>Package Wise - Flight Summary</div>
+                            </a>
+                            </li>
+                            <li class="menu-item">
+                            <a asp-controller="Report" target="_blank" asp-action="CompanyWiseRailwayTravelSummary"
+                            class="menu-link">
+                            <div>Company Wise - Train Travel Summary</div>
+                            </a>
+                            </li> *@
+                                @* <li class="menu-item">
+                            <a asp-controller="AccommodationReport" target="_blank" asp-action="AccomodationReport"
+                            class="menu-link">
+                            <div>Accomodation Summary</div>
+                            </a>
+                            </li> *@
+                                <li class="menu-item">
+                                    <a asp-controller="Report" target="_blank" asp-action="BookingWiseReceiptReportSelection"
+                                       class="menu-link">
+                                        <div>Booking Wise - Receipt Report</div>
+                                    </a>
+                                </li>
+                                @* <li class="menu-item">
+                            <a asp-controller="Report" target="_blank" asp-action="BankReceiptReport"
+                            class="menu-link">
+                            <div>Bank Wise - Receipt Report</div>
+                            </a>
+                            </li>
+                            <li class="menu-item">
+                            <a asp-controller="Report" target="_blank" asp-action="CompanyBankReportSelection"
+                            class="menu-link">
+                            <div>Bank Summary Report</div>
+                            </a>
+                            </li> *@
+
+
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </aside>
+            <div class="layout-page">
+
+                <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                     id="layout-navbar">
+                    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                            <i class="bx bx-menu bx-sm"></i>
+                        </a>
+                    </div>
+                    <select id="hajjSeason" class="form-control" style="width: 100px;">
+                        <option value=""></option>
+                    </select>
+                    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+
+                        <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                                   data-bs-toggle="dropdown">
+                                    <div class="avatar avatar-online">
+                                        <img src="~/madnilogo.png" alt
+                                             class="w-px-40 h-auto rounded-circle" />
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <div class="avatar avatar-online">
+                                                        <img src="~/madnilogo.png" alt
+                                                             class="w-px-40 h-auto rounded-circle" />
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <span class="fw-semibold d-block">@User.Identity.Name</span>
+                                                    <small class="text-muted">@http.HttpContext.Session.GetString("RoleName")</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="User" asp-action="ChangePassword"
+                                           asp-route-id="@http.HttpContext.Session.GetString("UserId")">
+                                            <i class="bx bx-lock me-2"></i>
+                                            <span class="align-middle">Change Password</span>
+                                        </a>
+                                    </li>
+                                    @if (http.HttpContext.Session.GetString("RoleName").Equals("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Settings" asp-action="Index"
+                                               asp-route-id="@http.HttpContext.Session.GetString("UserId")">
+                                                <i class="bx bx-cog me-2"></i>
+                                                <span class="align-middle">Settings</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    @if (http.HttpContext.Session.GetString("AccountsModuleAllowed").Equals("True"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="ADashboard" asp-action="Index">
+                                                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                                                <span class="align-middle">Accounts Dashboard</span>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <div class="dropdown-divider"></div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-controller="Auth" asp-action="Logout">
+                                            <i class="bx bx-power-off me-2"></i>
+                                            <span class="align-middle">Log Out</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <div class="content-wrapper">
+                    @if (TempData.ContainsKey("loggedIn"))
+                    {
+                        if ((bool)TempData["loggedIn"]! == true)
+                        {
+                            <script>
+                                toastr.options.closeDuration = 100;
+                                toastr.options.closeButton = true;
+                                toastr.options.positionClass = "toast-top-left";
+                                toastr.success('Welcome, @User?.Identity.Name', 'Logged In Successfully!', { timeOut: 2000 })
+
+                            </script>
+                            TempData["loggedIn"] = false;
+                        }
+                    }
+                    @RenderBody()
+                    <footer class="content-footer footer bg-footer-theme">
+                        <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                            <div class="mb-2 mb-md-0" id="time">
+                            </div>
+                            &nbsp; App Version: v1.0807.1
+                        </div>
+                    </footer>
+                    <script>
+                        const divTime = document.querySelector("#time")
+                        setInterval(function () {
+                            divTime.innerHTML = new Date()
+                        }, 1000);
+
+                    </script>
+
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="~/assets/vendor/libs/popper/popper.js"></script>
+    <script src="~/assets/vendor/js/bootstrap.js"></script>
+    <script src="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="~/assets/vendor/js/menu.js"></script>
+    <script src="~/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- jsPDF autoTable Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="~/assets/js/main.js"></script>
+
+    <script src="~/assets/js/dashboards-analytics.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+    <!-- Summernote JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/Admin/GetSelectedHajjSeason',
+                type: 'GET',
+                success: function (sessionResponse) {
+                    var selectedSessionId = sessionResponse.selectedSessionId;
+
+                    $.ajax({
+                        url: '/Admin/GetHajjSeasons',
+                        type: 'GET',
+                        success: function (response) {
+                            var select = $('#hajjSeason');
+                            select.empty();
+
+                            $.each(response, function (index, item) {
+                                var option = $('<option>', {
+                                    value: item.id,
+                                    text: item.name
+                                });
+
+                                if (item.id == selectedSessionId) {
+                                    option.attr('selected', 'selected');
+                                }
+
+                                select.append(option);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX Error:', error);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+
+            $('#hajjSeason').on('change', function () {
+                var selectedValue = $(this).val();
+
+                $.ajax({
+                    url: '/Admin/SetHajjSessions',
+                    type: 'POST',
+                    data: { sessionId: selectedValue },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.reload()
+                            console.log(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+﻿<script>
+    function searchFriend() {
+        const inputCNIC = document.querySelector("#FriendCNIC")
+        const cnic = inputCNIC.value
+
+        const inputSurName = document.querySelector("#FriendSurName")
+        const inputGivenName = document.querySelector("#FriendGivenName")
+        const inputGender = document.querySelector("#FriendGender")
+        const inputPassportNumber = document.querySelector("#FriendPassportNumber")
+
+
+        $.ajax({
+            url: "/FamilyHead/GetFriend/",
+            method: "GET",
+            data: {
+                cnic: cnic
+            },
+            success: res => {
+                if (res.status == 200) {
+                    console.log(res.data.surName)
+                    inputSurName.value = res.data.surName
+                    inputGivenName.value = res.data.givenName
+                    inputGender.value = res.data.gender
+                    inputPassportNumber.value = res.data.passport
+                }
+                else if (res.status == 201) {
+                    alert(res.msg)
+                    inputSurName.value = ""
+                    inputGivenName.value = ""
+                    inputGender.value = ""
+                    inputPassportNumber.value = ""
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        })
+    }
+
+    function searchMehram() {
+        const inputCNIC = document.querySelector("#MehramCNIC")
+        const cnic = inputCNIC.value
+
+        const inputSurName = document.querySelector("#MehramSurName")
+        const inputGivenName = document.querySelector("#MehramGivenName")
+        const inputGender = document.querySelector("#MehramGender")
+        const inputPassportNumber = document.querySelector("#MehramPassportNumber")
+
+
+        $.ajax({
+            url: "/FamilyHead/GetFriend/",
+            method: "GET",
+            data: {
+                cnic: cnic
+            },
+            success: res => {
+                if (res.status == 200) {
+                    console.log(res.data.surName)
+                    inputSurName.value = res.data.surName
+                    inputGivenName.value = res.data.givenName
+                    inputGender.value = res.data.gender
+                    inputPassportNumber.value = res.data.passport
+                }
+                else if (res.status == 201) {
+                    alert(res.msg)
+                    inputSurName.value = ""
+                    inputGivenName.value = ""
+                    inputGender.value = ""
+                    inputPassportNumber.value = ""
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        })
+    }
+</script>

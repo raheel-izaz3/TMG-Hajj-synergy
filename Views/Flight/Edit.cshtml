@@ -1,0 +1,623 @@
+﻿@model Flight
+
+@{
+    string modelName = "Flight";
+    string modelNamePlural = "Flightes";
+    string modelControllerRoute = "Flight";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-flight" aria-controls="navs-pills-justified-flight"
+                            aria-selected="false">
+                            <i class="tf-icons bx bxs-plane"></i> FLIGHT
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-sector" aria-controls="navs-pills-justified-sector"
+                            aria-selected="true">
+                            <i class="tf-icons bx bx-building"></i> SECTOR
+                        </button>
+                    </li>
+                </ul>
+                <form method="post">
+                    <input type="hidden" asp-for="FlightId" />
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="navs-pills-justified-flight" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="AirlineId"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <select asp-for="AirlineId" class="form-control">
+                                                @foreach (Airline airline in ViewBag.Airlines)
+                                                {
+                                                    <option value="@airline.AirlineId">@airline.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="AirlineId"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="Name"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Name" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Name"></span>
+                                    </div>
+
+                                    @* Outbound Flight Info. *@
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="OutboundFlightNumber"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="OutboundFlightNumber" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="OutboundFlightNumber"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="OutboundDepartureDateTime"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="OutboundDepartureDateTime" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="OutboundDepartureDateTime"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="OutboundArrivalDateTime"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="OutboundArrivalDateTime" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="OutboundArrivalDateTime"></span>
+                                    </div>
+
+                                    @* Inbound Flight Info. *@
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="InboundFlightNumber"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="InboundFlightNumber" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="InboundFlightNumber"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="InboundDepartureDateTime"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="InboundDepartureDateTime" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="InboundDepartureDateTime"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="InboundArrivalDateTime"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="InboundArrivalDateTime" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="InboundArrivalDateTime"></span>
+                                    </div>
+
+                                    @* <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="SARROE"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="SARROE" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="SARROE"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="USDROE"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="USDROE" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="USDROE"></span>
+                                    </div> *@
+
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="EconomySeats"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="EconomySeats" oninput="updateEconomySeats(this.value)"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+
+                                    @* <div class="row mb-3">
+                                        <!-- Adult PKR and SAR -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="pkPrice" asp-for="EconomyAdultPkr"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyAdultPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR </span>
+                                                <input class="form-control" asp-for="EconomyAdultPkr"
+                                                    oninput="pkrToOtherCurr('EconomyAdultPkr', 'EconomyAdultSar', 'EconomyAdultUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" asp-for="EconomyAdultSar"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyAdultSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="EconomyAdultSar"
+                                                    oninput="sarToOtherCurr('EconomyAdultSar', 'EconomyAdultPkr', 'EconomyAdultUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" asp-for="EconomyAdultUsd"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyAdultUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="EconomyAdultUsd"
+                                                    oninput="usdToOtherCurr('EconomyAdultUsd', 'EconomyAdultPkr', 'EconomyAdultSar')">
+                                            </div>
+                                        </div>
+
+                                        <!-- Child PKR and SAR (Opposite Positions) -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="childPkPrice"
+                                                asp-for="EconomyChildPkr"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyChildPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR</span>
+                                                <input class="form-control" asp-for="EconomyChildPkr"
+                                                    oninput="pkrToOtherCurr('EconomyChildPkr', 'EconomyChildSar', 'EconomyChildUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="EconomyChildSar"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyChildSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="EconomyChildSar"
+                                                    oninput="sarToOtherCurr('EconomyChildSar', 'EconomyChildPkr', 'EconomyChildUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="EconomyChildUsd"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyChildUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="EconomyChildUsd"
+                                                    oninput="usdToOtherCurr('EconomyChildUsd', 'EconomyChildPkr', 'EconomyChildSar')">
+                                            </div>
+                                        </div>
+
+                                        <!-- Infant PKR and SAR (Opposite Positions) -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="childPkPrice"
+                                                asp-for="EconomyInfantPkr"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyInfantPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR</span>
+                                                <input class="form-control" asp-for="EconomyInfantPkr"
+                                                    oninput="pkrToOtherCurr('EconomyInfantPkr', 'EconomyInfantSar', 'EconomyInfantUsd')">
+                                            </div>
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="EconomyInfantSar"></label> <span class="text-danger"
+                                                asp-validation-for="EconomyInfantSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="EconomyInfantSar"
+                                                    oninput="sarToOtherCurr('EconomyInfantSar', 'EconomyInfantPkr', 'EconomyInfantUsd')">
+                                            </div>
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="EconomyInfantUsd"></label>
+                                            <span class="text-danger" asp-validation-for="EconomyInfantUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="EconomyInfantUsd"
+                                                    oninput="usdToOtherCurr('EconomyInfantUsd', 'EconomyInfantPkr', 'EconomyInfantSar')">
+                                            </div>
+                                        </div>
+                                    </div> *@
+
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="BusinessSeats"></label>
+                                        <span class="text-danger fw-bold">*</span>
+                                        <div class="input-group input-group-merge">
+                                            <input class="form-control" oninput="updateBusinessSeats(this.value)"
+                                                asp-for="BusinessSeats">
+                                        </div>
+                                    </div>
+
+                                    @* <div class="row mb-3">
+                                        <!-- Adult PKR and SAR -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="pkPrice" asp-for="BusinessAdultPkr"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessAdultPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR </span>
+                                                <input class="form-control" asp-for="BusinessAdultPkr"
+                                                    oninput="pkrToOtherCurr('BusinessAdultPkr', 'BusinessAdultSar', 'BusinessAdultUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" asp-for="BusinessAdultSar"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessAdultSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="BusinessAdultSar"
+                                                    oninput="sarToOtherCurr('BusinessAdultSar', 'BusinessAdultPkr', 'BusinessAdultUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" asp-for="BusinessAdultUsd"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessAdultUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="BusinessAdultUsd"
+                                                    oninput="usdToOtherCurr('BusinessAdultUsd', 'BusinessAdultPkr', 'BusinessAdultSar')">
+                                            </div>
+                                        </div>
+
+                                        <!-- Child PKR and SAR (Opposite Positions) -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="childPkPrice"
+                                                asp-for="BusinessChildPkr"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessChildPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR</span>
+                                                <input class="form-control" asp-for="BusinessChildPkr"
+                                                    oninput="pkrToOtherCurr('BusinessChildPkr', 'BusinessChildSar', 'BusinessChildUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="BusinessChildSar"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessChildSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="BusinessChildSar"
+                                                    oninput="sarToOtherCurr('BusinessChildSar', 'BusinessChildPkr', 'BusinessChildUsd')">
+                                            </div>
+
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="BusinessChildUsd"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessChildUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="BusinessChildUsd"
+                                                    oninput="usdToOtherCurr('BusinessChildUsd', 'BusinessChildPkr', 'BusinessChildSar')">
+                                            </div>
+                                        </div>
+
+                                        <!-- Infant PKR and SAR (Opposite Positions) -->
+                                        <div class="col-sm-12 col-md-4">
+                                            <label class="form-label" for="childPkPrice"
+                                                asp-for="BusinessInfantPkr"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessInfantPkr"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">PKR</span>
+                                                <input class="form-control" asp-for="BusinessInfantPkr"
+                                                    oninput="pkrToOtherCurr('BusinessInfantPkr', 'BusinessInfantSar', 'BusinessInfantUsd')">
+                                            </div>
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="BusinessInfantSar"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessInfantSar"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">SAR</span>
+                                                <input class="form-control" asp-for="BusinessInfantSar"
+                                                    oninput="sarToOtherCurr('BusinessInfantSar', 'BusinessInfantPkr', 'BusinessInfantUsd')">
+                                            </div>
+                                            <label class="form-label mt-2" for="childSarPrice"
+                                                asp-for="BusinessInfantUsd"></label>
+                                            <span class="text-danger" asp-validation-for="BusinessInfantUsd"></span>
+                                            <div class="input-group input-group-merge">
+                                                <span class="input-group-text">USD</span>
+                                                <input class="form-control" asp-for="BusinessInfantUsd"
+                                                    oninput="usdToOtherCurr('BusinessInfantUsd', 'BusinessInfantPkr', 'BusinessInfantSar')">
+                                            </div>
+                                        </div>
+                                    </div> *@
+
+                                    <div class="col-sm-12 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Select
+                                            Packages</label>
+                                        <br />
+                                        @{
+                                            int i = 0;
+                                        }
+                                        @foreach (var package in ViewBag.Packages)
+                                        {
+                                            bool found = false;
+                                            foreach (FlightPackages fp in ViewBag.FlightPackages)
+                                            {
+                                                if (fp.PackageId == package.PackageId)
+                                                {
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            <div class="form-check form-check-inline">
+                                                <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                                @if (found)
+                                                {
+                                                    <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                        asp-for="PackagesSelected[i]" checked>
+                                                }
+                                                else
+                                                {
+                                                    <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                        asp-for="PackagesSelected[i]">
+                                                }
+
+                                                <label class="form-check-label"
+                                                    for="@package.PackageId">@package.Name</label>
+                                            </div>
+                                            i++;
+                                        }
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-justified-sector" role="tabpanel">
+                                <div id="sectors">
+                                    <div class="row" id="address_0">
+                                        <div class="col-sm-12 mb-2">
+                                            <h5 class="float-start">Sector</h5>
+                                            <button class="btn btn-outline-info float-end" type="button"
+                                                onclick="addSector(event)">Add <i
+                                                    class="bx bx-add-to-queue"></i></button>
+                                        </div>
+                                        <hr />
+                                    </div>
+                                    @foreach (Sector s in ViewBag.Sectors)
+                                    {
+                                        <div class="row" id="sector_@s.SectorId">
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">FlightNo</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" value="@s.FlightNo"
+                                                           placeholder="FlightNo..." name="FlightNo[]">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select name="FlightTypes[]" class="form-control">
+                                                        @if (s.FlightType == FlightType.Inbound)
+                                                        {
+                                                            <option value="1">Outbound</option>
+                                                            <option value="0" selected>Inbound</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="1" selected>Outbound</option>
+                                                            <option value="0">Inbound</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">Destination</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" placeholder="Destination..."
+                                                        value="@s.Destination" name="Destinations[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Departure</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control"
+                                                        value="@DateTimeManager.DateTimeToHtmlFormat(s.DepartureDateTime)"
+                                                        type="datetime-local" name="SectorDepartures[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">Arrival</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" type="datetime-local"
+                                                        value="@DateTimeManager.DateTimeToHtmlFormat(s.ArrivalDateTime)"
+                                                        name="SectorArrivals[]">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-1"
+                                                style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+                                                <label class="form-label"></label>
+                                                <button type="button" class="btn btn-icon btn-danger"
+                                                    onclick="removeSector(@s.SectorId)">
+                                                    <i class='bx bxs-trash'></i>
+                                                </button>
+                                            </div>
+                                            <hr>
+                                        </div>
+                                    }
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 mb-3">
+                                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @* <div class="tab-pane fade" id="navs-pills-justified-pnr" role="tabpanel">
+                            <div id="pnrs">
+                            <div class="row" id="address_0">
+                            <div class="col-sm-12 mb-2">
+                            <h5 class="float-start">PNR</h5>
+                            <button class="btn btn-outline-info float-end" type="button" onclick="addPNR(event)">Add <i
+                            class="bx bx-add-to-queue"></i></button>
+                            </div>
+
+                            <div class="col-sm-12 mb-2">
+                            <p class="float-start">
+                            Economy: <span id="remaining_economy">@Model.EconomySeats</span>
+                            | Business: <span id="remaining_business">@Model.BusinessSeats</span>
+                            </p>
+                            </div>
+
+                            <hr />
+
+                            </div>
+
+                            @foreach (PNR pnr in ViewBag.PNRs)
+                            {
+                            <div class="row" id="pnr_@pnr.PNRId">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                            <label class="form-label">PNR Type</label>
+                            <div class="input-group input-group-merge">
+                            <select id="TypeSelect_@pnr.PNRId"
+                            name="PNRTypes[]"
+                            class="form-control">
+                            @if (pnr.Type == PNRType.Economy)
+                            {
+                            <option value="">Select Class...</option>
+                            <option selected>Economy</option>
+                            <option value="1">Business</option>
+                            }
+                            else if (pnr.Type == PNRType.Business)
+                            {
+                            <option value="">Select Class...</option>
+                            <option >Economy</option>
+                            <option value="1" selected>Business</option>
+                            }
+                            else
+                            {
+                            <option value="">Select Class...</option>
+                            <option >Economy</option>
+                            <option value="1">Business</option>
+                            }
+
+                            </select>
+                            </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                            <label class="form-label">PNR Name</label>
+                            <div class="input-group input-group-merge">
+                            <input class="form-control"
+                            value="@pnr.Name"
+                            placeholder="Enter PNR Name..."
+                            name="PNRNames[]">
+                            </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label">Capacity</label>
+                            <small id="RemainingCapacity_@pnr.PNRId"></small>
+                            <div class="input-group input-group-merge">
+                            <input min="0" id="Capacity_@pnr.PNRId"
+                            class="form-control"
+                            type="number"
+                            value="@pnr.Capacity"
+                            name="Capacities[]">
+                            </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content:
+                            center;flex-wrap: wrap;align-content: center;">
+                            <label class="form-label"></label>
+                            <button type="button"
+                            class="btn btn-icon btn-danger"
+                            onclick="removePnr(@pnr.PNRId)">
+                            <i class='bx bxs-trash'></i>
+                            </button>
+                            </div>
+                            <hr>
+                            </div>
+                            }
+                            </div>
+
+
+                            </div> *@
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+
+    // function onCapacityInput(elem) {
+    //     const type = elem.getAttribute('data-pnr-type')
+    //     const inputs = document.querySelectorAll(`[data-pnr-type="${type}"]`)
+
+    //     let total = 0
+    //     for (let i of inputs) {
+    //         total += parseInt(i.value)
+    //     }
+
+    //     let economySeats = document.querySelector(`#EconomySeats`).valueAsNumber
+    //     let businessSeats = document.querySelector(`#BusinessSeats`).valueAsNumber
+
+    //     const remainingEconomy = document.querySelector(`#remaining_economy`)
+    //     const remainingBusiness = document.querySelector(`#remaining_business`)
+
+    //     let remaining = 0;
+    //     if (type == 0) {
+    //         remaining = economySeats - total
+    //         document.querySelector(`#remaining_economy`).innerHTML = remaining
+    //     } else if (type == 1) {
+    //         remaining = businessSeats - total
+    //         document.querySelector(`#remaining_business`).innerHTML = remaining
+    //     }
+    // }
+
+    // function onTypeSelect(elem) {
+    //     let val = elem.value
+    //     let id = elem.getAttribute('data-pnr-type-id')
+
+    //     const input = document.querySelector(`#Capacity_${id}`)
+    //     let type = input.getAttribute('data-pnr-type')
+
+    //     const remainingEconomy = document.querySelector(`#remaining_economy`)
+    //     const remainingBusiness = document.querySelector(`#remaining_business`)
+
+    //     if (val != type) {
+    //         if (type == 0) {
+    //             let newCount = input.valueAsNumber + parseInt(remainingBusiness.innerHTML);
+    //             remainingBusiness.innerHTML = newCount;
+    //             remainingEconomy.innerHTML = input.valueAsNumber + parseInt(remainingEconomy.innerHTML)
+    //         }
+    //         else if (type == 1) {
+    //             let newCount = input.valueAsNumber + parseInt(remainingEconomy.innerHTML)
+    //             remainingEconomy.innerHTML = newCount;
+    //             remainingBusiness.innerHTML = input.valueAsNumber + parseInt(remainingBusiness.innerHTML)
+    //         }
+    //         input.setAttribute('data-pnr-type', val)
+
+    //     }
+
+    // }
+
+
+    function updateEconomySeats(val) {
+        document.querySelector(`#remaining_economy`).innerHTML = val
+    }
+
+    function updateBusinessSeats(val) {
+        document.querySelector(`#remaining_business`).innerHTML = val
+    }
+
+
+</script>
+
+
+<partial name="~/Views/Shared/_PackageROECalculationScript.cshtml" />
+<partial name="~/Views/Shared/_SectorScriptPartial.cshtml" />
+<partial name="~/Views/Shared/_PNRScriptPartial.cshtml" />

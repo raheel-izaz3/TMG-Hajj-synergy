@@ -1,0 +1,41 @@
+@model Company
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Companies / </span> Change Logo</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" enctype="multipart/form-data">
+            <input asp-for="CompanyId" type="hidden">
+                <div class="card p-3">
+                    <div class="row">
+                        <div class="col-sm-12 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname">Current Logo</label>
+                            <div class="input-group input-group-merge">
+                                <img src="~/@Model.Logo" alt="" width="300">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="LogoFile"></label>
+                            <span class="text-danger fw-bold"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="LogoFile" class="form-control" id="basic-icon-default-fullname"
+                                    required>
+                            </div>
+                            <span class="text-danger" asp-validation-for="LogoFile"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 mb-3">
+                            <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>

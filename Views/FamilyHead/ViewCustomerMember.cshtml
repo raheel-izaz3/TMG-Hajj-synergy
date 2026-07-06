@@ -1,0 +1,222 @@
+﻿@model IEnumerable<CustomerPortfolioMembers>
+
+@{
+    string modelName = "Family Member";
+    string modelNamePlural = "Family Members";
+    string modelControllerRoute = "FamilyHead";
+
+    var hajjiBookingStatuses = ViewBag.HajjiBookingStatus;
+
+    if (hajjiBookingStatuses == null)
+    {
+        hajjiBookingStatuses = new List<dynamic>();
+    }
+}
+
+<style>
+    .tooltip {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="tooltip" id="tooltip">Link copied</div>
+
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+    <a class="btn btn-success float-start" asp-action="AddCustomerMember" asp-route-customerPortfolioId="@ViewBag.CustomerPortfolioId">
+        <i class="bx bx-add-to-queue me-1"></i> Add
+    </a>
+
+
+    @if (ViewBag.RestoreAllowed == true)
+    {
+        <a asp-action="ViewMemberTrash" asp-route-id="@Model.ElementAtOrDefault(0)?.HeadId" class="btn btn-info float-end">
+            <i class="bx bx-trash me-1"></i> Trash
+            (@ViewBag.TrashCount)
+        </a>
+    }
+    <a asp-controller="FamilyHead" asp-action="IndexCustomerProfile" class="btn btn-warning">Back</a>
+    <br />
+    <br />
+    <div class="card p-2 mt-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 200px;">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Family Head</th>
+                        <th>Gender</th>
+                        <th>Age</th>
+                        <th>D.O.B</th>
+                        <th>CNIC</th>
+                        <th>Passport</th>
+                       @*  @if (ViewBag.VerifyAllowed == true)
+                        {
+                            <th>Ver.</th>
+                        }
+                        @* <th>Tentative</th> 
+                        <th>Status</th> *@
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+
+                    @{
+                        var SrNo = 1;
+                    }
+
+
+                    @foreach (CustomerPortfolioMembers fm in Model)
+                    {
+                        // Save today's date.
+                        var today = DateTime.Today;
+
+                        // Calculate the age.
+                        var age = today.Year - fm.CustomerPortfolio.DateOfBirth.Year;
+
+                        // Go back to the year in which the person was born in case of a leap year
+                        if (fm.CustomerPortfolio.DateOfBirth.Date > today.AddYears(-age)) age--;
+
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@(SrNo++)</strong>
+                            </td>
+                            <td>@fm.CustomerPortfolio.GivenName</td>
+                            <td>@(fm.CustomerPortfolio.IsHead ? "Yes" : "No")</td>
+                            <td>@fm.CustomerPortfolio.Gender</td>
+                            <td>@age</td>
+                            <td>@DateTimeManager.GetDate(@fm.CustomerPortfolio.DateOfBirth)</td>
+                            <td>@fm.CustomerPortfolio.CNIC</td>
+                            <td>@fm.CustomerPortfolio.PassportNumber</td>
+                            <td>
+                                <div class="dropdown">
+                                    @* <a class="btn btn-info" target="_blank" asp-controller="FamilyHead"
+                                       asp-action="StayWith" asp-route-id="@fm.CustomerPortfolio">Stay With</a> *@
+                                    @if (ViewBag.EditAllowed == true)
+                                    {
+                                        <a class="btn btn-warning" asp-action="EditCustomerProfile" asp-route-id="@fm.CustomerPortfolioId">
+                                            <i class="bx bx-edit-alt me-1"></i> Edit
+                                        </a>
+                                    }
+                                    @if (ViewBag.TrashAllowed == true && !fm.IsHead)
+                                    {
+                                        <button onclick="confirmDelete(@fm.CustomerPortfolioId)" class="btn btn-outline-danger">
+                                            <i class="bx bx-trash me-1"></i> Trash
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyHref(event, link) {
+        event.preventDefault();
+        var href = link.href;
+
+        var tempInput = document.createElement('input');
+        tempInput.setAttribute('value', href);
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+        document.execCommand('copy');
+
+        document.body.removeChild(tempInput);
+
+        var tooltip = document.getElementById('tooltip');
+        tooltip.classList.add('show');
+        setTimeout(function () {
+            tooltip.classList.remove('show');
+        }, 2000); // Hide tooltip after 2 seconds
+    }
+
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/TrashCustomer/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+
+    });
+
+    function verifyMember(elem, id) {
+        $.ajax({
+            url: "/FamilyHead/VerifyMember/" + id,
+            method: "POST",
+            data: {
+                value: elem.checked
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.error(err)
+            }
+
+        });
+    }
+
+    function bookMember(elem, id) {
+        $.ajax({
+            url: "/FamilyHead/BookMember/" + id,
+            method: "POST",
+            data: {
+                value: elem.checked
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.error(err)
+            }
+
+        });
+    }
+
+    function updateStatus(familyHeadId, status) {
+        var formData = new FormData();
+        formData.append('familyHeadId', familyHeadId);
+        formData.append('status', status);
+
+        fetch('/FamilyHead/UpdateStatus', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>

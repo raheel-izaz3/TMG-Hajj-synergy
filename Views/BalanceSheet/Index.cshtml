@@ -1,0 +1,217 @@
+﻿@model BalanceSheetModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Balance Sheet</h4>
+    <h4 class="fw-bold">As at Period Closing</h4>
+    <hr class="mb-4" />
+
+    <div class="card pt-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="4"><h6 class="text-center">Assets</h6></th>
+                </tr>
+            </thead>
+            @{
+                float assetTotal = 0;
+            }
+            @foreach (SubType subType in Model.AssetSubTypes)
+            {
+                float assetSubTypeTotal = 0; 
+                <thead>
+                    <tr>
+                        <td colspan=""><b>@subType.Name</b></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.AssetCategories.Count; i++)
+                    {
+                        var cat = Model.AssetCategories[i];
+                        var amount = Model.AssetCategoryWiseAmounts[i];
+                        @if(cat.SubTypeId == subType.SubTypeId)
+                        {
+                            assetSubTypeTotal += amount;
+                            <tr>
+                                <td>@cat.Name</td>
+                                @if(amount < 0)
+                                {
+                                    <td>(@Math.Abs(amount).ToString("N0"))</td>
+                                }
+                                else{
+                                    <td>@amount.ToString("N0")</td>
+                                }
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td></td>
+                        <td><b>Total @subType.Name:</b></td>
+                        @if (assetSubTypeTotal < 0)
+                        {
+                            <td>(@Math.Abs(assetSubTypeTotal).ToString("N0"))</td>
+                        }
+                        else
+                        {
+                            <td>@assetSubTypeTotal.ToString("N0")</td>
+                        }
+                        <td></td>
+                    </tr>
+                </tbody>
+                assetTotal += assetSubTypeTotal;
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b>Total Assets: </b></td>
+                <td>@assetTotal.ToString("N0")</td>
+            </tr>
+
+            <thead>
+                <tr>
+                    <th colspan="4"><h6 class="text-center">Liability</h6></th>
+                </tr>
+            </thead>
+            @{
+                float liabilityTotal = 0;
+            }
+            @foreach (SubType subType in Model.LiabilitySubTypes)
+            {
+                float liabilitySubTypeTotal = 0;
+                <thead>
+                    <tr>
+                        <td colspan=""><b>@subType.Name</b></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.LiabilityCategories.Count; i++)
+                    {
+                        var cat = Model.LiabilityCategories[i];
+                        var amount = Model.LiabilityCategoryWiseAmounts[i];
+                        @if (cat.SubTypeId == subType.SubTypeId)
+                        {
+                            liabilitySubTypeTotal += amount;
+                            <tr>
+                                <td>@cat.Name</td>
+                                @if (amount < 0)
+                                {
+                                    <td>(@Math.Abs(amount).ToString("N0"))</td>
+                                }
+                                else
+                                {
+                                    <td>@amount.ToString("N0")</td>
+                                }
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td></td>
+                        <td><b>Total @subType.Name:</b></td>
+                        @if (liabilitySubTypeTotal < 0)
+                        {
+                            <td>(@Math.Abs(liabilitySubTypeTotal).ToString("N0"))</td>
+                        }
+                        else
+                        {
+                            <td>@liabilitySubTypeTotal.ToString("N0")</td>
+                        }
+                        <td></td>
+                    </tr>
+                </tbody>
+                liabilityTotal += liabilitySubTypeTotal;
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b>Total Liabilities: </b></td>
+                <td>@liabilityTotal.ToString("N0")</td>
+            </tr>
+
+
+            <thead>
+                <tr>
+                    <th colspan="4"><h6 class="text-center">Equity</h6></th>
+                </tr>
+            </thead>
+            @{
+                float equityTotal = 0;
+            }
+            @foreach (SubType subType in Model.EquitySubTypes)
+            {
+                float equitySubTypeTotal = 0;
+                <thead>
+                    <tr>
+                        <td colspan=""><b>@subType.Name</b></td>
+                        <td colspan="3"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.EquityCategories.Count; i++)
+                    {
+                        var cat = Model.EquityCategories[i];
+                        var amount = Model.EquityCategoryWiseAmounts[i];
+                        @if (cat.SubTypeId == subType.SubTypeId)
+                        {
+                            equitySubTypeTotal += amount;
+                            <tr>
+                                <td>@cat.Name</td>
+                                @if (amount < 0)
+                                {
+                                    <td>(@Math.Abs(amount).ToString("N0"))</td>
+                                }
+                                else
+                                {
+                                    <td>@amount.ToString("N0")</td>
+                                }
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td></td>
+                        <td><b>Total @subType.Name:</b></td>
+                        @if (equitySubTypeTotal < 0)
+                        {
+                            <td>(@Math.Abs(equitySubTypeTotal).ToString("N0"))</td>
+                        }
+                        else
+                        {
+                            <td>@equitySubTypeTotal.ToString("N0")</td>
+                        }
+                        <td></td>
+                    </tr>
+                </tbody>
+                equityTotal += equitySubTypeTotal;
+            }
+            @{
+                equityTotal += Model.NetIncome;
+            }
+            <tr>
+                <td>Add / Less: Net Income</td>
+                @if(Model.NetIncome < 0)
+                {
+                    <td>(@Math.Abs(Model.NetIncome).ToString("N0"))</td>
+                }
+                else
+                {
+                    <td>@Model.NetIncome.ToString("N0")</td>
+                }
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b>Total Equities: </b></td>
+                <td>@equityTotal.ToString("N0")</td>
+            </tr>
+        </table>
+    </div>
+</div>
+

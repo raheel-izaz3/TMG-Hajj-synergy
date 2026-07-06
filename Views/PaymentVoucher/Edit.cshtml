@@ -1,0 +1,325 @@
+﻿@model PaymentVoucherEditRequest
+
+@{
+    string modelName = "Voucher";
+    string modelNamePlural = "Vouchers";
+    string modelControllerRoute = "PaymentVoucher";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="PaymentVoucherId"/>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyId" >
+                                        <option value="">Select Company...</option>
+                                        @foreach (UserCompanies company in ViewBag.Companies)
+                                        {
+                                            <option value="@company.CompanyId">@company.Company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="VoucherTypeId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="VoucherTypeId">
+                                        <option value="">Select Payment Voucher</option>
+                                        @foreach (VoucherType voucher in ViewBag.VoucherTypes)
+                                        {
+                                            <option value="@voucher.VoucherTypeId">@voucher.Type</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="VoucherTypeId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Date"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Date"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3" style="display: none;" id="PayeeDiv">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountId"></label>
+                                <div class="input-group input-group-merge">
+                                     <select class="form-control" asp-for="AccountId">
+                                                    <option value="">Select an Account</option>
+                                                    @foreach (Account ac in ViewBag.Accounts)
+                                                    {
+                                                        <option value="@ac.AccountId">@ac.Category.SubType.TypeId - @ac.Category.SubTypeId - @ac.CategoryId - @ac.AccountId - @ac.Name</option>
+                                                    }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3" style="display: none;" id="PartyDiv">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ReceivingParty"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ReceivingParty" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ReceivingParty"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="InstrumentNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="InstrumentNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="InstrumentNumber"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Description"></label>
+                                <div class="input-group input-group-merge">
+                                    <textarea asp-for="Description" class="form-control"></textarea>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Description"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Currency"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <select class="form-control" onchange="getRoe(this.value)" asp-for="Currency" asp-items="@Html.GetEnumSelectList<Currencies>()">
+                                        <option>Select Currency</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currency"></span>
+                            </div>
+                            
+                            <div class="col-sm-12 col-md-3 mb-3" style="display: block;" >
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PKRROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="PKRROE" id="pkrroe" value="1" min="1" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PKRROE"></span>
+                            </div>
+
+                                
+                            <div class="col-sm-12 col-md-3 mb-3" style="display: block;" >
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SARROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="SARROE" id="sarroe" value="1" min="1" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SARROE"></span>
+                            </div>
+                                
+                            <div class="col-sm-12 col-md-3 mb-3" style="display: block;" >
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="USDROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="USDROE" id="usdroe" value="1" min="1" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="USDROE"></span>
+                            </div>
+                            <hr class="my-3">
+
+                            @*    <div class="col-sm-12 mb-1">
+                            <h5 class="float-start">Entries</h5>
+                            <button class="btn btn-outline-info float-end" type="button" onclick="addEntry(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                            </div> *@
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Chart of Account</th>
+                                            <th>Debit</th>
+                                            <th>Credit</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="debitRows">
+                                        <tr>
+                                            <td>
+                                                <select class="form-control" asp-for="AccountIds[0]">
+                                                    <option value="">Select an Account</option>
+                                                    @foreach (Account ac in ViewBag.Accounts)
+                                                    {
+                                                        <option value="@ac.AccountId">
+                                                            @ac.Category.SubType.TypeId - 
+                                                            @ac.Category.SubTypeId - 
+                                                            @ac.CategoryId - 
+                                                            @ac.AccountId - @ac.Name
+                                                        </option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" min="0"  
+                                                asp-for="DebitAmounts[0]" oninput="updateCredit(this.value)" />
+                                            </td>
+                                            <td>
+                                                <input type="hidden" value="0" asp-for="CreditAmounts[0]" />
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <select class="form-control" asp-for="AccountIds[1]">
+                                                    <option value="">Select an Account</option>
+                                                    @foreach (Account ac in ViewBag.Accounts)
+                                                    {
+                                                        <option value="@ac.AccountId">
+                                                            @ac.Category.SubType.TypeId - 
+                                                            @ac.Category.SubTypeId - 
+                                                            @ac.CategoryId - 
+                                                            @ac.AccountId - 
+                                                            @ac.Name
+                                                        </option>
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="hidden" value="0" asp-for="DebitAmounts[1]" />
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" min="0"
+                                                       asp-for="CreditAmounts[1]" id="creditAmount" />
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                   
+                                </table>
+                            </div>
+
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function addEntry(e) {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                                                                        <tr id="entry_${id}">
+                                                                <td>
+                                                                    <select class="form-control">
+                                                                        <option value="">Select an Account</option>
+    @foreach (Account ac in ViewBag.Accounts)
+    {
+                                                                                                            <option value="@ac.AccountId">@ac.Category.SubType.TypeId - @ac.Category.SubTypeId - @ac.CategoryId - @ac.AccountId - @ac.Name</option>
+    }
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="number" class="form-control" min="0" value="0" />
+                                                                </td>
+                                                                <td>
+                                                                        <input type="number" class="form-control" min="0" value="0" readonly/>
+                                                                </td>
+                                                                                <td>
+                                                                                <button type="button" class="btn btn-danger"
+                                                                                onclick="removeEntry(${id})"><i class="bx bxs-trash-alt"></i></button>
+                                                                            </td>
+                                                                        </tr>`;
+
+        $("#debitRows").append(row);
+    }
+
+    function removeEntry(id) {
+        document.getElementById(`entry_${id}`).remove();
+    }
+</script>
+
+<script>
+
+    function updateCredit(val) {
+        let inputCredit = document.querySelector("#creditAmount")
+        inputCredit.value = val
+    }
+
+    function onVoucherTypeSelect(val) {
+        if (val == 2 || val == 4) {
+            document.getElementById("PartyDiv").style.display = 'block';
+            document.getElementById("PayeeDiv").style.display = 'none';
+        }
+        else if (val == 1 || val == 3) {
+            document.getElementById("PartyDiv").style.display = 'none';
+            document.getElementById("PayeeDiv").style.display = 'block';
+        }
+        else if (val == 5) {
+            document.getElementById("PartyDiv").style.display = 'none';
+            document.getElementById("PayeeDiv").style.display = 'none';
+        }
+    }
+
+    onVoucherTypeSelect(@Model.VoucherTypeId)
+
+    $(document).ready(function () {
+        // ... Your existing code ...
+
+        // Function to calculate and update debit and credit totals
+        function updateTotals() {
+            let debitTotal = 0;
+            let creditTotal = 0;
+
+            $('input[name="DebitAmount"]').each(function () {
+                const debitAmount = parseFloat($(this).val()) || 0;
+                debitTotal += debitAmount;
+            });
+
+            $('input[name="CreditAmount"]').each(function () {
+                const creditAmount = parseFloat($(this).val()) || 0;
+                creditTotal += creditAmount;
+            });
+
+            $('#debitTotal').text(debitTotal.toFixed(2));
+            $('#creditTotal').text(creditTotal.toFixed(2));
+            if (debitTotal == creditTotal) {
+                enableBtn()
+            }
+            else {
+                disableBtn()
+            }
+        }
+
+        $(document).on('keyup', 'input[name="DebitAmount"]', function () {
+            updateTotals();
+
+        });
+
+        $(document).on('keyup', 'input[name="CreditAmount"]', function () {
+            updateTotals();
+        });
+
+        function disableBtn() {
+            $("button[type=submit]").attr('disabled', 'true')
+        }
+
+        function enableBtn() {
+            $("button[type=submit]").removeAttr('disabled')
+        }
+
+
+
+        // ... The rest of your code ...
+    });
+
+
+</script>

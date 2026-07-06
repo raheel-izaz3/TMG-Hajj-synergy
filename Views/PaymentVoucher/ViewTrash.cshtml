@@ -1,0 +1,140 @@
+﻿@model IEnumerable<PaymentVoucher>
+@{
+    string modelName = "Voucher";
+    string modelNamePlural = "Vouchers";
+    string modelControllerRoute = "PaymentVoucher";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    @*  @if (ViewBag.CreateAllowed == true)
+    { *@
+    
+    @*  }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+   
+    @* } *@
+
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Date</th>
+                        <th>Voucher Type</th>
+                        <th>Payee</th>
+                        <th>Amount</th>
+                        <th>R.O.E (PKR)</th>
+                        <th>R.O.E (SAR)</th>
+                        <th>R.O.E (USD)</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (PaymentVoucher voucher in Model)
+                    {
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@voucher.PaymentVoucherId</strong>
+                            </td>
+                            <td>@voucher?.Company?.CompanyName</td>
+                            <td>@DateTimeManager.GetDate(voucher.Date)</td>
+                            <td>@voucher.VoucherType.Type</td>
+                            <td>@voucher.Account?.Name</td>
+                            <td>@voucher.Amount</td>
+                            <td>@voucher.PKRROE</td>                            
+                            <td>@voucher.SARROE</td>
+                            <td>@voucher.USDROE</td>
+                            <td>@voucher.Description</td>
+                            <td>
+                                <div class="dropdown">
+                                    @* @if (ViewBag.EditAllowed == true)
+                                { *@
+                                   
+
+                                    @* }
+                                @if (ViewBag.TrashAllowed == true)
+                                { *@
+                                    <button class="btn btn-info" onclick="confirmRestore(@voucher.PaymentVoucherId)">
+                                        <i class="bx bx-recycle me-1"></i> Restore
+                                    </button>
+                                    @* } *@
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmRestore(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Restore/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

@@ -1,0 +1,148 @@
+﻿@model Employee
+
+@{
+    string modelName = "Employee";
+    string modelNamePlural = "Cities";
+    string modelControllerRoute = "Employee";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="EmployeeId">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CNIC"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="CNIC" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CNIC"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="NTN"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="NTN" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="NTN"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Contact"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Contact" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Contact"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="EmergencyContact"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="EmergencyContact" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="EmergencyContact"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="BasicSalary"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="BasicSalary" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="BasicSalary"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Address"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Address" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Address"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CNICCopy"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="CNICFile" class="form-control">
+                                </div>
+                                @if (Model.CNICCopy is not null)
+                                {
+                                    <a href="@Url.Content(Model.CNICCopy)">View CNIC Copy</a>
+                                }
+                                <span class="text-danger" asp-validation-for="CNICCopy"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="FamilyCNIC"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="FamilyCNIC" class="form-control">
+                                </div>
+                                @if (Model.FamilyCNIC is not null)
+                                {
+                                    <a href="@Url.Content(Model.FamilyCNIC)">View Family CNIC Copy</a>
+                                }
+                                <span class="text-danger" asp-validation-for="FamilyCNIC"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CV"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="CV" class="form-control">
+                                </div>
+                                @if (Model.CV is not null)
+                                {
+                                    <a href="@Url.Content(Model.CV)">View CV</a>
+                                }
+                                <span class="text-danger" asp-validation-for="CV"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AddressProof"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="AddressFile" class="form-control">
+                                </div>
+                                @if (Model.AddressProof is not null)
+                                {
+                                    <a href="@Url.Content(Model.AddressProof)">View Addres Prrof</a>
+                                }
+                                <span class="text-danger" asp-validation-for="AddressProof"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="OtherDoc"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="OtherDoc" class="form-control">
+                                </div>
+                                @if (Model.OtherDoc is not null)
+                                {
+                                    <a href="@Url.Content(Model.OtherDoc)">View Other Documents</a>
+                                }
+                                <span class="text-danger" asp-validation-for="OtherDoc"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

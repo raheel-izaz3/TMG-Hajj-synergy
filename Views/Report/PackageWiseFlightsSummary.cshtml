@@ -1,0 +1,87 @@
+﻿@using TMG.Controllers.FamilyControllers
+@{
+    Layout = null;
+}
+@model IEnumerable<CombinedFlightSummaryDetail>
+
+<!-- Jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f6f3ee;
+        color: #b49164;
+        font-weight: bold;
+    }
+</style>
+
+<div class="big-table-record">
+    <table id="summaryTable">
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Departure Date</th>
+                <th>Departure Time</th>
+                <th>Flight Class</th>
+                <th>Company Code</th>
+                <th>Package Name</th>
+                <th>HB #</th>
+                <th>Honorifics</th>
+                <th>Given Name</th>
+                <th>Surname</th>
+                <th>Passport #</th>
+                <th>Passport Date of Issue</th>
+                <th>Passport Date of Expiry</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Location</td>
+                    <td>@item.DepartureDate</td>
+                    <td>@item.DepartureTime</td>
+                    <td>@item.FlightClass</td>
+                    <td>@item.CompanyCode</td>
+                    <td>@item.Name</td>
+                    <td>@item.Fcid</td>
+                    <td>@item.Honorifics</td>
+                    <td>@item.GivenName</td>
+                    <td>@item.SurName</td>
+                    <td>@item.PassportNumber</td>
+                    <td>@item.PassportDateOfIssue?</td>
+                    <td>@item.PassportDateOfExpiry?</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#summaryTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "pageLength": 10
+        });
+    });
+</script>

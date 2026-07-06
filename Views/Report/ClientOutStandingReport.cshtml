@@ -1,0 +1,781 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@using Newtonsoft.Json
+@{
+	Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title></title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			overflow-x: hidden;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			margin: 0;
+			padding: 0;
+		}
+
+		p {
+			font-size: 9px;
+			margin: 0;
+			padding: 0;
+		}
+
+		/* Table styling  */
+		table tr th {
+			font-size: 10px;
+		}
+
+		table tr td {
+			font-size: 12px !important;
+		}
+
+		.AMounttotelvalue {
+			/* font-size: 12px !important; */
+			color: white;
+			background-color: black;
+		}
+
+		.TotalAMountTitle {
+			/* font-size: 10px !important; */
+			color: white;
+			background-color: black;
+		}
+
+		/*   #discountRateHideShow {
+								display: table;
+								}
+
+								#totalAmountHideShow {
+								display: none;
+								} */
+
+
+		/* Table styling  End */
+		.downloade_btn {
+			padding: 10px 45px;
+			background-color: lightblue;
+			outline: none;
+			border: 1px solid black;
+			font-weight: bold;
+			font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+			font-size: 14px;
+			cursor: pointer;
+		}
+
+			.downloade_btn:hover {
+				background-color: white;
+			}
+
+		/* Check-Box Styling  */
+		.check_box_container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.check_box_container .CheckBox {
+				width: 20px;
+				height: 12px;
+				margin: 0;
+				padding: 0;
+			}
+
+		@@media print {
+			.check_box_container {
+				display: none !important;
+			}
+
+			button {
+				display: none;
+			}
+		}
+
+		/* Check-Box Styling End */
+		.parent {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.container {
+			display: flex;
+			align-items: center;
+		}
+
+			.container .logo {
+				width: 55px;
+			}
+
+				.container .logo img {
+					width: 100%;
+				}
+
+		.AL_Khair_Title {
+			font-size: 18px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.title_break {
+			font-size: 12px;
+			margin-left: 15px;
+			font-weight: bold;
+		}
+
+		.qr-code p {
+			padding: 0;
+			margin: 0;
+		}
+
+		.qr-code {
+			padding: 0;
+			padding-top: 20px;
+		}
+
+		.qr_number {
+			text-align: right;
+			margin: 0px;
+			font-weight: bold;
+		}
+
+		.horizantal_line {
+			border: 1px solid black;
+		}
+
+
+		.Invoice_to_section {
+			display: flex;
+			justify-content: space-between;
+			flex-wrap: wrap;
+		}
+
+		.proforma_title {
+			text-align: center;
+			padding-top: 10px;
+			margin-bottom: 15px;
+		}
+
+		.Customer_Info p {
+			padding: 1px 0;
+			font-weight: bold !important;
+		}
+
+		.Customer_Col_2 p {
+			padding: 1px 0;
+			font-weight: bold;
+		}
+
+		.Customer_Col_2 span {
+			font-weight: normal;
+		}
+
+		.Customer_Info span {
+			font-weight: normal;
+		}
+
+		.ALL_MEMBERS_NAMES p {
+			padding: 1px 0;
+		}
+
+		.ALL_MEMBERS_NAMES span {
+			font-weight: bold;
+		}
+
+		/* Table Styling Start  */
+		.Service_Table {
+			width: 100%;
+		}
+
+			.Service_Table tr th {
+				font-size: 10px;
+				text-align: right;
+			}
+
+			.Service_Table tr td {
+				border-bottom: 1px solid black;
+				font-size: 10px;
+			}
+
+				.Service_Table tr td:nth-child(2) {
+					text-align: right;
+					width: 130px;
+				}
+
+			.Service_Table tr:nth-last-child(1) {
+				font-weight: bold;
+			}
+
+		/* MEdia Querry  */
+		@@media (max-width :768px) {
+			.Bank_Table {
+				width: 100% !important;
+			}
+		}
+
+		.Bank_Table {
+			margin-top: 20px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 60%;
+		}
+
+			.Bank_Table tr {
+				border: 1px solid black;
+			}
+
+				.Bank_Table tr th {
+					border: 1px solid black !important;
+					background-color: lightblue;
+					text-align: left;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+				.Bank_Table tr td:nth-child(1) {
+					font-weight: bold;
+				}
+
+				.Bank_Table tr td {
+					text-align: left;
+					border: 1px solid black;
+					padding-left: 5px;
+					font-size: 10px;
+				}
+
+		/* ADF_Details_Table styling Start  */
+		.Receipt_container {
+			margin-top: 7px;
+		}
+
+
+		.ADF_Container {
+			width: 60%;
+		}
+
+		.ADF_Details_Box {
+			margin-bottom: 10px;
+		}
+
+		.ADF_heading {
+			background-color: lightblue;
+			font-weight: bold;
+			font-size: 10px !important;
+			text-align: center;
+			color: black !important;
+		}
+
+		@@media (max-width:768px) {
+			.ADF_Container {
+				width: 100% !important;
+			}
+		}
+
+		.ADF_Details_Box table {
+			border-collapse: collapse;
+			border: 1px solid black;
+			width: 100%;
+		}
+
+		.ADF_Details_Box tr th {
+			border: 1px solid black;
+		}
+
+		.ADF_Details_Box tr td {
+			border: 1px solid black;
+		}
+
+
+		.totalText,
+		.amountText {
+			font-weight: bold !important;
+			background-color: lightblue;
+			font-size: 10px !important;
+			color: black !important;
+		}
+
+		/*############ ADF_Details_Table styling End ############## */
+		/* *********Note List ********** */
+		.terms_condition_list {
+			margin-left: 6px;
+			margin: 20px 0px !important;
+		}
+
+		.note_heading {
+			font-size: 10px;
+			font-weight: bold;
+			margin-top: 10px;
+		}
+
+		.Notes_order_list {
+			padding: 0;
+			margin: 8px;
+		}
+
+			.Notes_order_list li {
+				font-size: 8px;
+				padding: 2px;
+			}
+
+		/* *********Note List  END********** */
+		footer {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100% !important;
+		}
+
+		.footer_address {
+			border-top: 1px solid black;
+			text-align: center;
+		}
+
+			.footer_address h6 {
+				font-weight: normal !important;
+			}
+
+
+
+		.top_service_table {
+			border: 1px solid black;
+			border-collapse: collapse;
+			width: 100%;
+			margin-bottom: 0px;
+			margin-top: 10px;
+		}
+
+			.top_service_table tr th,
+			td {
+				border: 1px solid black;
+			}
+
+			.top_service_table tr {
+				border: 1px solid black;
+			}
+
+				.top_service_table tr:nth-child(1) {
+					border: none !important;
+					outline: none;
+				}
+
+
+				.top_service_table tr:nth-last-child(1) {
+					font-weight: bold;
+					font-size: 14px !important;
+					background-color: black;
+					color: white;
+				}
+
+		/* ________Content_Editable Row _____ */
+		[contenteditable] {
+			width: 100px;
+		}
+
+		/* ________Content_Editable Row _____ */
+		/* Hide And Show Table Styling  */
+		#Receipt_PaymentRecord,
+		#Payment_Subject {
+			display: none;
+		}
+
+
+		#Memberbreaktable {
+			display: none;
+			text-align: center;
+		}
+
+		/* Media Querry Check-box and Label button  */
+		label {
+			font-size: 14px !important;
+		}
+
+		@@media (max-width: 768px) {
+			label {
+				font-size: 14px;
+			}
+
+			input[type="checkbox"] {
+				transform: scale(0.8);
+			}
+		}
+
+		.check_box_container span {
+			font-weight: bold;
+		}
+
+		.flex-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.start-iadf td {
+			text-align: left !important;
+		}
+	</style>
+	<!-- html2pdf CDN Link  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+			integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- Add SheetJS CDN for Excel export -->
+	<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css" />
+	<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jquery.min.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jszip.min.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+
+
+</head>
+
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+	@* <button class="downloade_btn" id="downloadExcel" style="margin-left: 10px;">Download Excel</button> *@
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+		<div class="proforma_title">
+			<h4 id="miniStatement_Title">Client Outstanding Report</h4>
+		</div>
+		<div class="Invoice_to_section">
+			<div>
+				<div class="Customer_Info">
+				</div>
+			</div>
+		</div>
+
+		<div id="reportTable"></div>
+		<div id="currencySummary"></div>
+		@* <div style="margin-top:20px;">
+			<h4>Totals</h4>
+			<table class="top_service_table" style="width:35%;">
+				<thead>
+					<tr>
+						<th>Currency</th>
+						<th>Total Sales</th>
+						<th>Total Discount</th>
+						<th>Total Gross</th>
+						<th>Total Received</th>
+						<th>Total Balance</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var t in ViewBag.CurrencyWiseTotals)
+					{
+						<tr style="font-weight:bold">
+							<td>@t.Currency</td>
+							<td>@t.Currency @t.TotalPackage.ToString("N2")</td>
+							<td>@t.Currency @t.Discount.ToString("N2")</td>
+							<td>@t.Currency @t.Gross.ToString("N2")</td>
+							<td>@t.Currency @t.ReceivedAmount.ToString("N2")</td>
+							<td>@t.Currency @t.Balance.ToString("N2")</td>
+						</tr>
+						<tr></tr>
+					}
+				</tbody>
+			</table>
+		</div> *@
+
+	</div>
+
+	<script>
+		$(function () {
+			var data = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+			var grid = $("#reportTable").dxDataGrid({
+				dataSource: data,
+				keyExpr: "HBNo",
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: {
+					pageSize: 50 // ✅ paging optional, virtual ke sath bhi reh sakta hai
+				},
+				scrolling: {
+					mode: "virtual", // ✅ tumhari demand ke mutabiq
+					showScrollbar: "always"
+				},
+				filterRow: { visible: true },
+				headerFilter: { visible: true },
+				searchPanel: {
+					visible: true,
+					width: 240,
+					placeholder: "Search..."
+				},
+				columns: [
+					{ dataField: "SerialNumber", caption: "#" },
+					{ dataField: "CompanyCode", caption: "HGO" },
+					{ dataField: "SPOName", caption: "SPO" },
+					{ dataField: "HajjiName", caption: "Hajji Name" },
+					{ dataField: "HBNo", caption: "HbNo" },
+					{ dataField: "PackageName", caption: "Package Name" },
+					{ dataField: "RawCurrency", caption: "Currency" },
+					{ dataField: "TotalPackage", caption: "Total Package Amount" },
+					{ dataField: "Discount", caption: "Discount" },
+					{ dataField: "Gross", caption: "Gross" },
+					{ dataField: "ReceivedAmount", caption: "Received Amount" },
+					{ dataField: "Balance", caption: "Balance" }
+				],
+				export: {
+					enabled: true,
+					fileName: "ClientOutStandingReport"
+				},
+				onContentReady: updateSummary,
+				onOptionChanged: function (e) {
+					if (e.fullName.includes("filterValue") || e.fullName.includes("searchPanel.text")) {
+						updateSummary();
+					}
+				}
+			}).dxDataGrid("instance");
+
+
+			function updateSummary() {
+				grid.getDataSource().load().done(function (allData) {
+					function normCurrency(c) {
+						if (!c) return "N/A";
+						return String(c).trim().toUpperCase();
+					}
+
+					function toCents(val) {
+						if (val == null) return 0;
+						var n = Number(val);
+						return isNaN(n) ? 0 : Math.round(n * 100);
+					}
+
+					var grouped = {};
+
+					allData.forEach(x => {
+						var cur = normCurrency(x.RawCurrency);
+
+						if (!grouped[cur]) {
+							grouped[cur] = {
+								totalPackage: 0,
+								discount: 0,
+								gross: 0,
+								received: 0,
+								balance: 0
+							};
+						}
+
+						grouped[cur].totalPackage += toCents(x.RawTotalPackage);
+						grouped[cur].discount += toCents(x.RawDiscount);
+						grouped[cur].gross += toCents(x.RawGross);
+						grouped[cur].received += toCents(x.RawReceivedAmount);
+						grouped[cur].balance += toCents(x.RawBalance);
+					});
+
+					var html = `<table class="table table-bordered table-striped mt-3 text-center align-middle" style="width:40%;">
+							<thead style="background-color: #000; color: #fff;">
+								<tr>
+									<th>#</th>
+									<th>Currency</th>
+									<th>Total Package</th>
+									<th>Total Discount</th>
+									<th>Total Gross</th>
+									<th>Total Received</th>
+									<th>Total Balance</th>
+								</tr>
+							</thead>
+							<tbody>`;
+
+					var i = 1;
+					Object.keys(grouped).forEach(cur => {
+						var g = grouped[cur];
+						html += `<tr>
+									<td><strong>${i++}</strong></td>
+									<td><strong>${cur}</strong></td>
+									<td><strong>${(g.totalPackage / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+									<td><strong>${(g.discount / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+									<td><strong>${(g.gross / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+									<td><strong>${(g.received / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+									<td><strong>${(g.balance / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+								</tr>`;
+					});
+
+					html += "</tbody></table>";
+
+					$("#currencySummary").html(html);
+				});
+			}
+
+
+			// Default summary render
+			updateSummary();
+		});
+
+
+		// $(function () {
+		// 	var data = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+		// 	$("#reportTable").dxDataGrid({
+		// 		dataSource: data,
+		// 		keyExpr: "HBNo",
+		// 		showBorders: true,
+		// 		columnAutoWidth: true,
+		// 		paging: {
+		// 			pageSize: 10,
+		// 		},
+		// 		filterRow: {
+		// 			visible: true
+		// 		},
+		// 		headerFilter: {
+		// 			visible: true
+		// 		},
+		// 		scrolling: {
+		// 			mode: "virtual",
+		// 			showScrollbar: "always"
+		// 		},
+		// 		searchPanel: {
+		// 			visible: true,
+		// 			width: 240,
+		// 			placeholder: "Search..."
+		// 		},
+		// 		columns: [
+		// 			{ dataField: "SerialNumber", caption: "#" },
+		// 			{ dataField: "CompanyCode", caption: "HGO" },
+		// 			{ dataField: "SPOName", caption: "SPO" },
+		// 			{ dataField: "HajjiName", caption: "Hajji Name" },
+		// 			{ dataField: "HBNo", caption: "HbNo" },
+		// 			{ dataField: "PackageName", caption: "Package Name" },
+		// 			{ dataField: "TotalPackage", caption: "Total Package Amount" },
+		// 			{ dataField: "Discount", caption: "Discount" },
+		// 			{ dataField: "Gross", caption: "Gross" },
+		// 			{ dataField: "ReceivedAmount", caption: "Received Amount" },
+		// 			{ dataField: "Balance", caption: "Balance" }
+		// 		],
+		// 		export: {
+		// 			enabled: true,
+		// 			fileName: "ClientOutStandingReport"
+		// 		}
+		// 	});
+		// });
+
+		document.getElementById("downloadPdf").addEventListener("click", () => {
+			const element = document.getElementById("incoice_page_body");
+
+			// ✅ Clone content
+			const clone = element.cloneNode(true);
+			const container = document.createElement("div");
+			container.appendChild(clone);
+			container.style.position = "absolute";
+			container.style.left = "-9999px";
+			document.body.appendChild(container);
+
+			// ✅ Remove checkbox columns from cloned table
+			const checkboxColumns = clone.querySelectorAll('.column-controls, .column-controls-container');
+			checkboxColumns.forEach(el => el.remove());
+
+			// ✅ Add logo at the top
+			const logo = document.createElement("img");
+			logo.src = "/reportlogo/GroupLogo.png"; // 🔁 Replace with your actual path
+			logo.style.width = "100px";
+			logo.style.marginBottom = "20px";
+			logo.style.float = "right";
+			clone.insertBefore(logo, clone.firstChild);
+
+			// ✅ PDF export
+			const options = {
+				margin: 0.5,
+				filename: 'ClientOutStandingReport.pdf',
+				image: { type: 'jpeg', quality: 0.98 },
+				html2canvas: { scale: 2, useCORS: true },
+				jsPDF: { unit: 'in', format: 'a3', orientation: 'landscape' }
+			};
+
+			html2pdf().set(options).from(clone).save().then(() => {
+				document.body.removeChild(container);
+			});
+		});
+
+		// ✅ Excel Export Function
+		document.getElementById("downloadExcel").addEventListener("click", () => {
+			const originalTable = document.getElementById("reportTable");
+
+			// Create a new table for export
+			const newTable = document.createElement('table');
+			newTable.className = originalTable.className;
+
+			// Header
+			const thead = document.createElement('thead');
+			const headerRow = document.createElement('tr');
+
+			const checkboxes = document.querySelectorAll('.column-controls input[type="checkbox"]');
+
+			checkboxes.forEach(checkbox => {
+				if (checkbox.checked) {
+					const columnIndex = parseInt(checkbox.dataset.column);
+					const originalHeader = originalTable.querySelector(`th:nth-child(${columnIndex + 1})`);
+					if (originalHeader) {
+						const newHeader = originalHeader.cloneNode(true);
+						headerRow.appendChild(newHeader);
+					}
+				}
+			});
+
+			thead.appendChild(headerRow);
+			newTable.appendChild(thead);
+
+			// Body
+			const tbody = document.createElement('tbody');
+			const originalRows = originalTable.querySelectorAll('tbody tr');
+
+			originalRows.forEach(row => {
+				const newRow = document.createElement('tr');
+				checkboxes.forEach(checkbox => {
+					if (checkbox.checked) {
+						const columnIndex = parseInt(checkbox.dataset.column);
+						const cell = row.cells[columnIndex];
+						if (cell) {
+							newRow.appendChild(cell.cloneNode(true));
+						}
+					}
+				});
+				tbody.appendChild(newRow);
+			});
+
+			newTable.appendChild(tbody);
+
+			// Export to Excel
+			const wb = XLSX.utils.table_to_book(newTable, { sheet: "SPO Report" });
+			XLSX.writeFile(wb, "SPOWiseSummaryReport.xlsx");
+		});
+
+		// ✅ Column Visibility Control
+		document.addEventListener('DOMContentLoaded', function () {
+			const checkboxes = document.querySelectorAll('.column-controls input[type="checkbox"]');
+			const table = document.getElementById('reportTable');
+
+			checkboxes.forEach(checkbox => {
+				checkbox.addEventListener('change', function () {
+					const columnIndex = parseInt(this.dataset.column);
+					const cells = table.querySelectorAll(`th:nth-child(${columnIndex + 1}), td:nth-child(${columnIndex + 1})`);
+					cells.forEach(cell => {
+						cell.style.display = this.checked ? '' : 'none';
+					});
+				});
+			});
+		});
+	</script>
+
+</body>
+
+</html>

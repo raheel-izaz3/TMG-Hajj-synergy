@@ -1,0 +1,785 @@
+﻿@model NewItineraryReportModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>Itenerary New Design </title> -->
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+    src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: 600;
+        box-sizing: border-box;
+        padding: 20px;
+        }
+
+        .terms-conditions, p {
+        max-width: 100%; /* Allow full width */
+        padding-right: 50px;
+        margin-right: 50px;
+        overflow-wrap: break-word; /* Ensure long words break */
+        }
+
+        .terms-container {
+        width: 100%; /* Full width */
+        max-width: 1000px; /* Increase max-width for better readability */
+        overflow: hidden; /* Prevent overflow */
+        padding: 0 15px; /* Add horizontal padding */
+        margin: 0 auto; /* Center the container */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+        margin: 0 !important;
+        padding: 0 !important;
+        }
+
+
+        table.dataTable.row-border tbody th,
+        table.dataTable.row-border tbody td,
+        table.dataTable.display tbody th,
+        table.dataTable.display tbody td {
+        border-top: none !important;
+        }
+
+        p {
+        /* margin: 0 !important; */
+        /* padding: 0 !important; */
+        padding-left: 30px;
+        font-size: 10px;
+        }
+
+        span, p {
+        padding-left: 5px;
+        }
+
+        table th {
+        padding: 2px;
+        font-size: 12px !important;
+        text-align: center;
+        background-color: red;
+        color: white;
+        font-weight: bold;
+        border: 1px solid #b49164 !important;
+        }
+
+        table td {
+        font-size: 10px !important;
+        text-align: center;
+        border: 1px solid red;
+        background-color: white !important;
+        }
+
+
+        /* Custom Styling Start  */
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+        padding: 3px 10px !important;
+        }
+
+        .voucher-title {
+        color: red;
+        text-transform: uppercase;
+        font-size: 18px;
+        margin-left: 25px;
+        }
+
+        .airline-title {
+        margin-bottom: 35px !important;
+        }
+
+        .airline-title img {
+        height: 85px;
+        }
+
+        .airline-title h1 {
+        font-size: 18px !important;
+        text-transform: uppercase;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        }
+
+        .primary-width {
+        width: 95%;
+        }
+
+        .passenger-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin-bottom: 5px;
+        }
+
+
+        .passenger-grid > div {
+        text-align: center;
+        border: 1px solid red;
+        }
+
+        .passenger-grid h3 {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: red;
+        color: white;
+        text-transform: uppercase;
+        }
+
+        .passenger-grid p {
+        font-size: 12px;
+        }
+
+        #first-table {
+        border-collapse: separate;
+        width: 100%;
+        border: none !important;
+        margin-bottom: 10px;
+        }
+
+        #secound-table {
+        border: 1px solid red !important;
+        }
+
+        .third-table {
+        border-collapse: separate !important;
+        table-layout: fixed !important;
+        margin-top: 10px !important;
+        }
+
+        .third-table th {
+        border-radius: 50px !important;
+        }
+
+        .third-table td {
+        border: none !important;
+        }
+
+
+        .card-images {
+        display: flex;
+        gap: 15px;
+        }
+
+        .img-div {
+        width: 80px !important;
+        height: 50px !important;
+        flex-grow: 1;
+        }
+
+        .img-div img {
+        width: 100% !important;
+        height: 100% !important;
+        border: 4px solid red;
+        }
+
+        .card-images h5 {
+        font-size: 10px;
+        text-align: center;
+        width: 100%;
+        }
+
+        .zulhaj-date {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* Ensure 5 equal columns for print */
+        font-size: 20px !important;
+        color: red;
+        margin-top: 25px;
+        margin: 0;
+        padding: 0;
+        gap: 10px; /* Added gap to prevent overflow */
+        }
+
+        .zulhaj-date h5 {
+        border: 1px solid white;
+        box-shadow: 2px 2px 10px gray;
+        margin: 0; /* Remove margin to prevent overflow */
+        width: 100%; /* Ensure full width */
+        text-align: center; /* Center text */
+        padding: 5px;
+        font-size: 10px;
+        }
+
+        .zulhaj-date .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+
+        .zulhaj-date img {
+        margin-left: 10px !important;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        }
+
+        .family-record {
+        width: 100%;
+        border: none !important;
+        margin-bottom: 15px;
+        }
+
+        .family-record thead th {
+        border: none !important;
+        background-color: none !important;
+        background-color: white;
+        color: black;
+        font-size: 20px;
+        }
+
+        .family-record td {
+        border: none !important;
+        }
+
+        .print-btn {
+        display: inline-block;
+        padding: 0.5em 1em;
+        margin-bottom: 15px;
+        font-size: 16px;
+        outline: gray;
+        border-radius: 2px;
+        border: 1px solid #999;
+        background-color: #e9e9e9;
+        }
+
+        table.dataTable thead th,
+        table.dataTable thead td {
+        padding: 0px !important;
+        }
+
+        table.dataTable thead .sorting {
+        background-size: 12px !important;
+        }
+
+        /* Print Styling  */
+        @@media print {
+        body {
+        margin: 0 !important; /* Remove default margin */
+        padding: 40px !important; /* Add padding for print */
+        }
+
+        table {
+        width: 100% !important; /* Ensure tables take full width */
+        }
+
+        .card-images img {
+        width: 80px !important;
+        height: 50px !important;
+        }
+
+        table.dataTable thead .sorting {
+        background-image: none !important;
+        }
+
+        .print-btn {
+        display: none !important;
+        }
+
+        div#first-table_wrapper,
+        div#secound-table_wrapper {
+        display: none;
+        }
+
+        .terms-conditions {
+        max-width: 100%; /* Ensure it fits within the printable area */
+        overflow: hidden; /* Allow overflow for printing */
+        }
+
+
+        .zulhaj-date {
+        grid-template-columns: repeat(5, 1fr); /* Ensure 5 equal columns for print */
+        overflow: hidden; /* Prevent overflow */
+        }
+
+        .zulhaj-date h5 {
+        white-space: nowrap; /* Prevent text wrapping */
+        overflow: hidden; /* Hide overflow */
+        text-overflow: ellipsis; /* Add ellipsis for overflow text */
+        }
+        }
+
+        /* Print Styling End  */
+
+        /* Add this CSS for page breaks */
+        .page-break {
+        display: block;
+        height: 0;
+        page-break-after: always;
+        }
+
+        /* Adjust image styles to prevent extra space */
+        .card-images img {
+        width: 80px !important; /* Adjust width as needed */
+        height: auto; /* Maintain aspect ratio */
+        display: block; /* Ensure no extra space */
+        margin: 0 auto; /* Center the image */
+        page-break-inside: avoid; /* Prevent page break inside images */
+        }
+
+        /* Prevent extra space around elements */
+        .itinerary {
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+        overflow: hidden; /* Prevent overflow */
+        }
+
+        /* Ensure tables do not exceed page height */
+        table {
+        page-break-inside: avoid; /* Prevent page break inside tables */
+        width: 100%; /* Ensure tables take full width */
+        border-collapse: collapse; /* Prevent extra space */
+        }
+
+        /* Remove any default margins from headings */
+        h1, h2, h3, h4, h5, h6 {
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+        }
+
+        /* Remove padding and margin from paragraphs */
+        p {
+        margin: 0; /* Remove margin */
+        padding: 0; /* Remove padding */
+        }
+
+        /* Ensure content fits within the page */
+        .itinerary > * {
+        page-break-inside: avoid; /* Prevent page break inside content */
+        }
+    </style>
+</head>
+
+<body>
+
+    <button onclick="print()" class="print-btn">Print</button>
+    <button id="download-pdf" class="print-btn">Download PDF</button>
+    <button id="send-pdf" class="print-btn">Send PDF via Email</button>
+    <div id="placeFilter">
+        <label><input type="checkbox" class="place-checkbox" value="1" checked /> Makkah</label>
+        <label><input type="checkbox" class="place-checkbox" value="2" checked /> Madinah</label>
+        <label><input type="checkbox" class="place-checkbox" value="3" checked /> Mina</label>
+        <label><input type="checkbox" class="place-checkbox" value="4" checked /> Azizia</label>
+        <label><input type="checkbox" class="place-checkbox" value="7" checked /> Arafat</label>
+    </div>
+
+    <div class="itinerary" style="margin-bottom: 50px;">
+        <p>Printed : @DateTime.Now.ToString("dd/MMM/yyyy HH:mm")</p>
+        <div class="main" style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div class="left" style="text-align: left;">
+                <h1 class="voucher-title">Voucher</h1>
+                <br />
+                <h2 class="voucher-title" style="font-size: 15px">Makkah Coordinator #:</h2>
+                @foreach (Cordinator makkah in ViewBag.CordinatorMakkah)
+                {
+                    @makkah.Name <strong>(@makkah.Number)</strong>
+                }
+                <h2 class="voucher-title" style="font-size: 15px">Medinah Coordinator #:</h2>
+                @foreach (Cordinator medinah in ViewBag.CordinatorMedinah)
+                {
+                    @medinah.Name <strong>(@medinah.Number)</strong>
+                }
+            </div>
+            <div class="right" style="text-align: right;">
+                <img class="img-fluid" src="~/@ViewBag.CompanyLogo" style="width: 150px; height: 150px;" />
+            </div>
+        </div>
+        <table class="family-record">
+            <thead>
+                <tr>
+                    <th>PASSENGER NAME</th>
+                    <th>Gender</th>
+                    <th>PASSPORT</th>
+                    <th>VISA</th>
+                    <th>Ticket Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Members)
+                {
+                    <tr>
+                        <td>@s.Name (@s.HbNo)</td>
+                        <td>@s.Gender</td>
+                        <td>@s.Passport</td>
+                        <td>@s.Visa</td>
+                        <td>@s.TicketNumber</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- First Flight Table Start  -->
+        <table id="first-table" class="display nowrap " style="width: 100%; margin-top: 20px; ">
+            <thead>
+                <tr>
+                    <th>S No</th>
+                    <th>Type</th>
+                    <th>Flight #</th>
+                    <th>Sector</th>
+                    <th>Dep.Date</th>
+                    @if (ViewBag.MembersExist == false)
+                    {
+                        <th>Dep.Time</th>
+                    }
+                    <th>Arr.Date</th>
+                    @if (ViewBag.MembersExist == false)
+                    {
+                        <th>Arr.Time</th>
+                        <th>
+                            Luggage
+                        </th>
+                    }
+                    <th>Class</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @{
+                    int i = 0;
+                }
+                @foreach (var s in Model.Flights)
+                {
+                    i++;
+                    if (ViewBag.MembersExist == false)
+                    {
+                        <tr>
+                            <td>@s.Package</td>
+                            <td>@s.Type</td>
+                            <td>@s.Flight</td>
+                            <td>@s.Sector</td>
+                            <td>@s.DepartureDate</td>
+                            <td>@s.DepartureTime</td>
+                            <td>@s.ArrivalDate</td>
+                            <td>@s.ArrivalTime</td>
+                            <td>@s.Luggage</td>
+                            <td>@s.Class</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10"><strong>@s.Package</strong></td>
+                        </tr>
+
+                        @foreach (var fd in s.FlightDetails)
+                        {
+                            <tr>
+                                <td>@i</td>
+                                <td>@fd.Type</td>
+                                <td>@fd.Flight</td>
+                                <td>@fd.Sector</td>
+                                <td>@fd.DepartureDate</td>
+                                @* <td>@fd.DepartureTime</td> *@
+                                <td>@fd.ArrivalDate</td>
+                                @* <td>@fd.ArrivalTime</td> *@
+                                @* <td>@fd.Luggage</td> *@
+                                <td>@fd.Class</td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+
+
+
+        <table id="first-table" class="display nowrap " style="width: 100%; margin-top: 20px; ">
+            <thead>
+            <th></th>
+            <th>Train #</th>
+            <th>Sector</th>
+            <th>Dep.Date</th>
+            <th>Dep.Time</th>
+            <th>Arr.Date</th>
+            <th>Arr.Time</th>
+            <th>
+                Luggage
+            </th>
+            <th>Class</th>
+            </thead>
+
+            <tbody>
+                @foreach (var s in Model.Trains)
+                {
+                    <tr>
+                        <td>@s.Package</td>
+                        <td>@s.Train</td>
+                        <td>@s.Sector</td>
+                        <td>@s.DepartureDate</td>
+                        <td>@s.DepartureTime</td>
+                        <td>@s.ArrivalDate</td>
+                        <td>@s.ArrivalTime</td>
+                        <td>@s.Luggage</td>
+                        <td>@s.Class</td>
+                    </tr>
+                }
+            </tbody>
+
+
+        </table>
+
+        <!-- First Flight Table END -->
+        <!-- Secound_table Start  -->
+        <table id="secound-table" class="display nowrap " style="width: 100%; margin-top: 20px; ">
+            <thead>
+            <th>Hotel Name</th>
+            <th>Check in</th>
+            <th>Check out</th>
+            <th>Night</th>
+            <th>Person's</th>
+            <th>Room Type</th>
+                @* <th>Qty</th> *@
+            <th>Meal Plan</th>
+                @* <th>View</th>
+            <th>Confirmation #</th> *@
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model.Accommodations)
+                {
+                    <tr data-placeid="@item.PlaceId">
+                        <td>@item.Hotel</td>
+                        <td>@item.CheckIn</td>
+                        <td>@item.CheckOut</td>
+                        <td>@item.Nights</td>
+                        <td>@item.Count</td>
+                        <td>@item.RoomType</td>
+                        <td>@item.MealPlan</td>
+                    </tr>
+                }
+                <tr data-placeid="7">
+                    <!-- Arafat -->
+                    <td>Arafat Marque</td>
+                    <td>5/Jun</td>
+                    <td>5/Jun</td>
+                    <td>0</td>
+                    <td>-</td>
+                    <td>Arafat Marque - 300 to 350 pax</td>
+                    <td>Breakfast & lunch Buffet Provided by Muallim Management ( Common Buffet & Washrooms Entire Maktab Groups)</td>
+                </tr>
+            </tbody>
+
+
+        </table>
+
+        <!-- Secound_table END  -->
+        <!-- Third-custom Table  Start-->
+        <table id="first-table" class="third-table">
+            <thead>
+            <th style="width: 60px;">Date</th>
+            <th style="width: 100px;">Sector/Route</th>
+            <th style="width: 60px">Vehicle</th>
+            <th style="width: 60px;">Type</th>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Routes)
+                {
+                    <tr>
+                        <td>@item.Date</td>
+                        <td>@item.Route</td>
+                        <td>@item.Vehicle</td>
+                        <td>@item.Type</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="zulhaj-date">
+            <div class="box">
+                <h5>08 ZH</h5>
+                <img src="~/60X60 PIX.png" alt="">
+            </div>
+
+            <div class="box">
+                <h5>08/09 ZH</h5>
+                <img src="~/60X60 PIX.png" alt="">
+            </div>
+            <div class="box">
+                <h5>09/10 ZH</h5>
+                <img src="~/60X60 PIX.png" alt="">
+            </div>
+            <div class="box">
+                <h5>10 ZH</h5>
+                <img src="~/60X60 PIX.png" alt="">
+            </div>
+            <div class="box">
+                <h5>11 ZH</h5>
+                <img src="~/60X60 PIX.png" alt="">
+            </div>
+            <div class="box">
+                <h5>12 ZH</h5>
+            </div>
+        </div>
+
+
+        <div class="card-images" style="margin-top: 10px;">
+
+            <div class="img-div">
+                <img src="~/@ViewBag.Mina" alt="">
+                <h5>MINA</h5>
+            </div>
+
+            <div class="img-div">
+                <img src="~/@ViewBag.Arafat" alt="">
+                <h5>ARAFAT</h5>
+            </div>
+
+            <div class="img-div">
+                <img src="~/@ViewBag.MUZDALIFAH" alt="">
+                <h5>MUZDALIFAH</h5>
+            </div>
+
+            <div class="img-div">
+                <img src="~/@ViewBag.RamiDayOne" alt="">
+                <h5>
+                    MAKKAH / MINA - <br>
+                    <span>RAMI - DAY - 1</span>
+                </h5>
+            </div>
+
+            <div class="img-div">
+                <img src="~/@ViewBag.RamiDayTwo" alt="">
+                <h5>
+                    MINA -
+                    <span>RAMI - DAY - 2</span>
+                </h5>
+            </div>
+
+            <div class="img-div">
+                <img src="~/@ViewBag.RamiDayThree" alt="">
+                <h5>
+                    MINA / MAKKAH - <br>
+                    <span>RAMI - DAY - 3</span>
+                </h5>
+            </div>
+        </div>
+
+
+        <div style="page-break-after: always;">
+        </div>
+        <h4>Content</h4>
+        @Html.Raw(ViewBag.Content)
+ 
+        <div style="page-break-after: always;">
+        </div>
+
+        <h4>Terms & Conditions</h4>
+        <div class="terms-container">
+            <div class="terms-conditions" id="termsContent">
+                @Html.Raw(ViewBag.TermsnCondition)
+            </div>
+        </div> 
+
+        <script>
+            document.getElementById('download-pdf').addEventListener('click', function () {
+                var element = document.querySelector('.itinerary');
+
+                // Clear previous page breaks
+                const existingBreaks = element.querySelectorAll('.page-break');
+                existingBreaks.forEach(breakElement => breakElement.remove());
+
+
+
+                var buttons = document.querySelectorAll('.print-btn');
+                buttons.forEach(button => button.style.display = 'none');
+
+                const hajjiName = "@ViewBag.HajjiName".replace(/"/g, '');
+                const hbNo = "@ViewBag.HbNo".replace(/"/g, '');
+                const pkgName = "@ViewBag.PkgName".replace(/"/g, '');
+
+                const filename = `ItineraryReport_${hajjiName}_${hbNo}_${pkgName}.pdf`;
+
+                html2pdf().from(element).set({
+                    margin: 0.4,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                }).save().then(function () {
+                    buttons.forEach(button => button.style.display = 'inline-block');
+                });
+            });
+
+            document.getElementById('send-pdf').addEventListener('click', function () {
+                var element = document.querySelector('.itinerary');
+
+                var buttons = document.querySelectorAll('.print-btn');
+                buttons.forEach(button => button.style.display = 'none');
+
+                html2pdf().from(element).toPdf().get('pdf').then(function (pdf) {
+                    var pdfBase64 = pdf.output('datauristring');
+                    sendPdfToServer(pdfBase64);
+                }).finally(function () {
+                    buttons.forEach(button => button.style.display = 'inline-block');
+                });
+            });
+
+            function sendPdfToServer(pdfBase64) {
+                const id = '@ViewBag.ID';
+
+                $.ajax({
+                    url: `/Email/SendEmailWithPdf/${id}`,
+                    type: 'POST',
+                    data: { pdfBase64: pdfBase64 },
+                    success: function (response) {
+                        alert("Email sent successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error sending email: " + error);
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                $('.place-checkbox').on('change', function () {
+                    let selectedIds = $('.place-checkbox:checked').map(function () {
+                        return $(this).val();
+                    }).get();
+
+                    $('#secound-table tbody tr').each(function () {
+                        let rowPlaceId = $(this).data('placeid');
+                        if (selectedIds.includes(rowPlaceId?.toString())) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                });
+
+                $('.place-checkbox').trigger('change');
+            });
+
+        </script>
+
+    </div>
+
+
+
+
+
+
+</body>
+
+</html>

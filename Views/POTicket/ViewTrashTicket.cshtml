@@ -1,0 +1,85 @@
+﻿@model IEnumerable<POTicket>
+@{
+    string modelName = "PO - Ticket";
+    string modelNamePlural = "PO - Ticket";
+    string modelControllerRoute = "POTicket";
+}
+
+@if (TempData.ContainsKey("restored"))
+{
+    if ((bool)TempData["restored"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Restored Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["restored"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural / Trash</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>PO-#</th>
+                        <th>XO-#</th>
+                        <th>TP-#</th>
+                        <th>Gross AirLine</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (POTicket po in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@(++i)</strong>
+                            </td>
+                            <td>@po.Date.ToString("dd/MMM/yyyy")</td>
+                            <td>@po.PONumber</td>
+                            <td>@po.XONumber</td>
+                            <td>@po.TPRFNo</td>
+                            <td>@po.GrossAirline</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info" onclick="confirmRestore(@po.POTicketId)">
+                                        <i class="bx bx-recycle me-1"></i> Restore
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    function confirmRestore(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/RestoreTicket/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

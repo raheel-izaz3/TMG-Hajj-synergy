@@ -1,0 +1,135 @@
+﻿@model TravelRegisterRequest
+
+@{
+    string modelName = "Travel Route";
+    string modelNamePlural = "Travel Routes";
+    string modelControllerRoute = "TravelRoute";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                          
+                             <div class="col-sm-12  mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" >Route Name</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input class="form-control" asp-for="RouteName">
+                                </div>
+                                <span class="text-danger" asp-validation-for="RouteName"></span>
+                            </div>
+                           
+
+                            @if(ViewBag.RoutesCount == 0)
+                            {
+                                <p class="text-danger">No Routes Exists! <a asp-controller="Route" asp-action="Create">Please create routes first</a></p>
+                            }
+
+                            <span class="text-danger" asp-validation-for="RoutesSelected"></span>
+
+                            @{int i = 0; }
+                            @foreach(Route route in ViewBag.Routes)
+                            {
+                                <input type="hidden" asp-for="RouteIds" value="@route.RouteId">
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Route</label>
+                                    <div class="input-group input-group-merge">
+                                        <input type="checkbox" class="mt-2 form-check-input" asp-for="RoutesSelected[i]">
+                                        <span class="mx-2 mt-2">@route.StartPlace To @route.Destination</span>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-2 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Arrival Date</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input class="form-control" type="date" asp-for="CheckIns[i]">
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-2 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Arrival Time</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input class="form-control" type="time" asp-for="CheckInsTime[i]">
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-2 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Vehicles</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <select class="form-control" asp-for="VehicleIds[i]">
+                                            @foreach (var item in ViewBag.Vehicles)
+                                            {
+                                                <option value="@item.VehicleId">@item.VehicleType</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-2 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Group Sharing</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <select class="form-control" asp-for="TransportTypes[i]">
+                                            @foreach (var item in ViewBag.TransportTypes)
+                                            {
+                                                <option value="@item.Value">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div>
+                                @* <div class="col-sm-12 col-md-2 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Price (SAR)</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input class="form-control" asp-for="Prices[i]" />
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div> *@
+                                @* <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Check Out</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input class="form-control" type="datetime-local" asp-for="CheckOuts[i]">
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div> *@
+                                @* <div class="col-sm-12 col-md-3 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">SAR Price</label>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input class="form-control" placeholder="0" asp-for="SARPrices[i]">
+                                    </div>
+                                    <span class="text-danger"></span>
+                                </div> *@
+                                
+                                <div class="col-sm-12 mb-3">
+                                    <hr />
+                                </div>
+                                i++;
+                            }
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

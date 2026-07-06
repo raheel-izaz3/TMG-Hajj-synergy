@@ -1,0 +1,276 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IHttpContextAccessor http
+@model PackageIndexModel
+
+<!-- Ensure Bootstrap 5 is referenced in your _Layout.cshtml -->
+<!--
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+
+<style>
+    /* Allow dropdowns to escape the grid clipping */
+    .dx-datagrid-rowsview,
+    .dx-datagrid .dx-scrollable-content {
+        overflow: visible !important;
+    }
+</style>
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Package Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Package Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Package Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Package</h4>
+    <hr class="mb-4" />
+
+    @if (ViewBag.CreateAllowed == true)
+    {
+        <a asp-action="Create" class="btn btn-info">Create New</a>
+        <a target="_blank" asp-action="ReportV2" asp-controller="PackageReport" class="btn btn-warning">Package Report</a>
+    }
+    @if (ViewBag.TrashAllowed == true)
+    {
+        <a asp-action="ViewTrash" class="btn btn-info float-end">
+            <i class="bx bx-trash me-1"></i> Trash (@ViewBag.TrashCount)
+        </a>
+    }
+    <br /><br />
+
+    <!-- DevExtreme DataGrid container -->
+    <div id="gridContainer"></div>
+</div>
+
+<script>
+    // Permission flags from ViewBag
+    var reportsAllowed = @Html.Raw((ViewBag.ReportsAllowed ?? false).ToString().ToLower());
+    var detailsAllowed = @Html.Raw((ViewBag.DetailsAllowed ?? false).ToString().ToLower());
+    var copyAllowed = @Html.Raw((ViewBag.CopyAllowed ?? false).ToString().ToLower());
+    var editAllowed = @Html.Raw((ViewBag.EditAllowed ?? false).ToString().ToLower());
+    var trashAllowed = @Html.Raw((ViewBag.TrashAllowed ?? false).ToString().ToLower());
+    var gridData = @Html.Raw(JsonConvert.SerializeObject(Model.Entries));
+
+    $(function () {
+        $("#gridContainer").dxDataGrid({
+            dataSource: gridData,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            wordWrapEnabled: true,
+            columns: [
+   
+                {
+                    caption: "Sr No",
+                    cellTemplate: function(container, options) {
+                        var gridInstance = $("#gridContainer").dxDataGrid("instance");
+                        var pageIndex = gridInstance.pageIndex();
+                        var pageSize = gridInstance.pageSize();
+                    
+                        var serialNo = (pageIndex * pageSize) + options.rowIndex + 1;
+                        container.text(serialNo);
+                    },
+                    width: 60,
+                    alignment: "center",
+                    allowSorting: false,
+                    allowFiltering: false
+                },
+                { dataField: "Company", caption: "Company" },
+                { dataField: "Code", caption: "PKG Code" },
+                { dataField: "Name", caption: "PKG Name" },
+                { dataField: "Booked", caption: "Assigned" },
+                {
+                    dataField: "Status",
+                    caption: "Is Shown On Mobile App",
+                    dataType: "boolean",
+                    allowFiltering: false,
+                    cellTemplate: function (container, options) {
+                        var checkbox = $('<input type="checkbox" ' + (options.data.Status ? 'checked' : '') + '/>');
+                        checkbox.on('change', function () {
+                            var isChecked = $(this).is(':checked');
+                            $.ajax({
+                                url: '/Package/UpdateStatus',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify({ PackageId: options.data.PackageId, Status: isChecked }),
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert('Status updated successfully!');
+                                    } else {
+                                        alert('Failed to update status!');
+                                        checkbox.prop('checked', !isChecked);
+                                    }
+                                },
+                                error: function () {
+                                    alert('Error occurred while updating status!');
+                                    checkbox.prop('checked', !isChecked);
+                                }
+                            });
+                        });
+                        container.append(checkbox);
+                    }
+                },
+                {
+                    caption: "Actions",
+                    allowFiltering: false,
+                    cellTemplate: function (container, options) {
+                        var packageId = options.data.PackageId;
+                        var actionsHtml = `<div class="d-inline-flex align-items-center gap-1" style="white-space: nowrap;">`;
+
+                        
+                        if (reportsAllowed) {
+                            actionsHtml += `
+                                <div class="btn-group">
+                                    <button type="button"
+                                            class="btn btn-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-boundary="viewport"
+                                            aria-expanded="false">
+                                        <i class="bx bxs-report"></i> Reports
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/RequiredDocuments/${packageId}">1. Document Received</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/Report/${packageId}">2. Package Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/DraftAgreement/${packageId}">3. Draft Agreement</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/PackageSummaryReport/${packageId}">4. Summary Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/EIADFReport/${packageId}">5. EI-ADF Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/PassportReport/${packageId}">6. Passport Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/IdCardReport/${packageId}">7. ID Card Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/QurbaniReport/${packageId}">8. Qurbani Report</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/VisaInsuranceReport/${packageId}">9. Upload Documents</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/GiftReport/${packageId}">10. Gift Pack Token</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/SuitCaseReport/${packageId}">11. SuitCase Token</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/IdCardReportV2/${packageId}">12. ID Card Report V2</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/IndividualTokens/${packageId}">13. Individual Qurbani Tokens</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/TrainTicket/${packageId}">14. Upload Train Ticket</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/FamilyHeadKSANumberReport/${packageId}">15. KSA Number Links</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/NusukID/${packageId}">16. Nusuk Card Number</a></li>
+                                        <li><a target="_blank" class="dropdown-item" href="/PackageReport/ReceiptReport/${packageId}">17. Receipt Report</a></li>
+                                    </ul>
+                                </div>
+                            `;
+                        }
+
+                        // Additional action buttons
+                        if (detailsAllowed) {
+                            actionsHtml += `
+                                <a class="btn btn-info" target="_blank" href="/Package/Detail/${packageId}">
+                                    <i class="bx bx-clipboard me-1"></i> Details
+                                </a>
+                            `;
+                        }
+                        if (copyAllowed) {
+                            actionsHtml += `
+                                <a class="btn btn-outline-secondary" href="/Package/Copy/${packageId}">
+                                    <i class="bx bx-copy-alt me-1"></i> Copy
+                                </a>
+                            `;
+                        }
+                        if (editAllowed) {
+                            actionsHtml += `
+                                <a class="btn btn-warning" href="/Package/Edit/${packageId}">
+                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                </a>
+                            `;
+                        }
+                        if (trashAllowed) {
+                            actionsHtml += `
+                                <button class="btn btn-outline-danger" onclick="confirmDelete(${packageId})">
+                                    <i class="bx bx-trash me-1"></i> Trash
+                                </button>
+                            `;
+                        }
+
+                        actionsHtml += `</div>`;
+                        container.append(actionsHtml);
+
+                        // Reinitialize the dropdown with a fixed popper strategy to prevent clipping
+                        var dropdownToggle = container.find('.dropdown-toggle')[0];
+                        if (dropdownToggle) {
+                            var existingInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
+                            if(existingInstance) {
+                                existingInstance.dispose();
+                            }
+                            new bootstrap.Dropdown(dropdownToggle, {
+                                popperConfig: function(defaultBsPopperConfig) {
+                                    defaultBsPopperConfig.strategy = 'fixed';
+                                    return defaultBsPopperConfig;
+                                }
+                            });
+                        }
+                    }
+                }
+            ],
+            filterRow: { visible: true, applyFilter: "auto" },
+            searchPanel: { visible: true, width: 240, placeholder: "Search..." },
+            paging: { pageSize: 10 },
+            headerFilter: { visible: true },
+            sorting: { mode: "multiple" }
+        });
+    });
+
+    function confirmDelete(id) {
+        if (confirm("Are you sure?")) {
+            window.location.href = '/Package/Trash/' + id;
+        }
+    }
+</script>
+
+<script>
+    // Optional: Global reinitialization for dropdowns outside the grid
+    $(function() {
+        document.querySelectorAll('.btn-group .dropdown-toggle').forEach(function(el) {
+            var dd = bootstrap.Dropdown.getInstance(el);
+            if(dd) dd.dispose();
+            new bootstrap.Dropdown(el, {
+                popperConfig: function(defaultBsPopperConfig) {
+                    defaultBsPopperConfig.strategy = 'fixed';
+                    return defaultBsPopperConfig;
+                }
+            });
+        });
+    });
+</script>

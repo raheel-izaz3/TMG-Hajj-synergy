@@ -1,0 +1,409 @@
+@model HotelRoomSummaryModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel-Summary</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            /* border: none; */
+        }
+
+        table th {
+            /* border: 1px solid #fedf7b !important; */
+            padding: 3px 4px !important;
+            font-size: 10px !important;
+            /* width: fit-content !important; */
+            text-align: center !important;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            font-weight: bold;
+            border: 1px solid #b49164 !important;
+        }
+
+        table td {
+            font-size: 8px !important;
+            /* outline: 1px solid #fedf7b; */
+            /* border: 1px solid #fedf7b; */
+            padding: 5px 2px !important;
+            margin: 0 !important;
+            text-align: center;
+            border: 1px solid #b0872e;
+        }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr>*:nth-child(1) {
+            display: none;
+        }
+
+        #summaryData.hide2 tr>*:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr>*:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr>*:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr>*:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr>*:nth-child(6) {
+            display: none;
+        }
+
+        #summaryData.hide7 tr>*:nth-child(7) {
+            display: none;
+        }
+
+        #summaryData.hide8 tr>*:nth-child(8) {
+            display: none;
+        }
+
+        #summaryData.hide9 tr>*:nth-child(9) {
+            display: none;
+        }
+
+        #summaryData.hide10 tr>*:nth-child(10) {
+            display: none;
+        }
+
+        #summaryData.hide11 tr>*:nth-child(11) {
+            display: none;
+        }
+
+        #summaryData.hide12 tr>*:nth-child(12) {
+            display: none;
+        }
+
+        #summaryData.hide13 tr>*:nth-child(13) {
+            display: none;
+        }
+
+        #summaryData.hide14 tr>*:nth-child(14) {
+            display: none;
+        }
+
+        #summaryData.hide15 tr>*:nth-child(15) {
+            display: none;
+        }
+
+        #summaryData.hide16 tr>*:nth-child(16) {
+            display: none;
+        }
+
+        #summaryData.hide17 tr>*:nth-child(17) {
+            display: none;
+        }
+
+        #summaryData.hide18 tr>*:nth-child(18) {
+            display: none;
+        }
+
+        #summaryData.hide19 tr>*:nth-child(19) {
+            display: none;
+        }
+
+        #summaryData.hide20 tr>*:nth-child(20) {
+            display: none;
+        }
+
+        #summaryData.hide21 tr>*:nth-child(21) {
+            display: none;
+        }
+
+        #summaryData.hide22 tr>*:nth-child(22) {
+            display: none;
+        }
+
+        #summaryData.hide23 tr>*:nth-child(23) {
+            display: none;
+        }
+
+        #summaryData.hide24 tr>*:nth-child(24) {
+            display: none;
+        }
+
+        #summaryData.hide25 tr>*:nth-child(25) {
+            display: none;
+        }
+
+        #summaryData.hide26 tr>*:nth-child(26) {
+            display: none;
+        }
+    </style>
+
+    <script>
+        function showCalendar(elem) {
+            const calendarElems = document.getElementsByClassName('calendar')
+            if (elem.checked) {
+                for (let e of calendarElems) {
+                    e.style.display = ''
+                }
+            }
+            else {
+                for (let e of calendarElems) {
+                    e.style.display = 'none'
+                }
+            }
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="check-box">
+        <label for="checkbox1">CO</label>
+        <input type="checkbox" name="checkbox1" id="checkbox1"
+            onchange='document.getElementById("summaryData").classList.toggle("hide1")' checked>
+
+        <label for="checkbox2">SPO</label>
+        <input type="checkbox" name="checkbox2" id="checkbox2"
+            onchange='document.getElementById("summaryData").classList.toggle("hide2")' checked>
+
+        <label for="checkbox3">Package</label>
+        <input type="checkbox" name="checkbox3" id="checkbox3"
+            onchange='document.getElementById("summaryData").classList.toggle("hide3")' checked>
+
+        <label for="checkbox4">IN</label>
+        <input type="checkbox" name="checkbox4" id="checkbox4"
+            onchange='document.getElementById("summaryData").classList.toggle("hide4")' checked>
+
+        <label for="checkbox5">OUT</label>
+        <input type="checkbox" name="checkbox5" id="checkbox5"
+            onchange='document.getElementById("summaryData").classList.toggle("hide5")' checked>
+
+        <label for="checkbox6">NIGHT</label>
+        <input type="checkbox" name="checkbox6" id="checkbox6"
+            onchange='document.getElementById("summaryData").classList.toggle("hide6")' checked>
+
+        <label for="checkbox7">PAX</label>
+        <input type="checkbox" name="checkbox7" id="checkbox7"
+            onchange='document.getElementById("summaryData").classList.toggle("hide7")' checked>
+
+        <label for="checkbox7">CALENDAR</label>
+        <input type="checkbox" name="checkbox8" id="checkbox8" onchange="showCalendar(this)" checked>
+
+    </div>
+    <!-- DataTable -->
+    @foreach (var group in Model.Groups)
+    {
+        <div class="myTable" id="summaryData">
+            <table id="roomData" class="display nowrap" style="width: 100%;">
+                <div style="display: flex; padding: 4px; margin: 5px 0;
+                background-color: #b49164; color: white; border-radius: 2px; padding: 7px;">
+                    <p> MEDINAH: @Model.MedinaArrival</p>
+                    <p style="width: 80%; text-align: center; ">HOTEL: @group.HotelName</p>
+                </div>
+                <thead>
+                    <tr>
+                        <th>CO</th>
+                        <th>SPO</th>
+                        <th>PACKAGE</th>
+                        <th>IN</th>
+                        <th>OUT</th>
+                        <th>NIGHTS</th>
+                        <th>PAX</th>
+                        <th>SHARING</th>
+                        <th>DB2</th>
+                        <th>TR3</th>
+                        <th>QD4</th>
+                        <th>QT5</th>
+                        @Html.Raw(Model.CheckInHeaders)
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in group.BeforeHajjRows)
+                    {
+                        <tr>
+                            <td>@b.Company</td>
+                            <td>@b.SPO</td>
+                            <td>@b.Package</td>
+                            <td>@b.In</td>
+                            <td>@b.Out</td>
+                            <td>@b.Nights</td>
+                            <td>@b.Pax</td>
+                            <td>@b.SharingRoomCount</td>
+                            <td>@b.DoubleRoomCount</td>
+                            <td>@b.TripleRoomCount</td>
+                            <td>@b.QuadRoomCount</td>
+                            <td>@b.QuintRoomCount</td>
+                            @foreach (var p in b.CheckIns)
+                            {
+                                <td class="calendar">@p.RoomCount</td>
+                            }
+                        </tr>
+                    }
+                    <tr style="background-color: #f6f3ee !important; color: #b49164; font-weight: bolder;">
+                        <td colspan="" style="text-align: left; ">TOTAL REQUIRED</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        @* <td>@group.BeforeHajjRowsTotalRequiredSharing</td> *@
+                        <td>@group.BeforeHajjRowsTotalRequiredDouble</td>
+                        <td>@group.BeforeHajjRowsTotalRequiredTriple</td>
+                        <td>@group.BeforeHajjRowsTotalRequiredQuad</td>
+                        <td>@group.BeforeHajjRowsTotalRequiredQuint</td>
+                        @foreach (float f in group.BeforeHajjRowsTotalCheckIns)
+                        {
+                            <td class="calendar">@f</td>
+                        }
+                    </tr>
+                </tbody>
+                @*
+            <tr style="background-color: #f6f3ee !important; color: #b49164; font-weight: bolder;">
+            <td colspan="16" style="text-align: left;">
+            AVAILABILITY</td>
+            <td>24</td>
+            <td>24</td>
+            <td>34</td>
+            <td>10</td>
+            <td>28</td>
+            <td>18</td>
+            <td>57</td>
+            <td>39</td>
+            </tr>
+
+            <tr style="background-color: black; color: white;">
+            <td colspan="16" style="text-align: left;">
+            SHORT
+            /
+            SURPLUS</td>
+            <td>24</td>
+            <td>24</td>
+            <td>34</td>
+            <td>10</td>
+            <td>28</td>
+            <td>18</td>
+            <td>57</td>
+            <td>39</td>
+            </tr> *@
+            </table>
+        </div>
+
+    }
+    <script>
+        // Initialize DataTable
+        $(document).ready(function () {
+            $('#roomData').DataTable({
+                dom: 'Bfrtip',
+                buttons: [{
+                    text: 'Export to Excel',
+                    extend: 'excelHtml5',
+                    className: 'btn btn-dark',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }],
+                "scrollCollapse": true,
+                "paging": false, // Disable pagination if necessary
+                "info": false,
+                "ordering": false,
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,129 @@
+@model TentativeFamilyHead
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Hajj 2026 / </span> Create</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <form method="post" enctype="multipart/form-data">
+                <div class="card p-3">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="SPOID">SPO</label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <select class="form-control" asp-for="SPOID">
+                                    <option value="">Select SPO</option>
+                                    @foreach (SPO spo in ViewBag.SPOs)
+                                    {
+                                        <option value="@spo.SPOId">@spo.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <span class="text-danger" asp-validation-for="SPOID"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-1 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="adult"></label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="adult" class="form-control" value="0" placeholder="Adult">
+                            </div>
+                            <span class="text-danger" asp-validation-for="adult"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-1 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="child"></label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="child" class="form-control" value="0" placeholder="Child">
+                            </div>
+                            <span class="text-danger" asp-validation-for="child"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-1 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="infant"></label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="infant" class="form-control" value="0" placeholder="Infant">
+                            </div>
+                            <span class="text-danger" asp-validation-for="infant"></span>
+                        </div>
+
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="SurName">Sur Name</label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="SurName" class="form-control" placeholder="Enter Sur Name...">
+                            </div>
+                            <span class="text-danger" asp-validation-for="SurName"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="GivenName">Given Name</label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="GivenName" class="form-control" placeholder="Enter Given Name...">
+                            </div>
+                            <span class="text-danger" asp-validation-for="GivenName"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="CNIC"></label>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="CNIC" class="form-control" maxlength="15" placeholder="Enter CNIC..."
+                                       oninput="formatCnicInput(this)">
+                            </div>
+                            <span class="text-danger" asp-validation-for="CNIC"></span>
+                        </div>
+
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="Phone"></label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="Phone" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="Phone"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="Email" type="email" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="Email"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname">Registration Date</label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="DateOfQuery" type="date" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="DateOfQuery"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname">Password</label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="Password" type="password" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname">Registration Code</label>
+                            <span class="fw-bold text-danger required"> *</span>
+                            <div class="input-group input-group-merge">
+                                <input asp-for="GroupNo" type="text" class="form-control">
+                            </div>
+                            <span class="text-danger" asp-validation-for="GroupNo"></span>
+                        </div>
+
+                        <div class="col-sm-12 mt-3">
+                            <button class="btn btn-success float-end">Create</button>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                @Html.AntiForgeryToken()
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<partial name="~/Views/Shared/_CNICFormatScriptPartial.cshtml" />

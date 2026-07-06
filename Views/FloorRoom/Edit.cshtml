@@ -1,0 +1,84 @@
+﻿@model FloorRoom
+
+@{
+    string modelName = "Room";
+    string modelNamePlural = "Rooms";
+    string modelControllerRoute = "Room";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light">@ViewBag.HotelName / Floor #@ViewBag.FloorNumber / @modelNamePlural </span> / Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="FloorRoomId" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="RoomNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="RoomNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="RoomNumber"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="BathroomType"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="BathroomType">
+                                        <option value="">Select Bathroom Type...</option>
+                                        <option value="0">Indian</option>
+                                        <option value="1">English</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="BathroomType"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PAX"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="PAX" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="PAX"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="RoomBedTypeId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="RoomBedTypeId">
+                                        <option value="">Select Room Bed Type...</option>
+                                        @foreach (RoomBedType bed in ViewBag.RoomTypes)
+                                        {
+                                            <option value="@bed.RoomBedTypeId">@bed.BedType</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="RoomBedTypeId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="RoomId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="RoomId">
+                                        <option value="">Select Room Type...</option>
+                                        @foreach (Room room in ViewBag.Rooms)
+                                        {
+                                            <option value="@room.RoomId">@room.RoomName (@room.RoomCode)</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="RoomId"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

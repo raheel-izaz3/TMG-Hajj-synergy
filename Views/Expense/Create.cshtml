@@ -1,0 +1,200 @@
+﻿@model Expense
+
+@{
+    string modelName = "Expense";
+    string modelNamePlural = "Expenses";
+    string modelControllerRoute = "Expense";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Date"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Date" type="date" value="@DateTimeManager.Today" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Date"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ExpenseType"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="ExpenseTypeId" class="form-control">
+                                        @foreach (ExpenseType type in ViewBag.ExpenseTypes)
+                                        {
+                                            <option value="@type.ExpenseTypeId">@type.TypeName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ExpenseTypeId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="companySelect" onchange="getCompanyBankAccounts(this.value)">
+                                        <option value="">Select...</option>
+                                        @foreach (var company in ViewBag.Companies)
+                                        {
+                                            <option value="@company.CompanyId">@company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Bank Account</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyBankAccountId">
+                                      
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ExpenseType"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Description"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Description" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Description"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Amount"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Amount" class="form-control" oninput="onInputNumber(event);" onblur="onBlurNumber(event);">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Amount"></span>
+                            </div>
+
+                            <!-- New Tax Fields with Percentage Calculation and Comma Formatting on Blur -->
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="WithholdingTax"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="WithholdingTax" class="form-control" oninput="onInputNumber(event);" onblur="onBlurNumber(event);">
+                                </div>
+                                <span class="text-danger" asp-validation-for="WithholdingTax"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="AdvanceTax"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="AdvanceTax" class="form-control" oninput="onInputNumber(event);" onblur="onBlurNumber(event);">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AdvanceTax"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="SalesTax"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="SalesTax" class="form-control" oninput="onInputNumber(event);" onblur="onBlurNumber(event);">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SalesTax"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="MiscTax"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="MiscTax" class="form-control" oninput="onInputNumber(event);" onblur="onBlurNumber(event);">
+                                </div>
+                                <span class="text-danger" asp-validation-for="MiscTax"></span>
+                            </div>
+
+                            <!-- Total Amount (Read-only) with Comma Formatting -->
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Total Amount</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" id="TotalAmount" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ImageFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ImageFile" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ImageFile"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function getCompanyBankAccounts(id) {
+        const element = document.getElementById("CompanyBankAccountId")
+        $.ajax({
+            url: `/CompanyBankAccount/GetPKRAccounts/${id}`,
+            success: res => {
+                console.log(res)
+                element.innerHTML = "";
+                res.forEach(account => {
+                    const option = document.createElement("option");
+                    option.value = account.companyBankAccountId;
+                    option.text = account.title;
+                    element.appendChild(option);
+                });
+            },
+            error: err => {
+                console.error("Error fetching accounts:", err);
+            }
+        });
+    }
+
+    // function calculateTotal() {
+    //     const amount = parseFloat(document.querySelector('input[name="Amount"]').value) || 0;
+    //     const withholdingTax = parseFloat(document.querySelector('input[name="WithholdingTax"]').value) || 0;
+    //     const advanceTax = parseFloat(document.querySelector('input[name="AdvanceTax"]').value) || 0;
+    //     const salesTax = parseFloat(document.querySelector('input[name="SalesTax"]').value) || 0;
+    //     const miscTax = parseFloat(document.querySelector('input[name="MiscTax"]').value) || 0;
+
+    //     const totalAmount = amount + withholdingTax + advanceTax + salesTax + miscTax;
+    //     document.getElementById("TotalAmount").value = totalAmount.toFixed(2);
+    // }
+
+    // Format number with commas
+    function formatNumber(value) {
+        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Handle input event for number fields
+    function onInputNumber(event) {
+        let value = event.target.value.replace(/,/g, ''); // Remove existing commas
+        event.target.value = formatNumber(value);
+        calculateTotal(); // Recalculate the total whenever any value is updated
+    }
+
+    // Handle blur event for number fields
+    function onBlurNumber(event) {
+        let value = event.target.value.replace(/,/g, ''); // Remove existing commas
+        event.target.value = formatNumber(value); // Add commas for thousands
+        calculateTotal(); // Recalculate the total whenever any value is updated
+    }
+
+    // Total calculation logic
+    function calculateTotal() {
+        const amount = parseFloat(document.querySelector('input[name="Amount"]').value.replace(/,/g, '') || 0);
+        const withholdingTax = parseFloat(document.querySelector('input[name="WithholdingTax"]').value.replace(/,/g, '') || 0);
+        const advanceTax = parseFloat(document.querySelector('input[name="AdvanceTax"]').value.replace(/,/g, '') || 0);
+        const salesTax = parseFloat(document.querySelector('input[name="SalesTax"]').value.replace(/,/g, '') || 0);
+        const miscTax = parseFloat(document.querySelector('input[name="MiscTax"]').value.replace(/,/g, '') || 0);
+
+        const totalAmount = amount + withholdingTax + advanceTax + salesTax + miscTax;
+        document.getElementById("TotalAmount").value = formatNumber(totalAmount.toFixed(2)); // Format total amount with commas
+    }
+
+   
+</script>

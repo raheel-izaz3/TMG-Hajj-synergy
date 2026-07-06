@@ -1,0 +1,343 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .header, .section-title {
+            text-align: center;
+            font-weight: bold;
+        }
+
+            .header img {
+                height: 50px;
+            }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+
+        .col {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #dcdcdc;
+        }
+
+        .section {
+            border: 2px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background-color: #e6e6e6;
+            padding: 10px;
+            color: black;
+            font-size: 16px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #e6e6e6;
+            color: black;
+        }
+
+        .export-button {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+            .export-button button {
+                padding: 8px 16px;
+                font-size: 14px;
+                background-color: #007bff;
+                color: white;
+                border: none;
+                cursor: pointer;
+                border-radius: 4px;
+            }
+
+                .export-button button:hover {
+                    background-color: #0056b3;
+                }
+    </style>
+</head>
+<body>
+    <div class="export-button">
+        <button onclick="exportWholePageToExcel()">Export Full Layout to Excel</button>
+    </div>
+
+    <div class="container" id="exportArea">
+        <!-- Header -->
+        <div class="row header">
+            <div class="col">
+                <img src="@Url.Content("~/Content/images/logo-placeholder.png")" alt="Logo" />
+            </div>
+            <div class="col">
+                <div>Service Provider<br /><span style="font-size: 12px;">مقدم الخدمة</span></div>
+            </div>
+            <div class="col">
+                <div>M By Millennium for Hajj Services<br /><span style="font-size: 12px;">شركة ام من ميلينيوم لخدمات الحج</span></div>
+            </div>
+        </div>
+
+        <!-- Flight Details Section -->
+        <div class="section">
+            <div class="section-title">Flight Details تفاصيل الرحلة</div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Flight No: @Model.FlightNo<br />رقم الرحلة</td>
+                        <td>Airline Name: @Model.AirlineName<br />اسم الخطوط</td>
+                        <td>Flight Date and Time: <b>@Model.FlightDate | @Model.FlightTime</b><br />تاريخ ووقت الرحلة</td>
+                        <td>To City: @Model.ToCity<br />إلى مدينة</td>
+                    </tr>
+                    <tr>
+                        <td>Plot No. & Gate No.: -<br />رقم البقعة والبوابة</td>
+                        <td>Permit No for Housing: -<br />تصريح سكن</td>
+                        <td>Airport Name: @Model.AirportName<br />اسم المطار</td>
+                        <td>Arrival Terminal: -<br />بوابة الوصول</td>
+                    </tr>
+                    <tr>
+                        <td>From City: @Model.FromCity<br />مدينة المغادرة</td>
+                        <td>Flight Capacity: -<br />سعة الرحلة</td>
+                        <td>Contract No. for Housing: -<br />رقم عقد السكن</td>
+                        <td>Flight Class: @Model.FlightClass<br />درجة الرحلة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Group Reference Section -->
+        <div class="section">
+            <div class="section-title">Group Reference Details تفاصيل مرجع المجموعة</div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Pre Arrival Group Reference: -<br />مرجع المجموعة قبل الوصول</td>
+                        <td>House Contact ID<br />معرف جهة الاتصال للسكن</td>
+                        <td>Country: @Model.CountryName<br />الدولة</td>
+                        <td>Munazzem Name: AS SALAM MUNAZZAM<br />اسم المنظم</td>
+                    </tr>
+                    <tr>
+                        <td>Munazzem ID: 20187<br />رقم المنظم</td>
+                        <td>Total No. of Pilgrims: @Model.TotalNoOfPilgirms<br />اجمالي عدد الحجاج</td>
+                        <td>House Location: -<br />موقع السكن</td>
+                        <td>House Name: -<br />اسم السكن</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pilgrims Section -->
+        <div class="section">
+            <div class="section-title">Pilgrims Details تفاصيل الحجاج</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Name الاسم الأول</th>
+                        <th>Last Name الاسم الأخير</th>
+                        <th>Passport No. رقم جواز السفر</th>
+                        <th>Phone No. رقم التواصل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (NusukArrivalMembers members in Model.FamilyDataEntries)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@members.FirstName</td>
+                            <td>@members.LastName</td>
+                            <td>@members.PassportNo</td>
+                            <td>@members.PhoneNo</td>
+                        </tr>
+
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function exportWholePageToExcel() {
+            // Create a new workbook
+            const wb = XLSX.utils.book_new();
+            let ws_data = [];
+            let merges = [];
+
+            // Helper function to add a row with optional styling
+            function addRow(data, options = {}) {
+                const { isBold = false, bgColor = 'FFFFFF', mergeCols = false, center = false, borderStyle = 'thin', fontSize = 11 } = options;
+                // Initialize row with 6 columns
+                const row = new Array(6).fill('');
+                data.forEach((cell, i) => {
+                    if (i < 6) row[i] = cell || '';
+                });
+                ws_data.push(row);
+                const rowIndex = ws_data.length - 1;
+
+                // Apply cell styling with color validation
+                row.forEach((cell, colIndex) => {
+                    if (!ws_data[rowIndex][colIndex] || typeof ws_data[rowIndex][colIndex] !== 'object') {
+                        ws_data[rowIndex][colIndex] = { v: cell || '' };
+                    }
+                    // Validate and set background color
+                    const validBgColor = bgColor && bgColor.length === 6 ? bgColor.toUpperCase() : 'FFFFFF';
+                    console.log(`Row ${rowIndex}, Col ${colIndex}: Applying bgColor ${validBgColor}`); // Debug log
+                    ws_data[rowIndex][colIndex].s = {
+                        font: { bold: isBold, name: 'Arial', sz: fontSize },
+                        alignment: { horizontal: center ? 'center' : 'left', vertical: 'center', wrapText: true },
+                        fill: { fgColor: { rgb: validBgColor } }, // Ensure fill is always set
+                        border: {
+                            top: { style: borderStyle, color: { rgb: 'CCCCCC' } },
+                            bottom: { style: borderStyle, color: { rgb: 'CCCCCC' } },
+                            left: { style: borderStyle, color: { rgb: 'CCCCCC' } },
+                            right: { style: borderStyle, color: { rgb: 'CCCCCC' } }
+                        }
+                    };
+                });
+
+                // Merge cells if requested
+                if (mergeCols && data.length > 0) {
+                    merges.push({ s: { r: rowIndex, c: 0 }, e: { r: rowIndex, c: 5 } });
+                }
+            }
+
+            // Helper function to add an empty row
+            function addEmptyRow(bgColor = 'F4F4F4') {
+                addRow([], { bgColor });
+            }
+
+            // Add container background (white)
+            addRow([''], { bgColor: 'FFFFFF' }); // Top padding
+
+            // Add Header Row (Logo, Service Provider, M By Millennium)
+            const headerCols = [
+                'Logo Placeholder',
+                'Service Provider | مقدم الخدمة',
+                'M By Millennium for Hajj Services | شركة ام من ميلينيوم لخدمات الحج'
+            ];
+            addRow(headerCols, { isBold: true, center: true, bgColor: 'FFFFFF', borderStyle: 'medium', fontSize: 14 });
+            addEmptyRow('FFFFFF');
+
+            // Process Each Section
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                // Add Section Title
+                const sectionTitleElement = section.querySelector('.section-title');
+                const sectionTitle = sectionTitleElement ? sectionTitleElement.textContent.trim() : '';
+                if (sectionTitle) {
+                    addRow([sectionTitle], { isBold: true, bgColor: 'E6E6E6', center: true, mergeCols: true, borderStyle: 'medium', fontSize: 12 });
+                    addEmptyRow('FFFFFF');
+                }
+
+                // Process Table
+                const table = section.querySelector('table');
+                if (table) {
+                    // Process Headers (if any)
+                    const headers = table.querySelectorAll('thead tr th');
+                    if (headers.length > 0) {
+                        const headerRow = Array.from(headers).map(th => th.textContent.trim());
+                        // Apply grey background to Pilgrims table header
+                        const isPilgrimsSection = sectionTitle === 'Pilgrims Details تفاصيل الحجاج';
+                        addRow(headerRow, {
+                            isBold: true,
+                            bgColor: isPilgrimsSection ? 'E6E6E6' : 'FFFFFF',
+                            center: true,
+                            fontSize: 11
+                        });
+                    }
+
+                    // Process Table Rows
+                    const rows = table.querySelectorAll('tbody tr');
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        const rowData = Array.from(cells).map(cell => {
+                            return cell.innerHTML
+                                .replace(/<br\s*\/?>/gi, ' ')
+                                .replace(/<[^>]+>/g, '')
+                                .replace(/\s+/g, ' ')
+                                .trim();
+                        });
+                        addRow(rowData, { center: true, bgColor: 'FFFFFF', fontSize: 10 });
+                    });
+                }
+                addEmptyRow('FFFFFF');
+            });
+
+            // Add bottom padding
+            addEmptyRow('FFFFFF');
+
+            // Create Worksheet
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Apply Merges
+            ws['!merges'] = merges;
+
+            // Set Column Widths
+            const colWidths = ws_data.reduce((acc, row) => {
+                row.forEach((cell, i) => {
+                    const cellLength = cell && cell.v ? cell.v.toString().length : 10;
+                    acc[i] = Math.max(acc[i] || 20, Math.min(cellLength + 5, 50));
+                });
+                return acc;
+            }, {});
+            ws['!cols'] = Object.keys(colWidths).map(i => ({ wch: colWidths[i] }));
+
+            // Set Row Heights
+            ws['!rows'] = ws_data.map((_, i) => ({
+                hpt: i === 0 || ws_data[i].every(cell => cell === '') ? 10 : (ws_data[i][0].v === 'Logo Placeholder' ? 30 : 25)
+            }));
+
+            // Enable RTL for Arabic Support
+            ws['!rtl'] = true;
+
+            // Add Worksheet to Workbook
+            XLSX.utils.book_append_sheet(wb, ws, 'Hajj Flight Details');
+
+            // Generate and Download Excel File
+            XLSX.writeFile(wb, 'Hajj_Flight_Details.xlsx');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+﻿@{
+    Layout = null;
+}
+@model CardModel
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nusuk Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            box-sizing: border-box;
+            overflow-x: hidden;
+            font-weight: bolder;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        header {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logos-pinks {
+            width: 50px;
+            height: 200px;
+            position: absolute;
+            top: 10px;
+            left: 5px;
+        }
+
+            .logos-pinks img {
+                width: 100%;
+            }
+
+        .macca-medina-logo {
+            width: 55px;
+            height: 100px;
+            position: absolute;
+            right: -67px;
+            top: 8px;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
+
+            .macca-medina-logo img {
+                width: 100%;
+            }
+
+        .background-pic {
+            clear: both;
+            width: 3.0in;
+            height: 4.0in;
+            /* z-index: -99999; */
+            position: relative;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .header-back-img {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            border-radius: 25px;
+        }
+
+
+        .centered-box {
+            /* background-color: #b06023; */
+            height: 170px;
+            width: 140px;
+            position: absolute;
+            text-align: center;
+            transform: translateX(50%);
+            left: 6px;
+            top: 0px;
+        }
+
+        .profile-image {
+            width: 95px;
+            height: 130px;
+            text-align: center;
+            margin: 0 auto;
+            overflow: hidden;
+            margin-top: 62px;
+        }
+
+            .profile-image .profile-pic {
+                height: 100%;
+            }
+
+        .vertical-line-code {
+            position: absolute;
+            bottom: -21px;
+            left: 23px;
+            background-color: white;
+            height: 0px;
+            width: 94px;
+        }
+
+            .vertical-line-code img {
+                background-color: white;
+                height: 15px;
+            }
+
+        .round-black-box {
+            background-color: black;
+            width: 48px;
+            height: 13px;
+            border-radius: 10px;
+            position: absolute;
+            left: 47px;
+            top: 17px;
+        }
+
+        .nukus-white-logo {
+            width: 55px;
+            position: absolute;
+            margin: 0 auto;
+            text-align: center;
+            left: 31%;
+            top: 20px;
+        }
+
+        .blue-icon {
+            width: 55px;
+            height: 80px;
+            position: absolute;
+            right: 18px;
+            bottom: -22px;
+        }
+
+        .raqam-img {
+            /* border: 2px solid red; */
+            background: transparent;
+            position: absolute;
+            width: 73px;
+            bottom: -10px;
+            left: 35px;
+        }
+
+        /* BackCard-Design */
+        .backcard {
+            height: 4.0in;
+            width: 3.0in;
+            float: right;
+            left: 0;
+        }
+
+        .card {
+            float: left;
+            width: 3.0in;
+            height: 4.0in;
+            border-radius: 15px;
+            margin-left: 20px;
+            position: relative !important;
+        }
+
+        .backcard-desin {
+            float: left;
+            width: 3.0in;
+            height: 4.0in;
+            border-radius: 15px;
+            margin-left: 20px;
+            position: relative !important;
+            overflow: hidden;
+        }
+
+            .backcard-desin img {
+                border-radius: 15px;
+                height: 100%;
+            }
+
+        .user-data {
+            text-align: center;
+            position: absolute;
+            width: 300px;
+            font-size: 10px;
+            top: 100%;
+            left: -60%;
+            margin-top: -5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    @foreach (var m in Model.Members)
+    {
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="card">
+                <div class="background-pic" style="float: left;">
+                    <img src="~/Images/Cards/bb.jpeg" alt="" class="header-back-img">
+                </div>
+
+                <div class=" logos-pinks"><img src="~/Images/Cards/Nusuk Logo-pink.png" alt=""></div>
+                <div class="centered-box">
+                    <div class="round-black-box"></div>
+                    <div class="macca-medina-logo"><img src="~/Images/Cards/Ministry-of-Hajj-And-Umrah-Logo.png" alt=""></div>
+                    <div class="nukus-white-logo">
+                        <img src="~/Images/Cards/Nusuk-White-Logo png.png" alt="">
+                    </div>
+
+                    <!-- <div class="all-user-info" style="padding-top:70px;">
+                         <div class="nukus-white-logo">
+                                <img src="./Nusuk-White-Logo png.png" alt="">
+                    </div>  -->
+
+                    <div class="profile-image">
+                        <img src="~/@m.HajiImg" alt="" class="profile-pic">
+
+                        <div class="vertical-line-code" style="background-color: white;">
+                            <img src="~/Images/Cards/123.png" alt="">
+
+                        </div>
+
+                    </div>
+                    <div class="infoc-container" style="position: relative; top: 20%;">
+                        <div class="user-data">
+                            <h4>@m.HajiName @m.HajiSurName </h4>
+                            <h5>PAKISTAN | پاکستان</h5>
+                        </div>
+
+                        <div class="input-box-container"
+                             style="font-size: 7px; position: absolute; bottom: -94px; right: 50px; font-weight: bolder;">
+                            <div class="DOB-Box"
+                                 style="background-color: #d5c4b4; border: 1px solid #b06023; width: 120px; text-align: center; border-radius: 7px; position: relative; left: 100px; top: 20px; padding: 3px;">
+                                <p style="color: #b06023; font-weight: bolder;"> DOB | تاريخ الميلاد </p>
+                                <p>@m.DOB</p>
+                            </div>
+
+                            <div class="ID_Number"
+                                 style="background-color: #d5c4b4; border: 1px solid #b06023; width: 120px; text-align: center; border-radius: 7px; position: relative; left: 230px; top: -4px; padding: 3px;">
+                                <p style="color: #b06023;">ID | رقم الحاج</p>
+                                <p>@m.HajjAppNo</p>
+                            </div>
+                            <div class="DOB-Box"
+                                 style="background-color: #d5c4b4; border: 1px solid #b06023; width: 250px; text-align: center;  padding: 5px 0px;  border-radius: 7px; position: relative; top: 0px; left: 98px;">
+
+                                <div class="backend-fetch-data" style="width: 208px; text-align: right;">
+                                    <p style="color: #b06023; font-weight:bolder;">
+                                        Service Provider Information معلومات مزود
+                                        الخدمة
+                                    </p>
+                                    <div style="position: absolute; top :10px; z-index: 999; right: 48px; width: 100px;">
+                                        <div style="position: absolute; right: -7px; top:5px ">
+                                            <i class="fa-regular fa-building"></i>
+                                        </div>
+                                        <img src="~/Images/Cards/al-khidmat.png" alt="" width="100%">
+                                    </div>
+                                    <!-- <p style="margin: 5px; text-align: right;">
+                                         <i class="fa-regular fa-building"></i>
+                                        </p> -->
+                                    <p style="text-align: right; margin-top: 15px;  ">
+                                        8002450013 <i class="fa-solid fa-phone-flip"></i>
+                                    </p>
+
+                                </div>
+
+                            </div>
+                            <div class="bar-code-pic" style="width: 40px; position: absolute; left: 80%; bottom: -56px;">
+                                @* <img src="~/Images/Cards/barcode-new.png" alt=""> *@
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nusukcard.haj.gov.sa/en-US/card?id=@m.NusukId&version=1&hash=252c7494dafbc6ba514434e6a7ea6487bea7346b282179ffd84ad43df3576e05">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <div class="blue-icon">
+
+                        <img src="~/Images/Cards/Blue-logo.png" alt="">
+                    </div>
+                    <div class="cell-no">
+                        <h6 style="position: absolute; bottom: 10px; left: 40px; font-size: 0.55em; ">
+
+                            27166-01-XXXX
+
+                        </h6>
+                    </div>
+                </div>
+
+                <div class="raqam-img">
+                    <img src="~/Images/Cards/raqam.png" alt="">
+
+                </div>
+            </div>
+            <div style="clear:both">
+            </div>
+            <div class="backcard-desin">
+                <img src="~/Images/Cards/back-card-img.jpeg" alt="">
+            </div>
+        </div>
+        <div style="clear:both">
+
+        </div>
+      
+    }
+
+
+</body>
+
+</html>

@@ -1,0 +1,523 @@
+﻿@model TMG.Models.POModels.POTicketViewModel
+
+@{
+    Layout = "";
+}
+@{
+    var clientTracker = new Dictionary<string, bool>();
+}
+@{
+    var uniqueClients = new HashSet<string>(); // Track unique clients
+
+    var uniqueFlights = Model.POFlightDetails
+        .Where(f => uniqueClients.Add(f.ClientName)) // Filter only first occurrence of each client
+        .ToList(); // Convert to list to avoid multiple iterations
+
+    var totalBasicFare = uniqueFlights.Sum(f => f.BasicFare);
+    var totalGrossClient = uniqueFlights.Sum(f => f.GrossClient);
+    var totalNetClient = uniqueFlights.Sum(f => f.NetClient);
+    var totalGrossAirline = uniqueFlights.Sum(f => f.GrossAirline);
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            font-size: 9px;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Table styling  */
+        table tr th {
+            font-size: 10px;
+        }
+
+        table tr td {
+            font-size: 9px !important;
+        }
+
+        #discountRateHideShow {
+            display: none;
+        }
+
+        #totalAmountHideShow {
+            display: none;
+        }
+
+
+        /* Table styling  End */
+        .downloade_btn {
+            padding: 10px 45px;
+            background-color: lightblue;
+            outline: none;
+            border: 1px solid black;
+            font-weight: bold;
+            font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            .downloade_btn:hover {
+                background-color: white;
+            }
+
+        /* Check-Box Styling  */
+        .check_box_container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .check_box_container .CheckBox {
+                width: 20px;
+                height: 12px;
+                margin: 0;
+                padding: 0;
+            }
+
+        @@media print {
+            .check_box_container {
+                display: none !important;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        
+        .Service_Table {
+            width: 100%;
+        }
+
+            .Service_Table tr th {
+                font-size: 10px;
+                text-align: right;
+            }
+
+            .Service_Table tr td {
+                border-bottom: 1px solid black;
+                font-size: 10px;
+            }
+
+                .Service_Table tr td:nth-child(2) {
+                    text-align: right;
+                    width: 130px;
+                }
+
+            .Service_Table tr:nth-last-child(1) {
+                font-weight: bold;
+            }
+
+        /* MEdia Querry  */
+        @@media (max-width :768px) {
+            .Bank_Table {
+                width: 100% !important;
+            }
+        }
+
+        .Bank_Table {
+            margin-top: 20px;
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 60%;
+        }
+
+            .Bank_Table tr {
+                border: 1px solid black;
+            }
+
+                .Bank_Table tr th {
+                    border: 1px solid black !important;
+                    background-color: lightblue;
+                    text-align: left;
+                    padding-left: 5px;
+                    font-size: 10px;
+                }
+
+                .Bank_Table tr td:nth-child(1) {
+                    font-weight: bold;
+                }
+
+                .Bank_Table tr td {
+                    text-align: left;
+                    border: 1px solid black;
+                    padding-left: 5px;
+                    font-size: 10px;
+                }
+
+        /* ADF_Details_Table styling Start  */
+        .Receipt_container {
+            margin-top: 7px;
+        }
+
+
+        .ADF_Container {
+            width: 60%;
+        }
+
+        .ADF_Details_Box {
+            margin-bottom: 10px;
+        }
+
+        .ADF_heading {
+            background-color: lightblue;
+            font-weight: bold;
+            font-size: 10px !important;
+            text-align: center;
+            color: black !important;
+        }
+
+        @@media (max-width:768px) {
+            .ADF_Container {
+                width: 100% !important;
+            }
+        }
+
+        .ADF_Details_Box table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            width: 100%;
+        }
+
+        .ADF_Details_Box tr th {
+            border: 1px solid black;
+        }
+
+        .ADF_Details_Box tr td {
+            border: 1px solid black;
+        }
+
+
+        .totalText,
+        .amountText {
+            font-weight: bold !important;
+            background-color: lightblue;
+            font-size: 10px !important;
+            color: black !important;
+        }
+
+        .top_service_table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 0px;
+            margin-top: 10px;
+        }
+
+            .top_service_table tr th,
+            td {
+                border: 1px solid black;
+            }
+
+            .top_service_table tr {
+                border: 1px solid black;
+            }
+
+                .top_service_table tr:nth-child(1) {
+                    border: none !important;
+                    outline: none;
+                }
+
+                .top_service_table tr td:nth-child(2) {
+                    text-align: right;
+                }
+
+                .top_service_table tr:nth-last-child(1) {
+                    font-weight: bold;
+                    font-size: 10px !important;
+                    background-color: lightblue;
+                    color: white;
+                }
+
+      
+        label {
+            font-size: 14px !important;
+        } 
+
+        @@media (max-width: 768px) {
+            label {
+                font-size: 14px;
+            }
+
+            input[type="checkbox"] {
+                transform: scale(0.8);
+            }
+        }
+
+
+    </style>
+    <!-- html2pdf CDN Link  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- html2pdf CDN Link -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+</head>
+@{
+    // Sabhi unique columns check karne ke liye
+    bool showSP = Model.POFlightDetails.Any(f => f.SP == 0);
+    bool showRG = Model.POFlightDetails.Any(f => f.RG == 0);
+    bool showSF = Model.POFlightDetails.Any(f => f.SF == 0);
+    bool showSRB = Model.POFlightDetails.Any(f => f.SRB == 0);
+    bool showPK = Model.POFlightDetails.Any(f => f.PK == 0);
+    bool showPTT = Model.POFlightDetails.Any(f => f.PTT == 0);
+    bool showPB = Model.POFlightDetails.Any(f => f.PB == 0);
+    bool showYQ = Model.POFlightDetails.Any(f => f.YQ == 0);
+    bool showYR = Model.POFlightDetails.Any(f => f.YR == 0);
+    bool showKPR = Model.POFlightDetails.Any(f => f.KPR == 0);
+    bool showKBP = Model.POFlightDetails.Any(f => f.KBP == 0);
+    bool showWTH = Model.POFlightDetails.Any(f => f.WTH == 0);
+    bool showComission = Model.POFlightDetails.Any(f => f.Comission == 0);
+    bool showSPTaxAm = Model.POFlightDetails.Any(f => f.SPTaxAm == 0);
+    bool showSVC = Model.POFlightDetails.Any(f => f.SVC == 0);
+}
+<body>
+    <button class="downloade_btn" onclick="downloadPDF()">Download PDF</button>
+    @* <button class="downloade_btn" onclick="exportToExcel()">Export to Excel</button> *@
+    <button class="downloade_btn" onclick="exportToExcel()">Export to Excel</button>
+    <div id="columnSelector">
+        <label><input type="checkbox" class="col-toggle" data-col="0" checked> Sno</label>
+        <label><input type="checkbox" class="col-toggle" data-col="1" checked> Client Name</label>
+        <label><input type="checkbox" class="col-toggle" data-col="2" checked> HB #</label>
+        <label><input type="checkbox" class="col-toggle" data-col="3" checked> Departure Date</label>
+        <label><input type="checkbox" class="col-toggle" data-col="4" checked> Departure Airport</label>
+        <label><input type="checkbox" class="col-toggle" data-col="5" checked> Departure Time</label>
+        <label><input type="checkbox" class="col-toggle" data-col="6" checked> Arrival Date</label>
+        <label><input type="checkbox" class="col-toggle" data-col="7" checked> Arrival Airport</label>
+        <label><input type="checkbox" class="col-toggle" data-col="8" checked> Flight Class</label>
+        <label><input type="checkbox" class="col-toggle" data-col="9" checked> Arrival Time</label>
+        <label><input type="checkbox" class="col-toggle" data-col="10" checked> Sub Class</label>
+        <label><input type="checkbox" class="col-toggle" data-col="11" checked> Airline</label>
+        <label><input type="checkbox" class="col-toggle" data-col="12" checked> Flight Number</label>
+        <label><input type="checkbox" class="col-toggle" data-col="13" checked> Ticket Number</label>
+        <label><input type="checkbox" class="col-toggle" data-col="14" checked> PNRNo</label>
+        <label><input type="checkbox" class="col-toggle" data-col="15" checked> Basic Fare</label>
+        <label><input type="checkbox" class="col-toggle" data-col="16" checked> Gross Client</label>
+        <label><input type="checkbox" class="col-toggle" data-col="17" checked> Net Client</label>
+        <label><input type="checkbox" class="col-toggle" data-col="18" checked> Net Payable to Airline / Agent</label>
+    </div>
+
+    <div id="incoice_page_body">
+        <div class="title" style="padding-top : 5px">
+            <p id="companyName">@DateTime.Now.ToString("dd/MMM/yyyy")</p>
+        </div>
+        <div class="parent">
+          
+            <div class="qr-code">
+                <img src="~/Group Logo.png" alt="QR-Code" style="width: 75px; height: 75px" />
+            </div>
+        </div>
+        <div class="horizantal_line"></div>
+        <div class="proforma_title">
+            <h4 id="miniStatement_Title">Ticket Purchase Order</h4>
+        </div>
+        <div class="Invoice_to_section">
+            <div>
+                <h4>Purchase Order No: <span id="invoiceToCustomer">@Model.PoInvoice.FirstOrDefault().PONumber</span></h4>
+                <h6>XONumber: <span id="invoiceToCustomer">@Model.PoInvoice.FirstOrDefault().XONumber</span></h6>
+                <div class="Customer_Info">
+                    <p>Date: <span id="headName">@Model.PoInvoice.FirstOrDefault().Date.ToString("dd/MMM/yyyy")</span></p>
+                </div>
+            </div>
+            <div class="Customer_Col_2">
+                <p>Vendor Name: <span id="cnic"> @Model.PoInvoice.FirstOrDefault().Vendor.VendorName</span></p>
+                <p>Vendor VAT No: <span id="cnic"> @Model.PoInvoice.FirstOrDefault().Vendor.VATNo</span></p>
+                <p>Vendor Account No: <span id="cnic"> @Model.PoInvoice.FirstOrDefault().Vendor.AccountNumber</span></p>
+            </div>
+        </div>
+        <div class="flight_details_section">
+            <table class="top_service_table" id="reportTable">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">S No</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Client Name</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">HB #</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Departure Date</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Departure Airport</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Departure Time</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Arrival Date</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Arrival Airport</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Arrival Time</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Flight Class</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Sub Class</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Airline</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Flight Number</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Ticket Number</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">PNRNo</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Basic Fare</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Gross Client</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Net Client</th>
+                        <th style="text-align: left; font-size: 10px; color: black; background-color: lightblue; font-weight: bolder;">Net Payable to Airline / Agent</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var flight in Model.POFlightDetails)
+                    {
+                        bool isFirstOccurrence = !clientTracker.ContainsKey(flight.ClientName);
+                        if (isFirstOccurrence)
+                        {
+                            clientTracker[flight.ClientName] = true;
+                        }
+
+                        <tr>
+                            @if (isFirstOccurrence)
+                            {
+                                <td>@i</td>
+                                <td>@flight.ClientName</td>
+                            }
+                            else
+                            {
+                                <td></td> <!-- Duplicate ClientName ke liye blank -->
+                                <td></td> <!-- Duplicate ClientName ke liye blank -->
+                            }
+                            <td>@flight.HbNo</td>
+                            @* <td>@DateTimeManager.DateToHtmlFormat(flight.DepDate)</td> *@
+                            <td>@flight.DepDate?.ToString("dd/MMM/yyyy")</td>
+                            <td>@flight.DepartureAirportName</td>
+                            <td>@DateTimeManager.TimeToHtmlFormat(flight.FlightDepartureTime) </td>
+                            @* <td>@DateTimeManager.DateToHtmlFormat(flight.ArrivalDate)</td> *@
+                            <td>@flight.ArrivalDate?.ToString("dd/MMM/yyyy")</td>
+                            <td>@flight.ArrivalAirportName</td>
+                            <td>@DateTimeManager.TimeToHtmlFormat(flight.FlightArrivalTime) </td>
+                            <td>@flight.FlightClass</td>
+                            <td>@flight.SubClassName</td>
+                            <td>@flight.AirlineName</td>
+                            <td>@flight.FlightNumber</td>
+                            <td>@flight.TicketNumber</td>
+                            <td>@flight.PNRNo</td>
+                            @if (isFirstOccurrence)
+                            {
+                                <td>@flight.BasicFare?.ToString("N2")</td>
+                                <td>@flight.GrossClient?.ToString("N2")</td>
+                                <td>@flight.NetClient?.ToString("N2")</td>
+                                <td>@flight.GrossAirline?.ToString("N2")</td>
+                            }
+                            else
+                            {
+                                <td></td> <!-- Empty for duplicate ClientName -->
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            }
+                        </tr>
+                        @if (isFirstOccurrence)
+                        {
+                            i++; // Sirf unique client ke liye serial number badhayein
+                        }
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>                                           
+                        <td style="text-align: right; font-weight: bold; color: black;">Total:</td>
+                        <td style="color: black;">@totalBasicFare</td>
+                        <td style="color: black;">@totalGrossClient</td>
+                        <td style="color: black;">@totalNetClient</td>
+                        <td style="color: black;">@totalGrossAirline</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <section class="Signature-part" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 20px; padding-right: 20px; margin-top: 40px; margin-bottom: 80px;">
+           
+        </section>
+
+        
+
+    </div>
+
+    <script>
+
+        document.querySelectorAll('.col-toggle').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                let colIndex = this.getAttribute('data-col');
+                let table = document.getElementById('reportTable');
+
+                table.querySelectorAll('tr').forEach(row => {
+                    let cell = row.children[colIndex];
+                    if (cell) {
+                        cell.style.display = this.checked ? '' : 'none';
+                    }
+                });
+            });
+        });
+
+        function downloadPDF() {
+
+          var element = document.getElementById('incoice_page_body');
+
+          html2pdf()
+            .from(element)
+            .set({
+              margin: 10,
+              filename: 'PO-Ticket.pdf',
+              image: { type: 'jpeg', quality: 0.99 },
+              html2canvas: { scale: 10 },
+              jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+            })
+            .save();
+        }
+        
+
+    </script>
+    <script>
+        function exportToExcel() {
+            
+            var table = document.getElementById('reportTable');
+
+            
+            var wb = XLSX.utils.table_to_book(table, { sheet: "Ticket Purchase Order" });
+
+           
+            XLSX.writeFile(wb, 'POTicket.xlsx');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,268 @@
+﻿@* @model ReservationRegisterRequest
+@{
+    string modelName = "Room Allocation";
+    string modelNamePlural = "Room Allocations";
+    string modelControllerRoute = "Reservation";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="RoomAllocationId"/>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="HotelId" onchange="hotelSelect(this.value, 'select-floor')" id="select-hotel">
+                                        <option value="">Select a Hotel...</option>
+                                        @foreach (Hotel hotel in Model.Hotels)
+                                        {
+                                            <option value="@hotel.HotelId">@hotel.HotelCode - @hotel.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Floor</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control"  onchange="floorSelect(this.value, 'select-room')" id="select-floor">
+                                        <option value="">Select a Floor...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Room</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="RoomId" onchange="roomSelect(this.value)" id="select-room">
+                                        <option value="">Select a Room...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="CheckInDate" class="form-control" min="@DateTimeManager.Today" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check Out Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="CheckOutDate" class="form-control" min="@DateTimeManager.Today" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-2 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="IsConnectingRooms"></label>
+                                <div class="input-group input-group-merge">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" asp-for="IsConnectingRooms"
+                                               onchange="showConnectingRoom(this)"
+                                               type="checkbox" id="connected-checkbox">
+                                        <label class="form-check-label" for="before">Yes</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3 connected" style="display: none;">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="ConnectedWithHotelId" onchange="hotelSelect(this.value, 'select-cfloor')" id="select-chotel">
+                                        <option value="">Select a Hotel...</option>
+                                        @foreach (Hotel hotel in Model.Hotels)
+                                        {
+                                            <option value="@hotel.HotelId">@hotel.HotelCode - @hotel.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3 connected" style="display: none;">
+                                <label class="form-label" for="basic-icon-default-fullname">Floor</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control"  onchange="floorSelect(this.value, 'select-croom')" id="select-cfloor">
+                                        <option value="">Select a Floor...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3 connected" style="display: none;">
+                                <label class="form-label"  for="basic-icon-default-fullname">Room</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="ConnectedWithRoomId" id="select-croom">
+                                        <option value="">Select a Room...</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <hr class="my-2">
+
+
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>HB #</th>
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="container">
+                                        @{
+                                            int i = 0;
+                                        }
+                                        @foreach(ReservationMemberEntryModel item in Model.MemberEntries)
+                                        {
+                                            <tr>
+                                                <th>@(i + 1)</th>
+                                                <td>
+                                                    <input type="text" class="form-control"
+                                                           placeholder="Enter HB #" name="FCIDs[@i]" value="@item.FcId" oninput="getFamilyData(this.value, ${i})" />
+                                                </td>
+                                                <td id="name_@i">@item.GivenName</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function showConnectingRoom(elem) {
+        const divs = document.getElementsByClassName('connected')
+        if (elem.checked) {
+            for (let d of divs) {
+                d.style.display = 'block'
+            }
+        }
+        else {
+            for (let d of divs) {
+                d.style.display = 'none'
+            }
+        }
+    }
+
+    function hotelSelect(val, id) {
+        if (val != '') {
+            $.ajax({
+                url: "/Floor/GetFloors/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const selectFloor = document.querySelector("#" + id)
+                    let html = '<option value="">Select Floor</option>'
+                    for (let floor of res.data) {
+                        html += `<option value="${floor.floorId}" ${floor.floorId == @Model.FloorId ? 'selected' : ''}>Floor #${floor.floorNumber}</option>`
+                    }
+
+                    selectFloor.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function floorSelect(val, id) {
+        if (val != '') {
+            $.ajax({
+                url: "/FloorRoom/GetAllotedRooms/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const selectRoom = document.querySelector("#" + id)
+                    let html = '<option value="">Select Room</option>'
+                    for (let room of res.data) {
+                        html += `<option value="${room.floorRoomId}"  ${room.floorRoom.floorRoomId == @Model.RoomId ? 'selected' : ''} data-pax="${room.floorRoom.pax}">Room #${room.floorRoomv.roomNumber} (${room.floorRoom.room.roomCode})</option>`
+                    }
+
+                    selectRoom.innerHTML = html
+                    // roomSelect(@Model.RoomId)
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+   
+    function roomSelect(val) {
+        var selectRoom = document.querySelector('#select-room');
+        var selectedOption = selectRoom.options[selectRoom.selectedIndex];
+        let pax = selectedOption.getAttribute('data-pax')
+
+        const container = document.querySelector("#container")
+        let html = ``;
+        for (let i = 0; i < pax; i++) {
+            html += `<tr>   
+                        <td><b>${i + 1}. </b></td>
+                        <td>
+                            <input type="text" class="form-control"
+                                    placeholder="Enter HB #"  name="FCIDs[${i}]" oninput="getFamilyData(this.value, ${i})" />
+                        </td>
+                        <td id="name_${i}"></td>
+                    </tr>`
+        }
+        container.innerHTML = html
+
+    }
+
+    function getFamilyData(val, i) {
+        const tdName = document.querySelector(`#name_${i}`)
+
+        if (val != '') {
+            $.ajax({
+                url: "/FamilyHead/GetFamilyHeadForReservation/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    if (res.data?.isHead) {
+                        tdName.innerHTML = res.data?.givenName + " <b>(FH)</b>"
+                    }
+                    else {
+                        tdName.innerHTML = res.data?.givenName
+                    }
+                },
+                error: err => {
+                    console.log(err)
+                }
+
+            });
+        }
+        else {
+            tdName.innerHTML = ''
+        }
+    }
+
+    hotelSelect(@Model.HotelId, 'select-floor')
+    floorSelect(@Model.FloorId, 'select-room')
+
+    hotelSelect(@(Model.ConnectedWithHotelId ?? 0), 'select-cfloor')
+    floorSelect(@(Model.ConnectedWithFloorId ?? 0), 'select-croom')
+
+    showConnectingRoom(document.querySelector('#connected-checkbox'))
+</script> *@

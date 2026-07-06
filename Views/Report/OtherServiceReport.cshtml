@@ -1,0 +1,153 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.OtherServices>
+
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select((x, index) => new
+	{
+		SNo = index + 1,
+		x.Name,
+		x.Count,
+		x.EAdfId
+	}));
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Other Services Report</title>
+
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+	<style>
+		#downloadPdf {
+			padding: 8px 16px;
+			background-color: #f60000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<button id="downloadPdf">Download PDF</button>
+
+	<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+	<h1>Other Service Report</h1>
+	<div id="reportGrid"></div>
+
+	<script>
+		let data = @Html.Raw(jsonData);
+
+		let gridInstance;
+
+		$(function () {
+			gridInstance = $("#reportGrid").dxDataGrid({
+				dataSource: data,
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: false,
+				searchPanel: { visible: true },
+				filterRow: { visible: true, applyFilter: "auto" },
+				headerFilter: { visible: true },
+				export: {
+					enabled: true,
+					fileName: "OtherServicesReport"
+				},			
+				columns: [{
+							caption: "S.No",
+							width: 60,
+							cellTemplate: function (container, options) {
+								const visibleRows = options.component.getVisibleRows();
+								const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+								container.text(rowIndex + 1);
+							}
+						},
+					{ dataField: "Name", caption: "Name" },
+					{
+						dataField: "Count",
+						caption: "Count",
+						cellTemplate: function (container, options) {
+							const url = `/Report/ServiceReport/${options.data.EAdfId}`;
+							$("<a>")
+								.attr("href", url)
+								.attr("target", "_blank")
+								.text(options.data.Count)
+								.appendTo(container);
+						}
+					}
+				]
+			}).dxDataGrid("instance");
+
+			
+					$("#downloadPdf").on("click", async function () {
+			const { jsPDF } = window.jspdf;
+			const doc = new jsPDF({
+				orientation: "landscape",
+				unit: "pt",
+				format: "a3"
+			});
+					const loadImage = (src) => {
+					return new Promise((resolve, reject) => {
+						const img = new Image();
+						img.src = src;
+						img.onload = () => resolve(img);
+						img.onerror = reject;
+					});
+				};
+
+				try {
+					const img = await loadImage('/reportlogo/GroupLogo.png');
+					const imgWidth = 60;
+					const imgHeight = 25;
+					const pageWidth = doc.internal.pageSize.getWidth();
+					const x = pageWidth - imgWidth - 40;
+					const y = 10;
+					doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+				} catch (err) {
+					console.error("Image failed to load", err);
+				}
+
+			doc.setFontSize(18); 
+			doc.text("Other Service Report", 40, 40);
+
+			
+			const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+			doc.setFontSize(10);
+			doc.text(printedDate, 40, 60);
+
+			
+			DevExpress.pdfExporter.exportDataGrid({
+				jsPDFDocument: doc,
+				component: gridInstance,
+				topLeft: { x: 40, y: 80 }, 
+				margin: { top: 20, left: 20, right: 20, bottom: 20 },
+				// customizeCell: function (options) {
+				// 	options.pdfCell.font = { size: 8 };
+				// }
+					 customizeCell: function (options) {
+						 if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+							 const visibleRows = gridInstance.getVisibleRows();
+							 const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+							 options.pdfCell.text = (rowIndex + 1).toString();
+						 }
+						 options.pdfCell.font = { size: 8 };
+					 }
+			}).then(() => {
+				doc.save("Other Service Report.pdf");
+			});
+		});
+	});
+	</script>
+</body>
+
+</html>

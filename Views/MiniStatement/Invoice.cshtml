@@ -1,0 +1,1213 @@
+@{
+    Layout = "_InvoiceLayout";
+    
+    ViewData["title"] = "Invoice";
+}
+<script>
+    var opt = {
+        margin: 0,
+        filename: '',
+    @* image: { type: 'jpeg', quality: 0.98 }, *@
+        html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'A4', orientation: 'portrait' }
+            };
+    window.onload = function () {
+        document.getElementById("download")
+            .addEventListener("click", () => {
+                const invoice = this.document.getElementById("recipt");
+
+                    html2pdf().from(invoice).set(opt).save();
+            })
+    }
+</script>
+
+@* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+<style>
+    * {
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+
+    body {
+        background-color: white
+    }
+
+    .f-600 {
+        font-weight: 600;
+    }
+
+    .bg-grey {
+        background-color: #e6c202;
+    }
+
+    #invoice {
+        color: #e6c202;
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 0px solid #dee2e6;
+    }
+
+    .bg-grey {
+        background-color: #696969;
+    }
+
+    .table td,
+    .table th {
+        padding: 0.1rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table td,
+    .table th {
+        padding: 0.1rem;
+        vertical-align: top;
+        border-top: 1px solid #6f6f6f;
+    }
+
+    .table {
+        border: none;
+        caption-side: bottom;
+        border-collapse: collapse;
+        border-color: green;
+        margin-top: 0px;
+    }
+</style>
+
+
+@if (ViewBag.FamilyROE is not null)
+{
+    <input type="hidden" id="SARROE" value="@ViewBag.FamilyROE?.SARROE">
+    <input type="hidden" id="PKRROE" value="@ViewBag.FamilyROE?.PKRROE">
+    <input type="hidden" id="USDROE" value="@ViewBag.FamilyROE?.USDROE">
+}
+else
+{
+    <input type="hidden" id="SARROE" value="@ViewBag.ROE?.SARROE">
+    <input type="hidden" id="PKRROE" value="@ViewBag.ROE?.PKRROE">
+    <input type="hidden" id="USDROE" value="@ViewBag.ROE?.USDROE">
+}
+
+
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-sm-6">
+            <button id="download" class="btn btn-success">Download</button>
+            <button id="download" onclick="printDiv()" class="btn btn-success">Print</button>
+        </div>
+        <div class="col-sm-6 mt-2">
+            <input type="checkbox" onclick="showSar(this)" />
+            <label>SAR</label>
+            <input type="checkbox" onclick="showUsd(this)" checked />
+            <label>USD</label>
+            <input type="checkbox" onclick="showPkr(this)" />
+            <label>PKR</label>
+            <input type="checkbox" onclick="forCompany(this)" />
+            <label>For Company</label>
+            <input type="checkbox" onclick="stampToggle(this)" checked />
+            <label>Stamp</label>
+
+            <input type="checkbox"
+                onchange="document.getElementById('tr_due_amount_usd').style.display = (this.checked ? 'table-row' : 'none')" />
+            <label>Due Amount (USD)</label>
+
+            <input type="checkbox"
+                onchange="document.getElementById('tr_due_amount_pkr').style.display = (this.checked ? 'table-row' : 'none')" />
+            <label>Due Amount (PKR)</label>
+        </div>
+        <div class="col-md-12 mt-3" id="checkBankDetail">
+
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" id="recipt">
+    <div class="row">
+
+    </div>
+    <div class="row mt-2">
+        <div class="col-md-10 text-center">
+            <h5 id="company_name" style="font-weight: 600;"></h5>
+            <div><span id="company_address"></span> <span id="company_zip"></span>, <span id="company_city"></span>
+                <span id="company_country"></span>
+            </div>
+            <div><b>PHONE :</b> <span id="company_phone"></span> <b>EMAIL :</b> <span id="company_email"></span> <b>
+                    WEB :</b> <span id="company_website"></span></div>
+        </div>
+        <div class="col-md-2">
+            <img src="~/@Model.Logo" id="company_logo" width="80" height="80" />
+        </div>
+
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12 text-center ">
+            <h4 id="invoice" class="text-dark">PROFORMA INVOICE</h4>
+        </div>
+        <div class="col-sm-12" id="forSelf">
+            <table class="table">
+                <thead>
+                    <tr class="text-center bg-grey">
+                        <th colspan="6" class="text-white"><b>Family Head Detail</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Invoice
+                                Number</b></td>
+                        <td id="invoice_number"></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Invoice Date</b>
+                        </td>
+                        <td id="invoice_date">Invoice Number</td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>SPO</b></td>
+                        <td id="spo_name">Invoice Number</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Customer Name
+                            </b></td>
+                        <td><span id="givenName" contenteditable="true"></span> <span id="surName"
+                                contenteditable="true"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>CNIC</b></td>
+                        <td><span id="cnic"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Purpose</b></td>
+                        <td>Travel Arrangment</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Contact </b></td>
+                        <td><span id="contact"></span> <span id="email" style="display: none;"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Passport </b>
+                        </td>
+                        <td><span id="passport"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>PAX </b></td>
+                        <td><span id="pax"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Address</b></td>
+                        <td><span id="address"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>HB #</b></td>
+                        <td><span id="fcId"></span></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-sm-12" id="forCompany" style="display:none">
+            <table class="table">
+                <thead>
+                    <tr class="text-center bg-grey">
+                        <th colspan="6" class="text-white"><b>Family Head Detail</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Invoice
+                                Number</b></td>
+                        <td id="c_invoice_number"></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Invoice Date</b>
+                        </td>
+                        <td id="c_invoice_date">Invoice Number</td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>SPO</b></td>
+                        <td id="c_spo_name">Invoice Number</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Company Name
+                            </b></td>
+                        <td><span id="companyguest" contenteditable="true">Company Name</span>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>CNIC</b></td>
+                        <td><span id="c_cnic"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Purpose</b></td>
+                        <td>Travel Arrangment</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Guest Name
+                            </b></td>
+                        <td><span id="c_givenName" contenteditable="true"></span> <span id="c_surName"
+                                contenteditable="true"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Passport </b>
+                        </td>
+                        <td><span id="c_passport"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>PAX </b></td>
+                        <td><span id="c_pax"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Address</b></td>
+                        <td><span id="c_address"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>Contact </b></td>
+                        <td><span id="c_contact"></span> <span id="c_email" style="display: none;"></span></td>
+                        <td class="bg-grey text-dark" style="background-color: rgb(232, 232, 232);"><b>HB #</b></td>
+                        <td><span id="c_fcId"></span></td>
+                    </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+
+        <div class="col-sm-12" style="display: none;" id="pkrcurrency">
+            <table class="table">
+                <thead class="text-left">
+                    <tr class="bg-grey text-center">
+                        <th colspan="3" class="text-white "><b class="">Service Detail</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bg-grey text-dark text-left" colspan="2" width="70%"
+                            style="background-color: rgb(232, 232, 232);"><b class="ml-5">Description</b></td>
+                        <td></td>
+                        <td class="bg-grey text-dark text-right" width="30%"
+                            style="background-color: rgb(232, 232, 232);"><b class="mr-5">Amount (PKR)</b></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">Package Detail (<span id="pkrpackagename"></span>)</b>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">Package</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            (<b>Adult:</b> <span id="adult_price_package_pkr"></span> x <span
+                                id="adult_count_pkr"></span>,
+                            <b>Child:</b> <span id="child_price_package_pkr"></span> x <span
+                                id="child_count_pkr"></span>,
+                            <b>Infant:</b> <span id="infant_price_package_pkr"></span> x <span
+                                id="infant_count_pkr">0</span>)
+                        </td>
+                        <td class="text-right"><span id="pkrpackage" class="mr-5"></span></td>
+                    </tr>
+                    @* @if (!Model.IsTentative)
+                    { *@
+                    <tr>
+                        <td class="text-left"><b class="ml-5">I-ADF</b></td>
+                        <td class="text-left"><span id="break_additional_pkr"></span><span
+                                id="additional_pax_pkr"></span></td>
+                        <td class="text-right"><span id="pkradditional" class="mr-5"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">EI-ADF</b></td>
+                        <td class="text-left"><span id="break_extra_additional_pkr"></span><span
+                                id="extra_additional_pax_pkr"></span></td>
+                        <td class="text-right"><span id="pkrextras" class="mr-5"></span></td>
+                    </tr>
+                    @* <tr>
+                    <td class="text-left"><b class="ml-5">Package Addons</b></td>
+                    <td class="text-left"><span id="break_addons_pkr"></span><span id="addons_pax_pkr"></span></td>
+                    <td class="text-right"><span id="pkraddons" class="mr-5"></span></td>
+                    </tr> *@
+                    @* } *@
+                    <tr>
+                        <td><b class="ml-5">Basic Ticket (See Note 3)</b></td>
+                        <td colspan="1"></td>
+                        <td class="text-right"><span id="basicAirlinePkr">0</span> <span id="basicDifferencePkr"
+                                class="mr-5">(0)</span></td>
+
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="2"><b class="ml-5">Total Amount (PKR)</b></td>
+                        <td class="text-right"><span id="pkrtotal" class="mr-5"></span></td>
+                    </tr>
+                    <tr onclick="hideDiv(this)">
+                        <td class="text-left" colspan="2"><b class="ml-5">Due Amount (PKR)</b></td>
+                        <td class="text-right"><span class="mr-5" contenteditable="">Click Here</span></td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="col-sm-12" style="display:none;" id="sarcurrency">
+            <table class="table">
+                <thead class="text-center">
+                    <tr class="bg-grey">
+                        <th colspan="3" class="text-white"><b class="">Service Detail</b> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bg-grey text-dark text-left" colspan="2" width="70%"
+                            style="background-color: rgb(232, 232, 232);"><b class="ml-5">Description</b></td>
+                        <td class="bg-grey text-dark text-right" width="30%"
+                            style="background-color: rgb(232, 232, 232);"><b class="mr-5">Amount (SAR)</b></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">Package Detail (<span id="sarpackagename"></span>)</b>
+                        </td>
+                        <td class="text-left"><span id="break_package_sar"></span> x <span id="package_pax_sar"></span>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">Package</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            (<b>Adult:</b> <span id="adult_price_package_sar"></span> x <span
+                                id="adult_count_sar"></span>,
+                            <b>Child:</b> <span id="child_price_package_sar"></span> x <span
+                                id="child_count_sar"></span>,
+                            <b>Infant:</b> <span id="infant_price_package_sar"></span> x <span
+                                id="infant_count_sar">0</span>)
+                        </td>
+                        <td class="text-right"><span id="sarpackage" class="mr-5"></span></td>
+                    </tr>
+                    @* @if (!Model.IsTentative)
+                    { *@
+                    <tr>
+                        <td class="text-left"><b class="ml-5">I-ADF</b></td>
+                        <td class="text-left"><span id="break_additional_sar"></span><span
+                                id="additional_pax_sar"></span></td>
+                        <td class="text-right"><span id="saradditional" class="mr-5"></span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">EI-ADF</b></td>
+                        <td class="text-left"><span id="break_extra_additional_sar"></span><span
+                                id="extra_additional_pax_sar"></span></td>
+                        <td class="text-right"><span id="sarextras" class="mr-5"></span></td>
+                    </tr>
+                    @* <tr>
+                    <td class="text-left"><b class="ml-5">Package Addons</b></td>
+                    <td class="text-left"><span id="break_addons_sar"></span><span id="addons_pax_sar"></span></td>
+                    <td class="text-right"><span id="saraddons" class="mr-5"></span></td>
+                    </tr> *@
+                    @* } *@
+
+                    <tr>
+                        <td><b class="ml-5">Basic Ticket (See Note 3)</b></td>
+                        <td colspan="1"></td>
+                        <td class="text-right"><span id="basicAirlineSar">0</span> <span id="basicDifferenceSar"
+                                class="mr-5">(0)</span></td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="text-left" colspan="2"><b class="ml-5">Total Amount (SAR)</b></td>
+                        <td class="text-right"><span id="sartotal" class="mr-5"></span></td>
+                    </tr>
+                    <tr onclick="hideDiv(this)">
+                        <td class="text-left" colspan="2"><b class="ml-5">Due Amount (SAR)</b></td>
+                        <td class="text-right"><span class="mr-5" contenteditable="">Click Here</span></td>
+                    </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+
+        <div class="col-sm-12" style="display: block;" id="usdcurrency">
+            <table class="table">
+                <thead class="text-center">
+                    <tr class="bg-grey">
+                        <th colspan="3" class="text-white"><b class="">Service Detail</b> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bg-grey text-dark text-left" colspan=2 width="70%"
+                            style="background-color: rgb(232, 232, 232);"><b class="ml-5">Description</b></td>
+                        <td class="bg-grey text-dark text-right" width="30%"
+                            style="background-color: rgb(232, 232, 232);  text-align:right;"><b class="mr-5">Amount
+                                (USD)</b></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" class="text-left"><b class="ml-5">Package (<span
+                                    id="usdpackagename"></span>)</b>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<b>Adult:</b> <span
+                                id="adult_price_package_usd"></span> x <span id="adult_count_usd"></span>,
+                            <b>Child:</b> <span id="child_price_package_usd"></span> x <span
+                                id="child_count_usd"></span>,
+                            <b>Infant:</b> <span id="infant_price_package_usd"></span> x <span
+                                id="infant_count_usd">0</span>)
+                        </td>
+                        <td class="text-right" style="text-align:right"><span id="usdpackage" class="mr-5"></span></td>
+                    </tr>
+                    @* @if (!Model.IsTentative)
+                    { *@
+                    <tr>
+                        <td class="text-left"><b class="ml-5">I-ADF</b></td>
+                        <td class="text-left"><span id="break_additional_usd"></span><span
+                                id="additional_pax_usd"></span></td>
+                        <td class="text-right" style="text-align:right"><span id="usdadditional" class="mr-5"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-left"><b class="ml-5">EI-ADF</b></td>
+                        <td class="text-left"><span id="break_extra_additional_usd"></span><span
+                                id="extra_additional_pax_usd"></span></td>
+                        <td class="text-right" style="text-align:right"><span id="usdextras" class="mr-5"></span></td>
+                    </tr>
+                    @* <tr>
+                    <td class="text-left"><b class="ml-5">Package Addons</b></td>
+                    <td class="text-left"><span id="break_addons_usd"></span><span id="addons_pax_usd"></span></td>
+                    <td class="text-right" style="text-align:right"><span id="usdaddons" class="mr-5"></span></td>
+                    </tr> *@
+                    @* } *@
+
+                    <tr>
+                        <td><b class="ml-5">Basic Ticket (See Note 3)</b></td>
+                        <td colspan="1"></td>
+                        <td class="text-right" style="text-align:right"><span id="basicAirlineUsd" class="mr-5">0</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b class="ml-5">Air Ticket Difference Amount (If Applicable)</b></td>
+                        <td colspan="1"></td>
+                        <td class="text-right" style="text-align:right"><span id="basicDifferenceUsd"
+                                class="mr-5">0</span></td>
+                    </tr>
+
+                    @* <tr>
+                    <td><b class="ml-5">Discount</b></td>
+                    <td colspan="1"></td>
+                    <td class="text-right" style="text-align:right"><span id=""
+                    class="mr-5">0</span></td>
+                    </tr> *@
+
+
+                    <tr>
+                        <td class="text-left" colspan="2"><b class="ml-5">Total Amount (USD)</b></td>
+                        <td class="text-right" style="text-align:right"><span id="usdtotal" class="mr-5"></span></td>
+                    </tr>
+                    <tr style="display: none;" id="tr_due_amount_usd">
+                        <td class="text-left" colspan="2"><b class="ml-5">Due Amount (USD)</b></td>
+                        <td class="text-right" style="text-align:right"><span class="mr-5" contenteditable=""
+                                oninput="convertToPkr(this.innerHTML)">Click Here</span></td>
+                    </tr>
+                    <tr style="display: none;" id="tr_due_amount_pkr">
+                        <td class="text-left" colspan="2"><b class="ml-5">Due Amount (PKR)</b></td>
+                        <td class="text-right" style="text-align:right"><span class="mr-5" id="usdToPkr">Enter USD
+                                Dues</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-1">
+        <div class="col-md-8">
+            <h5>NOTE</h5>
+            <ol>
+                <li>All item, package details and Terms & Condition as per agreement</li>
+                <li>Final package is subject to announcement & approval of Hajj policy 2024</li>
+                <li>Basic ticket of any economy class with transit from Pakistan / UAE is included</li>
+            </ol>
+        </div>
+        <div class="col-md-4">
+            <img src="~/@Model.Stamp" id="company_stamp" width="130" height="130" />
+        </div>
+    </div>
+
+
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <h5>Bank Detail</h5>
+        </div>
+
+    </div>
+
+    <div class="row mt-3" id="bank_detail">
+
+    </div>
+
+    <div class="row mt-1">
+
+    </div>
+
+</div>
+
+
+<script>
+
+    function stampToggle(input) {
+        if (input.checked == true) {
+            document.getElementById('company_stamp').style.display = "block"
+        } else {
+            document.getElementById('company_stamp').style.display = "none"
+        }
+    }
+
+    function forCompany(input) {
+        if (input.checked == false) {
+            document.getElementById('forCompany').style.display = 'none'
+            document.getElementById('forSelf').style.display = 'block'
+        } else {
+            document.getElementById('forCompany').style.display = 'block'
+            document.getElementById('forSelf').style.display = 'none'
+        }
+    }
+
+    @* function getFormattedDate() {
+
+        const today = new Date();
+        const sevenDaysLater = new Date(today);
+        sevenDaysLater.setDate(today.getDate() + 7);
+
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        let formattedDate = sevenDaysLater.toLocaleDateString('en-US', options);
+
+        formattedDate = formattedDate.replace(',', '');
+        const [monthName, day, year] = formattedDate.split(' ');
+
+        const formattedDateResult = `${day}-${monthName}-${year}`;
+        return formattedDateResult;
+        }
+
+        document.getElementById("validDate").innerHTML = getFormattedDate(); *@
+
+        function showPkr(input) {
+            if (input.checked == false) {
+                document.getElementById('pkrcurrency').style.display = 'none'
+            } else {
+                document.getElementById('pkrcurrency').style.display = 'block'
+            }
+        }
+    function showUsd(input) {
+        if (input.checked == false) {
+            document.getElementById('usdcurrency').style.display = 'none'
+        } else {
+            document.getElementById('usdcurrency').style.display = 'block'
+        }
+    }
+    function showSar(input) {
+        if (input.checked == false) {
+            document.getElementById('sarcurrency').style.display = 'none'
+        } else {
+            document.getElementById('sarcurrency').style.display = 'block'
+        }
+    }
+    function calculateAge(dateOfBirth) {
+        let full_date = new Date(dateOfBirth);
+        let only_date = full_date.toISOString().split('T')[0];
+
+        var dob = new Date(full_date);
+        var currentDate = new Date();
+        var age = currentDate.getFullYear() - dob.getFullYear();
+        if (
+            currentDate.getMonth() < dob.getMonth() ||
+            (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())
+        ) {
+            age--;
+        }
+
+        return age;
+    }
+
+
+    function getFamilyDetail(familyId) {
+        $.ajax({
+            url: `/MiniStatement/GetFamilyDetail/${familyId}`,
+            method: "GET",
+            success: res => {
+                opt.filename = res.headNameWithId + " Proforma Invoice.pdf";
+
+                document.getElementById('company_name').innerText = res.company[0].companyName
+                document.getElementById('company_address').innerText = res.companyAddress[0].address
+                document.getElementById('company_zip').innerText = res.companyAddress[0].zipCode
+                document.getElementById('company_country').innerText = res.companyAddress[0].country
+                document.getElementById('company_city').innerText = res.companyAddress[0].city
+
+                document.getElementById('company_email').innerText = res.companyEmail[0].companyEmail
+                document.getElementById('company_phone').innerText = res.companyContact[0].companyContact
+                document.getElementById('company_website').innerText = res.company[0].website
+
+                document.getElementById('givenName').innerText = res.familyHead[0].givenName
+                document.getElementById('surName').innerText = res.familyHead[0].surName
+                document.getElementById('cnic').innerText = res.familyHead[0].cnic
+                document.getElementById('passport').innerText = res.familyHead[0].passportNumber
+                document.getElementById('contact').innerText = res.familyHeadContact
+                document.getElementById('email').innerText = res.familyHeadEmail
+                document.getElementById('address').innerText = res.familyHeadAddress
+                document.getElementById('fcId').innerText = `HB #${res.familyHead[0].familyHeadId}`
+
+                document.getElementById('pkrpackagename').innerText = res.familyHead[0].package.name
+                document.getElementById('usdpackagename').innerText = res.familyHead[0].package.name
+                document.getElementById('sarpackagename').innerText = res.familyHead[0].package.name
+
+                let invoicefullDate = new Date(res.familyHead[0].createdAt);
+                let invoiceonlyDate = invoicefullDate.toISOString().split('T')[0];
+
+                document.getElementById('invoice_number').innerText = "INV-" + res.familyHead[0].familyHeadId
+                document.getElementById('invoice_date').innerText = invoiceonlyDate
+                document.getElementById('spo_name').innerText = res.spo[0].spo.name
+
+                let countMember = res.familyMember.length
+                document.getElementById('pax').innerText = countMember
+
+
+                //company
+                document.getElementById('c_givenName').innerText = res.familyHead[0].givenName
+                document.getElementById('c_surName').innerText = res.familyHead[0].surName
+                document.getElementById('c_cnic').innerText = res.familyHead[0].cnic
+                document.getElementById('c_passport').innerText = res.familyHead[0].passportNumber
+                document.getElementById('c_contact').innerText = res.familyHeadContact
+                document.getElementById('c_email').innerText = res.familyHeadEmail
+                document.getElementById('c_address').innerText = res.familyHeadAddress
+                document.getElementById('c_fcId').innerText = `HB #${res.familyHead[0].familyHeadId}`
+
+
+
+                document.getElementById('c_invoice_number').innerText = "INV-" + res.familyHead[0].familyHeadId
+                document.getElementById('c_invoice_date').innerText = invoiceonlyDate
+                document.getElementById('c_spo_name').innerText = res.spo[0].spo.name
+                document.getElementById('c_pax').innerText = countMember
+
+
+                // PKR Package Price
+
+
+                let basicAirlinePkr = 0;
+                let basicDifferentPkr = 0;
+
+                let basicAirlineSar = 0;
+                let basicDifferentSar = 0;
+
+                let basicAirlineUsd = 0;
+                let basicDifferentUsd = 0;
+
+                let pkrpackageprice = 0
+                let pkradditional = 0
+                let pkraddons = 0
+                let pkrextras = 0
+
+                let sarpackageprice = 0
+                let saradditional = 0
+                let saraddons = 0
+                let sarextras = 0
+
+                let usdpackageprice = 0
+                let usdadditional = 0
+                let usdaddons = 0
+                let usdextras = 0;
+
+                for (let i of res.familyMember) {
+                    if (i.familyHead.flightTicketType == 0) {
+
+                        basicAirlinePkr += i.package.flightTicketPricePkr
+                        basicAirlineSar += i.package.flightTicketPriceSar
+                        basicAirlineUsd += i.package.flightTicketPriceUsd
+
+                        basicDifferentPkr += 0
+                        basicDifferentSar += 0
+                        basicDifferentUsd += 0
+
+                    } else if (i.familyHead.flightTicketType == 1) {
+
+                        basicAirlinePkr += 0;
+                        basicAirlineSar += 0;
+                        basicAirlineUsd += 0;
+
+                        basicDifferentPkr += 0
+                        basicDifferentSar += 0
+                        basicDifferentUsd += 0
+
+                    } else if (i.familyHead.flightTicketType == 2) {
+
+                        basicAirlinePkr += i.package.flightTicketPricePkr
+                        basicAirlineSar += i.package.flightTicketPriceSar
+                        basicAirlineUsd += i.package.flightTicketPriceUsd
+
+                        basicDifferentPkr += i.familyHead.flightTicketDifferencesPkr
+                        basicDifferentSar += i.familyHead.flightTicketDifferencesSar
+                        basicDifferentUsd += i.familyHead.flightTicketDifferencesUsd
+
+                    }
+
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+
+                        pkrpackageprice += parseInt(i.package.infantPkr)
+                        sarpackageprice += parseInt(i.package.infantSar)
+                        usdpackageprice += parseInt(i.package.infantUsd)
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+
+                        pkrpackageprice += parseInt(i.package.childPkr)
+                        sarpackageprice += parseInt(i.package.childSar)
+                        usdpackageprice += parseInt(i.package.childUsd)
+
+                    } else {
+
+                        pkrpackageprice += parseInt(i.package.adultPkr)
+                        sarpackageprice += parseInt(i.package.adultSar)
+                        usdpackageprice += parseInt(i.package.adultUsd)
+
+                    }
+
+                    for (let j of res.packageAddons) {
+                        if (i.familyHead.package.packageId == j.packageId) {
+                            pkraddons += parseInt(j.pkrPrice)
+                            saraddons += parseInt(j.sarPrice)
+                            usdaddons += parseInt(j.usdPrice)
+                        }
+                    }
+
+                }
+
+                for (let i of res.additionalFacility) {
+                    if (calculateAge(i.familyHead.dateOfBirth) < 2) {
+
+                        pkradditional += parseInt(i.additionalFacilities.infantPkr)
+                        saradditional += parseInt(i.additionalFacilities.infantSar)
+                        usdadditional += parseInt(i.additionalFacilities.infantUsd)
+
+                    } else if (calculateAge(i.familyHead.dateOfBirth) < 12) {
+
+                        pkradditional += parseInt(i.additionalFacilities.childPkr)
+                        saradditional += parseInt(i.additionalFacilities.childSar)
+                        usdadditional += parseInt(i.additionalFacilities.childUsd)
+
+                    } else {
+
+                        pkradditional += parseInt(i.additionalFacilities.adultPkr)
+                        saradditional += parseInt(i.additionalFacilities.adultSar)
+                        usdadditional += parseInt(i.additionalFacilities.adultUsd)
+
+                    }
+
+                }
+                console.log(res)
+
+                for (let i of res.extrasAdfs) {
+                    pkrextras += parseInt(i.price ?? 0)
+                    sarextras += parseInt(i.priceSar ?? 0)
+                    usdextras += parseInt(i.priceUsd ?? 0)
+                }
+
+
+
+
+                document.getElementById('pkrpackage').innerText = (pkrpackageprice + pkraddons).toLocaleString();
+                document.getElementById('sarpackage').innerText = (sarpackageprice + saraddons).toLocaleString();
+                document.getElementById('usdpackage').innerText = (usdpackageprice + usdextras).toLocaleString();
+
+    @* if (!res.isTentative) { *@
+                    document.getElementById('pkradditional').innerText = pkradditional.toLocaleString();
+    @* document.getElementById('pkraddons').innerText = pkraddons.toLocaleString(); *@
+                    document.getElementById('pkrextras').innerText = pkrextras.toLocaleString();
+
+                document.getElementById('saradditional').innerText = saradditional.toLocaleString();
+    @* document.getElementById('saraddons').innerText = saraddons.toLocaleString(); *@
+                    document.getElementById('sarextras').innerText = sarextras.toLocaleString();
+
+                document.getElementById('usdadditional').innerText = usdadditional.toLocaleString();
+    @* document.getElementById('usdaddons').innerText = usdaddons.toLocaleString(); *@
+                    document.getElementById('usdextras').innerText = usdextras.toLocaleString();
+
+    @* } *@
+
+
+
+                    document.getElementById('basicAirlinePkr').innerText = basicAirlinePkr.toLocaleString();
+                document.getElementById('basicDifferencePkr').innerText = `${basicDifferentPkr.toLocaleString()}`;
+
+                document.getElementById('basicAirlineSar').innerText = basicAirlineSar.toLocaleString();
+                document.getElementById('basicDifferenceSar').innerText = `${basicDifferentSar.toLocaleString()}`;
+
+                document.getElementById('basicAirlineUsd').innerText = basicAirlineUsd.toLocaleString();
+                document.getElementById('basicDifferenceUsd').innerText = `${basicDifferentUsd.toLocaleString()}`;
+
+
+                // PKR Member
+                let pkrmember = "";
+                let pkrdiscount = 0;
+
+                let pkrpackage = 0;
+                let pkrtotalamount = 0;
+                var a = 0;
+                for (let i of res.familyMember) {
+
+                    pkrdiscount = i.familyMember.familyHead.pkrDiscountAmount;
+
+                    a += 1;
+                    pkrmember += `<tr>`
+                    pkrmember += `<th>${i.familyMember.familyHead.givenName} ${i.familyMember.familyHead.surName}</th>`
+
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+                        // infant 
+                        pkrtotalamount += i.package.infantPkr
+                        pkrpackage += i.package.infantPkr
+                        pkrmember += `<th>${i.package.infantPkr}</th>`
+                        var pkraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    pkraddfacility += parseInt(j.additionalFacilities.infantPkr)
+
+                                }
+                            }
+                        }
+                        pkrmember += `<th>${pkraddfacility.toLocaleString()}</th>`
+
+
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+                        // child
+                        pkrtotalamount += i.package.childPkr
+                        pkrpackage += i.package.childPkr
+                        pkrmember += `<th>${i.package.childPkr}</th>`
+                        var pkraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    pkraddfacility += parseInt(j.additionalFacilities.childPkr)
+
+                                }
+                            }
+                        }
+
+                        pkrmember += `<th>${pkraddfacility.toLocaleString()}</th>`
+
+                    } else {
+
+                        // adult
+                        pkrtotalamount += i.package.adultPkr
+                        pkrpackage += i.package.adultPkr
+                        pkrmember += `<th>${i.package.adultPkr}</th>`
+                        var pkraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    pkraddfacility += parseInt(j.additionalFacilities.adultPkr)
+                                }
+                            }
+                        }
+                        pkrmember += `<th>${pkraddfacility.toLocaleString()}</th>`
+
+                    }
+
+
+                    pkrtotalamount += pkraddfacility;
+                    var pkrpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            pkrpacaddon += parseInt(j.pkrPrice)
+
+                        }
+                    }
+                    pkrtotalamount += pkrpacaddon;
+
+                    pkrmember += `<th>${pkrpacaddon.toLocaleString()}</th>`
+                    pkrmember += `<th>${(pkrtotalamount / a).toLocaleString()}</th>`
+                    pkrmember += `<th>${i.package.sarroe}</th>`
+                    pkrmember += `<th>${i.package.usdroe}</th>`
+                    pkrmember += `</tr>`
+                }
+
+                $('#pkrmember').html(pkrmember)
+
+                // SAR Member
+
+                let sarmember = "";
+                let sartotalamount = 0;
+                let sardiscount = 0;
+                let sarpackage = 0;
+
+                var a = 0;
+                for (let i of res.familyMember) {
+                    a += 1;
+                    sardiscount = i.familyMember.familyHead.sarDiscountAmount;
+
+                    sarmember += `<tr>`
+                    sarmember += `<th>${i.familyMember.familyHead.givenName} ${i.familyMember.familyHead.surName}</th>`
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+                        sarmember += `<th>${i.package.infantSar}</th>`
+                        sartotalamount += parseInt(i.package.infantSar)
+                        sarpackage += parseInt(i.package.infantSar)
+                        var saraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    saraddfacility += parseInt(j.additionalFacilities.infantSar)
+
+                                }
+                            }
+                        }
+
+
+                        sarmember += `<th>${saraddfacility.toLocaleString()}</th>`
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+                        sarmember += `<th>${i.package.childSar}</th>`
+                        sartotalamount += parseInt(i.package.childSar)
+                        sarpackage += parseInt(i.package.childSar)
+                        var saraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    saraddfacility += parseInt(j.additionalFacilities.childSar)
+
+                                }
+                            }
+                        }
+
+                        sarmember += `<th>${saraddfacility.toLocaleString()}</th>`
+
+
+                    } else {
+                        sarmember += `<th>${i.package.adultSar}</th>`
+                        sartotalamount += parseInt(i.package.adultSar)
+                        sarpackage += parseInt(i.package.adultSar)
+                        var saraddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    saraddfacility += parseInt(j.additionalFacilities.adultSar)
+                                }
+                            }
+                        }
+
+                        sarmember += `<th>${saraddfacility.toLocaleString()}</th>`
+
+
+                    }
+
+                    sartotalamount += saraddfacility
+                    var sarpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            sarpacaddon += parseInt(j.sarPrice)
+                        }
+                    }
+                    sartotalamount += sarpacaddon
+                    sarmember += `<th>${sarpacaddon.toLocaleString()}</th>`
+
+                    sarmember += `<th>${(sartotalamount / a).toLocaleString()}</th>`
+                    sarmember += `<th>${i.package.sarroe}</th>`
+                    sarmember += `<th>${i.package.usdroe}</th>`
+                    sarmember += `</tr>`
+                }
+                $('#sarmember').html(sarmember)
+
+
+
+                // USD Member
+
+                let usdmember = "";
+                let usdtotalamount = 0;
+                let usddiscount = 0;
+                let usdpackage = 0;
+                var a = 0;
+                for (let i of res.familyMember) {
+
+
+                    usddiscount += i.familyMember.familyHead.usdDiscountAmount;
+                    a += 1
+                    usdmember += `<tr>`
+                    usdmember += `<th>${i.familyMember.familyHead.givenName} ${i.familyMember.familyHead.surName}</th>`
+                    if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 2) {
+                        usdmember += `<th>${i.package.infantUsd}</th>`
+                        usdtotalamount += i.package.infantUsd
+                        usdpackage += i.package.infantUsd
+                        var usdaddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    usdaddfacility += parseInt(j.additionalFacilities.infantUsd)
+                                }
+                            }
+
+                        }
+
+                        usdmember += `<th>${usdaddfacility.toLocaleString()}</th>`
+
+                    } else if (calculateAge(i.familyMember.familyHead.dateOfBirth) < 12) {
+                        usdmember += `<th>${i.package.childUsd}</th>`
+                        usdtotalamount += i.package.childUsd
+                        usdpackage += i.package.childUsd
+                        var usdaddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    usdaddfacility += parseInt(j.additionalFacilities.childUsd)
+                                }
+                            }
+
+                        }
+
+                        usdmember += `<th>${usdaddfacility.toLocaleString()}</th>`
+
+                    } else {
+                        usdmember += `<th>${i.package.adultUsd}</th>`
+                        usdtotalamount += i.package.adultUsd
+                        usdpackage += i.package.adultUsd
+                        var usdaddfacility = 0;
+                        for (let j of res.additionalFacility) {
+                            if (i.familyMember.familyHeadId == j.familyHeadId) {
+                                if (i.package.packageId == j.additionalFacilities.packageId) {
+                                    usdaddfacility += parseInt(j.additionalFacilities.adultUsd)
+                                }
+                            }
+
+                        }
+                        usdmember += `<th>${usdaddfacility.toLocaleString()}</th>`
+
+                    }
+
+                    usdtotalamount += usdaddfacility
+                    var usdpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            usdpacaddon += parseInt(j.usdPrice)
+
+                        }
+                    }
+                    usdtotalamount += usdpacaddon
+
+                    usdmember += `<th>${usdpacaddon.toLocaleString()}</th>`
+                    usdmember += `<th>${(usdtotalamount / a).toLocaleString()}</th>`
+                    usdmember += `<th>${i.package.sarroe}</th>`
+                    usdmember += `<th>${i.package.usdroe}</th>`
+                    usdmember += `</tr>`
+                }
+
+                $('#usdmember').html(usdmember)
+
+                document.getElementById('pkrtotal').innerText = ((pkrtotalamount + pkrextras + basicAirlinePkr + basicDifferentPkr + pkrdiscount)).toLocaleString();
+                document.getElementById('sartotal').innerText = ((sartotalamount + sarextras + basicAirlineSar + basicDifferentSar + sardiscount)).toLocaleString();
+                document.getElementById('usdtotal').innerText = ((usdtotalamount + usdextras + basicAirlineUsd + basicDifferentUsd + usddiscount)).toLocaleString();
+
+                $("#adult_price_package_pkr").html(res.adultBasicPackagePkr.toLocaleString());
+                $("#child_price_package_pkr").html(res.childBasicPackagePkr.toLocaleString());
+                $("#infant_price_package_pkr").html(res.infantBasicPackagePkr.toLocaleString());
+
+                $("#adult_price_package_sar").html(res.adultBasicPackageSar.toLocaleString());
+                $("#child_price_package_sar").html(res.childBasicPackageSar.toLocaleString());
+                $("#infant_price_package_sar").html(res.infantBasicPackageSar.toLocaleString());
+
+                $("#adult_price_package_usd").html(res.adultBasicPackageUsd.toLocaleString());
+                $("#child_price_package_usd").html(res.childBasicPackageUsd.toLocaleString());
+                $("#infant_price_package_usd").html(res.infantBasicPackageUsd.toLocaleString());
+
+                $("#adult_count_pkr").html(res.adultCount);
+                $("#adult_count_sar").html(res.adultCount);
+                $("#adult_count_usd").html(res.adultCount);
+
+                $("#child_count_pkr").html(res.childCount);
+                $("#child_count_sar").html(res.childCount);
+                $("#child_count_usd").html(res.childCount);
+
+
+                $("#infant_count_pkr").html(res.infantCount);
+                $("#infant_count_sar").html(res.infantCount);
+                $("#infant_count_usd").html(res.infantCount);
+
+
+                let bank_check = '';
+                for (let bank of res.companyBank) {
+                    bank_check += `
+                        <label>${bank.bank}</label>
+                        <input type="checkbox" onclick="bankToggle(this)" value="${bank.companyBankAccountId}"/> `
+                }
+                document.getElementById('checkBankDetail').innerHTML = bank_check
+
+                const currencyMap = {
+                    0: 'PKR', 1: 'SAR', 2: 'USD', 3: 'AED', 4: 'GBP', 5: 'EURO'
+                }
+
+                let bank_tbody = "";
+                for (let bank of res.companyBank) {
+                    bank_tbody += `
+                    <div class="col-md-12" style="display:none" id="table_${bank.companyBankAccountId}">
+
+
+                             <table class="table" >
+                                <thead>
+                                    <tr class="bg-grey text-center">
+                                        <th colspan="2" class="text-white"><b class="">Bank Account Detail</b></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                            <tr class="bank-details" id="${bank.companyBankAccountId}_row">
+                                                <td colspan="" style="background-color: rgb(232, 232, 232);">
+                                                    <b class="toggle-bank-details" data-target="${bank.companyBankAccountId}">${bank.bank}</b>
+                                                </td>
+                                                 <td colspan="" style="background-color: rgb(232, 232, 232); text-align: right; text-align:left">
+    <b class="" >Currency: ${currencyMap[bank.accountCurrency]}</b>
+                                                </td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Account Title</td>
+                                                <td>${bank.title}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Account Number</td>
+                                                <td>${bank.number}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>IBAN</td>
+                                                <td>${bank.iban}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Branch Code</td>
+                                                <td>${bank.branchCode}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Swift Code</td>
+                                                <td>${bank.swift}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Goverment ID / NTN</td>
+                                                <td>${bank.ntn}</td>
+                                            </tr>
+                                            <tr class="bank-details bank-details-content hidden" id="${bank.companyBankAccountId}_details">
+                                                <td>Address</td>
+                                                <td>${bank.bankAddress}</td>
+                                            </tr>
+
+                                            </tbody>
+
+                            </table>
+
+                               </div>`;
+                }
+
+                document.getElementById('bank_detail').innerHTML = bank_tbody;
+
+
+
+
+
+
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+    function hideDiv(value) {
+        value.style.display = "none"
+    }
+
+    function bankToggle(input) {
+        if (input.checked == true) {
+            document.getElementById(`table_${input.value}`).style.display = "block"
+        } else {
+            document.getElementById(`table_${input.value}`).style.display = "none"
+        }
+    }
+
+    getFamilyDetail(@ViewBag.familyId)
+
+
+
+    function convertToPkr(val) {
+        let pkrROE = document.getElementById("PKRROE").value;
+
+        let sanitizedVal = val.replace(/,/g, '');
+        let converted = pkrROE * sanitizedVal;
+
+        console.log(converted)
+        document.getElementById("usdToPkr").innerHTML = converted.toLocaleString()
+    }
+
+
+
+
+</script>

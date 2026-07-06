@@ -1,0 +1,331 @@
+﻿@model NewInvoice
+
+@{
+    string modelName = "Receipt";
+    string modelNamePlural = "Receipts";
+    string modelControllerRoute = "NewInvoice";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="NewInvoiceId">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="FamilyHeadId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="FamilyHeadId" id="familyId">
+                                        <option value="">Select a Family Head...</option>
+                                        @foreach (var family in ViewBag.FamilyHeads)
+                                        {
+                                            <option value="@family.FamilyHeadId">
+                                                @family.GivenName @family.SurName
+                                                (HB #@family.FamilyHeadId)
+                                            </option>
+                                        }
+                                    </select>
+
+                                </div>
+                                <span class="text-danger" asp-validation-for="FamilyHeadId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="Currencies">Collection Currency</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="Currencies"
+                                        asp-items="@Html.GetEnumSelectList<Currencies>()">
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currencies"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="amountReceived" asp-for="AmountRecieved"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="AmountRecieved" id="amountReceived" class="form-control"
+                                        oninput="formatWithCommas(this)">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AmountRecieved"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="ROE"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ROE" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ROE"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Date"></label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="Date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Date"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="CompanyBankAccountId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyBankAccountId">
+                                        @foreach (var bank in ViewBag.CompanyBank)
+                                        {
+                                            <option value="@bank.CompanyBankAccountId">@bank.Title</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyBankAccountId"></span>
+                            </div>
+                            @* <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="DepositDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="DepositDate" class="form-control" onchange="getDeposit(this.value)">
+                                </div>
+                                <span class="text-danger" asp-validation-for="DepositDate"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="ClearanceDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ClearanceDate" date="date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClearanceDate"></span>
+                            </div> *@
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="InstrumentNo"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="InstrumentNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="InstrumentNo"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="ChequeNumber">Cheque Number</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ChequeNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ChequeNumber"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="ChequeDate">Cheque Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="ChequeDate" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="ChequeDate"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="BankId">Bank</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="BankId">
+                                        <option value="">Select Bank...</option>
+                                        @foreach (var bank in ViewBag.Banks)
+                                        {
+                                            <option value="@bank.BankId">@bank.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="BankId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="TPHBNo">TP - HB No</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="TPHBNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="TPHBNo"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" asp-for="TPHBReciptNo">TP - Receipt No</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="TPHBReciptNo" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="TPHBReciptNo"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="ModeOfPayment"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="ModeOfPayment"
+                                        asp-items="@Html.GetEnumSelectList<ModeOfPayment>()">
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ModeOfPayment"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Remarks"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Remarks" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Remarks"></span>
+                            </div>
+                            <div class="col-sm-12">
+                                <a asp-action="UploadProof" asp-route-id="@Model.NewInvoiceId">Change Proof of
+                                    Payment</a>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <button type="button" id="capture" class="btn btn-primary">Open Camera</button>
+                                <button type="button" id="take" class="btn btn-warning">Capture Image</button>
+                                <button type="submit" class="btn btn-info float-end">Save Changes</button>
+                            </div>
+                            <div class="col-md-12 mt-5">
+                                <div class="">
+                                    <video id="video" width="100%" height="auto"></video>
+                                </div>
+                            </div>
+                            <input type="hidden" asp-for="ImageBase64">
+
+                            <div class="col-sm-12 mt-4">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+<script>
+
+
+    const captureButton = document.getElementById('capture');
+    const video = document.getElementById('video');
+
+    let stream;
+
+    captureButton.addEventListener('click', () => {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((userStream) => {
+                stream = userStream;
+                video.srcObject = userStream;
+                video.play();
+            })
+            .catch(error => console.error('Error accessing camera:', error));
+    });
+
+    document.getElementById('take').addEventListener('click', (event) => {
+        event.preventDefault();
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const capturedImage = canvas.toDataURL('image/png');
+
+        document.getElementById('ImageBase64').value = capturedImage;
+
+
+        if (stream) {
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+
+        event.target.submit();
+    });
+</script>
+
+
+
+<script>
+
+    function formatWithCommas(input) {
+        let value = input.value.replace(/,/g, ''); // Remove existing commas
+        if (!isNaN(value) && value !== '') {
+            let parts = value.split('.'); // Split integer and decimal parts
+            parts[0] = Number(parts[0]).toLocaleString(); // Format integer part with commas
+
+            // Allow only two decimal places
+            if (parts[1]) {
+                parts[1] = parts[1].substring(0, 2); // Limit decimal places to 2
+            }
+
+            input.value = parts.join('.'); // Rejoin with decimal part (if any)
+        }
+    }
+
+    // Format the input with commas when the page loads if it has a value
+    document.addEventListener("DOMContentLoaded", function () {
+        const amountReceivedInput = document.getElementById("amountReceived");
+        if (amountReceivedInput.value) {
+            formatWithCommas(amountReceivedInput);
+        }
+    });
+
+    function getRoe(value) {
+
+        console.log(value)
+        var familyId = document.getElementById('familyId').value;
+        var currentDate = new Date();
+        var year = currentDate.getFullYear();
+        var month = currentDate.getMonth() + 1;
+        var day = currentDate.getDate();
+        var formattedDate = year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+
+        $.ajax({
+            url: "/Invoice/GetRoe/",
+            data: {
+                currency: value,
+                date: formattedDate,
+                familyId: familyId
+            },
+            method: "GET",
+            success: res => {
+                console.log(res)
+                if (res.length == 0) {
+                    document.getElementById('pkrroe').value = 1
+                    document.getElementById('sarroe').value = 1
+                    document.getElementById('usdroe').value = 1
+                    document.getElementById('aedroe').value = 1
+                    document.getElementById('gbproe').value = 1
+                    document.getElementById('euroroe').value = 1
+                } else {
+                    if (res.roeRequestCount == 1) {
+                        document.getElementById('pkrroe').value = res.roeRequest[0].pkrroe
+                        document.getElementById('sarroe').value = res.roeRequest[0].sarroe
+                        document.getElementById('usdroe').value = res.roeRequest[0].usdroe
+                        document.getElementById('aedroe').value = res.roeRequest[0].aedroe
+                        document.getElementById('gbproe').value = res.roeRequest[0].gbproe
+                        document.getElementById('euroroe').value = res.roeRequest[0].euroroe
+                    } else if (res.roeRequestCount == 0) {
+                        document.getElementById('pkrroe').value = res.rateOfExchange[0].pkrroe
+                        document.getElementById('sarroe').value = res.rateOfExchange[0].sarroe
+                        document.getElementById('usdroe').value = res.rateOfExchange[0].usdroe
+                        document.getElementById('aedroe').value = res.rateOfExchange[0].aedroe
+                        document.getElementById('gbproe').value = res.rateOfExchange[0].gbproe
+                        document.getElementById('euroroe').value = res.rateOfExchange[0].euroroe
+                    }
+                }
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('select[id="familyId"]').select2({
+            placeholder: "Select Family Head",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>

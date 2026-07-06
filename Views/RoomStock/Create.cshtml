@@ -1,0 +1,160 @@
+@model RoomStock
+
+@{
+    string modelName = "Room Stock";
+    string modelNamePlural = "Room Stocks";
+    string modelControllerRoute = "RoomBedType";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Place</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="select-hotel" asp-for="PlaceId">
+                                        <option value="">Select a Place...</option>
+                                        @foreach (Place place in ViewBag.Places)
+                                        {
+                                            <option value="@place.PlaceId">@place.PlaceName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="date" asp-for="CheckIn">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check Out</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control" type="date" asp-for="CheckOut">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select
+                                    Packages</label>
+                                <br />
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (var package in ViewBag.Packages)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                        <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                            asp-for="PackagesSelected[i]">
+
+                                        <label class="form-check-label" for="@package.PackageId">@package.Name</label>
+                                    </div>
+                                    i++;
+                                }
+                            </div>
+
+                            <div id="rooms">
+                                <div class="row" id="room_0">
+                                    <div class="col-sm-12 mb-2">
+                                        <h5 class="float-start">Rooms</h5>
+                                        <button class="btn btn-outline-info float-end" type="button"
+                                            onclick="addRoom(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                    class="bx bx-building"></i></span>
+                                            <select class="form-select" name="RoomIds[]">
+                                                @foreach (Room room in ViewBag.Rooms)
+                                                {
+                                                    <option value="@room.RoomId">@room.RoomName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                            name="">Quantity</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                    class="bx bx-building"></i></span>
+                                            <input type="text" class="form-control" min="1" placeholder="Enter Quantity"
+                                                value="1" name="Quantities[]" />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function addRoom(e) {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                    <div class="row" id="room_${id}">
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <select class="form-select" name="RoomIds[]">
+    @foreach (Room room in ViewBag.Rooms)
+    {
+                                                        <option value="@room.RoomId">@room.RoomName</option>
+    }
+                                            </select>
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Quantity</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="number" min="1" value="1" name="Quantities[]"  class="form-control" placeholder="Enter Quantity" />
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-1 d-flex align-items-center">
+                                                <label class="form-label"></label>
+                                                <button type="button" class="btn btn-icon btn-danger" onclick="removeRoom(${id})"><i class='bx bxs-trash'></i></button>
+                                            </div>
+                                            <hr />`;
+
+        $("#rooms").append(row);
+    }
+
+    function removeRoom(id) {
+        // console.log(id)
+        // console.log(document.getElementById("room_"+id))
+        document.getElementById(`room_${id}`).remove();
+    }
+
+
+</script>

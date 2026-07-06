@@ -1,0 +1,199 @@
+﻿
+
+
+
+@model TentativeFamilyHead
+
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>TMG Hajj</title>
+
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.common.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+
+    <style>
+        .select2-search__field {
+            outline: none
+        }
+
+        .select2-dropdown {
+            background-color: #f66262;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding: 0px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            color: #000;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #eee;
+            color: black;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+
+    <style>
+        .menu-item .active {
+        }
+    </style>
+</head>
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Hajj Registration Form 2026 </span> </h4>
+        <hr class="mb-4" />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card p-3">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-1 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="adult"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="adult" class="form-control" value="0" placeholder="Adult">
+                                </div>
+                                <span class="text-danger" asp-validation-for="adult"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-1 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="child"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="child" class="form-control" value="0" placeholder="Child">
+                                </div>
+                                <span class="text-danger" asp-validation-for="child"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-1 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="infant"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="infant" class="form-control" value="0" placeholder="Infant">
+                                </div>
+                                <span class="text-danger" asp-validation-for="infant"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="SurName">Sur Name</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="SurName" class="form-control" placeholder="Enter Sur Name...">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SurName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GivenName">Given Name</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="GivenName" class="form-control" placeholder="Enter Given Name...">
+                                </div>
+                                <span class="text-danger" asp-validation-for="GivenName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CNIC"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="CNIC" class="form-control" maxlength="15" placeholder="Enter CNIC..."
+                                           oninput="formatCnicInput(this)">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CNIC"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Phone"></label>
+                                <span class="fw-bold text-danger required"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Phone" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Phone"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                <span class="fw-bold text-danger required"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Email" type="email" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Registration Date</label>
+                                <span class="fw-bold text-danger required"> *</span>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="DateOfQuery" type="date" class="form-control" value="@DateTimeManager.GetDate(DateTime.Now)">
+                                </div>
+                                <span class="text-danger" asp-validation-for="DateOfQuery"></span>
+                            </div>
+                            <div class="col-sm-12 mt-3">
+                                <button class="btn btn-success float-end">Create</button>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    @Html.AntiForgeryToken()
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+
+    <partial name="~/Views/Shared/_CNICFormatScriptPartial.cshtml" />
+</body>
+</html>
+
+
+
+

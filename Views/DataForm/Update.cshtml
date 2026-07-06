@@ -1,0 +1,344 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@model FamilyHeadEditRequest
+@{
+    Layout = "";
+}
+<style>
+    .d-width {
+        width: 111px;
+    }
+
+    .f-width {
+        width: 185px;
+    }
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>TMG Hajj</title>
+
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.common.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+
+
+    <style>
+        .select2-search__field {
+            outline: none
+        }
+
+        .select2-dropdown {
+            background-color: #f66262;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            padding: 0px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .select2-container--default .select2-results__option[aria-disabled=true] {
+            color: #000;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #eee;
+            color: black;
+        }
+    </style>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="~/assets/vendor/fonts/boxicons.css" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" href="~/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <script src="~/assets/vendor/js/helpers.js"></script>
+
+    <script src="~/assets/js/config.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+            integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
+
+    <style>
+        .menu-item .active {
+        }
+    </style>
+</head>
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <a asp-controller="DataForm" asp-action="View" asp-route-id="@ViewBag.ViewFamilyId" class="btn btn-success float-end mb-2">Back</a>
+        <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Hajj 2026 Registration / </span> Edit</h4>
+        <hr class="mb-4" />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-passport" aria-controls="navs-pills-justified-passport" aria-selected="false">
+                                Passport
+                            </button>
+                        </li>
+                    </ul>
+                    @* <form method="post" enctype="multipart/form-data"> *@
+                    <input type="hidden" asp-for="FamilyHeadId" />
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade active show" id="navs-pills-justified-passport" role="tabpanel">
+                                <div class="row">
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="SurName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="SurName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="SurName"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="GivenName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                            <input asp-for="GivenName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="GivenName"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="FatherName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="FatherName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="FatherName"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Number"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="Number" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Number"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="Email" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Email"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="CNIC"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="CNIC" class="form-control" maxlength="15" oninput="formatCnicInput(this)">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CNIC"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="DateOfBirth"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="DateOfBirth" type="date" max="@DateTimeManager.Today" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="DateOfBirth"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Registration Date</label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="DateOfR" type="date" max="@DateTimeManager.Today" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="DateOfR"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Passport Attachment</label>
+                                        <span class="fw-bold text-danger"> 
+                                            @if (Model.PAttachment is not null)
+                                            {
+                                                <a href="~/@Model.PAttachment">View Image</a>
+                                            }
+                                        </span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="PassportAttachment" type="file" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PassportAttachment"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">CNIC Attachment</label>
+                                        <span class="fw-bold text-danger"> 
+                                            @if (Model.CAttachment is not null)
+                                            {
+                                                <a href="~/@Model.CAttachment">View Image</a>
+                                            }
+                                        </span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="CNICAttachment" type="file" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CNICAttachment"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Member Image</label>
+                                        <span class="fw-bold text-danger">
+                                            @if (Model.MImage is not null)
+                                            {
+                                                <a href="~/@Model.MImage">View Image</a>
+                                            }
+                                        </span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="MemberImage" type="file" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="MemberImage"></span>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <label class="form-label" for="basic-icon-default-fullname">Address</label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="Address" type="text" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Address"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 mt-3">
+                                    <button type="submit" class="btn btn-warning float-end" id="savePassportButton">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.AntiForgeryToken()
+                    @*  </form> *@
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#savePassportButton").on("click", function () {
+            var id = $("#FamilyHeadId").val();
+
+            var formData = new FormData();
+
+            formData.append("SPId", $("#SPOId").val());
+            formData.append("FeedBy", $("#FeedBy").val());
+            formData.append("SurName", $("#SurName").val());
+            formData.append("GivenName", $("#GivenName").val());
+            formData.append("FatherName", $("#FatherName").val());
+            formData.append("CNIC", $("#CNIC").val());
+            formData.append("DateOfBirth", $("#DateOfBirth").val());
+            formData.append("DateOfR", $("#DateOfR").val());
+            formData.append("Number", $("#Number").val());
+            formData.append("Email", $("#Email").val());
+            formData.append("Password", $("#Password").val());
+            formData.append("GroupNo", $("#GroupNo").val());
+            formData.append("Address", $("#Address").val());
+
+            formData.append("PassportAttachment", $('input[name="PassportAttachment"]')[0].files[0]);
+            formData.append("CNICAttachment", $('input[name="CNICAttachment"]')[0].files[0]);
+            formData.append("MemberImage", $('input[name="MemberImage"]')[0].files[0]);
+
+            formData.append("id", id);
+
+            $.ajax({
+                url: '/DataForm/Store',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === 200) {
+                        alert("Passport details saved successfully!");
+                    } else {
+                        alert("Error: " + response.msg);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred: " + xhr.responseText);
+                }
+            });
+        });
+    });
+
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("passwordInput");
+        var toggleIcon = document.getElementById("togglePasswordIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("bx-show");
+            toggleIcon.classList.add("bx-hide");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("bx-hide");
+            toggleIcon.classList.add("bx-show");
+        }
+    }
+
+</script>
+
+
+
+
+<partial name="~/Views/Shared/_CNICFormatScriptPartial.cshtml" />
+
+</html>
+
+
+

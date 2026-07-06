@@ -1,0 +1,297 @@
+﻿<script>
+    function calculateDaysNights(element) {
+        // Get the parent div with class 'row'
+        let row = element.closest('.row');
+
+        // Get the check-in and check-out times
+        let checkInTime = row.querySelector('[name="AccomodationActualCheckInTime[]"]').value;
+        let checkOutTime = row.querySelector('[name="AccomodationActualCheckOutTime[]"]').value;
+
+        // If both check-in and check-out times are available
+        if (checkInTime && checkOutTime) {
+            let checkInDate = new Date(checkInTime);
+            let checkOutDate = new Date(checkOutTime);
+
+            // Ensure check-out is after check-in
+            if (checkOutDate > checkInDate) {
+                // Get only the date (ignore time) for accurate calculation
+                let checkInDateOnly = new Date(checkInDate.getFullYear(), checkInDate.getMonth(), checkInDate.getDate());
+                let checkOutDateOnly = new Date(checkOutDate.getFullYear(), checkOutDate.getMonth(), checkOutDate.getDate());
+
+                // Calculate total days and nights
+                let timeDifference = checkOutDateOnly - checkInDateOnly;
+                let totalDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) + 1; // +1 to include check-in day
+                let totalNights = totalDays - 1; // Nights are one less than days
+
+                // Set the calculated values
+                row.querySelector('[name="AccomodationDays[]"]').value = totalDays;
+                row.querySelector('[name="AccomodationNights[]"]').value = totalNights;
+            } else {
+                alert("Check-out date and time must be after check-in date and time.");
+                row.querySelector('[name="AccomodationDays[]"]').value = 0;
+                row.querySelector('[name="AccomodationNights[]"]').value = 0;
+            }
+        }
+    }
+
+
+
+    function AddAccommodation() {
+        let id = Date.now() + Math.floor(Math.random() * 1000)
+        var row = "";
+
+        if (document.getElementById("accomodations").childElementCount > 1) {
+            row += `<hr class="col-sm-12 my-4" id="accomodation_hr_${id}">`;
+        }
+
+        row += `
+            <div class="row" id = "accomodation_${id}" >
+
+                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Place <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <select class="form-select" name="AccomodationPlaceId[]">
+                                                                    <option value="">Select Place...</option>
+    @foreach (Place p in ViewBag.Places)
+    {
+                                                                                        <option value="@p.PlaceId">@p.PlaceName</option>
+    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                            <label class="form-label">Accommodation Type <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+
+                                                                <select class="form-select" name="AccomodationId[]">
+                                                                    <option value="">Select type...</option>
+    @foreach (Accomodation a in ViewBag.Accomodations)
+    {
+
+                                                                                        <option value="@a.AccomodationId">@a.AccomodationName </option>
+    }
+                                                                </select>
+                                                            </div>
+                                                            <span class="text-danger" asp-validation-for="AccomodationId[0]"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Saudi Star Rating <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <select class="form-select" name="AccomodationCategoryId[]">
+                                                                    <option value="">Select rating...</option>
+    @foreach (AccomodationCategory a in ViewBag.AccomodationCategories)
+    {
+                                                                                        <option value="@a.AccomodationCategoryId">@a.Category</option>
+    }
+                                                                </select>
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Hotel <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <span class="input-group-text"></span>
+                                                                <input class="form-control" name="Accomodation[]" placeholder="Enter Hotel" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-2  mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Distance (Meter)</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <span class="input-group-text"></span>
+                                                                <input class="form-control" name="AccomodationDistance[]" placeholder="Enter Distance" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                       
+                                                        <div class="col-sm-12 col-md-3  mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Check In <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <span class="input-group-text"></span>
+                                                                <input class="form-control" name="AccomodationCheckIn[]" placeholder="Enter Check In..." >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-3  mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Check Out <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <span class="input-group-text"></span>
+                                                                <input class="form-control" name="AccomodationCheckOut[]" placeholder="Enter Check Out..." >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        @*<div class="col-sm-4 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Is Food Included?</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <select class="form-select" name="AccomodationFoodIncluded[]">
+                                                                            <option value="true">Yes</option>
+                                                                            <option value="false" selected>No</option>
+                                                                </select>
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-4 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Is Residence Included?</label>
+                                                            <div class="input-group input-group-merge">
+
+                                                                <select class="form-select" name="AccomodationResidenceIncluded[]">
+                                                                            <option value="true">Yes</option>
+                                                                            <option value="false" selected>No</option>
+                                                                </select>
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>*@
+
+                                                        <div class="col-sm-6 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Food Package <span class="text-danger fw-bold">*</span></label>
+                                                            <div class="input-group input-group-merge">
+
+                                                                <select class="form-select" name="AccomodationFoodPackageId[]">
+                                                                    <option value="">Select food package...</option>
+    @foreach (FoodPackage f in ViewBag.FoodPackages)
+    {
+                                                                                        <option value="@f.FoodPackageId">@f.Package</option>
+    }
+                                                                </select>
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Actual Hotel</label>
+                                                            <div class="input-group input-group-merge">
+                                                                    <select class="form-select" name="HotelIds[]">
+                                                                <option value="">Select Hotel...</option>
+                                                                @foreach (Hotel f in ViewBag.Hotels)
+                                                                {
+                                                                    <option value="@f.HotelId">@f.HotelName</option>
+                                                                }
+                                                            </select>
+                                                               
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                       
+                                                        <div class="col-sm-12 col-md-4  mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Actual Check In Time</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" type="datetime-local" onchange="calculateDaysNights(this)"
+                                                                name="AccomodationActualCheckInTime[]" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-4  mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Actual Check Out Time</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" type="datetime-local" onchange="calculateDaysNights(this)"
+                                                                name="AccomodationActualCheckOutTime[]" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                             <div class="col-sm-12 col-md-2  mb-3">
+                                                                <label class="form-label" for="basic-icon-default-fullname">Days <span class="text-danger fw-bold">*</span></label>
+                                                                <div class="input-group input-group-merge">
+                                                                    <input class="form-control" name="AccomodationDays[]" placeholder="Enter Days" readonly>
+                                                                </div>
+                                                                <span class="text-danger"></span>
+                                                            </div>
+                                                            <div class="col-sm-12 col-md-2  mb-3">
+                                                                <label class="form-label" for="basic-icon-default-fullname">Nights <span class="text-danger fw-bold">*</span></label>
+                                                                <div class="input-group input-group-merge">
+                                                                        <input class="form-control" name="AccomodationNights[]" placeholder="Enter NIGHTS" readonly>
+                                                                </div>
+                                                                <span class="text-danger"></span>
+                                                            </div>
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Group Ziarat</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <span class="input-group-text"></span>
+                                                                <input class="form-control" name="AccomodationGroupZiarat[]" placeholder="Enter GROUP ZIARAT" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Religious Lectures</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationReligiousLecture[]" placeholder="Enter RELIGIOUS LECTURES" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Distribution</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationDistribution[]" placeholder="Enter DISTRIBUTION ARRANGEMENTS" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Camp</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationCamp[]" placeholder="Enter CAMP..." >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Arafat</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationArafat[]" placeholder="Enter ARAFAT...">
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Shuttle</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationShuttle[]" placeholder="Enter SHUTTLE..." >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Bedding <small>(Sofa Mattress)</small></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationBedding[]" placeholder="Enter BEDDING (SOFA MATTRESS)...">
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Sharing <small>(Room / Tent / Camp)</small></label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationSharing[]" placeholder="Enter SHARING (ROOM/TENT/CAMP)..." >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-4 mb-3">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Sharing Type</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationSharingType[]" placeholder="Enter SHARING TYPE" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-11 mb-12">
+                                                            <label class="form-label" for="basic-icon-default-fullname">Note</label>
+                                                            <div class="input-group input-group-merge">
+                                                                <input class="form-control" name="AccomodationNote[]" placeholder="Enter NOTE" >
+                                                            </div>
+                                                            <span class="text-danger"></span>
+                                                        </div>
+                                                        <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: flex-end;flex-wrap: wrap;align-content: center;">
+                                                            <button type="button" class="btn btn-icon btn-danger" onclick="RemoveAccommodation(${id})"><i class='bx bxs-trash'></i></button>
+                                                        </div>
+                                                    </div>
+            `;
+
+        $("#accomodations").append(row);
+    }
+    function RemoveAccommodation(id) {
+        $(`#accomodation_hr_${id}`).remove();
+        $(`#accomodation_${id}`).remove();
+    }
+
+</script>

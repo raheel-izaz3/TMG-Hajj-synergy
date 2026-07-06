@@ -1,0 +1,234 @@
+﻿@model FloorDetailsModel
+@{
+    string modelName = "Floor";
+    string modelNamePlural = "Floors";
+    string modelControllerRoute = "Floor";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light">@Model.HotelName / </span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+    @* @if (ViewBag.CreateAllowed == true)
+    { *@
+    @* <a asp-action="Create" class="btn btn-info">Create New</a> *@
+    @* }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash
+        (@ViewBag.TrashCount)</a>
+    @* } *@
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Floor #</th>
+                        <th>Room Count</th>
+                        <th>Un Allocated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+
+                    @foreach (FloorDetailsEntry floor in Model.Entries)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@floor.Floor.FloorId</strong>
+                            </td>
+                            <td>@floor.Floor.FloorNumber</td>
+                            <td>@floor.RoomCount</td>
+                            <td>@floor.UnAllotedRooms</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info text-white"
+                                        onclick="showModal('@floor.Floor.FloorId')">Summary</button>
+                                    <div class="modal" id="qrModal_@floor.Floor.FloorId" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Floor No. @floor.Floor.FloorNumber Room
+                                                        Availability</h5>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <div class="table-responsive ">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Room Type</th>
+                                                                    <th>Total</th>
+                                                                    <th>Allocated</th>
+                                                                    <th>Balance</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach(var r in floor.RoomData){
+                                                                    <tr>
+                                                                        <td>@r.RoomCode</td>
+                                                                        <td>@r.Total</td>
+                                                                        <td>@r.Allocated</td>
+                                                                        <td>@floor.UnAllotedRooms</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="table-responsive mt-3">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Room #</th>
+                                                                    <th>Type</th>
+                                                                    <th>PAX Allocated</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach (var r in floor.Rooms)
+                                                                {
+                                                                    <tr
+                                                                        style="background-color: @(r.Selected ? "#f4a4a4" : "lightgreen");">
+                                                                        <td>@r.FloorRoom.RoomNumber</td>
+                                                                        <td>@r.FloorRoom.Room.RoomCode</td>
+                                                                        <td>@r.PAXAllocated</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        id="closemodal_@floor.Floor.FloorId"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @* @if (ViewBag.EditAllowed == true)
+                                { *@
+                                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@floor.Floor.FloorId"><i
+                                            class="bx bx-edit-alt me-1"></i> Edit</a>
+                                    @* }
+                                @if (ViewBag.TrashAllowed == true)
+                                { *@
+                                    <button onclick="confirmDelete(@floor.Floor.FloorId)" class="btn btn-outline-danger"><i
+                                            class="bx bx-trash me-1"></i> Trash</button>
+                                    @* } *@
+                                    @* <a class="btn btn-success" asp-controller="FloorRoom" asp-action="Create"
+                                        asp-route-id="@floor.Floor.FloorId"><i class="bx bx-add-to-queue me-1"></i> Add
+                                        Room</a> *@
+                                    <a class="btn btn-info" asp-controller="FloorRoom" asp-action="Index"
+                                        asp-route-id="@floor.Floor.FloorId"><i class="bx bx-door-open me-1"></i> Room
+                                        Details</a>
+                                    @if (floor.RoomCount > 0)
+                                    {
+                                        <button class="btn btn-success" onclick="bookFloor(@floor.Floor.FloorId)"><i
+                                                class="bx bx-check me-1"></i> Book Floor</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success disabled" onclick="bookFloor(@floor.Floor.FloorId)"><i
+                                                class="bx bx-check me-1"></i> Book Floor</button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function bookFloor(id) {
+        let con = confirm("Are you sure you want to proceed?")
+        if (con) {
+            location.href = `/RoomAllotment/BookFloor/${id}`;
+        }
+    }
+
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        paging: false,
+        
+    });
+</script>
+
+<script>
+    function showModal(qurbanId) {
+        // Show the modal
+        $(`#qrModal_${qurbanId}`).modal('show');
+
+        $(`#closemodal_${qurbanId}`).on('click', function () {
+            $(`#qrModal_${qurbanId}`).modal('hide');
+        });
+    }
+</script>

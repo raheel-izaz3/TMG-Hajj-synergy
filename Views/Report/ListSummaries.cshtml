@@ -1,0 +1,146 @@
+﻿@using TMG.Controllers.FamilyControllers
+@{
+    Layout = null;
+}
+@model IEnumerable<FamilyHead>
+
+<!-- Jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables -->
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
+<script type="text/javascript"
+        src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+<!-- SheetJS (for Excel Export) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f6f3ee;
+        color: #b49164;
+        font-weight: bold;
+    }
+
+    .downloade_btn {
+        margin: 10px 0;
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        .downloade_btn:hover {
+            background-color: #45a049;
+        }
+</style>
+
+<!-- Export Button -->
+<button class="downloade_btn" id="downloadExcel">Export To Excel</button>
+
+<div class="big-table-record">
+    <table id="summaryTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Package Name</th>
+                <th>HB #</th>
+                <th>Honorifics</th>
+                <th>Given Name</th>
+                <th>Surname</th>
+                <th>Passport #</th>
+                <th>Passport Date of Issue</th>
+                <th>Passport Date of Expiry</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.Package?.Name</td>
+                    <td>@item.FcId</td>
+                    <td>@item.Honorifics</td>
+                    <td>@item.GivenName</td>
+                    <td>@item.SurName</td>
+                    <td>@item.PassportNumber</td>
+                    <td>@(item.PassportDateOfIssue.HasValue ? item.PassportDateOfIssue.Value.ToString("dd/MMM/yyyy") : "")</td>
+                    <td>@(item.PassportDateOfExpiry.HasValue ? item.PassportDateOfExpiry.Value.ToString("dd/MMM/yyyy") : "")</td>
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+</div>
+
+@* <script> *@
+@*     $(document).ready(function () { *@
+      
+@*         $('#summaryTable').DataTable({ *@
+@*             "paging": false, *@
+@*             "searching": true, *@
+@*             "ordering": true, *@
+@*             "info": true, *@
+@*         }); *@
+
+      
+@*         $('#downloadExcel').click(function () { *@
+@*             var wb = XLSX.utils.table_to_book(document.getElementById('summaryTable'), { sheet: "Sheet1" }); *@
+@*             XLSX.writeFile(wb, 'FamilyHeads.xlsx'); *@
+@*         }); *@
+@*     }); *@
+@* </script> *@
+
+<script>
+    $(document).ready(function () {
+        $('#summaryTable').DataTable({
+            "paging": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+        });
+
+        $('#downloadExcel').click(function () {
+            // Convert HTML table to SheetJS worksheet
+            var ws = XLSX.utils.table_to_sheet(document.getElementById('summaryTable'));
+
+            // Set custom column widths (in characters)
+            // Adjust the widths as per your content
+            ws['!cols'] = [
+                { wch: 5 },   // #
+                { wch: 20 },  // Package Name
+                { wch: 15 },  // HB #
+                { wch: 12 },  // Honorifics
+                { wch: 15 },  // Given Name
+                { wch: 15 },  // Surname
+                { wch: 20 },  // Passport #
+                { wch: 18 },  // Passport Date of Issue
+                { wch: 18 }   // Passport Date of Expiry
+            ];
+
+            // Create workbook and add the worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+            // Save file
+            XLSX.writeFile(wb, 'FamilyHeads.xlsx');
+        });
+    });
+</script>

@@ -1,0 +1,226 @@
+﻿@model PaymentVoucherInvoiceModel
+
+@{
+    Layout = "_InvoiceLayout";
+    
+    ViewData["title"] = "Voucher";
+}
+<script>
+    window.onload = function () {
+        document.getElementById("download")
+            .addEventListener("click", () => {
+                const invoice = this.document.getElementById("voucher");
+                console.log(invoice);
+                console.log(window);
+                var opt = {
+                    margin: 0.2,
+                    filename: 'voucher.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().from(invoice).set(opt).save();
+            })
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<style>
+    *{
+        font-size:12px;
+    }
+    body{
+        background-color:white
+    }
+    .f-600{
+        font-weight:600;
+    }
+    .sign {
+        height: 50px;
+        width: 200px;
+        margin: 0 auto;
+        border-bottom: 1px solid black;
+    }
+</style>
+
+
+
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-9"></div>
+           @*     <div class="col-md-3">
+                    <button class="btn btn-success f-600 w-100" onclick="getPrint()">Print</button>
+                </div>*@
+                <div class="col-md-3">
+                    <button class="btn btn-info f-600 w-100" id="download">Save as PDF</button>
+                </div>
+            </div>
+        </div>
+        
+            <div class="col-md-12" id="voucher">
+               <div class="row mt-3">
+                    <div class="col-md-5">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="~/logo.jpg" width="120px" height="120px" class="mb-3"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><h6>108-A 1st Floor, Clifton Center Block 5, Karachi</h6></td>
+                            </tr>
+
+                            <tr>
+                                <td><h6>UAN: 111 8000 600</h6></td>
+                            </tr>
+                            <tr>
+                                <td><h6>Email: info@tmg.org</h6></td>
+                            </tr>
+                            <tr>
+                                <td><h6> Website: www.tmg.org</h6></td>
+                            </tr>
+                        </table>
+                       
+
+                       @* <div class="row mt-5">
+                            <div class="col-md-12">
+                                <h4></h4>
+                                <h4>UAN: 111 8000 600</h4>
+                                <h4>Email: info@tmg.org, Website: www.tmg.org</h4>
+                            </div>
+                        </div>  *@                     
+                    </div>
+                     <div class="col-md-2"></div>
+                    <div class="col-md-5">
+                        <table class="table">
+                            <tr class="bg-primary">
+                                <td class="text-white" colspan="2">
+                                    @Model.PaymentVoucher.VoucherType.Type
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="f-600">Voucher ID: </td>
+                                <td >@Model.PaymentVoucher.VoucherType.Code/@Model.PaymentVoucher.Date.ToString("yy")/@Model.PaymentVoucher.PaymentVoucherId</td>
+                            </tr>
+                            <tr>
+                                <td class="f-600">Date: </td>
+                                <td>@DateTimeManager.GetDate(Model.PaymentVoucher.Date)</td>
+
+
+                            @if (Model.PaymentVoucher.Account.Name is not null)
+                                {
+                                    <tr>
+                                        <td class="f-600">Payee: </td>
+                                        <td>@Model.PaymentVoucher.Account.Name</td>
+                                    </tr>
+                                }
+                                else if (Model.PaymentVoucher.ReceivingParty is not null)
+                                {
+                                    <tr>
+                                        <td class="f-600">Receiving Party: </td>
+                                        <td>@Model.PaymentVoucher.ReceivingParty</td>
+                                    </tr>
+                                }
+
+                                @if (Model.PaymentVoucher.VoucherTypeId == 1 || Model.PaymentVoucher.VoucherTypeId == 2)
+                                {
+                                    <tr>
+                                        <td class="f-600">Instrument #: </td>
+                                        <td>@Model.PaymentVoucher.InstrumentNumber</td>
+                                    </tr>
+                                   
+                                }
+                              
+                            <tr>
+                                <td class="f-600">R.O.E: </td>
+                                <td class="text-success f-600">@Model.PaymentVoucher.PKRROE</td>
+                            </tr>                           
+                        </table>
+                    </div>
+
+                </div>
+           
+
+                <hr class="mb-3" />
+                <div class="table-responsive text-nowrap ">
+                    <table class="table">
+                        <tr class="bg-primary">
+                            <th colspan="6" class="text-white">Descriptions</th>
+                        </tr>
+                        <tr>
+                            <td colspan="6">@Model.PaymentVoucher.Description</td>
+                        </tr>
+
+                        <tr class="bg-primary">
+                            <th class=" text-white"><b>#</b></th>
+                            <th class=" text-white" colspan="3"><b>Account Title</b></th>
+                            <th class=" text-white"><b>Debit</b></th>
+                            <th class=" text-white"><b>Credit</b></th>
+                        </tr>
+                        @{
+                            int i = 0;
+                        }
+                        @foreach (VoucherEntry entry in Model.VoucherEntries)
+                        {
+                            i++;
+
+                            <tr>
+                                <th>@i</th>
+                                <td colspan="3">@entry.Account.Category.SubType.TypeId - @entry.Account.Category.SubTypeId - @entry.Account.CategoryId - @entry.AccountId - <b>@entry.Account.Name</b></td>
+                                <td>@Math.Abs(entry.Debit).ToString("N0")</td>
+                                <td>@Math.Abs(entry.Credit).ToString("N0")</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td colspan="3"><b>Total: </b></td>
+                            <td><b>@Math.Abs(Model.Amount).ToString("N0")</b></td>
+                            <td><b>@Math.Abs(Model.Amount).ToString("N0")</b></td>
+                        </tr>
+                       
+                      
+                    </table>
+                </div>
+                <style>
+                    .box {
+                        border: 1px solid black;
+                    }
+                </style>
+                <div class="row" style="margin-top: 100px;">
+                    <div class="col-sm-3">
+                        <div class="box"></div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box"></div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box"></div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="box"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-black fw-bold col-sm-3 text-center">Prepared By</div>
+                    <div class="text-black fw-bold col-sm-3 text-center">Checked By</div>
+                    <div class="text-black fw-bold col-sm-3 text-center">Approved By</div>
+                    <div class="text-black fw-bold col-sm-3 text-center">Recieved By</div>
+                </div>
+
+            </div>
+
+        
+    </div>
+</div>
+@* <div class="row bg-primary mt-3">
+                    <div class="col-md-12 text-center">
+                            <h4 class="fw-bold">@Model.PaymentVoucher.Company.CompanyName</h4>
+                            <h2 class="fw-bold text-white mt-3" >@Model.PaymentVoucher.VoucherType.Type</h2>
+                    </div>
+                </div>*@
+<script>
+    function getPrint(){
+        window.print();
+    }
+</script>

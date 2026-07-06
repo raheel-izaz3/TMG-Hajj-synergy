@@ -1,0 +1,7 @@
+﻿<script>
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        window.open("@ViewBag.AgreementBase64", "_blank");
+    }
+    reader.readAsDataURL(blob);
+</script>

@@ -1,0 +1,658 @@
+﻿@model IEnumerable<TMG.Controllers.CompanyBankSummaryViewModel>
+@{
+	Layout = "";
+	float grandTotalUSD = 0;
+	float grandTotalPKR = 0;
+	float grandTotalSAR = 0;
+	float holdingTotalUSD = 0;
+	float holdingTotalPKR = 0;
+	float holdingTotalSAR = 0;
+	float returnedTotalUSD = 0;
+	float returnedTotalPKR = 0;
+	float returnedTotalSAR = 0;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Receipt Summary Report</title>
+	<style>
+		* {
+		box-sizing: border-box;
+		}
+
+		body {
+		font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+		overflow-x: hidden;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+		margin: 0;
+		padding: 0;
+		}
+
+		p {
+		font-size: 9px;
+		margin: 0;
+		padding: 0;
+		}
+
+		/* Table styling  */
+		table tr th {
+		font-size: 10px;
+		}
+
+		table tr td {
+		font-size: 12px !important;
+		}
+
+		.AMounttotelvalue {
+		/* font-size: 12px !important; */
+		color: white;
+		background-color: black;
+		}
+
+		.TotalAMountTitle {
+		/* font-size: 10px !important; */
+		color: white;
+		background-color: black;
+		}
+
+		/*   #discountRateHideShow {
+		display: table;
+		}
+
+		#totalAmountHideShow {
+		display: none;
+		} */
+
+
+		/* Table styling  End */
+		.downloade_btn {
+		padding: 10px 45px;
+		background-color: lightblue;
+		outline: none;
+		border: 1px solid black;
+		font-weight: bold;
+		font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif;
+		font-size: 14px;
+		cursor: pointer;
+		}
+
+		.downloade_btn:hover {
+		background-color: white;
+		}
+
+		/* Check-Box Styling  */
+		.check_box_container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		}
+
+		.check_box_container .CheckBox {
+		width: 20px;
+		height: 12px;
+		margin: 0;
+		padding: 0;
+		}
+
+		@@media print {
+		.check_box_container {
+		display: none !important;
+		}
+
+		button {
+		display: none;
+		}
+		}
+
+		/* Check-Box Styling End */
+		.parent {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		}
+
+		.container {
+		display: flex;
+		align-items: center;
+		}
+
+		.container .logo {
+		width: 55px;
+		}
+
+		.container .logo img {
+		width: 100%;
+		}
+
+		.AL_Khair_Title {
+		font-size: 18px;
+		margin-left: 15px;
+		font-weight: bold;
+		}
+
+		.title_break {
+		font-size: 12px;
+		margin-left: 15px;
+		font-weight: bold;
+		}
+
+		.qr-code p {
+		padding: 0;
+		margin: 0;
+		}
+
+		.qr-code {
+		padding: 0;
+		padding-top: 20px;
+		}
+
+		.qr_number {
+		text-align: right;
+		margin: 0px;
+		font-weight: bold;
+		}
+
+		.horizantal_line {
+		border: 1px solid black;
+		}
+
+
+		.Invoice_to_section {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		}
+
+		.proforma_title {
+		text-align: center;
+		padding-top: 10px;
+		margin-bottom: 15px;
+		}
+
+		.Customer_Info p {
+		padding: 1px 0;
+		font-weight: bold !important;
+		}
+
+		.Customer_Col_2 p {
+		padding: 1px 0;
+		font-weight: bold;
+		}
+
+		.Customer_Col_2 span {
+		font-weight: normal;
+		}
+
+		.Customer_Info span {
+		font-weight: normal;
+		}
+
+		.ALL_MEMBERS_NAMES p {
+		padding: 1px 0;
+		}
+
+		.ALL_MEMBERS_NAMES span {
+		font-weight: bold;
+		}
+
+		/* Table Styling Start  */
+		.Service_Table {
+		width: 100%;
+		}
+
+		.Service_Table tr th {
+		font-size: 10px;
+		text-align: right;
+		}
+
+		.Service_Table tr td {
+		border-bottom: 1px solid black;
+		font-size: 10px;
+		}
+
+		.Service_Table tr td:nth-child(2) {
+		text-align: right;
+		width: 130px;
+		}
+
+		.Service_Table tr:nth-last-child(1) {
+		font-weight: bold;
+		}
+
+		/* MEdia Querry  */
+		@@media (max-width :768px) {
+		.Bank_Table {
+		width: 100% !important;
+		}
+		}
+
+		.Bank_Table {
+		margin-top: 20px;
+		border: 1px solid black;
+		border-collapse: collapse;
+		width: 60%;
+		}
+
+		.Bank_Table tr {
+		border: 1px solid black;
+		}
+
+		.Bank_Table tr th {
+		border: 1px solid black !important;
+		background-color: lightblue;
+		text-align: left;
+		padding-left: 5px;
+		font-size: 10px;
+		}
+
+		.Bank_Table tr td:nth-child(1) {
+		font-weight: bold;
+		}
+
+		.Bank_Table tr td {
+		text-align: left;
+		border: 1px solid black;
+		padding-left: 5px;
+		font-size: 10px;
+		}
+
+		/* ADF_Details_Table styling Start  */
+		.Receipt_container {
+		margin-top: 7px;
+		}
+
+
+		.ADF_Container {
+		width: 60%;
+		}
+
+		.ADF_Details_Box {
+		margin-bottom: 10px;
+		}
+
+		.ADF_heading {
+		background-color: lightblue;
+		font-weight: bold;
+		font-size: 10px !important;
+		text-align: center;
+		color: black !important;
+		}
+
+		@@media (max-width:768px) {
+		.ADF_Container {
+		width: 100% !important;
+		}
+		}
+
+		.ADF_Details_Box table {
+		border-collapse: collapse;
+		border: 1px solid black;
+		width: 100%;
+		}
+
+		.ADF_Details_Box tr th {
+		border: 1px solid black;
+		}
+
+		.ADF_Details_Box tr td {
+		border: 1px solid black;
+		}
+
+
+		.totalText,
+		.amountText {
+		font-weight: bold !important;
+		background-color: lightblue;
+		font-size: 10px !important;
+		color: black !important;
+		}
+
+		/*############ ADF_Details_Table styling End ############## */
+		/* *********Note List ********** */
+		.terms_condition_list {
+		margin-left: 6px;
+		margin: 20px 0px !important;
+		}
+
+		.note_heading {
+		font-size: 10px;
+		font-weight: bold;
+		margin-top: 10px;
+		}
+
+		.Notes_order_list {
+		padding: 0;
+		margin: 8px;
+		}
+
+		.Notes_order_list li {
+		font-size: 8px;
+		padding: 2px;
+		}
+
+		/* *********Note List  END********** */
+		footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100% !important;
+		}
+
+		.footer_address {
+		border-top: 1px solid black;
+		text-align: center;
+		}
+
+		.footer_address h6 {
+		font-weight: normal !important;
+		}
+
+
+
+		.top_service_table {
+		border: 1px solid black;
+		border-collapse: collapse;
+		width: 100%;
+		margin-bottom: 0px;
+		margin-top: 10px;
+		}
+
+		.top_service_table tr th,
+		td {
+		border: 1px solid black;
+		}
+
+		.top_service_table tr {
+		border: 1px solid black;
+		}
+
+		.top_service_table tr:nth-child(1) {
+		border: none !important;
+		outline: none;
+		}
+
+
+		.top_service_table tr:nth-last-child(1) {
+		font-weight: bold;
+		font-size: 14px !important;
+		background-color: black;
+		color: white;
+		}
+
+		/* ________Content_Editable Row _____ */
+		[contenteditable] {
+		width: 100px;
+		}
+
+		/* ________Content_Editable Row _____ */
+		/* Hide And Show Table Styling  */
+		#Receipt_PaymentRecord,
+		#Payment_Subject {
+		display: none;
+		}
+
+
+		#Memberbreaktable {
+		display: none;
+		text-align: center;
+		}
+
+		/* Media Querry Check-box and Label button  */
+		label {
+		font-size: 14px !important;
+		}
+
+		@@media (max-width: 768px) {
+		label {
+		font-size: 14px;
+		}
+
+		input[type="checkbox"] {
+		transform: scale(0.8);
+		}
+		}
+
+		.check_box_container span {
+		font-weight: bold;
+		}
+
+		.flex-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		margin-top: 10px;
+		}
+
+		.start-iadf td {
+		text-align: left !important;
+		}
+
+		.report-header {
+		text-align: center;
+		margin-bottom: 20px;
+		}
+
+		.report-header h1 {
+		font-size: 24px;
+		margin: 0;
+		}
+
+		.report-header p {
+		font-size: 14px;
+		margin: 5px 0;
+		}
+
+		.total-row {
+		font-weight: bold;
+		background-color: lightgray;
+		}
+	</style>
+	<!-- html2pdf CDN Link  -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+	integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+	<p>Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+	<div id="incoice_page_body">
+		<div class="report-header">
+			<h1>Daily Collection Report</h1>
+		</div>
+
+
+		@foreach (var company in Model)
+		{
+			float totalPKR = 0f, totalSAR = 0f, totalUSD = 0f;
+
+			<h2 style="margin-top: 10px;">@company.CompanyName</h2>
+			<table class="top_service_table" id="reportTable">
+				<thead>
+					<tr>
+						<th>Receipt Number</th>
+						<th>Client Name</th>
+						<th>Amount (USD)</th>
+						<th>Amount (PKR)</th>
+						<th>Amount (SAR)</th>
+						<th>Deposit Bank</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var bank in company.Banks)
+					{
+						<tr style="@(bank.Status == "Returned" ? "background-color: red;" : "")">
+							<td>@bank.ReceiptNo</td>
+							<td>@bank.ClientName - @bank.HbNo (@bank.HajjiCurrency)</td>
+							<td>@(bank.Currency != null && bank.Currency == "USD" ? bank.Amount.ToString("N2") : 0)</td>
+							<td>@(bank.Currency != null && bank.Currency == "PKR" ? bank.Amount.ToString("N2") : 0)</td>
+							<td>@(bank.Currency != null && bank.Currency == "SAR" ? bank.Amount.ToString("N2") : 0)</td>
+							<td>@bank.DepositBank</td>
+							<td>@bank.Status</td>
+						</tr>
+
+						if (bank.Status == "Cleared")
+						{
+							if (bank.Currency == "USD")
+							{
+								grandTotalUSD += bank.Amount;
+								totalUSD += bank.Amount;
+							}
+							else if (bank.Currency == "PKR")
+							{
+								grandTotalPKR += bank.Amount;
+								totalPKR += bank.Amount;
+							}
+							else if (bank.Currency == "SAR")
+							{
+								grandTotalSAR += bank.Amount;
+								totalSAR += bank.Amount;
+							}
+						}
+						else if (bank.Status == "Holding")
+						{
+							if (bank.Currency == "USD")
+							{
+								holdingTotalUSD += bank.Amount;
+							}
+							else if (bank.Currency == "PKR")
+							{
+								holdingTotalPKR += bank.Amount;
+							}
+							else if (bank.Currency == "SAR")
+							{
+								holdingTotalSAR += bank.Amount;
+							}
+						}
+						else if (bank.Status == "Returned")
+						{
+							if (bank.Currency == "USD")
+							{
+								returnedTotalUSD += bank.Amount; 
+							}
+							else if (bank.Currency == "PKR")
+							{
+								returnedTotalPKR += bank.Amount;
+							}
+							else if (bank.Currency == "SAR")
+							{
+								returnedTotalSAR += bank.Amount;
+							}
+						}
+					}
+
+					<tr class="total-row">
+						<td colspan="2"><strong>Total:</strong></td>
+						<td><strong>@totalUSD.ToString("N2")</strong></td>
+						<td><strong>@totalPKR.ToString("N2")</strong></td>
+						<td><strong>@totalSAR.ToString("N2")</strong></td>
+						<td colspan="2"></td>
+					</tr>
+				</tbody>
+			</table>
+		}
+
+		<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+			<div style="width: 30%; text-align: left;">
+				<h3>
+					<strong>
+						Total (Cleared): <br />
+						USD @grandTotalUSD.ToString("N2"), <br />
+						PKR @grandTotalPKR.ToString("N2"), <br />
+						SAR @grandTotalSAR.ToString("N2")
+					</strong>
+				</h3>
+			</div>
+			<div style="width: 30%; text-align: left;">
+				<h3>
+					<strong>
+						Total (Holding): <br />
+						USD @holdingTotalUSD.ToString("N2")<br />
+						PKR @holdingTotalPKR.ToString("N2")<br />
+						SAR @holdingTotalSAR.ToString("N2")
+					</strong>
+				</h3>
+			</div>
+			<div style="width: 30%; text-align: left;">
+				<h3>
+					<strong>
+						Total (Returned): <br />
+						USD @returnedTotalUSD.ToString("N2")<br />
+						PKR @returnedTotalPKR.ToString("N2")<br />
+						SAR @returnedTotalSAR.ToString("N2")
+					</strong>
+				</h3>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// document.getElementById("downloadPdf").addEventListener("click", () => {
+		// 	const element = document.getElementById("incoice_page_body");
+		// 	const options = {
+		// 		margin: 0.2,
+		// 		filename: 'BankStatement.pdf',
+		// 		image: { type: 'jpeg', quality: 0.98 },
+		// 		html2canvas: { scale: 2 },
+		// 		jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+		// 	};
+		// 	html2pdf().set(options).from(element).save();
+		// });
+				document.getElementById("downloadPdf").addEventListener("click", async () => {
+			// Select the element to export
+			const element = document.getElementById("incoice_page_body");
+
+			// Clone it to avoid modifying original DOM
+			const clone = element.cloneNode(true);
+			const container = document.createElement("div");
+			container.appendChild(clone);
+			container.style.position = "absolute";
+			container.style.left = "-9999px";
+			document.body.appendChild(container);
+
+			// Add logo at the top of the cloned content
+			const logo = document.createElement("img");
+			logo.src = "/reportlogo/GroupLogo.png"; // 🔁 Use your correct path
+			logo.style.width = "100px";
+			logo.style.float = "right";
+			logo.style.marginBottom = "20px";
+
+			// Insert logo before everything in the clone
+			clone.insertBefore(logo, clone.firstChild);
+
+			// Configure options
+			const options = {
+				margin: 0.2,
+				filename: 'VendorReport.pdf',
+				image: { type: 'jpeg', quality: 0.98 },
+				html2canvas: { scale: 2, useCORS: true },
+				jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+			};
+
+			// Convert and save
+			await html2pdf().set(options).from(clone).save();
+
+			// Clean up cloned container
+			document.body.removeChild(container);
+		});
+
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "BookCustomer";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="card">
+        <div class="row">
+            <form method="post">
+                <input type="hidden" value="@ViewBag.Id" name="CustomerPortfolioId" />
+                <div class="col-md-12 col-sm-12 p-5">
+                    <label class="form-label">Package</label>
+                    <select class="form-control" name="PackageId">
+                        @foreach (var item in ViewBag.Package)
+                        {
+                            <option value="@item.PackageId">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-sm-12 p-4">
+                    <button type="submit" class="btn btn-warning float-end">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,1274 @@
+﻿@model IEnumerable<LedgerReportModel>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Accounts / </span> Ledger Account</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                      
+                        <div class="col-md-12 mb-2">
+                            <lable>Select Account</lable>
+                            <select class="form-control" id="account_id" name="accountId" aria-label="Default Account Name">
+                                <option selected disabled hidden>Select Accuont Name</option>
+                                 @foreach (Account account in ViewBag.Account)
+                                {
+                                    <option value="@account.AccountId">@account.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Start Date</label>
+                            <input type="date" id="startDate" class="form-control"/>
+                        </div>
+                        <div class="col-md-6">
+                            <label>End Date</label>
+                            <input type="date" id="endDate" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <input type="button" class="btn btn-primary w-100" value="Get Ledger" onclick="getLedger()" />
+                        </div>
+                           <div class="col-md-3">
+                            <input type="button" class="btn btn-success w-100" id="printButton" value="Print" onclick="getPrint()" />
+                        </div>
+                         <div class="col-md-6 mt-2">
+                              <input type="checkbox" onclick="showPkr(this)" checked/>
+                                <label>PKR</label>
+                                <input type="checkbox" onclick="showSar(this)"  />
+                                <label>SAR</label>
+                                <input type="checkbox" onclick="showUsd(this)" />
+                                <label>USD</label>
+                              
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" id="showpkrledger">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Statement (PKR)</h4>
+                </div>
+                <div class="card-body" id="pkrledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-5" id="showsarledger" style="display: none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Statement (SAR)</h4>
+                </div>
+                <div class="card-body" id="sarledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <div class="row mt-5" id="showusdledger" style="display: none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Statement (USD)</h4>
+                </div>
+                <div class="card-body" id="usdledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    function getPrint(){
+        var myElement = document.getElementById("printButton");
+        var id = myElement.getAttribute("data-account-id");
+
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+        location.href = `/Ledger/Print?id=${id}&startDate=${startDate}&endDate=${endDate}`;
+    }
+    function getCategories() {
+        var subTypeId = $("#subTypes").val();
+
+        if (subTypeId) {
+            $.ajax({
+                url: "/Account/GetCategories/" + subTypeId,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    let html = `<option value="">Select Category...</option>`;
+                    for (let category of res) {
+                        html += `<option value="${category.categoryId}">${category.name}</option>`;
+                    }
+                    $("#category_id").html(html);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $("#categories").html('<option value="">First Select Sub Type</option>');
+        }
+    }
+</script>
+<script>
+    function getSubTypes() {
+        var companyId = $("#companyId").val();
+        var typeId = $("#typeId").val();
+
+        if (companyId && typeId) {
+            $.ajax({
+                url: "/Type/GetSubTypes/",
+                data: { companyId: companyId, typeId: typeId },
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    let html = `<option value="">Select Sub Type</option>`;
+
+                    for (let subtype of res) {
+                        html += `<option value="${subtype.subTypeId}">${subtype.name}</option>`;
+                    }
+                    $("#subTypes").html(html);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $("#subTypes").html('<option value="">Second Select Type </option>');
+        }
+    }
+</script>
+<script>
+    function getCategory() {
+        var subTypeId = $("#subTypeId").val();
+
+        if (subTypeId) {
+            $.ajax({
+                url: "/Type/GetCategory/",
+                data: { subTypeId: subTypeId },
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    let html = `<option value="">Select Category</option>`;
+
+                    for (let i of res) {
+                        html += `<option value="${i.categoryId}">${i.name}</option>`;
+                    }
+                    $("#category_id").html(html);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $("#category_id").html('<option value="">Third Select Sub Type </option>');
+        }
+    }
+</script>
+<script>
+
+
+    function showPkr(input) {
+        if (input.checked == false) {
+            document.getElementById('showpkrledger').style.display = 'none'
+        } else {
+            document.getElementById('showpkrledger').style.display = 'block'
+        }
+    }
+    function showUsd(input) {
+        if (input.checked == false) {
+            document.getElementById('showusdledger').style.display = 'none'
+        } else {
+            document.getElementById('showusdledger').style.display = 'block'
+        }
+    }
+    function showSar(input) {
+        if (input.checked == false) {
+            document.getElementById('showsarledger').style.display = 'none'
+        } else {
+            document.getElementById('showsarledger').style.display = 'block'
+        }
+    }
+
+
+    function getLedger() {
+        $('#ledger').html("")
+
+        var account_id = document.getElementById('account_id').value;        
+        document.getElementById('printButton').setAttribute('data-account-id',account_id);
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+
+
+           $.ajax({
+            url: "/Ledger/GetLedger/",
+            data: {
+                account_id: account_id,
+                startDate: startDate,
+                endDate: endDate,
+              
+            },
+
+            method: "GET",
+            success: res => {
+                console.log(res)
+
+
+                // Opening Balance
+
+                let open_pkrdebit = 0;
+                let open_pkrcredit = 0;
+                let open_pkrbalance = 0;
+
+                for (let i in res.model_open.voucherIds) {
+
+
+
+                    if (res.model_open.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]))
+
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+                   
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]))
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.usdRoe[i]))
+                      
+
+                       if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.usdRoe[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.usdRoe[i]))         
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+
+                    }
+                    else if (res.model_open.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                      
+
+                       if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                      
+
+                       if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+                    }
+
+                    else if (res.model_open.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        
+
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+
+                        open_pkrdebit += (parseInt(res.model_open.debits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrcredit += (parseInt(res.model_open.credits[i]) * parseInt(res.model_open.pkrRoe[i]))
+                        open_pkrbalance += (i == 0) ? (open_pkrdebit - open_pkrcredit) : ((open_pkrbalance + open_pkrdebit) - open_pkrcredit)
+
+                    }
+
+
+
+                   
+                }
+
+
+                if(res.accountNature == 0){
+                        open_pkrbalance = open_pkrdebit - open_pkrcredit;
+                }else{
+                     open_pkrbalance = open_pkrcredit  - open_pkrdebit;
+                }
+                
+
+
+                // SAR Open Balance
+
+
+                let open_sardebit = 0;
+                let open_sarcredit = 0;
+                let open_sarbalance = 0;
+
+                for (let i in res.model_open.voucherIds) {
+
+
+
+                    if (res.model_open.currency[i] == 'PKR') {
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+                        open_sardebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]))
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_sardebit += (parseInt(res.model_open.debits[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]))
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                       if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_sardebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_sardebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+
+                    }
+                    else if (res.model_open.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+                        open_sardebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+
+                    }
+
+                    else if (res.model_open.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+
+                        open_sardebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.sarRoe[i]))
+                        open_sarbalance += (i == 0) ? (open_sardebit - open_sarcredit) : ((open_sarbalance + open_sardebit) - open_sarcredit)
+
+
+                    }
+
+
+
+
+                }
+
+
+                if(res.accountNature == 0){
+                    open_sarbalance = open_sardebit - open_sarcredit;
+                }else{
+                     open_sarbalance = open_sarcredit  - open_sardebit;
+                }
+               
+                
+            
+
+                // USD Open Balance
+
+                let open_usddebit = 0;
+                let open_usdcredit = 0;
+                let open_usdbalance = 0;
+
+                for (let i in res.model_open.voucherIds) {
+
+
+
+                    if (res.model_open.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (i == 0) ? (open_usddebit - open_usdcredit) : ((open_usdbalance + open_usddebit) - open_usdcredit)
+
+
+                    }
+                    else if (res.model_open.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (i == 0) ? (open_usddebit - open_usdcredit) : ((open_usdbalance + open_usddebit) - open_usdcredit)
+
+
+                    }
+                    else if (res.model_open.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (i == 0) ? (open_usddebit - open_usdcredit) : ((open_usdbalance + open_usddebit) - open_usdcredit)
+
+
+                    }
+                    else if (res.model_open.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (i == 0) ? (open_usddebit - open_usdcredit) : ((open_usdbalance + open_usddebit) - open_usdcredit)
+
+                    }
+                    else if (res.model_open.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                         if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (i == 0) ? (open_usddebit - open_usdcredit) : ((open_usdbalance + open_usddebit) - open_usdcredit)
+
+                    }
+
+                    else if (res.model_open.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        var r_credit = (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        if(res.model_open.creditDebit[i] == 'Debit'){
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_credit) - r_debit)
+                        }
+
+
+                        open_usddebit += (parseInt(res.model_open.debits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdcredit += (parseInt(res.model_open.credits[i]) / parseInt(res.model_open.usdRoe[i]))
+                        open_usdbalance += (parseInt(res.model_open.balances[i]) / parseInt(res.model_open.usdRoe[i]))
+
+                    }
+
+
+
+
+
+                }
+
+
+
+                   if(res.accountNature == 0){
+                   open_usdbalance = open_usddebit - open_usdcredit;
+                }else{
+                     open_usdbalance = open_usdcredit  - open_usddebit;
+                }
+
+               
+
+
+
+                // PKR Ledger
+                
+                let pkrledger = ``;
+                pkrledger += `<div class="table-responsive text-nowrap"> `
+                pkrledger += `<table class="table table-hover">`
+                pkrledger += `<thead>`
+                     pkrledger += `<tr class="bg-custome">
+                            <th class="text-center" colspan=7><h5 >Ledger Account (PKR)</h5></th>
+                     </tr>`
+                     pkrledger += `<tr>`
+                                       pkrledger += `<th colspan="4"><h6>${res.model.account.category.subType.typeId} - ${res.model.account.category.subTypeId} - ${res.model.account.categoryId} - ${res.model.account.accountId} - ${res.model.account.name}</h6></th>`
+                                       pkrledger += `<th colspan="3">Opening Balance : <span id="pkr_open"></span></th>`
+                                    pkrledger += `</tr>`
+                                pkrledger += `<tr>
+                                                    <th colspan=1>From</th>
+                                                    <th colspan=2><span id="pkr_from"></span></th>
+                                                    <th colspan=1></th>
+                                                    <th colspan=1>To</th>
+                                                    <th colspan=2><span id="pkr_to"></span></th>
+                                            </tr>`
+                pkrledger += `<tr class="bg-custome">`
+                pkrledger += `<th width='10%' >Date</th>`  
+                pkrledger += `<th width='10%' >V-ID</th>`
+                pkrledger += `<th width='10%' >INV-ID</th>`
+                pkrledger += `<th width='35%' >Details</th>`
+                pkrledger += `<th width='15%' >Debit</th>`
+                pkrledger += `<th width='15%' >Credit</th>`
+                pkrledger += `<th width='15%' >Balance</th>`
+                pkrledger += `</tr>`
+                pkrledger += `</thead>`
+                pkrledger += `<tbody>`
+
+                let pkrdebit = 0;
+                let pkrcredit = 0;
+                let pkrbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]))
+                        var r_credit = (parseInt(res.model.credits[i]))   
+
+                        if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }                    
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))                       
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.usdRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.usdRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.usdRoe[i]))
+                        pkrbalance += (parseInt(res.model.balances[i]) * parseInt(res.model.usdRoe[i]))
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+
+
+                   
+                    pkrledger += `<tr>`
+                        pkrledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                        pkrledger += `<td>${res.model.voucherIds[i]}</td>`
+                        pkrledger += `<td>INV-HB #${res.invoiceId}</td>`
+                        pkrledger += `<td>${res.model.details[i]}</td>`
+                        pkrledger += `<td>PKR ${r_debit.toLocaleString()}</td>`
+                        pkrledger += `<td>PKR ${r_credit.toLocaleString()}</td>`
+                         if(r_balance < 0){
+                            pkrledger += `<td>PKR (${Math.abs(r_balance).toLocaleString()}) </td>`
+                        }else{
+                            pkrledger += `<td>PKR ${r_balance.toLocaleString()} </td>`
+                        }
+                        
+                    pkrledger += `</tr>`
+                }
+
+
+                if(res.accountNature == 0){
+                    pkrbalance = (open_pkrbalance + pkrdebit) - pkrcredit;
+                }else{
+                    pkrbalance = (open_pkrbalance + pkrcredit) - pkrdebit;
+                }
+
+                pkrledger += `</tbody>`
+                pkrledger += `<tfoot>`
+                pkrledger += `<tr class="bg-custome">`
+                pkrledger += `<td colspan=4 ><b>Total</b></td>`
+                pkrledger += `<td >PKR ${(open_pkrbalance + pkrdebit).toLocaleString()}</td>`
+                pkrledger += `<td >PKR ${pkrcredit.toLocaleString()}</td>`
+                 if(pkrbalance < 0){
+                            pkrledger += `<td >PKR (${Math.abs(pkrbalance).toLocaleString()})</td>`
+                        }else{
+                            pkrledger += `<td >PKR ${pkrbalance.toLocaleString()}</td>`
+                        }
+                       
+               
+                pkrledger += `</tr>`
+                pkrledger += `</tfoot>`
+                pkrledger += `</table>`
+                pkrledger += `</div>`
+
+
+
+
+
+                $('#pkrledger').html(pkrledger)
+
+
+                // SAR Ledger
+
+
+                let sarledger = ``;
+                sarledger += `<div class="table-responsive text-nowrap"> `
+                sarledger += `<table class="table table-hover">`
+                sarledger += `<thead>`
+                        sarledger += `<tr class="bg-custome">
+                            <th class="text-center" colspan=7><h5 >Ledger Account (SAR)</h5></th>
+                     </tr>`
+                   sarledger += `<tr>`
+                                       sarledger += `<th colspan="4"><h6>${res.model.account.category.subType.typeId} - ${res.model.account.category.subTypeId} - ${res.model.account.categoryId} - ${res.model.account.accountId} - ${res.model.account.name}</h6></th>`
+                                       sarledger += `<th colspan="3">Opening Balance : <span id="sar_open"></span></th>`
+                                    sarledger += `</tr>`
+                                      sarledger += `<tr>
+                                                    <th colspan=1>From</th>
+                                                    <th colspan=2><span id="sar_from"></span></th>
+                                                    <th colspan=1></th>
+                                                    <th colspan=1>To</th>
+                                                    <th colspan=2><span id="sar_to"></span></th>
+                                            </tr>`
+                sarledger += `<tr class="bg-custome">`
+                sarledger += `<th width='10%' >Date</th>`
+                sarledger += `<th width='10%' >V-ID</th>`
+                sarledger += `<th width='10%' >INV-ID</th>`
+                sarledger += `<th width='15%' >Debit</th>`
+                sarledger += `<th width='15%' >Credit</th>`
+                sarledger += `<th width='15%' >Balance</th>`
+                sarledger += `</tr>`
+                sarledger += `</thead>`
+                sarledger += `<tbody>`
+
+                let sardebit = 0;
+                let sarcredit = 0;
+                let sarbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]))
+                        var r_credit = (parseInt(res.model.credits[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        sardebit += (parseInt(res.model.debits[i]))
+                        sarcredit += (parseInt(res.model.credits[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+
+
+
+                    sarledger += `<tr>`
+                    sarledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                    sarledger += `<td>${res.model.voucherIds[i]}</td>`
+                     sarledger += `<td>INV-HB #${res.invoiceId}</td>`
+                    sarledger += `<td>${res.model.details[i]}</td>`
+
+
+                    sarledger += `<td>SAR ${r_debit.toLocaleString()}</td>`
+                    sarledger += `<td>SAR ${r_credit.toLocaleString()}</td>`
+                     if(r_balance < 0){
+                            sarledger += `<td>PKR (${Math.abs(r_balance).toLocaleString()}) </td>`
+                        }else{
+                            sarledger += `<td>PKR ${r_balance.toLocaleString()} </td>`
+                        }
+                    sarledger += `</tr>`
+
+
+
+                }
+
+
+                 if(res.accountNature == 0){
+                    sarbalance = (open_sarbalance + sardebit) - sarcredit;
+                }else{
+                    sarbalance = (open_sarbalance + sarcredit) - sardebit;
+                }
+
+                sarledger += `</tbody>`
+                sarledger += `<tfoot>`
+                sarledger += `<tr class="bg-custome">`
+                sarledger += `<td colspan=4 ><b>Total</b></td>`
+                sarledger += `<td >SAR ${(open_sarbalance + sardebit).toLocaleString()}</td>`
+                sarledger += `<td >SAR ${sarcredit.toLocaleString()}</td>`
+                if(sarbalance < 0){
+                            sarledger += `<td >PKR (${Math.abs(sarbalance).toLocaleString()})</td>`
+                        }else{
+                            sarledger += `<td >PKR ${sarbalance.toLocaleString()}</td>`
+                        }
+                sarledger += `</tr>`
+                sarledger += `</tfoot>`
+                sarledger += `</table>`
+                sarledger += `</div>`
+
+
+                $('#sarledger').html(sarledger)
+
+
+
+
+                // USD Ledger
+
+
+
+
+                let usdledger = ``;
+                usdledger += `<div class="table-responsive text-nowrap"> `
+                usdledger += `<table class="table table-hover">`
+                usdledger += `<thead>`
+                        usdledger += `<tr class="bg-custome">
+                            <th class="text-center" colspan=7><h5 >Ledger Account (USD)</h5></th>
+                     </tr>`
+                    usdledger += `<tr>`
+                                       usdledger += `<th colspan="4"><h6>${res.model.account.category.subType.typeId} - ${res.model.account.category.subTypeId} - ${res.model.account.categoryId} - ${res.model.account.accountId} - ${res.model.account.name}</h6></th>`
+                                       usdledger += `<th colspan="3">Opening Balance : <span id="usd_open"></span></th>`
+                                    usdledger += `</tr>`
+                                     usdledger += `<tr>
+                                                    <th colspan=1>From</th>
+                                                    <th colspan=2><span id="usd_from"></span></th>
+                                                       <th colspan=1></th>
+                                                    <th colspan=1>To</th>
+                                                    <th colspan=2><span id="usd_to"></span></th>
+                                            </tr>`
+                usdledger += `<tr class="bg-custome">`
+                usdledger += `<th width='10%' >Date</th>`
+                usdledger += `<th width='10%' >V-ID</th>`
+                usdledger += `<th width='10%' >INV-ID</th>`
+                usdledger += `<th width='45%' >Details</th>`
+                usdledger += `<th width='15%' >Debit</th>`
+                usdledger += `<th width='15%' >Credit</th>`
+                usdledger += `<th width='15%' >Balance</th>`
+                usdledger += `</tr>`
+                usdledger += `</thead>`
+                usdledger += `<tbody>`
+
+                let usddebit = 0;
+                let usdcredit = 0;
+                let usdbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+
+                        if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                         if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        if(res.accountNature == 0){
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_debit) - r_credit) : ((r_balance + r_debit) - r_credit)
+                        }else{
+                            var r_balance = (i == 0) ? ((open_pkrbalance + r_credit) - r_debit) : ((r_balance + r_credit) - r_debit)
+                        }   
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (parseInt(res.model.balances[i]) / parseInt(res.model.usdRoe[i]))
+
+                    }
+
+
+
+                    usdledger += `<tr>`
+                    usdledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                    usdledger += `<td>${res.model.voucherIds[i]}</td>`
+                    usdledger += `<td>INV-HB #${res.invoiceId}</td>`
+                    usdledger += `<td>${res.model.details[i]}</td>`
+                    usdledger += `<td>USD ${r_debit.toLocaleString()}</td>`
+                    usdledger += `<td>USD ${r_credit.toLocaleString()}</td>`
+                    if(r_balance < 0){
+                            usdledger += `<td>PKR (${Math.abs(r_balance).toLocaleString()}) </td>`
+                        }else{
+                            usdledger += `<td>PKR ${r_balance.toLocaleString()} </td>`
+                        }
+                    usdledger += `</tr>`
+
+
+                }
+
+
+                
+                 if(res.accountNature == 0){
+                     usdbalance = (open_usdbalance + usddebit) - usdcredit;
+                }else{
+                     usdbalance = (open_usdbalance + usdcredit) - usddebit;
+                }
+               
+
+                usdledger += `</tbody>`
+                usdledger += `<tfoot>`
+                usdledger += `<tr class="bg-custome">`
+                usdledger += `<td colspan=4 ><b>Total</b></td>`
+                usdledger += `<td >USD ${usddebit.toLocaleString()}</td>`
+                usdledger += `<td >USD ${usdcredit.toLocaleString()}</td>`
+               if(usdbalance < 0){
+                            usdledger += `<td >PKR (${Math.abs(usdbalance).toLocaleString()})</td>`
+                        }else{
+                            usdledger += `<td >PKR ${usdbalance.toLocaleString()}</td>`
+                        }
+                usdledger += `</tr>`
+                usdledger += `</tfoot>`
+                usdledger += `</table>`
+                usdledger += `</div>`
+
+
+                $('#usdledger').html(usdledger)
+
+
+
+
+
+
+
+
+
+                // Print Opening Balance
+
+                document.getElementById('pkr_open').innerText = open_pkrbalance.toLocaleString()
+                document.getElementById('sar_open').innerText = open_sarbalance.toLocaleString()
+                document.getElementById('usd_open').innerText = open_usdbalance.toLocaleString()
+
+
+                // Print Date Differ
+                 document.getElementById('pkr_from').innerText = startDate
+                 document.getElementById('pkr_to').innerText = endDate
+
+                 document.getElementById('sar_from').innerText = startDate
+                 document.getElementById('sar_to').innerText =  endDate
+
+                 document.getElementById('usd_from').innerText = startDate
+                 document.getElementById('usd_to').innerText =  endDate
+
+
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+  
+    }
+</script>
+
+
+
+
+
+<script>
+    function getAccount() {
+        var categoryId = $("#category_id").val();
+        console.log(categoryId)
+
+        if (categoryId) {
+            $.ajax({
+                url: "/Type/GetAccount/",
+                data: { categoryId: categoryId },
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    let html = `<option value="">Select Account</option>`;
+
+                    for (let i of res) {
+                        html += `<option value="${i.accountId}">${i.name}</option>`;
+                    }
+                    $("#account_id").html(html);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $("#category_id").html('<option value="">Third Select Sub Type </option>');
+        }
+    }
+
+
+    
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select[name="accountId"]').select2({
+            placeholder: "Select Account Name",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>
+

@@ -1,0 +1,271 @@
+﻿@model SubGroup
+
+@{
+    string modelName = "Sub Group";
+    string modelNamePlural = "Sub Groups";
+    string modelControllerRoute = "SubGroup";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Contract"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <input asp-for="Contract" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Contract"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Code"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <input asp-for="Code" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Code"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PAX"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <input asp-for="PAX" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PAX"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PlaceId"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <select class="form-select" asp-for="PlaceId">
+                                        <option>Select Place...</option>
+                                        @foreach (Place place in ViewBag.Places)
+                                        {
+                                            <option value="@place.PlaceId">@place.PlaceName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="PlaceId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GroupId"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <select class="form-select" asp-for="GroupId">
+                                        <option>Select Group...</option>
+                                        @foreach (Group group in ViewBag.Groups)
+                                        {
+                                            <option value="@group.GroupId">@group.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="GroupId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                asp-for="SubGroupMergeId"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-building"></i></span>
+                                    <select class="form-select" asp-for="SubGroupMergeId">
+                                        <option value="">Select Sub Group...</option>
+                                        @foreach (SubGroup subGroup in ViewBag.SubGroups)
+                                        {
+                                            <option value="@subGroup.SubGroupId">@subGroup.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="SubGroupMergeId"></span>
+                            </div>
+
+                            @* <div id="rooms">
+                                <div class="row" id="room_0">
+                                    <div class="col-sm-12 mb-2">
+                                        <h5 class="float-start">Rooms</h5>
+                                        <button class="btn btn-outline-info float-end" type="button"
+                                            onclick="addRoom(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                                    class="bx bx-building"></i></span>
+                                            <select class="form-select" name="RoomIds[]">
+                                                @foreach (Room r in ViewBag.Rooms)
+                                                {
+                                                    <option value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname"
+                                            name="">Quantity</label>
+                                        <div class="input-group input-group-merge">
+                                            <input type="text" name="Quantities[]" class="form-control"
+                                                placeholder="Enter Quantity" min="1" value="1" required />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div> *@
+                            <div class="row mb-3">
+                                <div class="col-sm-12 col-md-12 mt-3">
+                                    <div class="table-responsive">
+                                        <table class="table" id="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select Rooms</th>
+                                                    <th>Room Number</th>
+                                                    <th>Room Type</th>
+                                                    <th>Bathroom Type</th>
+                                                    <th>View</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-border-bottom-1" id="tbody">
+                                                @foreach (RoomDetails item in ViewBag.RoomDetails as List<RoomDetails> ?? new List<RoomDetails>())
+                                                {
+                                                    <tr>
+                                                        <input type="hidden" name="POHotelsId" value="@item.POHotelsId" />
+                                                        <input type="hidden" name="PLaceIds" value="@item.POHotels.PlaceId" />
+                                                        <input type="hidden" name="POHotelRoomsId" value="@item.POHotelRoomsId" />
+                                                        <input type="hidden" name="RoomDetailsId" value="@item.RoomDetailsId" />
+
+                                                        <td>
+                                                            <input type="checkbox" class="room-checkbox" name="SelectedRooms[]" value="@item.RoomDetailsId" />
+                                                        </td>
+                                                        <!-- Bathroom Type Dropdown -->
+                                                        <td>
+                                                            <input type="text" class="form-control" name="RoomNumber[]" value="@(item.RoomNumber ?? "Unknown")" />
+                                                        </td>
+
+                                                        <td>
+                                                            <select class="form-control" style="width: 200px;" name="RoomIds[]">
+                                                                @foreach (Room roomData in ViewBag.Rooms as List<Room> ?? new List<Room>())
+                                                                {
+                                                                    <option value="@roomData.RoomId"
+                                                                            selected="@(item.RoomId == roomData.RoomId ? "selected" :
+                                                                                (ViewBag.Rooms is List<Room> roomList && roomData == roomList.FirstOrDefault() ? "selected" : null))">
+                                                                        @roomData.RoomName (@roomData.RoomCode)
+                                                                    </option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control" style="width: 200px;" name="BathroomType[]">
+                                                                @foreach (var bath in ViewBag.BathType as List<BathTypeModel> ?? new List<BathTypeModel>())
+                                                                {
+                                                                    <option value="@bath.Id"
+                                                                            selected="@(item.BathroomType.HasValue && (int)item.BathroomType.Value == bath.Id ? "selected" :
+                                                                                (ViewBag.BathType is List<BathTypeModel> bathList && bath == bathList.FirstOrDefault() ? "selected" : null))">
+                                                                        @bath.Name
+                                                                    </option>
+
+                                                                }
+                                                            </select>
+                                                        </td>
+
+                                                        <!-- Room Type Dropdown -->
+
+                                                        <!-- Room View Dropdown -->
+                                                        <td>
+                                                            <select class="form-control" style="width: 200px;" name="RoomViewId[]">
+                                                                @foreach (RoomView roomView in ViewBag.RoomViews as List<RoomView> ?? new List<RoomView>())
+                                                                {
+                                                                    <option value="@roomView.RoomViewId"
+                                                                            selected="@(item.RoomViewId == roomView.RoomViewId ? "selected" :
+                                                                                (ViewBag.RoomViews is List<RoomView> roomViewList && roomView == roomViewList.FirstOrDefault() ? "selected" : null))">
+                                                                        @roomView.Name
+                                                                    </option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function addRoom(e) {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                    <div class="row" id="room_${id}">
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <select class="form-select" name="RoomIds[]">
+    @foreach (Room r in ViewBag.Rooms)
+    {
+                                                            <option value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+    }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Quantity</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="number" value="1" min="1" name="Quantities[]" class="form-control" placeholder="Enter Quantity" required/>
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-1 d-flex align-items-center">
+                                                <label class="form-label"></label>
+                                                <button type="button" class="btn btn-icon btn-danger" onclick="removeRoom(${id})"><i class='bx bxs-trash'></i></button>
+                                            </div>
+                                            <hr />`;
+
+        $("#rooms").append(row);
+    }
+
+    function removeRoom(id) {
+        // console.log(id)
+        // console.log(document.getElementById("room_"+id))
+        document.getElementById(`room_${id}`).remove();
+    }
+
+</script>

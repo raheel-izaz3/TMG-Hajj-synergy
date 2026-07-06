@@ -1,0 +1,181 @@
+﻿@{
+    string modelName = "Email";
+    string modelNamePlural = "Emails";
+    string modelControllerRoute = "Email";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Email</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form id="sendHajjiEmailForm">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Subject</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="text" name="subject" class="form-control">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Subject</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="file" name="file" class="form-control">
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label">Content</label>
+                                <div class="input-group input-group-merge">
+                                    <textarea name="content" id="summernote"></textarea>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label">Select Hajji</label>
+                                <br />
+                                <div id="selectedCount" style="margin-bottom:10px; font-weight:bold; color:#333;">Selected: 0</div>
+                                <div id="hajjiTable"></div>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <button type="submit" class="btn btn-success float-end">Send</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // Initialize Summernote
+        $('#summernote').summernote({
+            placeholder: 'Write your content here...',
+            tabsize: 2,
+            height: 200,
+            fontSizes: ['8', '10', '12', '14', '18', '24', '36'],
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ]
+        });
+
+        const hajjiData = [
+    @foreach (TMG.Controllers.EmailController.HajjiData familyHead in ViewBag.FamilyHeads)
+    {
+        @: {
+        @: FamilyHeadId: @familyHead.FamilyHeadId,
+        @: FullName: '@familyHead.FullName',
+        @: Email: '@familyHead.Email',
+        @: },
+    }
+        ];
+
+        function updateSelectedCount(count) {
+            $('#selectedCount').text('Selected: ' + count);
+        }
+
+        const dataGrid = $("#hajjiTable").dxDataGrid({
+            dataSource: hajjiData,
+            keyExpr: "FamilyHeadId",
+            allowColumnResizing: true,
+            allowColumnReordering: true,
+            paging: false,
+            columnResizingMode: "widget",
+            selection: {
+                mode: "multiple",
+                showCheckBoxesMode: "always"
+            },
+            groupPanel: {
+                visible: true,
+                emptyPanelText: "Drag a column here to group by it"
+            },
+            grouping: {
+                autoExpandAll: false
+            },
+            headerFilter: {
+                visible: true
+            },
+            sorting: {
+                mode: "multiple"
+            },
+            filterRow: {
+                visible: true,
+                applyFilter: "auto"
+            },
+            searchPanel: {
+                visible: true,
+                width: 240,
+                placeholder: "Search Hajji..."
+            },
+            columns: [
+                { dataField: "FullName", caption: "Hajji Name" },
+                { dataField: "Email", caption: "Email" }
+            ],
+            onSelectionChanged: function (e) {
+                updateSelectedCount(e.selectedRowsData.length);
+            }
+        }).dxDataGrid("instance");
+
+        $('#sendHajjiEmailForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+
+            formData.append('subject', $('input[name="subject"]').val());
+            formData.append('content', $('#summernote').summernote('code'));
+
+            var fileInput = $('input[name="file"]')[0];
+            if (fileInput.files.length > 0) {
+                formData.append('file', fileInput.files[0]);
+            }
+
+            var selectedData = dataGrid.getSelectedRowsData();
+            selectedData.forEach(function (item, index) {
+                formData.append(`FamilyHeadIds[${index}]`, item.FamilyHeadId);
+                formData.append(`FamilyHeadsSelected[${index}]`, true);
+            });
+
+            if (selectedData.length === 0) {
+                alert('Please select at least one Hajji.');
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Email/SendInquiryHajjiEmail",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function () {
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
+
+    });
+</script>

@@ -1,0 +1,98 @@
+﻿
+<script>
+    function getQuota(id) {
+        console.log(id)
+        $.ajax({
+            url: "/Company/GetAvailableQuota",
+            method: "GET",
+            data: {
+                companyId: id
+            },
+            success: res => {
+                console.log(res)
+                $("#companyQuota").html(`(${res.availableQuota})`)
+                // $("#PackageQouta").attr('max', res.availableQuota);
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+    function pkrToOtherCurr(elemId, sar, usd) {
+        const roeUsd = document.querySelector(`#USDROE`).value
+        const roeSar = document.querySelector(`#SARROE`).value
+
+        const inputUsd = document.querySelector(`#${usd}`)
+        const inputSar = document.querySelector(`#${sar}`)
+
+        let val = document.querySelector(`#${elemId}`).value
+
+        let usdVal = val / roeUsd
+        let sarVal = val / roeSar
+
+        inputUsd.value = parseFloat(usdVal).toFixed(0)
+        inputSar.value = parseFloat(sarVal).toFixed(0)
+    }
+
+    function sarToOtherCurr(elemId, pkr, usd, euro, gbp, aed) {
+        const roeUsd = document.querySelector(`#USDROE`).value
+        const roeSar = document.querySelector(`#PKRROE`).value
+        const roeGbp = document.querySelector(`#GBPROE`).value
+        const roeEuro = document.querySelector(`#EUROROE`).value
+        const roeAed = document.querySelector(`#AEDROE`).value
+
+        const inputUsd = document.querySelector(`#${usd}`)
+        const inputPkr = document.querySelector(`#${pkr}`)
+        const inputEuro = document.querySelector(`#${euro}`)
+        const inputGbp = document.querySelector(`#${gbp}`)
+        const inputAed = document.querySelector(`#${aed}`)
+
+        let val = document.querySelector(`#${elemId}`).value
+
+        let pkrVal = val * roeSar
+        let usdVal = val / roeUsd
+        let euroVal = val / roeEuro
+        let gbpVal = val / roeGbp
+        let aedVal = val / roeAed
+
+        inputPkr.value = parseFloat(pkrVal).toFixed(0)
+        inputUsd.value = parseFloat(usdVal).toFixed(0)
+        inputEuro.value = parseFloat(euroVal).toFixed(0)
+        inputGbp.value = parseFloat(gbpVal).toFixed(0)
+        inputAed.value = parseFloat(aedVal).toFixed(0)
+    }
+
+    function usdToOtherCurr(elemId, pkr, sar) {
+        const roeUsd = document.querySelector(`#USDROE`).value
+        const roeSar = document.querySelector(`#SARROE`).value
+
+        const inputSar = document.querySelector(`#${sar}`)
+        const inputPkr = document.querySelector(`#${pkr}`)
+
+        let val = document.querySelector(`#${elemId}`).value
+
+        let pkrVal = val * roeUsd
+        let sarVal = pkrVal / roeSar
+
+        inputPkr.value = parseFloat(pkrVal).toFixed(0)
+        inputSar.value = parseFloat(sarVal).toFixed(0)
+    }
+
+    // function gbpToOtherCurr(elemId, pkr, sar) {
+    //     const roeGbp = document.querySelector(`#USDROE`).value
+    //     const roeSar = document.querySelector(`#SARROE`).value
+
+    //     const inputSar = document.querySelector(`#${sar}`)
+    //     const inputGbp = document.querySelector(`#${pkr}`)
+
+    //     let val = document.querySelector(`#${elemId}`).value
+
+    //     let gbpVal = val * roeGbp
+    //     let sarVal = gbpVal / roeSar
+
+    //     inputGbp.value = parseFloat(gbpVal).toFixed(0)
+    //     inputSar.value = parseFloat(sarVal).toFixed(0)
+    // }
+
+</script>

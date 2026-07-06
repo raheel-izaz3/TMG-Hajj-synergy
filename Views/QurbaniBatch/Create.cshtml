@@ -1,0 +1,232 @@
+﻿@model QurbaniBatch
+
+@{
+    string modelName = "Qurbani Batch";
+    string modelNamePlural = "Qurbani Batches";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Capacity"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Capacity" class="form-control"
+                                        oninput="highlightSelected(this.value)" value="0">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Capacity"></span>
+                            </div>
+
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="WhatsappQrCodeFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="WhatsappQrCodeFile" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="WhatsappQrCodeFile"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                    asp-for="WhatsappGroupLink"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="WhatsappGroupLink" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="WhatsappGroupLink"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card p-2">
+                    <div class="table-responsive text-nowrap ">
+                        <table class="table table-hover" id="table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>HB #</th>
+                                    <th>Full Name</th>
+                                    <th>Gender</th>
+                                    <th>Passport</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-1" id="table-body">
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (var m in ViewBag.Members)
+                                {
+                                    <tr>
+                                        <input type='hidden' value='@m.FamilyHeadId' asp-for="FamilyHeadIds[i]"/>
+
+                                        <td width="50px">
+                                            <input type="checkbox" class="form-check-inline" asp-for="Selected[i]"
+                                                onchange="updateSelected(this, @m.FamilyHeadId)"
+                                                data-is-head="@m.IsHead" data-HB #="@m.FamilyHeadId"
+                                                data-head-id="@m.HeadId" />
+                                        </td>
+                                        <td>@m.FcId</td>
+                                        <td>@m.FullName</td>
+                                        <td>@m.Gender</td>
+                                        <td>@m.Passport</td>
+                                    </tr>
+
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+</div>
+
+
+
+<script>
+
+    function updateSelected(elem, familyHeadId) {
+
+            let cap = document.getElementById("Capacity").value
+            let selected = document.querySelectorAll("input[type=checkbox]:checked")
+            console.log(cap, selected.length)
+            if (selected.length > cap) {
+                console.log("ahhh")
+                elem.checked = false
+                elem.value = false
+                return
+            }
+
+            const isHead = elem.getAttribute("data-is-head")
+            const headId = elem.getAttribute("data-head-id")
+            const elemFcId = elem.getAttribute("data-HB #")
+
+            console.log(isHead, headId, elemFcId, elem.checked);
+
+            if (isHead == "true" && elem.checked) {
+                const attributeName = 'data-head-id';
+                let elements = document.querySelectorAll(`[${attributeName}="${headId}"]`);
+                console.log(elements)
+
+                if (selected.length + elements.length > cap) {
+                    let con = confirm("Capacity Limit Reached. Family has " + elements.length + " members")
+                    if (con) {
+                        let remaining = cap - selected.length
+                        for (let i = remaining; i <= cap; i++) {
+                            selectMember(elements[i])
+                        }
+                    }
+                    else {
+                        elem.checked = false
+                        elem.value = false
+
+                        return
+                    }
+                }
+
+                if (elem.checked) {
+                    for (let check of elements) {
+                        if (check.hasAttribute('disabled')) continue;
+                        check.checked = true
+                        elem.value = true
+
+                        selectMember(elem)
+                        check.parentElement.parentElement.style.backgroundColor = 'lightgreen'
+                        let fcId = check.getAttribute('data-HB #')
+                        console.log(check)
+                    }
+                }
+                else {
+                    elem.checked = false;
+                    elem.value = false
+                    selectMember(elem)
+                    console.log(check)
+                }
+            }
+            else if (elem.checked && isHead == "False") {
+                selectMember(elem)
+            }
+            else {
+                selectMember(elem)
+            }
+
+        }
+
+
+    function selectMember(elem) {
+    @* let cap = document.getElementById("Capacity").value
+            let selected = document.querySelectorAll("input[type=checkbox]:checked")
+
+            if (selected.length > cap) {
+            elem.checked = false
+            return
+            } *@
+            console.log(elem.parentNode.parentNode)
+        let parentTr = elem.parentNode.parentNode
+        if (elem.checked) {
+            parentTr.style.backgroundColor = 'lightgreen'
+        }
+        else {
+            parentTr.style.backgroundColor = ''
+        }
+
+    }
+
+    function highlightSelected(val) {
+        const tbody = document.getElementById('table-body')
+
+        if (val == '') {
+            for (let i = 0; i < tbody.rows.length; i++) {
+                tbody.rows[i].style.backgroundColor = ''
+                console.log(tbody.rows[i].cells[0].getElementsByTagName("input")[0].checked = false)
+                let _a = tbody.rows[i].cells[0].getElementsByTagName("input")[0]
+                _a.checked = false
+                _a.value = false
+            }
+            return
+        }
+        console.log(val)
+        for (let i = 0; i < val; i++) {
+            tbody.rows[i].style.backgroundColor = 'lightgreen'
+            console.log(tbody.rows[i].cells[0].getElementsByTagName("input")[0].checked = true)
+            console.log(tbody.rows[i].cells[0].getElementsByTagName("input")[0].value = true)
+        }
+        for (let i = val; i < tbody.rows.length; i++) {
+            tbody.rows[i].style.backgroundColor = ''
+            console.log(tbody.rows[i].cells[0].getElementsByTagName("input")[0].checked = false)
+            console.log(tbody.rows[i].cells[0].getElementsByTagName("input")[0].value = false)
+
+        }
+    }
+</script>

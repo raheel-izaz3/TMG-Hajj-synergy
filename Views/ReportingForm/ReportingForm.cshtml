@@ -1,0 +1,583 @@
+﻿@{
+    Layout = null;
+}
+@model List<TMG.Controllers.ReportingFormModel>
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt </title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif
+        }
+
+        .send-to-form h2 {
+            font-size: 12px;
+        }
+
+
+
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .report-table th {
+            }
+
+            .report-table th,
+            td {
+                border: 1px solid black;
+                text-align: left;
+                padding: 5px 5px;
+                font-size: 13px;
+            }
+
+        .govt-logo img {
+            width: 70px;
+            height: 70px;
+        }
+
+        .office-report-heading {
+            text-align: center;
+            line-height: 1.1;
+            /* margin-top: 5px; */
+        }
+
+            .office-report-heading h3 {
+                /* line-height: 40px; */
+                margin: 4px;
+                padding: 0px;
+                font-size: 14px;
+                /* font-weight: 500; */
+            }
+
+        .first-section-titile {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-table td:first-child {
+            text-align: center;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+        }
+
+        .hujjaj_arrived-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+
+
+            .hujjaj_arrived-table th td {
+                font-size: 14px;
+            }
+
+            .hujjaj_arrived-table td:first-child {
+                text-align: center;
+            }
+
+        .filled-form {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+
+@foreach(var item in Model)
+{
+    <body>
+    <section class="first-section-titile">
+        <div class="govt-logo">
+            <img src="~/Images/mono.jpeg" alt="">
+        </div>
+
+        <div class="office-report-heading">
+            <h3>OFFICE OF THE PILGRIMS AFFAIRS OF PAKISTAN (OPAP)</h3>
+            <h3>MONITORING CELL </h3>
+            <h3>MAKKAH MUKARRAMAH </h3>
+
+        </div>
+        <div class="empty-div"></div>
+    </section>
+
+
+    <table class="report-table ">
+        <tbody>
+            <tr>
+                <td style="width: 70px;">1</td>
+                <td style="width: 55%; font-weight: bolder; ">MUNAZZAM COMPANY NAME</td>
+                <td>@item.MunazzimName</td>
+            </tr>
+                @if (item.MunazzimName == "AL BAYAN MUNAZZAM (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>2</td>
+                        <td style="font-weight: bolder">MUNAZZAM NO. (ISSUED BY KSA)</td>
+                        <td>20046</td>
+                    </tr>
+                }
+                else if (item.MunazzimName == "AL HAMID MUNAZZAM (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>2</td>
+                        <td style="font-weight: bolder">MUNAZZAM NO. (ISSUED BY KSA)</td>
+                        <td>20047</td>
+                    </tr>
+                }
+                else if (item.MunazzimName == "AL MAIRAJ MUNAZZAM (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>2</td>
+                        <td style="font-weight: bolder">MUNAZZAM NO. (ISSUED BY KSA)</td>
+                        <td>20048</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>2</td>
+                        <td style="font-weight: bolder">MUNAZZAM NO. (ISSUED BY KSA)</td>
+                        <td>-</td>
+                    </tr>
+                }
+            <tr>
+                <td>3</td>
+                <td style="font-weight: bolder">MORA REGISTRATION NO.</td>
+                <td>@item.MoraRegistrationNo</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td style="font-weight: bolder">TOTAL HAJJ QUOTA</td>
+                <td>@item.Quota</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>NAME OF HGOs</td>
+                <td>@item.CompanyName</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>ENROLMENT NO.</td>
+                <td>@item.EnrollmentNo</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>FLIGHT NO.</td>
+                <td>@item.OutboundFlightNumber</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>ARRIVAL DATE / TIME ( KSA TIME)</td>
+                <td style="text-align: center; font-weight: bolder;">
+                    @item.ArrivalDate /  @item.ArrivalTime
+                </td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>PLACE OF DEPARTURE</td>
+                <td>@item.PlaceOfDep</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>ARRIVAL AT JEDDAH / MEDINA</td>
+                <td>@item.ArrivalAt</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>NO OF HUJAJ ARRIVED</td>
+                <td>@item.HujajNo</td>
+            </tr>
+                @if(item.ACcomodationCategory == 4)
+                {
+                    <tr>
+                        <td>12</td>
+                        <td>MAKTAB NO.</td>
+                        <td>1</td>
+                    </tr>
+                }
+                else if (item.ACcomodationCategory == 5)
+                {
+                    <tr>
+                        <td>12</td>
+                        <td>MAKTAB NO.</td>
+                        <td>3</td>
+                    </tr>
+
+                }
+                else 
+                {
+                    <tr>
+                        <td>12</td>
+                        <td>MAKTAB NO.</td>
+                        <td>@item.MaktabNo</td>
+                    </tr>
+                }
+                
+                @if (item.CompanyName == "AL-KHAIR SERVICES FOR HAJJ & UMRAH (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            -
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "AL-BARAKAH SERVICES FOR HAJJ & UMRAH (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            AHMAD ZEESHAN
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                           CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "ANWAR-E-MACCA HUJJ GROUP (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            MUHAMMAD RAFIQ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "AL-MUSANI INTERNATIONAL (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            MUHAMMAD YOUSUF MUSANI
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "PETLUBES (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            MOHAMMAD BADRUDDIN ALWAJIH
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "KARWAN-AL-MADINA TRAVEL AND TOURS (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            MUHAMMAD RAZIUDDIN AHMED
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "CHANNA TRAVEL & TOURS (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            MUHAMMAD ASHFAQ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "TRAVEL CORPORATION (PRIVATE) LIMMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                           KASHIF IBRAHIM
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else if (item.CompanyName == "MAZAIDAR HAJJ TRAVEL & TOURS (PRIVATE) LIMITED")
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>
+                            ABDUL HASEEB KHAN
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>
+                            CHIEF EXECUTIVE
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>13</td>
+                        <td>NAME OF CE/DIRECTOR</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>14</td>
+                        <td>DESIGNATION IN COMPANY</td>
+                        <td>-</td>
+                    </tr>
+                }
+            <tr>
+                <td>15</td>
+                <td>NAME OF HOTEL / BUILDING</td>
+                <td>@item.HotelNameMedinah</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>HOTEL / BUILDING ADDRESS MAKKAH</td>
+                <td>@item.HotelMakkahAddress</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>HOTEL / BUILDING ADDRESS MEDINAH</td>
+                <td>@item.HotelMedinahAddress</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>AZIZIA / OTHERS</td>
+                <td>@item.HotelNameAzizia</td>
+            </tr>
+                @if (item.ArrivalAt == "MADINAH")
+                {
+                    <tr>
+                        <td>19</td>
+                        <td>NAME OF CONTACT PERSON</td>
+                        <td>Najeeb Ahmed</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>CONTACT NO. IN KSA</td>
+                        <td>00966-59-8262771</td>
+                    </tr>
+                    <tr>
+                        <td>21</td>
+                        <td>WHATSAPP NO</td>
+                        <td>00966-59-8262771</td>
+                    </tr>
+                }
+                else if (item.ArrivalAt == "JEDDAH")
+                {
+                    <tr>
+                        <td>19</td>
+                        <td>NAME OF CONTACT PERSON</td>
+                        <td>Rizwan</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>WHATSAPP NO</td>
+                        <td>00966-56-5744041</td>
+                    </tr>
+                    <tr>
+                        <td>21</td>
+                        <td>WHATSAPP NO</td>
+                        <td>00966-56-5744041</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>19</td>
+                        <td>NAME OF CONTACT PERSON</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>20</td>
+                        <td>WHATSAPP NO</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>21</td>
+                        <td>WHATSAPP NO</td>
+                        <td>-</td>
+                    </tr>
+                }
+            <tr>
+                <td>22</td>
+                <td>HOTEL / BUILDING ROOM NO. FLOOR OF CE/ DIRECTOR</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>DATE OF ARRIVAL IN KSA </td>
+                <td>@item.ArrivalDate</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <h3 style="text-align: center; margin: 8px; font-size: 15px; font-weight: 600;">NO OF HUJJAJ ARRIVED</h3>
+    <table class="hujjaj_arrived-table">
+
+        <tbody>
+                @if (item.ArrivalAt == "MADINAH")
+                {
+                    <tr>
+                        <td>2</td>
+                        <td>MADINAH MUNAWWARAH</td>
+                        <td>@item.HujajNo</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 70px;">1</td>
+                        <td>MAKKAH MUKARRAMAH</td>
+                        <td style="width: 50%;"></td>   
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>AZIZIA / OTHERS </td>
+                        <td></td>
+                    </tr>
+                }
+                else if (item.ArrivalAt == "JEDDAH")
+                {
+                    <tr>
+                        <td>2</td>
+                        <td>MADINAH MUNAWWARAH</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 70px;">1</td>
+                        <td>MAKKAH MUKARRAMAH</td>
+                        <td style="width: 50%;">@item.HujajNo</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>AZIZIA / OTHERS </td>
+                        <td>@item.HujajNo</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td style="width: 70px;">1</td>
+                        <td>MAKKAH MUKARRAMAH</td>
+                        <td style="width: 50%;"></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>MADINAH MUNAWWARAH</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>AZIZIA / OTHERS </td>
+                        <td></td>
+                    </tr>
+
+                }
+           
+        </tbody>
+    </table>
+
+
+
+    <section style="display: flex; justify-content: space-between; align-items: center; ">
+        <div class="send-to-form">
+            <h2 style="font-size: 13px;">SEND TO FILLED FORM TO :-</h2>
+            <h2 style="font-weight: normal; font-size: 13px;">FOCAL PERSON, MR.ABDUL RAHIM QURESHI</h2>
+            <div class="" style="font-size: 13px;">
+                <span> WHATSAPP NO:</span> <span style="font-family: 'Times New Roman', Times, serif; "> 03159530009</span>
+            </div>
+            <div style="font-size: 13px; margin-top: 15px; margin-top: 12px ; padding: 0;">
+                <span> E-Mail ADDRESS:</span> <span style="font-weight: bold;">monitoringcellmco@gmail.com</span>
+            </div>
+        </div>
+
+        <div class="client-info-data" style="font-size: 13px;">
+                <p>NAME: -</p>
+                <p>DESIGNATION: CHIEF EXECUTIVE</p>
+                <p>DATE:@DateTime.Now.Day/@DateTime.Now.Month/2024</p>
+                <p>TIME:@DateTime.Now.TimeOfDay</p>
+        </div>
+    </section>
+
+
+
+
+    <div class="note-para" style="font-size: 11px;">
+
+        <p>
+            <strong>Note"</strong> f there is any problem in the HGO-MIS system, then fill this form and E-mail /
+            Whatsaap it one day before
+            going to Saudi Arabia
+        </p>
+    </div>
+
+
+
+</body>
+}
+

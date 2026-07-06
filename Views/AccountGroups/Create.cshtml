@@ -1,0 +1,48 @@
+﻿@model TMG.Models.Updated_Accounts.AccountGroups
+
+@{
+    string modelName = "Account Groups";
+    string modelNamePlural = "Account Groups";
+    string modelControllerRoute = "AccountGroups";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">
+        <span class="text-muted fw-light"> @modelName / </span> Create
+    </h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="TypeId">Account Type</label>
+                                <select class="form-control" asp-for="AccountTypesId" asp-items="@ViewBag.Types">
+                                    <option value="">Select Account Type</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="AccountTypesId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="Name">Name</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

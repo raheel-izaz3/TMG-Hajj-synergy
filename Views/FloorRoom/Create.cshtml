@@ -1,0 +1,137 @@
+﻿@model FloorRoom
+
+@{
+    string modelName = "Room";
+    string modelNamePlural = "Rooms";
+    string modelControllerRoute = "Room";
+    TMG.Data.TMGDbContext _db;
+}
+<script>
+    function CreateRows() { 
+        const tbody = document.getElementById("tbody")
+        const val = document.getElementById('NoOfRooms').value
+        let html = ''
+
+        for (let i = 0; i < val; i++) {
+            html += `
+                                        <tr>
+                                                <td>
+                                                    <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                                    <strong>${i + 1}</strong>
+                                                </td>
+                                                        <td> 
+                                                        <input type="text" onblur="validation(this)" name="Rooms[${i}]" class="form-control">
+                                                        
+                                                        </td>
+                                                <td>
+                                                        <select class='form-control' asp-for="BathroomType" name="BathRoom[${i}]">
+                                                        <option value="0">Indian</option>
+                                                        <option value="1">English</option>
+                                                        <option value="2">Both</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                            <select class='form-control' name="BedType[${i}]">
+
+    @foreach (RoomBedType bed in ViewBag.RoomTypes)
+    {
+                                                            <option value="@bed.RoomBedTypeId">@bed.BedType</option>
+    }
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                        <select class='form-control' name="RoomType[${i}]">
+    @foreach (Room room in ViewBag.Rooms)
+    {
+                                                                <option value="@room.RoomId">@room.RoomName (@room.RoomCode)</option>
+    }
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                            <select class='form-control'  name="RoomView[${i}]">
+    @foreach (RoomView room in ViewBag.RoomViews)
+    {
+                                                                <option value="@room.RoomViewId">@room.Name </option>
+    }
+                                                    </select>
+                                                </td>
+                                            </tr>
+
+                                        `
+        }
+
+        tbody.innerHTML = html
+    }
+
+    function validation(value) {
+        var roomnumber = value.value;
+        var floorRooms = @Html.Raw(Json.Serialize(ViewBag.Floorrooms));
+        var floorRoom = JSON.parse(floorRooms);
+        debugger;
+        var duplicateFound = false;
+        for (var i = 0; i < floorRoom.length; i++) {
+          
+            if (floorRoom[i].RoomNumber == roomnumber) {
+                duplicateFound = true;
+                break;
+                
+               
+            }
+        }
+        if (duplicateFound) {
+            alert("Room Number already exists: " + roomnumber);
+        }
+    }
+</script>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light">@ViewBag.HotelName / Floor #@ViewBag.FloorNumber / @modelNamePlural </span> / Create</h4>
+
+    <hr class="mb-4" />
+    <div class="row">
+        <label class="form-label" for="basic-icon-default-fullname"> Enter Number of Rooms</label>
+        <div class="input-group input-group-merge">
+            <input type="text" id="NoOfRooms" class="form-control">
+            <button id="createrows" onclick="CreateRows()" class="btn btn-success float-end">Create Rooms</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <br />
+                        <br />
+                        <div class="card p-2">
+                            <div class="table-responsive text-nowrap ">
+                                <table class="table table-hover" id="table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Room #</th>
+                                            <th>Bathroom Type</th>
+                                            <th>Bed Type</th>
+                                            <th>Room Type</th>
+                                            <th>View</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-border-bottom-1" id="tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <input type="hidden" asp-for="FloorId" />
+                       
+                        <div class="col-sm-12 mt-4">
+                            <button type="submit" class="btn btn-success float-end">Create</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

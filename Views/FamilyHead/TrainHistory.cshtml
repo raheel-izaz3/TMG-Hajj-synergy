@@ -1,0 +1,66 @@
+﻿@model IEnumerable<FamilyHeadTrain>
+
+<div class="container">
+    <h4 class="mt-5">
+        Train History Of
+        <span>
+            @ViewBag.Name (@ViewBag.HBNo)
+        </span>
+    </h4>
+    <div class="card mt-5">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <th>Train Class</th>
+                <th>Railway</th>
+                <th>Train No</th>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Departure</th>
+                <th>Arrival</th>
+                <th>PNR No</th>
+                <th>Ticket No</th>
+                <th>Ticket PDF</th>
+                <th>Currency</th>
+                <th>Fare Amount</th>
+                <th>Taxes</th>
+                <th>Commission</th>
+                <th>Issuing Agent</th>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TrainClass</td>
+                            <td>@item.Railway.Name</td>
+                            <td>@item.TrainNo</td>
+                            <td>@item.Origin</td>
+                            <td>@item.Destination</td>
+                            <td>@item.DepartureDateTime?.ToString("yyyy/MMM/dd HH:mm")</td>
+                            <td>@item.ArrivalDateTime?.ToString("yyyy/MMM/dd HH:mm")</td>
+                            <td>@item.PNRNo</td>
+                            <td>@item.TicketNo</td>
+                            <td>
+                                @if (item.TicketPDF is not null)
+                                {
+                                    <a href="~/@item.TicketPDF" target="_blank">
+                                        View Document
+                                    </a>
+                                }
+                                else
+                                {
+                                    <p>No PDF Found</p>
+                                }
+                            </td>
+                            <td>@item.Currency.CurrencyName</td>
+                            <td>@item.FareAmount</td>
+                            <td>@item.Taxes</td>
+                            <td>@item.Commission</td>
+                            <td>@item.IssuingAgent.AgentName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

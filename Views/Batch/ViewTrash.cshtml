@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Batch>
+@{
+    string modelName = "Batch";
+    string modelNamePlural = "Batches";
+    string modelControllerRoute = "Batch";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+@if (TempData.ContainsKey("restored"))
+{
+    if ((bool)TempData["restored"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Restored Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["restored"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural / Trash</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Batch</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @*      @if (Model.Count() == 0)
+                    {
+                    <tr>
+                    <td colspan="5" class="text-danger text-center">No Data Found!</td>
+                    </tr>
+                    } *@
+                    @foreach (Batch fiqah in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@fiqah.BatchId</strong>
+                            </td>
+                            <td>@fiqah.BatchName</td>
+                            <td>@fiqah.CreatedAt</td>
+                            <td>@fiqah.UpdatedAt</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info" onclick="confirmRestore(@fiqah.BatchId)">
+                                        <i class="bx bx-recycle me-1"></i> Restore
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script>
+    function confirmRestore(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Restore/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

@@ -1,0 +1,223 @@
+﻿@using Newtonsoft.Json.Serialization
+@using Newtonsoft.Json
+@{
+    Layout = null;
+
+    var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
+    var itinerarySerialized = JsonConvert.SerializeObject(ViewBag.Itinerary, settings);
+    var dataFormSerialized = JsonConvert.SerializeObject(ViewBag.DataForm, settings);
+    var hajjAgreementSerialized = JsonConvert.SerializeObject(ViewBag.Agreement, settings);
+    var receiptSerialized = JsonConvert.SerializeObject(ViewBag.Receipt, settings);
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklet</title>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+
+
+
+    <style>
+         .container {
+            max-width: 10000px; /* Set max-width to prevent overflow */
+            width: 100% !important  ; /* Set max-width to prevent overflow */
+        }
+
+        #iteinerary,
+        #dataform,
+        #hajjAgreement,
+        #receipt,
+        #visaImg
+       {
+            width: 100% !important;
+            height: auto; /* Let the height adjust dynamically */
+            border: none;
+        }
+         #passport {
+            height: auto !important;
+            width: auto !important;
+         }
+    </style>
+
+</head>
+<body>
+
+
+    <div class="container" id="container">
+
+        <div class="row">
+            <button class="col-sm-12 my-3 btn btn-primary" onclick="sendEmail()">Email</button>
+        </div>
+
+
+        <div class="iteinerary" >
+            <h1>Voucher</h1>
+            <iframe id="iteinerary" class="iframe" src="@Url.Action("Itinerary", "FamilyHeadReport")?id=@ViewBag.HeadId&itinerary=@Html.Raw(itinerarySerialized)"></iframe>
+        </div>
+
+        <div class="dataform">
+            <h1>DataForm V3</h1>
+            <iframe id="dataform" class="iframe" src="@Url.Action("DataFormv3", "FamilyHeadReport")?id=@ViewBag.HeadId&dataform=@Html.Raw(dataFormSerialized)"></iframe>
+        </div>
+
+        <div class="hajjAgreement">
+            <h1>Hajj Agreement</h1>
+            @foreach(var id in ViewBag.FamilyHeadIds){
+                <iframe id="hajjAgreement" class="iframe"
+                src="@Url.Action("ViewAgreement", "HajjAgreement")?id=@id&hajjAgreement=@Html.Raw(hajjAgreementSerialized)"></iframe>
+            }
+        </div>
+
+        <div class="receipt" >
+            <h1>Receipt</h1>
+            <iframe id="receipt" class="iframe" src="@Url.Action("AllHajjPrint", "Invoice")?id=@ViewBag.FamilyHeadId"></iframe>
+        </div>
+            @* <button type="button"  id="downloadButton">Download Images</button> *@
+                    <h1>Visa Image</h1>
+            @foreach(var img in ViewBag.Visas){
+                if(img is not null){
+                    <div class="visaImg">
+                        <a id="@ViewBag.FamilyHeadId" href="~/@img">View Visa</a>
+                    </div>
+                }
+            }
+            
+                    <h1>Passport Image</h1>
+            @foreach(var img in ViewBag.Passports){
+                <div class="passport">
+                    <img id="passport" src="~/@img" />
+                </div>
+            }
+            
+
+        </div>
+
+        <div style="page=break-after: always;">
+
+        </div>
+
+
+
+<script>
+    function sendEmail(){
+        $.ajax({
+            url: "/Email/SendPdfs/@ViewBag.HeadId",
+            success: res => {
+                console.log(res)
+                toastr.success('Email Sent!')
+            },
+            error: err => {
+                console.error(err)
+                toastr.error('Error')
+            }
+        })
+    }
+</script>
+
+ <script>
+        function adjustIframeHeight() {
+            const iframes = document.querySelectorAll('.iframe');
+            iframes.forEach(iframe => {
+                iframe.style.height = (iframe.contentWindow.document.body.scrollHeight + 20)   + 'px';
+            });
+        }
+
+        function checkIframeLoaded() {
+            const iframes = document.querySelectorAll('.iframe');
+            let allLoaded = true;
+            iframes.forEach(iframe => {
+                if (!iframe.contentWindow.document.body.scrollHeight) {
+                    allLoaded = false;
+                }
+            });
+            if (allLoaded) {
+                adjustIframeHeight();
+            } else {
+                setTimeout(checkIframeLoaded, 100);
+            }
+        }
+
+        window.onload = function() {
+            checkIframeLoaded();
+        };
+    </script>
+
+@*     <script>
+        document.getElementById("downloadButton").addEventListener("click", function () {
+            var familyHeadId = "@ViewBag.FamilyHeadId";
+
+            console.log(familyHeadId);
+
+            $.ajax({
+                type: 'POST',
+                url: '/FamilyHeadReport/DownloadBookletImages',
+                data: {
+                    id: familyHeadId,
+                },
+                success: function (data) {
+                    console.log(data);
+                    window.location.href = data.redirectTo;
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script> *@
+
+
+    <script>
+        document.getElementById("downloadButton").addEventListener("click", function () {
+            var familyHeadId = "@ViewBag.FamilyHeadId";
+
+            console.log(familyHeadId);
+
+            $.ajax({
+                type: 'POST',
+                url: '/FamilyHeadReport/DownloadBookletImages',
+                data: {
+                    id: familyHeadId,
+                },
+                xhrFields: {
+                    responseType: 'blob' // Set the response type to 'blob' to handle binary data
+                },
+                success: function (data) {
+                    // Create a Blob object from the binary data
+                    var blob = new Blob([data], { type: 'application/zip' });
+                    // Create a temporary URL for the Blob
+                    var url = window.URL.createObjectURL(blob);
+                    // Create a temporary <a> element to trigger the download
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'images.zip'; // Specify the download filename
+                    // Append the <a> element to the document and trigger the download
+                    document.body.appendChild(link);
+                    link.click();
+                    // Clean up
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>
+
+   
+</body>
+</html>

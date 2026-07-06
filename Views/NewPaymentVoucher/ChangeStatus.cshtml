@@ -1,0 +1,96 @@
+﻿@model  TMG.Models.Updated_Accounts.NewPaymentVoucher
+
+@{
+    string modelName = "Payment Voucher";
+    string modelNamePlural = "Receipts";
+    string modelControllerRoute = "NewInvoice";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">
+        <span class="text-muted fw-light"> @modelName / </span> Change Status
+    </h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input asp-for="NewPaymentVoucherId" type="hidden" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="Status"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="Status" class="form-control" id="receiptStatus">
+                                        <option value="2">Cleared</option>
+                                        <option value="3">Bounced</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Status"></span>
+                            </div>
+                            @* <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="ClearanceDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="ClearanceDate" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClearanceDate"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="DepositDate"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="DepositDate" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="DepositDate"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname"
+                                       asp-for="ClearanceFile">Clearance File</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="file" asp-for="ClearanceFile" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ClearanceFile"></span>
+                            </div>
+ *@
+                            <div class="col-sm-12 col-md-4 mb-3" id="bouncePenaltyPanel" style="display: none;">
+                                <label class="form-label" for="bouncePenalty">Bounce Penalty</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="number" id="bouncePenalty" asp-for="CreditBouncePanelty" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="CreditBouncePanelty"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Change Status</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to toggle the Bounce Penalty input -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const receiptStatusSelect = document.getElementById('receiptStatus');
+        const bouncePenaltyPanel = document.getElementById('bouncePenaltyPanel');
+
+        function toggleBouncePenaltyField() {
+            if (receiptStatusSelect.value == '3') {
+                bouncePenaltyPanel.style.display = 'block';
+            } else {
+                bouncePenaltyPanel.style.display = 'none';
+            }
+        }
+
+        toggleBouncePenaltyField();
+
+        receiptStatusSelect.addEventListener('change', toggleBouncePenaltyField);
+    });
+</script>

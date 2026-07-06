@@ -1,0 +1,23 @@
+﻿@model IEnumerable<dynamic>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Room Type</th>
+            <th>Total</th>
+            <th>Allocated</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.RoomType</td>
+                <td>@item.TotalRooms</td>
+                <td>@item.Allocated</td>
+                <td>@item.Balance</td>
+            </tr>
+        }
+    </tbody>
+</table>

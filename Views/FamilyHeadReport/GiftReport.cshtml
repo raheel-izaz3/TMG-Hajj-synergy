@@ -1,0 +1,229 @@
+﻿@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Challan</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		body {
+			margin: 0;
+			padding: 20px;
+			font-family: Arial, sans-serif;
+			background: #fff;
+		}
+
+		.challan:not(:last-child)::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			right: -10px;
+			width: 0;
+			height: 120%;
+			border-right: 1px dashed #000;
+		}
+
+		.challan-container {
+			display: flex;
+			justify-content: space-between;
+			gap: 10px;
+			flex-wrap: nowrap;
+			width: 100%;
+		}
+
+		.challan {
+			width: 27%;
+			border: 1px solid #000;
+			padding: 10px;
+			box-sizing: border-box;
+			position: relative;
+		}
+
+		.stamp{
+			height: 70px;
+		}
+		h2, p {
+			margin: 4px 0;
+		}
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			text-align: center;
+			margin-bottom: 10px;
+		}
+
+		.header-content .title {
+				flex-grow: 1;
+				font-weight: bold;
+				font-size: 16px;
+		}
+
+		.logo {
+			width: 81px;
+			height: auto;
+		}
+
+		.section {
+			margin-bottom: 8px;
+			font-size: 13px;
+		}
+
+		.issue-date {
+			text-align: left;
+			font-weight: bold;
+		}
+
+		.package-name {
+			text-align: center;
+			font-weight: bold;
+			margin-top: 4px;
+		}
+
+		.hajji-name {
+			text-align: left;
+		}
+
+		.fee-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 13px;
+		}
+
+		.fee-table th, .fee-table td {
+		border: 1px solid #000;
+		padding: 4px;
+		text-align: left;
+		}
+
+		.footer {
+			margin-top: 10px;
+			font-size: 12px;
+		}
+
+		.barcode {
+			height: 30px;
+			background: #ccc;
+			margin: 8px 0;
+		}
+
+		.due-box {
+			height: auto;
+			margin-top: 10px;
+			padding: 6px;
+			border: 1px solid #000;
+			font-size: 12px;
+			line-height: 1.6;
+		}
+
+			.due-box h3 {
+				text-align: center;
+				text-decoration: underline;
+				margin-bottom: 8px;
+			}
+
+			.due-box p {
+				text-align: justify;
+				margin: 4px 0;
+			}
+
+		.no-print button {
+			padding: 8px 16px;
+			background-color: #f60000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-bottom: 10px;
+		}
+
+		@@media print {
+			body {
+				margin: 0;
+				padding: 0;
+			}
+
+			.no-print {
+				display: none;
+			}
+
+			.challan-container {
+				flex-wrap: nowrap;
+				justify-content: space-between;
+				gap: 10px;
+				page-break-inside: avoid;
+			}
+
+			.challan {
+				width: 32%;
+				margin: 0;
+				padding: 8px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="no-print">
+		<button onclick="window.print()">Print</button>
+		<hr />
+	</div>
+	<div class="challan-container">
+
+		@foreach (var copy in new[] { "Office", "Staff", "Customer" })
+		{
+			<div class="challan">
+				<div class="challan_header">
+					<div class="header-content">
+						<img src="~/TMG Group.png" alt="Left Logo" class="logo" />
+						<div class="title">TMG<br><small>@copy Copy</small></div>
+						<img src="~/Group Logo.png" alt="Right Logo" class="logo" />
+					</div>
+				</div>
+				<hr />
+				<div class="section">
+					<p class="issue-date">Issue Date: @DateTime.Now.ToString("dd/MMM/yyyy")</p>
+					<p class="package-name" style="font-style: oblique;color: red;font-stretch: expanded;">@ViewBag.PackageName</p>
+
+					@foreach (var m in ViewBag.Results)
+					{
+						<p class="hajji-name"><strong>Hajji Name:</strong> @m.FullName (@m.FcId)</p>
+					}
+
+					<div class="barcode"></div>
+				</div>
+				<div class="due-box">
+					<p><strong>Hajj Accessories:</strong> @ViewBag.Gift</p>
+					<div class="Gift_Terms_and_Conditions" style="font-size: 10px;">
+						<h3>Gift Terms and Conditions</h3>
+						<p><strong>1. Non-Transferable:</strong> Gifts cannot be exchanged, refunded, or redeemed.</p>
+						<p><strong>2. Collection :</strong> Self Collection is Mandatory &  Suit Case Only Valid from Head Office Karachi.</p><p>
+						<p><strong>3. Liability:</strong> No Liability or replacement of any damage items.
+							Please check before collection.</p>
+
+						<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+							<div style="text-align: center; width: 30%;">
+								<div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+								<p style="margin-top: 4px;">Staff Signature</p>
+							</div>
+							<div style="text-align: center; width: 40%;">
+								<div class="stamp" style="display: flex; justify-content: center; align-items: center;">
+									<img src="~/hajj mabroor By TMG 1.png" alt="Company Stamp" style="max-height: 60px;" />
+								</div>
+							</div>
+							<div style="text-align: center; width: 30%;">
+								<div style="border-top: 1px solid #000; margin-top: 20px;"></div>
+								<p style="margin-top: 4px;">Customer Signature</p>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</body>
+</html>

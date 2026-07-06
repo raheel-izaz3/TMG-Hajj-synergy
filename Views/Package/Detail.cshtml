@@ -1,0 +1,679 @@
+﻿@{
+    Layout = "_InvoiceLayout";
+}
+
+@model Package
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+
+<button onclick="generatePDF()" class="btn btn-small">Download PDF</button>
+<div id="yourContent" class="pdf-content">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Package /</span> Details</h4>
+
+        <hr class="my-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>@Model.Name</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <h4>Hajj Package @* @Model.HajjSeasons.Season - @Model.HajjSeasons.Hijri *@</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <h5>@Model.Days Days Medinah @Model.MedinahArrival Hajj</h5>
+                    </div>
+
+                    <div class="col-md-12 mt-2">
+                        <h4 style="color: goldenrod;" class="m-0">MAKTAB</h4>
+                    </div>
+                    <div class="col-md-12">
+                        <h5 class="m-0">@Model.CategoryZone</h5>
+                    </div>
+
+                    <div class="col-md-12 m-0">
+                        <h6 class="mt-1"
+                            style="font-weight: bold; color: white; background-color: black; padding: 5px 8px; border-radius: 4px; width: max-content;">
+                            @Model.NearBy
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img class="img-fluid float-end" width="180" src="~/@Model.Company.Logo" alt="">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <style>
+            /* Adjusting the body margin and padding for better PDF fit */
+            body {
+                margin: 0;
+                padding: 0;
+                /* font-size: 0.9em; Font size ko chota kiya */
+                font-size: 10px; /* Font size ko chota kiya */
+            }
+
+            /* Adjusting the container to fit better in the PDF */
+            #yourContent {
+                padding: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Add page breaks for better pagination */
+            .page-break {
+                page-break-before: always;
+            }
+
+            /* New styles to prevent content cropping */
+            .prevent-crop {
+                page-break-inside: avoid;
+            }
+
+            /* Additional styles to ensure specific sections do not break */
+            .room-category, .terms-and-conditions {
+                page-break-inside: avoid;
+            }
+
+            /* Ensure terms and conditions content is fully visible and does not break */
+            .terms-and-conditions {
+                overflow: visible;
+                margin-top: 40px;
+                margin-bottom: 10px;
+                padding: 5px;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+                font-size: 6px;
+                page-break-inside: avoid; /* Ensure the section does not break inside */
+                page-break-after: avoid; /* Prevent breaking after the section */
+            }
+
+            .route-box {
+                border: 2px solid black;
+                position: relative;
+                padding: 5px;
+            }
+
+            .route-number {
+                position: absolute;
+                border-radius: 50%;
+                background-color: goldenrod;
+                font-weight: normal;
+                font-size: small;
+                width: 20px;
+                height: 20px;
+            }
+
+            .route-name,
+            .route-date {
+                font-weight: small;
+            }
+
+            .route-date {
+                background-color: goldenrod;
+                border-radius: 15px;
+                width: max-content;
+                padding-inline: 10px; /* Padding ko chota kiya */
+                margin: 0 auto;
+            }
+
+            .prevent-crop {
+                page-break-inside: avoid;
+            }
+            /* Override bootstrap containers */
+            .container,
+            .container-xxl,
+            .container-p-y {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .itinerary, .terms-and-conditions {
+                page-break-inside: avoid; /* Ensure the section does not break inside */
+                overflow: visible; /* Ensure content is not cropped */
+                margin: 0 !important; /* Remove all margins */
+                padding: 0 !important; /* Remove all padding */
+            }
+
+            .row.itinerary, .row.terms-and-conditions {
+                margin: 0 !important; /* Ensure no margin from row class */
+                padding: 0 !important; /* Ensure no padding from row class */
+            }
+
+            /* Ensure the content fits within the page */
+            #yourContent {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            /* Styles specifically for PDF or print */
+            @@media print {
+                /* Target specific elements or classes for print */
+                .pdf-content {
+                    margin-top: 40px;
+                    font-size: 10px; /* Adjust font size for print */
+                    color: black; /* Ensure text is black for print */
+                    margin: 0; /* Remove any extra margins */
+                    padding: 0; /* Remove any extra padding */
+                }
+                /* Example of targeting a specific section */
+                #yourContent {
+                    width: 100%;
+                    box-sizing: border-box;
+                    margin: 0 !important; /* Remove margins for print */
+                    padding: 0 !important; /* Remove padding for print */
+                }
+
+                .MsoNormal {
+                    margin-top: 50px !important;
+                }
+                /* Hide elements that should not appear in print */
+                .no-print {
+                    display: none !important;
+                }
+                /* Ensure page breaks are handled correctly */
+                .page-break {
+                    page-break-before: always;
+                }
+                /* Add margin-top to Terms & Conditions section */
+                .terms-and-conditions {
+                    margin-top: 20px !important; /* Adjust the value as needed */
+                }
+                    /* Add margin-top to specific content within Terms & Conditions using pseudo-element */
+                    .terms-and-conditions p:nth-child(3)::before {
+                        content: '';
+                        display: block;
+                        margin-top: 10px; /* Adjust the value as needed */
+                    }
+
+                .terms-content {
+                    background-color: transparent !important;
+                }
+
+                    .terms-content * {
+                        background-color: transparent !important;
+                    }
+
+                .terms-and-conditions {
+                    background-color: transparent !important;
+                }
+            }
+
+            /* Ensure headings and paragraphs stay together */
+            .keep-together {
+                page-break-inside: avoid; /* Prevent breaking inside the element */
+                page-break-after: auto; /* Allow breaking after the element if needed */
+            }
+
+                /* Adjust the margin and padding to reduce blank spaces */
+                .keep-together h2, .keep-together p {
+                    margin: 0;
+                    padding: 0;
+                }
+
+            .small-font {
+                font-size: 2px !important;
+            }
+
+
+            /* Additional styles to ensure specific sections do not break */
+            .terms-and-conditions, .itinerary {
+                page-break-inside: avoid; /* Ensure the section does not break inside */
+                overflow: visible; /* Ensure content is not cropped */
+                margin: 0 !important; /* Remove all margins */
+                padding: 0 !important; /* Remove all padding */
+            }
+
+            .terms-content {
+                padding: 15px !important; /* Add padding around the entire terms content */
+                column-gap: 0;
+                break-inside: auto !important;
+                page-break-inside: auto !important;
+            }
+
+                .terms-content h1,
+                .terms-content h2,
+                .terms-content h3,
+                .terms-content h4,
+                .terms-content h5,
+                .terms-content h6,
+                .terms-content p,
+                .terms-content p span,
+                .terms-content span {
+                    font-size: 10px !important;
+                    margin-bottom: 4px !important;
+                    line-height: 1.2 !important;
+                    page-break-inside: avoid !important; /* Prevent paragraph splitting */
+                }
+
+                /* Add specific rules for paragraphs */
+                .terms-content p {
+                    padding: 0 15px !important; /* Add left and right padding to paragraphs */
+                    margin-bottom: 8px !important; /* Add some space between paragraphs */
+                }
+
+                .terms-content .heading-wrapper {
+                    padding: 0 15px !important; /* Add left and right padding to headings */
+                    margin-top: 12px !important; /* Add space above headings */
+                    margin-bottom: 8px !important; /* Add space below headings */
+                }
+
+            .summernote-content {
+                font-weight: normal;
+            }
+
+                .summernote-content h1,
+                .summernote-content h2,
+                .summernote-content h3,
+                .summernote-content h4,
+                .summernote-content h5,
+                .summernote-content h6 {
+                    font-weight: normal;
+                    font-size: 7px;
+                }
+
+                .summernote-content p {
+                    font-size: 6px;
+                    font-weight: normal;
+                }
+
+            /* Modify heading behavior in terms section */
+            .terms-content h1,
+            .terms-content h2,
+            .terms-content h3,
+            .terms-content h4,
+            .terms-content h5,
+            .terms-content h6 {
+                page-break-before: auto !important; /* Remove forced page breaks */
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                margin-top: 15px !important; /* Reduced from 20px */
+                padding-top: 5px !important; /* Reduced from 10px */
+                orphans: 3;
+                widows: 3;
+            }
+
+            /* Modify heading wrapper to prevent forced breaks */
+            .heading-wrapper {
+                display: inline-block !important; /* Changed from block */
+                page-break-before: auto !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
+
+            /* Ensure content flows naturally */
+            .terms-content {
+                column-gap: 0;
+                break-inside: auto !important; /* Changed from avoid */
+                page-break-inside: auto !important; /* Changed from avoid */
+            }
+
+        </style>
+
+
+        <h5 class="fw-bold ml-3">Routes (@Model.TravelRoute.RouteName)</h5>
+        <div class="row">
+            @{
+                int r = 1;
+            }
+            @if (Model.TravelRouteId is not null)
+            {
+                @foreach (TravelRouteStops route in ViewBag.Routes)
+                {
+                    <div class="col-sm-12 col-md-4 text-center mb-1">
+                        <div class="route-box">
+                            <div class="route-number">@(r++)</div>
+                            <div class="">@route.Vehicle?.VehicleType</div>
+                            <div class="route-name">@route.Route.FullRoute</div>
+                            <div class="route-date">@route.CheckIn.ToString("dd/MMM")</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <hr class="my-4">
+
+        <h5 class="fw-bold ml-3 prevent-crop room-category">Room Category</h5>
+        <div class="row room-category">
+            <div class="col-sm-12">
+                <h4>@Model.Room?.RoomName</h4>
+                <p>@Html.Raw(ViewBag.Rooms)</p>
+                <h5 style="font-weight: bolder; background-color: goldenrod; border-radius: 10px; padding: 10px; width: max-content;">SAR @ViewBag.PackageAmount/-</h5>
+            </div>
+        </div>
+
+        <hr class="my-2">
+
+
+        <h5 class="fw-bold ml-3 prevent-crop">Accommodation Details</h5>
+        @foreach (PackageAccomodations accomodations in ViewBag.AssignedAccommodations)
+        {
+            <div class="row mb-2 prevent-crop">
+                <div class="col-sm-12">
+                    <h3 class="float-start">
+                        <span style="font-weight: normal;">@accomodations.Place.PlaceName</span>
+                        @accomodations.Accomodation.AccomodationName
+                    </h3>
+                </div>
+
+                <!-- Checkboxes to toggle sections -->
+                <div class="col-sm-12 mb-2">
+                    <label>
+                        <input type="checkbox" id="showTentativeCheckbox" onclick="toggleSection('tentativeSection-@accomodations.PackageAccomodationsId')" checked>
+                        Show Tentative Accommodation
+                    </label>
+                    <label class="ms-4">
+                        <input type="checkbox" id="showActualCheckbox-@accomodations.PackageAccomodationsId" onclick="toggleSection('actualSection-@accomodations.PackageAccomodationsId')">
+                        Show Actual Accommodation
+                    </label>
+                </div>
+
+                <!-- Tentative Accommodation Section -->
+                <div id="tentativeSection-@accomodations.PackageAccomodationsId" class="tentative-section">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-3">
+                            <label class="fw-bold">Tentative Accommodation:</label>
+                            <p>@accomodations.AccomodationName</p>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <label class="fw-bold">Tentative Check In:</label>
+                            <p>@(accomodations.CheckIn ?? "N/A")</p>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <label class="fw-bold">Tentative Check Out:</label>
+                            <p>@(accomodations.CheckOut ?? "N/A")</p>
+                        </div>
+                        <div class="col-sm-12 col-md-3">
+                            <label class="fw-bold">Meal Plan:</label>
+                            <p>@accomodations.FoodPackage.Package</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- Actual Accommodation Section -->
+                <div id="actualSection-@accomodations.PackageAccomodationsId" class="actual-section" style="display: none;">
+                    @if (accomodations.ActualAccommodation != null)
+                    {
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3">
+                                <label class="fw-bold">Actual Accommodation:</label>
+                                <p>@accomodations.Hotel?.HotelName</p>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <label class="fw-bold">Actual Check In:</label>
+                                <p>@accomodations.ActualCheckInTime?.ToString("dd/MMM/yyyy HH:mm")</p>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <label class="fw-bold">Actual Check Out:</label>
+                                <p>@accomodations.ActualCheckOutTime?.ToString("dd/MMM/yyyy HH:mm")</p>
+                            </div>
+                            <div class="col-sm-12 col-md-2">
+                                <label class="fw-bold">Days / Nights:</label>
+                                <p>@accomodations.Days Days / @accomodations.Nights Nights</p>
+                            </div>
+                            <div class="col-sm-12 col-md-3">
+                                <label class="fw-bold">Meal Plan:</label>
+                                <p>@accomodations.FoodPackage.Package</p>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                    }
+                </div>
+
+            </div>
+        }
+
+
+        @if (ViewBag.Flights is List<PackageFlights> flightsList && flightsList.Any())
+        {
+
+            <h5 class="fw-bold ml-3 prevent-crop">Flight Details</h5>
+
+            <div class="row mb-2 prevent-crop flight">
+                <div class="col-sm-12">
+                    <label>
+                        <input type="checkbox" id="toggleFlightAmount" onclick="toggleColumn('flightAmount')" />
+                        Show Flight Amount
+                    </label>
+                    <div style="overflow-x: auto; width: 97%; margin: auto;">
+                        <!-- Table wrapper -->
+                        <table class="table table-bordered table-sm" style="width: 100%; font-size: 8px; table-layout: fixed; word-wrap: break-word;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">#</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Type</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Airline</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Flight #</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Location</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Class</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Dep. Date</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Dep. Time</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Arr. Date</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Arr. Time</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">PNR</th>
+                                    <th class="flightAmount" style="display: none; padding: 5px; text-align: center;font-size:8px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int f = 1;
+                                }
+                                @foreach (PackageFlights flights in ViewBag.Flights)
+                                {
+                                    <tr>
+                                        <th style="padding: 5px; text-align: center;">@(f++)</th>
+                                        <td style="padding: 5px; text-align: center;">@flights.FlightType.ToString()</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.Airline?.Name</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.FlightNumber</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.Origin - @flights.Destination</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.FlightClass?.ToString()</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.DepartureDate?.ToString("dd/MMM")</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.DepartureTime?.ToString("HH:mm")</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.ArrivalDate?.ToString("dd/MMM")</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.ArrivalTime?.ToString("HH:mm")</td>
+                                        <td style="padding: 5px; text-align: center;">@flights.PNRNumber</td>
+                                        <td class="flightAmount" style="display: none; padding: 5px; text-align: center;">@flights.TicketAmount?.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+
+
+        @if (ViewBag.Trains is List<PackageTrains> trains && trains.Any())
+        {
+            <hr class="my-4">
+
+            <h5 class="fw-bold ml-3 prevent-crop">Train Details</h5>
+
+
+            <div class="row mb-2 prevent-crop">
+                <div class="col-sm-12">
+                    <label>
+                        <input type="checkbox" id="toggleTrainAmount" onclick="toggleColumn('trainAmount')" />
+                        Show Train Amount
+                    </label>
+                    <div style="overflow-x: auto; width: 97%; margin: auto;">
+                        <!-- Table wrapper -->
+                        <table class="table table-bordered table-sm" style="width: 100%; font-size: 8px; table-layout: fixed; word-wrap: break-word;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">#</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Railway</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Train #</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Location</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Class</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Dep. Date</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Dep. Time</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Arr. Date</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">Arr. Time</th>
+                                    <th style="padding: 5px; text-align: center;font-size:8px;">PNR</th>
+                                    <th class="trainAmount" style="display: none; padding: 5px; text-align: center;font-size:8px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int t = 1;
+                                }
+                                @foreach (PackageTrains train in ViewBag.Trains)
+                                {
+                                    <tr>
+                                        <th style="padding: 5px; text-align: center;">@(t++)</th>
+                                        <td style="padding: 5px; text-align: center;">@train.Railway?.Name</td>
+                                        <td style="padding: 5px; text-align: center;">@train.TrainNumber</td>
+                                        <td style="padding: 5px; text-align: center;">@train.Origin - @train.Destination</td>
+                                        <td style="padding: 5px; text-align: center;">@train.TrainClass?.ToString()</td>
+                                        <td style="padding: 5px; text-align: center;">@train.DepartureDate?.ToString("dd/MMM")</td>
+                                        <td style="padding: 5px; text-align: center;">@train.DepartureTime?.ToString("HH:mm")</td>
+                                        <td style="padding: 5px; text-align: center;">@train.ArrivalDate?.ToString("dd/MMM")</td>
+                                        <td style="padding: 5px; text-align: center;">@train.ArrivalTime?.ToString("HH:mm")</td>
+                                        <td style="padding: 5px; text-align: center;">@train.PNRNumber</td>
+                                        <td class="trainAmount" style="display: none; padding: 5px; text-align: center;">@train.TicketAmount?.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+        }
+
+        @if (ViewBag.Training != null && ViewBag.AssignedGifts != null)
+        {
+
+            <h5 class="fw-bold ml-3 prevent-crop">Traning Sessions & Gifts</h5>
+            <div class="row prevent-crop">
+                <div class="col-sm-12">
+                    <label class="fw-bold">Traning Session:</label>
+                    @foreach (PackageTrainings trainings in ViewBag.Training)
+                    {
+                        <div class="col-sm-12 col-md-12">
+                            <p>
+                                @trainings.Training.TrainingSession
+                                <strong>Excpected Time : </strong>@trainings.Training.ExpectedTrainingTime
+                                <strong>Excpected Venue : </strong>@trainings.Training.ExpectedTrainingVenue
+                            </p>
+                            <br />
+                        </div>
+                    }
+                </div>
+
+                <label class="fw-bold">Gifts:</label>
+
+                @foreach (PackageGifts gift in ViewBag.AssignedGifts)
+                {
+                    <span>@gift.Gift.GiftCode - @gift.Gift.Giveaway&nbsp;</span>
+                }
+
+            </div>
+        }
+
+        @if (Model.Content != null)
+        {
+            <hr class="my-4">
+
+            <h5 class="fw-normal ml-3 prevent-crop" style="font-size: 8px;">Itinerary</h5>
+            <!-- Itinerary section with prevent-crop to avoid natural breaks -->
+            <div class="row itinerary prevent-crop summernote-content" style="font-size:6px;">
+                @Html.Raw(Model.Content)
+            </div>
+        }
+
+        @if (Model.TermsnCondition != null)
+        {
+            <hr class="my-2">
+            <div class="keep-together terms-content">
+                <h5 class="fw-bold ml-3" style="font-size: 10px;">Terms & Conditions</h5>
+                @{
+                    var termsContent = Model.TermsnCondition.Split(new[] { "\n\n" }, StringSplitOptions.None);
+                }
+                @foreach (var paragraph in termsContent)
+                {
+                    @if (paragraph.StartsWith("<h"))
+                    {
+                        @Html.Raw(paragraph)
+                    }
+                    else
+                    {
+                        <p class="small-font">@Html.Raw(paragraph)</p>
+                    }
+                }
+            </div>
+        }
+
+    </div>
+</div>
+<script>
+    function generatePDF() {
+        const element = document.getElementById('yourContent');
+
+        // Hide checkboxes before generating PDF
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.style.display = 'none';
+        });
+
+        // Koi transform scale nahi laga rahe:
+        element.style.transform = 'none';
+        element.style.transformOrigin = 'top left';
+
+        html2pdf()
+            .set({
+                margin: [0.5, 0.5, 0.5, 0.5], // Increase margins to prevent cropping
+                filename: 'PackageDetails.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true }, // Use CORS for better image handling
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // Use avoid-all to prevent breaks
+            })
+            .from(element)
+            .save()
+            .then(() => {
+                console.log('PDF downloaded successfully.');
+            })
+            .catch((error) => {
+                console.error("Error generating PDF: ", error);
+            })
+            .finally(() => {
+                checkboxes.forEach(checkbox => {
+                    checkbox.style.display = '';
+                });
+            });
+    }
+</script>
+
+
+<script>
+    function toggleColumn(className) {
+        const elements = document.querySelectorAll('.' + className);
+        elements.forEach(element => {
+            element.style.display = element.style.display === 'none' ? '' : 'none';
+        });
+    }
+</script>
+<script>
+    function toggleSection(sectionId) {
+        var section = document.getElementById(sectionId);
+        section.style.display = section.style.display === "none" ? "block" : "none";
+    }
+</script>

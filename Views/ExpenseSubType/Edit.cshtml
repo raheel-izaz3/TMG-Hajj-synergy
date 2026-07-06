@@ -1,0 +1,125 @@
+﻿@model ExpenseSubType
+
+@{
+    string modelName = "Expense Sub Type";
+    string modelNamePlural = "Expense Sub Types";
+    string modelControllerRoute = "ExpenseSubType";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">@modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="Edit">
+                        <input type="hidden" asp-for="ExpenseSubTypeId" />
+                        <input type="hidden" asp-for="AccountsId" />
+                        <div class="row">
+                            <div class="col-sm-4 mb-3">
+                                <label class="form-label">Select Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CompanyId" class="form-control" asp-items="@ViewBag.Company">
+                                        <option disabled selected value="">Select Company</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+                            <div class="col-sm-4 mb-3">
+                                <label class="form-label">Select Expense Type</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="ExpenseTypeId" class="form-control" asp-items="@ViewBag.ExpTypes">
+                                        <option disabled selected value="">Select Expense Type</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="ExpenseTypeId"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label">Expense Sub Type Name</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text">
+                                        <i class="bx bx-building"></i>
+                                    </span>
+                                    <input asp-for="ExpenseSubTypeName" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="ExpenseSubTypeName"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Account Number</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text">
+                                        <i class="bx bx-hash"></i>
+                                    </span>
+                                    <input asp-for="AccountNumber" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountNumber"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Currency</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text">
+                                        <i class="bx bx-money"></i>
+                                    </span>
+                                    <select asp-for="Currency" class="form-control" asp-items="Html.GetEnumSelectList<Currencies>()">
+                                        <option disabled selected value="">Select Currency</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Currency"></span>
+                            </div>
+                            <div class="col-sm-6 col-md-6 mb-3">
+                                <label class="form-label">Account Title</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-user"></i></span>
+                                    <input asp-for="AccountTitle" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountTitle"></span>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 mb-3">
+                                <label class="form-label">IBAN</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-credit-card"></i></span>
+                                    <input asp-for="IBAN" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="IBAN"></span>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6 mb-3">
+                                <label class="form-label">Swift Code</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-code"></i></span>
+                                    <input asp-for="SwiftCode" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="SwiftCode"></span>
+                            </div>
+
+                            <div class="col-sm-6 col-md-12 mb-3">
+                                <label class="form-label">NTN</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-id-card"></i></span>
+                                    <input asp-for="NTN" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="NTN"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label class="form-label">Beneficiary Address</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-map"></i></span>
+                                    <input asp-for="BeneficiaryAddress" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="BeneficiaryAddress"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-primary float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

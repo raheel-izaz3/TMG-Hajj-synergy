@@ -1,0 +1,79 @@
+﻿@model TMG.Models.NewChartOfAccounts.FiscalYear.FiscalPeriods
+
+@{
+    Layout = "~/Views/Shared/_AccountsLayout.cshtml";
+    string modelName = "FPeriods";
+    string modelNamePlural = "FPeriods";
+    string modelControllerRoute = "FPeriods";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="FiscalPeriodsId" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select FYear</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="FiscalYearsId" class="form-control">
+                                        <option value="">Select Fiscal Year...</option>
+                                        @foreach (FiscalYears fy in ViewBag.FiscalYear)
+                                        {
+                                            <!option value="@fy.FiscalYearsId" @(fy.FiscalYearsId == Model.FiscalYearsId ? "selected" : "")>@fy.Company.CompanyName - @DateTimeManager.DateToHtmlFormat(fy.YearStart) @DateTimeManager.DateToHtmlFormat(fy.YearEnd)</!option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="PeriodName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="PeriodName" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="PeriodName"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="YearStart"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="YearStart" type="date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="YearStart"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="YearEnd"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="YearEnd" type="date" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="YearEnd"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" asp-for="IsClosed"></label>
+                                <div class="form-check">
+                                    <input asp-for="IsClosed" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label" for="IsClosed">Mark as Closed</label>
+                                </div>
+                                <span class="text-danger" asp-validation-for="IsClosed"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,118 @@
+﻿@model RailwayPNR
+
+@{
+    string modelName = "PNR";
+    string modelNamePlural = "PNRs";
+    string modelControllerRoute = "RailwayPNR";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                data-bs-target="#navs-pills-justified-pnr" aria-controls="navs-pills-justified-pnr" aria-selected="false">
+                            <i class="tf-icons bx bxs-plane"></i> PNR
+                        </button>
+                    </li>
+                </ul>
+                <form method="post">
+                    <input type="hidden" asp-for="RailwayPNRId" />
+                    <input type="hidden" asp-for="RailwayTravelId" />
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="navs-pills-justified-pnr" role="tabpanel">
+                                <div id="pnrs">
+                                    <div class="row" id="address_0">
+                                        <div class="col-sm-12 mb-2">
+                                            <p class="float-start">
+                                                Flight Economy Seats: <span id="remaining_economy">@ViewBag.EconomySeats</span>
+                                                | Flight Business Seats: <span id="remaining_business">@ViewBag.BusinessSeats</span>
+                                            </p>
+                                        </div>
+
+                                        <div class="col-sm-12 mb-2">
+                                            <p class="float-start">
+                                                Current Capacity: <span id="remaining_economy">@ViewBag.CurrentCapacity</span>
+                                                | Booked: <span id="remaining_business">@ViewBag.Booked</span>
+                                                | Balance: <span id="remaining_business">@ViewBag.Balance</span>
+                                            </p>
+                                        </div>
+
+                                        <hr />
+
+                                        <div class="col-sm-12 col-md-4 mb-3">
+                                            <label class="form-label">PNR Type</label>
+                                            <div class="input-group input-group-merge">
+                                                <select onchange="onTypeSelect(this)"
+                                                        id="TypeSelect_0"
+                                                        class="form-control"
+                                                        data-pnr-type-id="0"
+                                                        asp-for="Type">
+                                                    <option value="0">Economy</option>
+                                                    <option value="1">Business</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 mb-3">
+                                            <label class="form-label">PNR Name</label>
+                                            <div class="input-group input-group-merge">
+                                                <input class="form-control"
+                                                       placeholder="Enter PNR Name..."
+                                                       asp-for="Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 mb-3">
+                                            <label class="form-label">Capacity</label>
+                                            <small id="RemainingCapacity_0"></small>
+                                            <div class="input-group input-group-merge">
+                                                <input min="0" id="Capacity_0"
+                                                       class="form-control"
+                                                       type="number"
+                                                       asp-for="Capacity"
+                                                       data-pnr-type=""
+                                                       oninput="onCapacityInput(this)">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 mb-3">
+                                            <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+
+
+    function updateEconomySeats(val) {
+        document.querySelector(`#remaining_economy`).innerHTML = val
+    }
+
+    function updateBusinessSeats(val) {
+        document.querySelector(`#remaining_business`).innerHTML = val
+    }
+
+
+</script>
+
+

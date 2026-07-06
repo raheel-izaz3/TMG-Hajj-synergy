@@ -1,0 +1,362 @@
+﻿@model PNRTrain
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@{
+    string modelName = "PNRTrain";
+    string modelNamePlural = "PNRTrains";
+    string modelControllerRoute = "PNRTrain";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-pills-justified-pnr" aria-controls="navs-pills-justified-pnr" aria-selected="false">
+                            <i class="tf-icons bx bxs-plane"></i> PNR
+                        </button>
+                    </li>
+                </ul>
+                <form method="post">
+                    <input type="hidden" asp-for="PNRTrainId" />
+                    <input type="hidden" asp-for="FlightId" />
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="navs-pills-justified-pnr" role="tabpanel">
+                                <div id="pnrs">
+                                    <div class="row" id="address_0">
+                                        <div class="col-sm-12 mb-2">
+                                            <p class="float-start">
+                                                Current Capacity: <span id="remaining_economy">@ViewBag.CurrentCapacity</span>
+                                                | Booked: <span id="remaining_business">@ViewBag.Booked</span>
+                                                | Balance: <span id="remaining_business">@ViewBag.Balance</span>
+                                            </p>
+                                        </div>
+
+                                        <hr />
+
+                                        @if(int.Parse(http.HttpContext.Session.GetString("UserId")) == 1)
+                                        {
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Railway</label>
+                                                <span class="text-danger fw-bold">*</span>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="RailwayId"
+                                                    class="form-control">
+                                                        <option value="">Select a Railway...</option>
+                                                        @foreach (Railway airline in ViewBag.Airline)
+                                                        {
+                                                            <!option value="@airline.RailwayId" @(Model.RailwayId == airline.RailwayId ? "selected" : "")>@airline.Name</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="RailwayId"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select onchange="onTypeSelect(this)"
+                                                    id="TypeSelect_0"
+                                                    class="form-control"
+                                                    data-pnr-type-id="0"
+                                                    asp-for="Type">
+                                                        <option value="0">Economy</option>
+                                                        <option value="1">Business</option>
+                                                        <option value="2">First</option>
+                                                        <option value="3">Self</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select onchange="onTypeSelect(this)"
+                                                    id="TypeSelect_0"
+                                                    class="form-control"
+                                                    data-pnr-type-id="0"
+                                                    asp-for="PNRType">
+                                                        <option value="0">Individual</option>
+                                                        <option value="1">Group</option>
+                                                        <option value="2">Self</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Name</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control"
+                                                    placeholder="Enter PNR Name..."
+                                                    asp-for="Name">
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label">PNR Number</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="PNRNo" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="PNRNo"></span>
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Capacity</label>
+                                                <small id="RemainingCapacity_0"></small>
+                                                <div class="input-group input-group-merge">
+                                                    <input min="0" id="Capacity_0"
+                                                    class="form-control"
+                                                    type="number"
+                                                    asp-for="Capacity"
+                                                    data-pnr-type=""
+                                                    oninput="onCapacityInput(this)">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" asp-for="TrainNumber"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="TrainNumber" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="TrainNumber"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Departure</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="datetime-local" asp-for="Departure" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Departure"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Arrival</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="datetime-local" asp-for="Arrival" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Arrival"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" asp-for="Price"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="Price" min="0" value="0" class="form-control">
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Price"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label">Payment Mode</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="CreditCardId" class="form-control">
+                                                        @foreach (CreditCard creditCard in ViewBag.PaymentMode)
+                                                        {
+                                                            <!option value="@creditCard.CreditCardId" @(Model.CreditCardId == creditCard.CreditCardId ? "selected" : "")>@creditCard.Name</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="CreditCardId"></span>
+                                            </div>
+
+                                        }
+
+                                        else
+                                        {
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Railway</label>
+                                                <span class="text-danger fw-bold">*</span>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="RailwayId" class="form-control" disabled>
+                                                        <option value="">Select a Railway...</option>
+                                                        @foreach (Railway airline in ViewBag.Airline)
+                                                        {
+                                                            <!option value="@airline.RailwayId" @(Model.RailwayId == airline.RailwayId ? "selected" : "")>@airline.Name</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="RailwayId"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select onchange="onTypeSelect(this)" id="TypeSelect_0" class="form-control" data-pnr-type-id="0" asp-for="Type" disabled>
+                                                        <option value="0">Economy</option>
+                                                        <option value="1">Business</option>
+                                                        <option value="2">First</option>
+                                                        <option value="3">Self</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-2 mb-3">
+                                                <label class="form-label">PNR Type</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select onchange="onTypeSelect(this)" id="TypeSelect_0" class="form-control" data-pnr-type-id="0" asp-for="PNRType" disabled>
+                                                        <option value="0">Individual</option>
+                                                        <option value="1">Group</option>
+                                                        <option value="2">Self</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Name</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input class="form-control" placeholder="Enter PNR Name..." asp-for="Name" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label">PNR Number</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="PNRNo" class="form-control" readonly>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="PNRNo"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-4 mb-3">
+                                                <label class="form-label">Capacity</label>
+                                                <small id="RemainingCapacity_0"></small>
+                                                <div class="input-group input-group-merge">
+                                                    <input min="0" id="Capacity_0" class="form-control" type="number" asp-for="Capacity" data-pnr-type="" readonly>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" asp-for="TrainNumber"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="TrainNumber" class="form-control" readonly>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="TrainNumber"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Departure</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="datetime-local" asp-for="Departure" class="form-control" readonly>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Departure"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label">Arrival</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="datetime-local" asp-for="Arrival" class="form-control" readonly>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Arrival"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" asp-for="Price"></label>
+                                                <div class="input-group input-group-merge">
+                                                    <input asp-for="Price" min="0" value="0" class="form-control" readonly>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="Price"></span>
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label">Payment Mode</label>
+                                                <div class="input-group input-group-merge">
+                                                    <select asp-for="CreditCardId" class="form-control" disabled>
+                                                        @foreach (CreditCard creditCard in ViewBag.PaymentMode)
+                                                        {
+                                                            <!option value="@creditCard.CreditCardId" @(Model.CreditCardId == creditCard.CreditCardId ? "selected" : "")>@creditCard.Name</!option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger" asp-validation-for="CreditCardId"></span>
+                                            </div>
+
+                                        }
+
+
+                                        <div class="col-sm-12 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname">
+                                                Select
+                                                Packages
+                                            </label>
+                                            <br />
+                                            @{
+                                                int i = 0;
+                                            }
+                                            @foreach (var package in ViewBag.Packages)
+                                            {
+                                                bool found = false;
+                                                foreach (PNRTrainPackage fp in ViewBag.PNRTrainPackages)
+                                                {
+                                                    if (fp.PackageId == package.PackageId)
+                                                    {
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                <div class="form-check form-check-inline">
+                                                    <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                                    @if (found)
+                                                    {
+                                                        <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                               asp-for="PackagesSelected[i]" checked>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                                               asp-for="PackagesSelected[i]">
+                                                    }
+
+                                                    <label class="form-check-label"
+                                                           for="@package.PackageId">@package.Name</label>
+                                                </div>
+                                                i++;
+                                            }
+                                        </div>
+
+                                        <div class="col-sm-12 mb-3">
+                                            <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+
+
+    function updateEconomySeats(val) {
+        document.querySelector(`#remaining_economy`).innerHTML = val
+    }
+
+    function updateBusinessSeats(val) {
+        document.querySelector(`#remaining_business`).innerHTML = val
+    }
+
+
+</script>
+
+
+<partial name="~/Views/Shared/_PackageROECalculationScript.cshtml" />
+<partial name="~/Views/Shared/_SectorScriptPartial.cshtml" />
+<partial name="~/Views/Shared/_PNRScriptPartial.cshtml" />

@@ -1,0 +1,134 @@
+﻿@model CongratulationLetterReportModel
+
+@{
+    Layout = "";
+}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <style>
+        .Invoice_to_section {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+         .enlarge {
+            font-size: 12px !important
+        }
+    @*
+    
+
+        * {
+            font-size: 10px;
+        }
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: lightblue;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        main {
+            margin-top: 85px;
+        }
+
+       
+
+        footer {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            position: fixed;
+        }*@
+    </style> 
+</head>
+
+<body style="padding-top: 60px; padding-bottom: 35px">
+    <header style="position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background-color: lightblue;
+            margin: 0;
+            padding: 0;
+            text-align: center;">
+        <img src="~/@Model.packageCompany.LetterHead" alt="" width="100%" height="60px" />
+    </header>
+    <main>
+        <h6 style="color: #a3822e; margin: 0; padding: 0; font-size: 14px; margin-top: 63px !important">
+             @Model.HeadFullName
+        </h6>
+
+        <div class="Invoice_to_section enlarge">
+            <div class="Customer_Info">
+                <p class="enlarge" style="margin: 0;">
+                    <span class="enlarge" style="font-weight: bold">CID: </span>
+                    <span class="enlarge">@Model.CID</span>
+                </p>
+                <p style="margin: 0;">
+                    <span class="enlarge" style="font-weight: bold">CONTACT: </span>
+                    <span class="enlarge">@Model.CONTACT</span>
+                </p>
+                <p style="margin: 0;">
+                    <span class="enlarge" style="font-weight: bold">CNIC: </span>
+                    <span class="enlarge">@Model.CNIC</span>
+                </p>
+                <p style="margin: 0;">
+                    <span class="enlarge" style="font-weight: bold">PASSPORT: </span>
+                    <span class="enlarge">@Model.PASSPORT</span>
+                </p>
+                @* <p style="margin: 0;">
+                    <span class="enlarge" style="font-weight: bold">ADDRESS:</span>
+                    <span class="enlarge">@Model.ADDRESS</span>
+                </p> *@
+            </div>
+
+            <div class="Customer_Col_2">
+                <p style="margin: 0;"><span style="font-weight: bold; font-size: 14px;">PAX:</span> <span style="font-size: 14px;">@Model.PAX</span></p>
+                <p style="margin: 0;">
+                    <span style="font-weight: bold; font-size: 14px;">SPO:</span>
+                    <span style="font-size: 14px;">@Model.SPO</span>
+                </p>
+            </div>
+
+            <div class="ALL_MEMBERS_NAMES" id="MemebrsName_hide">
+                <p style="margin: 0;">
+                    <u><b style="font-size: 14px;">MEMBERS ID:</b></u>
+                </p>
+                @if (Model.membersID != null)
+                {
+                    @foreach (var item in Model.membersID)
+                    {
+                        <p style="margin: 0;">
+                            <span style="font-size: 14px;">@item</span>
+                        </p>
+                    }
+                }
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 20px !important">
+            @Html.Raw(Model?.Letter?.LetterContent)
+        </div>
+               
+
+        <footer style="bottom: 0;
+            left: 0;
+            width: 100%;
+            position: fixed; margin-top: 20px !important">
+            <img src="~/@Model.packageCompany.LetterHeadFooter" alt="" width="100%" height="35px" />
+        </footer>
+    </main>
+</body>
+</html>
+

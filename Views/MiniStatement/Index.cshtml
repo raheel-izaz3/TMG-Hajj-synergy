@@ -1,0 +1,985 @@
+﻿@model Invoice
+
+@{
+    string modelName = "Mini Statement";
+    string modelNamePlural = "Mini Statements";
+    string modelControllerRoute = "MiniStatement";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Client Statement</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 mb-3">
+                                <label>Select Family Head</label>
+
+                                <select name="familyId" id="familyId" class="form-select" onchange="getFamilyDetail()"
+                                    aria-label="Default select example">
+                                    <option selected disabled hidden>Select Family Head</option>
+                                    @foreach (FamilyHead family in ViewBag.FamilyHead)
+                                    {
+                                        <option value="@family.FamilyHeadId">@family.GivenName @family.SurName
+                                            (HB #@family.FamilyHeadId)</option>
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            @* <div class="col-md-6">
+                            <input type="button" class="btn btn-primary" value="Filter"
+                            onclick="getFamilyDetail()" />
+                            </div> *@
+                            <div class="col-md-6 mt-2">
+                                <input type="checkbox" onclick="showSar(this)" checked />
+                                <label>SAR</label>
+                                <input type="checkbox" onclick="showUsd(this)" />
+                                <label>USD</label>
+                                <input type="checkbox" onclick="showPkr(this)" />
+                                <label>PKR</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="mb-4">
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Family Head Detail</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><b>Name:</b> <span id="givenName"></span> <span id="surName"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Email:</b> <span id="email"></span></p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><b>Contact:</b> <span id="contact"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Address:</b> <span id="address"></span></p>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><b>CNIC:</b> <span id="cnic"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Passport:</b> <span id="passport"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6" id="sarcurrency">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Package Price Detail <span id="currency">(SAR)</span></h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><b>Package:</b> <span id="sarpackage"></span></p>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <p><b>Additional Facility:</b> <span id="saradditional"></span></p>
+                        </div>
+                       @*  <div class="col-md-12 mt-3">
+                            <p><b>Package Addons:</b> <span id="saraddons"></span></p>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-3" style="display:none" id="usdcurrency">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Package Price Detail <span id="currency">(USD)</span></h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><b>Package:</b> <span id="usdpackage"></span></p>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <p><b>Additional Facility:</b> <span id="usdadditional"></span></p>
+                        </div>
+                        @* <div class="col-md-12 mt-3">
+                            <p><b>Package Addons:</b> <span id="usdaddons"></span></p>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mt-3" style="display:none" id="pkrcurrency">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Package Price Detail <span id="currency">(PKR)</span></h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p><b>Package:</b> <span id="pkrpackage"></span></p>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <p><b>Additional Facility:</b> <span id="pkradditional"></span></p>
+                        </div>
+                        @* <div class="col-md-12 mt-3">
+                            <p><b>Package Addons:</b> <span id="pkraddons"></span></p>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Mini Statement</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount (PKR)</th>
+                                <th>Amount (SAR)</th>
+                                <th>Amount (USD)</th>
+                                <th>ROE (PKR)</th>
+                                <th>ROE (SAR)</th>
+                                <th>ROE (USD)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="miniStatement">
+
+                            </tbod>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" style="display:block" id="showsarledger">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Ledger Account (SAR)</h4>
+                </div>
+                <div class="card-body" id="sarledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-5" style="display:none" id="showusdledger">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Ledger Account (USD)</h4>
+                </div>
+                <div class="card-body" id="usdledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row mt-5" style="display:none" id="showpkrledger">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center"> Ledger Account (PKR)</h4>
+                </div>
+                <div class="card-body" id="pkrledger">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="row mt-5" id="showsarmember">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Members Wise Breakdown (SAR)</h4>
+                </div>
+                <div class="card-body" id="sarmember">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" id="showusdmember" style="display: none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Members Wise Breakdown (USD)</h4>
+                </div>
+                <div class="card-body" id="usdmember">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5" id="showpkrmember" style="display: none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Members Wise Breakdown (PKR)</h4>
+                </div>
+                <div class="card-body" id="pkrmember">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPkr(input) {
+        if (input.checked == false) {
+            document.getElementById('pkrcurrency').style.display = 'none'
+            document.getElementById('showpkrmember').style.display = 'none'
+            document.getElementById('showpkrledger').style.display = 'none'
+        } else {
+            document.getElementById('pkrcurrency').style.display = 'block'
+            document.getElementById('showpkrmember').style.display = 'block'
+            document.getElementById('showpkrledger').style.display = 'block'
+        }
+    }
+    function showUsd(input) {
+        if (input.checked == false) {
+            document.getElementById('usdcurrency').style.display = 'none'
+            document.getElementById('showusdmember').style.display = 'none'
+            document.getElementById('showusdledger').style.display = 'none'
+        } else {
+            document.getElementById('usdcurrency').style.display = 'block'
+            document.getElementById('showusdmember').style.display = 'block'
+            document.getElementById('showusdledger').style.display = 'block'
+        }
+    }
+    function showSar(input) {
+        if (input.checked == false) {
+            document.getElementById('sarcurrency').style.display = 'none'
+            document.getElementById('showsarmember').style.display = 'none'
+            document.getElementById('showsarledger').style.display = 'none'
+        } else {
+            document.getElementById('sarcurrency').style.display = 'block'
+            document.getElementById('showsarmember').style.display = 'block'
+            document.getElementById('showsarledger').style.display = 'block'
+        }
+    }
+
+
+    function getFamilyDetail() {
+        var familyId = document.getElementById('familyId').value;
+        $.ajax({
+            url: "/MiniStatement/GetFamilyDetail/",
+            data: {
+                id: familyId 
+            },
+            method: "GET",
+            success: res => {
+                console.log(res)
+                document.getElementById('givenName').innerText = res.familyHead[0].givenName
+                document.getElementById('surName').innerText = res.familyHead[0].surName
+                document.getElementById('cnic').innerText = res.familyHead[0].cnic
+                document.getElementById('passport').innerText = res.familyHead[0].passportNumber
+                document.getElementById('contact').innerText = res.familyHeadContact
+                document.getElementById('email').innerText = res.familyHeadEmail
+                document.getElementById('address').innerText = res.familyHeadAddress
+
+
+                let pkrpackageprice = 0
+                let pkradditional = 0
+                let pkraddons = 0
+
+                let sarpackageprice = 0
+                let saradditional = 0
+                let saraddons = 0
+
+                let usdpackageprice = 0
+                let usdadditional = 0
+                let usdaddons = 0
+
+                for (let i of res.familyMember) {
+                    pkrpackageprice += parseInt(i.package.adultPkr)
+                    sarpackageprice += parseInt(i.package.adultSar)
+                    usdpackageprice += parseInt(i.package.adultUsd)
+                }
+
+                for (let i of res.additionalFacility) {
+                    pkradditional += parseInt(i.additionalFacilities.adultPkr)
+                    saradditional += parseInt(i.additionalFacilities.adultSar)
+                    usdadditional += parseInt(i.additionalFacilities.adultUsd)
+
+    @* saradditional += parseInt(i.adultPkr)  /  parseInt(i.package.sarroe)
+                        usdadditional += parseInt(i.adultPkr) /  parseInt(i.package.usdroe)  *@
+
+                }
+
+                for (let i of res.packageAddons) {
+
+                    pkraddons += parseInt(i.pkrPrice)
+                    saraddons += parseInt(i.sarPrice)
+                    usdaddons += parseInt(i.usdPrice)
+
+    @* saraddons += parseInt(i.pkrPrice) / parseInt(i.package.sarroe)
+                        usdaddons += parseInt(i.pkrPrice) / parseInt(i.package.usdroe) *@
+                }
+
+                document.getElementById('pkrpackage').innerText = pkrpackageprice.toFixed(2);
+                document.getElementById('pkradditional').innerText = pkradditional.toFixed(2);
+                // document.getElementById('pkraddons').innerText = pkraddons.toFixed(2);
+
+                document.getElementById('sarpackage').innerText = sarpackageprice.toFixed(2);
+                document.getElementById('saradditional').innerText = saradditional.toFixed(2);
+                // document.getElementById('saraddons').innerText = saraddons.toFixed(2);
+
+                document.getElementById('usdpackage').innerText = usdpackageprice.toFixed(2);
+                document.getElementById('usdadditional').innerText = usdadditional.toFixed(2);
+                // document.getElementById('usdaddons').innerText = usdaddons.toFixed(2);
+
+                let pkrledger = ``;
+                pkrledger += `<div class="table-responsive text-nowrap"> `
+                pkrledger += `<table class="table table-hover">`
+                pkrledger += `<thead>`
+
+                pkrledger += `<tr>`
+                pkrledger += `<th>Date</th>`
+                pkrledger += `<th>Details</th>`
+                pkrledger += `<th>Debit</th>`
+                pkrledger += `<th>Credit</th>`
+                pkrledger += `<th>Balance</th>`
+                pkrledger += `</tr>`
+                pkrledger += `</thead>`
+                pkrledger += `<tbody>`
+
+                let pkrdebit = 0;
+                let pkrcredit = 0;
+                let pkrbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]))
+                        var r_credit = (parseInt(res.model.credits[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.usdRoe[i]))
+                        var r_balance = (parseInt(res.model.balances[i]) * parseInt(res.model.usdRoe[i]))
+
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.usdRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.usdRoe[i]))
+                        pkrbalance += (parseInt(res.model.balances[i]) * parseInt(res.model.usdRoe[i]))
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+
+                        pkrdebit += (parseInt(res.model.debits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrcredit += (parseInt(res.model.credits[i]) * parseInt(res.model.pkrRoe[i]))
+                        pkrbalance += (i == 0) ? (pkrdebit - pkrcredit) : ((pkrbalance + pkrdebit) - pkrcredit)
+
+                    }
+
+
+
+                    pkrledger += `<tr>`
+                    pkrledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                    pkrledger += `<td>${res.model.details[i]}</td>`
+
+
+                    pkrledger += `<td>PKR ${r_debit.toLocaleString()}</td>`
+                    pkrledger += `<td>PKR ${r_credit.toLocaleString()}</td>`
+                    pkrledger += `<td>PKR ${r_balance.toLocaleString()} </td>`
+                    pkrledger += `</tr>`
+                }
+
+
+                pkrbalance = pkrdebit - pkrcredit;
+
+                pkrledger += `</tbody>`
+                pkrledger += `<tfoot>`
+                pkrledger += `<tr>`
+                pkrledger += `<td colspan=2><b>Total</b></td>`
+                pkrledger += `<td>PKR ${pkrdebit.toLocaleString()}</td>`
+                pkrledger += `<td>PKR ${pkrcredit.toLocaleString()}</td>`
+                pkrledger += `<td>PKR ${pkrbalance.toLocaleString()}</td>`
+                pkrledger += `</tr>`
+                pkrledger += `</tfoot>`
+                pkrledger += `</table>`
+                pkrledger += `</div>`
+
+
+                $('#pkrledger').html(pkrledger)
+
+                // SAR Ledger
+
+                let sarledger = ``;
+                sarledger += `<div class="table-responsive text-nowrap"> `
+                sarledger += `<table class="table table-hover">`
+                sarledger += `<thead>`
+
+                sarledger += `<tr>`
+                sarledger += `<th>Date</th>`
+                sarledger += `<th>Details</th>`
+                sarledger += `<th>Debit</th>`
+                sarledger += `<th>Credit</th>`
+                sarledger += `<th>Balance</th>`
+                sarledger += `</tr>`
+                sarledger += `</thead>`
+                sarledger += `<tbody>`
+
+                let sardebit = 0;
+                let sarcredit = 0;
+                let sarbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]))
+                        var r_credit = (parseInt(res.model.credits[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        sardebit += (parseInt(res.model.debits[i]))
+                        sarcredit += (parseInt(res.model.credits[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+
+                        sardebit += (parseInt(res.model.debits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.sarRoe[i]))
+                        sarbalance += (i == 0) ? (sardebit - sarcredit) : ((sarbalance + sardebit) - sarcredit)
+
+
+                    }
+
+
+
+                    sarledger += `<tr>`
+                    sarledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                    sarledger += `<td>${res.model.details[i]}</td>`
+
+
+                    sarledger += `<td>SAR ${r_debit.toLocaleString()}</td>`
+                    sarledger += `<td>SAR ${r_credit.toLocaleString()}</td>`
+                    sarledger += `<td>SAR  ${r_balance.toLocaleString()}</td>`
+                    sarledger += `</tr>`
+
+
+
+                }
+
+
+                sarbalance = sardebit - sarcredit;
+
+                sarledger += `</tbody>`
+                sarledger += `<tfoot>`
+                sarledger += `<tr>`
+                sarledger += `<td colspan=2><b>Total</b></td>`
+                sarledger += `<td>SAR ${sardebit.toLocaleString()}</td>`
+                sarledger += `<td>SAR ${sarcredit.toLocaleString()}</td>`
+                sarledger += `<td>SAR ${sarbalance.toLocaleString()}</td>`
+                sarledger += `</tr>`
+                sarledger += `</tfoot>`
+                sarledger += `</table>`
+                sarledger += `</div>`
+
+
+                $('#sarledger').html(sarledger)
+
+
+
+
+                // USD Ledger
+
+
+
+
+                let usdledger = ``;
+                usdledger += `<div class="table-responsive text-nowrap"> `
+                usdledger += `<table class="table table-hover">`
+                usdledger += `<thead>`
+
+                usdledger += `<tr>`
+                usdledger += `<th>Date</th>`
+                usdledger += `<th>Details</th>`
+                usdledger += `<th>Debit</th>`
+                usdledger += `<th>Credit</th>`
+                usdledger += `<th>Balance</th>`
+                usdledger += `</tr>`
+                usdledger += `</thead>`
+                usdledger += `<tbody>`
+
+                let usddebit = 0;
+                let usdcredit = 0;
+                let usdbalance = 0;
+
+                for (let i in res.model.voucherIds) {
+
+
+
+                    if (res.model.currency[i] == 'PKR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'SAR') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'USD') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+                    }
+                    else if (res.model.currency[i] == 'AED') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (parseInt(res.model.balances[i]) * parseInt(res.model.usdRoe[i]))
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+
+                    }
+                    else if (res.model.currency[i] == 'GBP') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (i == 0) ? (usddebit - usdcredit) : ((usdbalance + usddebit) - usdcredit)
+
+
+
+                    }
+
+                    else if (res.model.currency[i] == 'EURO') {
+
+                        var r_debit = (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_credit = (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        var r_balance = (i == 0) ? (r_debit - r_credit) : ((r_balance + r_debit) - r_credit)
+
+
+                        usddebit += (parseInt(res.model.debits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdcredit += (parseInt(res.model.credits[i]) / parseInt(res.model.usdRoe[i]))
+                        usdbalance += (parseInt(res.model.balances[i]) / parseInt(res.model.usdRoe[i]))
+
+
+                    }
+
+
+
+                    usdledger += `<tr>`
+                    usdledger += `<td>${res.model.dateTimes[i].split("T")[0]}</td>`
+                    usdledger += `<td>${res.model.details[i]}</td>`
+
+
+                    usdledger += `<td>USD ${r_debit.toLocaleString()}</td>`
+                    usdledger += `<td>USD ${r_credit.toLocaleString()}</td>`
+                    usdledger += `<td>USD ${r_balance.toLocaleString()} </td>`
+                    usdledger += `</tr>`
+
+
+
+                }
+
+
+                usdbalance = usddebit - usdcredit;
+
+                usdledger += `</tbody>`
+                usdledger += `<tfoot>`
+                usdledger += `<tr>`
+                usdledger += `<td colspan=2><b>Total</b></td>`
+                usdledger += `<td>USD ${usddebit.toLocaleString()}</td>`
+                usdledger += `<td>USD ${usdcredit.toLocaleString()}</td>`
+                usdledger += `<td>USD ${usdbalance.toLocaleString()}</td>`
+                usdledger += `</tr>`
+                usdledger += `</tfoot>`
+                usdledger += `</table>`
+                usdledger += `</div>`
+
+
+                $('#usdledger').html(usdledger)
+
+
+
+                let pkrmember = "";
+                pkrmember = ``;
+                pkrmember += `<div class="table-responsive text-nowrap"> `
+                pkrmember += `<table class="table table-hover">`
+                pkrmember += `<thead>`
+                pkrmember += `<tr>`
+                pkrmember += `<th>Name</th>`
+                pkrmember += `<th>Total Amount</th>`
+                pkrmember += `<th>Package</th>`
+                pkrmember += `<th>Additional Facility</th>`
+                // pkrmember += `<th>Package Addons</th>`
+                pkrmember += `<th>SAR ROE</th>`
+                pkrmember += `<th>USD ROE</th>`
+                pkrmember += `</tr>`
+                pkrmember += `</thead>`
+                pkrmember += `<tbody>`
+                let pkrtotalamount = 0;
+                for (let i of res.familyMember) {
+                    pkrmember += `<tr>`
+                    pkrmember += `<th>${i.familyHead.givenName} ${i.familyHead.surName}</th>`
+                    pkrtotalamount += i.package.adultPkr
+                    pkrmember += `<th>${i.package.adultPkr}</th>`
+                    let pkraddfacility = 0;
+                    for (let j of res.additionalFacility) {
+                        if (i.package.packageId == j.additionalFacilities.packageId) {
+                            pkraddfacility += parseInt(j.additionalFacilities.adultPkr)
+                            break;
+                        }
+                    }
+                    pkrmember += `<th>${pkraddfacility.toLocaleString()}</th>`
+                    pkrtotalamount += pkraddfacility;
+                    let pkrpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            pkrpacaddon += parseInt(j.pkrPrice)
+                            break;
+                        }
+                    }
+                    pkrtotalamount += pkrpacaddon;
+                    // pkrmember += `<th>${pkrpacaddon.toLocaleString()}</th>`
+                    pkrmember += `<th>${i.package.sarroe}</th>`
+                    pkrmember += `<th>${i.package.usdroe}</th>`
+                    pkrmember += `</tr>`
+                }
+                $('#pkrmember').html(pkrmember)
+
+
+
+
+
+                let sarmember = "";
+                sarmember = ``;
+                sarmember += `<div class="table-responsive text-nowrap"> `
+                sarmember += `<table class="table table-hover">`
+                sarmember += `<thead>`
+                sarmember += `<tr>`
+                sarmember += `<th>Name</th>`
+                sarmember += `<th>Package</th>`
+                // sarmember += `<th>Package Addons</th>`
+                sarmember += `<th>Additional Facility</th>`
+                sarmember += `<th>USD ROE</th>`
+                sarmember += `</tr>`
+                sarmember += `</thead>`
+                sarmember += `<tbody>`
+                for (let i of res.familyMember) {
+                    sarmember += `<tr>`
+                    sarmember += `<th>${i.familyHead.givenName} ${i.familyHead.surName}</th>`
+                    sarmember += `<th>${i.package.adultSar}</th>`
+                    let saraddfacility = 0;
+                    for (let j of res.additionalFacility) {
+                        if (i.package.packageId == j.packageId) {
+                            saraddfacility += parseInt(j.adultSar)
+                            break;
+                        }
+                    }
+                    sarmember += `<th>${saraddfacility.toLocaleString()}</th>`
+                    let sarpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            sarpacaddon += parseInt(j.sarPrice)
+                            break;
+                        }
+                    }
+                    // sarmember += `<th>${sarpacaddon.toLocaleString()}</th>`
+
+                    sarmember += `<th>${i.package.usdroe}</th>`
+                    sarmember += `</tr>`
+                }
+                $('#sarmember').html(sarmember)
+
+
+                let usdmember = "";
+                usdmember = ``;
+                usdmember += `<div class="table-responsive text-nowrap"> `
+                usdmember += `<table class="table table-hover">`
+                usdmember += `<thead>`
+                usdmember += `<tr>`
+                usdmember += `<th>Name</th>`
+                usdmember += `<th>Package</th>`
+                // usdmember += `<th>Package Addons</th>`
+                usdmember += `<th>Additional Facility</th>`
+                usdmember += `<th>SAR ROE</th>`
+                usdmember += `</tr>`
+                usdmember += `</thead>`
+                usdmember += `<tbody>`
+                for (let i of res.familyMember) {
+                    usdmember += `<tr>`
+                    usdmember += `<th>${i.familyHead.givenName} ${i.familyHead.surName}</th>`
+                    usdmember += `<th>${i.package.adultUsd}</th>`
+                    let usdaddfacility = 0;
+                    for (let j of res.additionalFacility) {
+                        if (i.package.packageId == j.packageId) {
+                            usdaddfacility += parseInt(j.adultUsd)
+                            break;
+                        }
+
+                    }
+
+                    usdmember += `<th>${usdaddfacility.toLocaleString()}</th>`
+                    let usdpacaddon = 0;
+                    for (let j of res.packageAddons) {
+                        if (i.package.packageId == j.packageId) {
+                            usdpacaddon += parseInt(j.usdPrice)
+                            break;
+                        }
+                    }
+                    // usdmember += `<th>${usdpacaddon.toLocaleString()}</th>`
+                    usdmember += `<th>${i.package.usdroe}</th>`
+                    usdmember += `</tr>`
+                }
+                $('#usdmember').html(usdmember)
+
+                let pkrminiStatement = "";
+
+                let totalpkr = 0;
+                let totalsar = 0;
+                let totalusd = 0;
+
+                const invoiceStatusMap = {
+                    0: 'Unsupervised', 1: 'Supervised', 2: 'Pending', 3: 'Bounce', 4: 'Cleared', 5: 'Clearing'
+                }
+
+                for (let i of res.invoice) {
+                    totalpkr += i.invoice.amountRecived;
+
+                    var fullDate = new Date(i.invoice.date);
+                    var onlyDate = fullDate.toISOString().split('T')[0];
+
+                    var invoiceStatusString = invoiceStatusMap[i.invoice.invoiceStatus];
+
+                    pkrminiStatement += `
+                                  <tr>
+                                            <td>${onlyDate}</td>
+                                                <td>${i.invoice.amountRecived.toLocaleString()}</td>
+                                                <td>${(i.invoice.amountRecived / i.invoice.sarroe).toLocaleString()}</td>
+                                                <td>${(i.invoice.amountRecived / i.invoice.usdroe).toLocaleString()}</td>
+                                            <td>${i.invoice.pkrroe}</td>
+                                            <td>${i.invoice.sarroe}</td>
+                                            <td>${i.invoice.usdroe}</td>
+                                            <td>${invoiceStatusString}</td>
+                                   </tr>`;
+                }
+
+                let minipkrbalance = pkrtotalamount - totalpkr;
+                pkrminiStatement += `<tr>
+                                            <td colspan=3>Total Amount :${pkrtotalamount.toLocaleString()}</td>
+                                            <td>Amount Recived</td>
+                                            <td>${totalpkr.toLocaleString()}</td>
+                                            <td>Balance</td>
+                                            <td>${minipkrbalance.toLocaleString()}</td>
+                                </tr>`
+                $('#miniStatement').html(pkrminiStatement)
+
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('select[name="familyId"]').select2({
+            placeholder: "Select Family Head",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>

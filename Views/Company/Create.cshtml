@@ -1,0 +1,921 @@
+﻿@model CompanyRegisterRequest
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Companies / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-company" aria-controls="navs-pills-justified-company" aria-selected="false">
+                            <i class="tf-icons bx bx-building"></i> Company Details
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link " role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-contact" aria-controls="navs-pills-justified-contact" aria-selected="true">
+                            <i class="tf-icons bx bx-phone"></i> Contact Details
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-license" aria-controls="navs-pills-justified-license" aria-selected="false">
+                            <i class="tf-icons bx bx-paperclip"></i> License Details
+                        </button>
+                    </li>
+                </ul>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" id="navs-pills-justified-company" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyName"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="CompanyName" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company Name..." aria-describedby="basic-icon-default-fullname2">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CompanyName"></span>
+                                    </div>
+                                    <div class="col-sm-4 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyCode"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="CompanyCode" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company Code..." aria-describedby="basic-icon-default-fullname2">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CompanyCode"></span>
+                                    </div>
+                                    <div class="col-sm-4 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Currency Type <span class="text-danger fw-bold"> *</span></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-select" name="CurrencyTypeId">
+                                                <option>Select Currency...</option>
+                                                @foreach (CurrencyType ca in ViewBag.CurrencyType)
+                                                {
+                                                    <option value="@ca.CurrencyTypeId">@ca.CurrencyName - @ca.CurrencyCode</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    @* <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Heading"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="Heading" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company Heading..." aria-describedby="basic-icon-default-fullname2">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Heading"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="SubHeading"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="SubHeading" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company SubHeading..." aria-describedby="basic-icon-default-fullname2">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="SubHeading"></span>
+                                    </div> *@
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="EstablishmentDate"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                            <input asp-for="EstablishmentDate" max="@DateTimeManager.Today" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="EstablishmentDate"></span>
+                                    </div>
+                                    @* <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="POD"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="POD" class="form-control" id="basic-icon-default-fullname" placeholder="Enter POD...">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="POD"></span>
+                                    </div> *@
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Quota"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="Quota" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Quota...">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Quota"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Website"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="Website" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Website URL... (e.g. https://website.com)">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Website"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyStatus"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="CompanyStatus" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company Status...">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CompanyStatus"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="CurrentStatus"></label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="CurrentStatus" class="form-control" id="basic-icon-default-fullname" placeholder="Enter Company Status...">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CurrentStatus"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="LogoFile"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="LogoFile" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="LogoFile"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="StampFile"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="StampFile" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="StampFile"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Letter Head Header</label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Header" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Header"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Letter Head Footer</label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Footer" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Footer"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Company Signature</label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Signatures" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Signatures"></span>
+                                    </div>
+                                    @* <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="LetterHead"></label>
+                                        <span class="text-danger fw-bold"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="LetterHead" class="form-control" id="basic-icon-default-fullname">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="LetterHead"></span>
+                                    </div> *@
+                                </div>
+
+                                <!-- ==================== NEW FIELDS START ==================== -->
+                                <hr class="my-4" />
+                                <h5 class="fw-bold text-primary">Company Registrations</h5>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="MohraEnrollmentNo" class="form-label"></label>
+                                        <input asp-for="MohraEnrollmentNo" class="form-control" placeholder="Enter Mohra Enrollment #" />
+                                        <span asp-validation-for="MohraEnrollmentNo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="MunazzamNo" class="form-label"></label>
+                                        <input asp-for="MunazzamNo" class="form-control" placeholder="Enter Munazzam #" />
+                                        <span asp-validation-for="MunazzamNo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="ClusterEnrollmentNo" class="form-label"></label>
+                                        <input asp-for="ClusterEnrollmentNo" class="form-control" placeholder="Enter Cluster Enrollment #" />
+                                        <span asp-validation-for="ClusterEnrollmentNo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="DTSNo" class="form-label"></label>
+                                        <input asp-for="DTSNo" class="form-control" placeholder="Enter DTS #" />
+                                        <span asp-validation-for="DTSNo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="DTSExpiry" class="form-label"></label>
+                                        <input asp-for="DTSExpiry" type="date" class="form-control" />
+                                        <span asp-validation-for="DTSExpiry" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="IATANo" class="form-label"></label>
+                                        <input asp-for="IATANo" class="form-control" placeholder="Enter IATA #" />
+                                        <span asp-validation-for="IATANo" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="IATAExpiry" class="form-label"></label>
+                                        <input asp-for="IATAExpiry" type="date" class="form-control" />
+                                        <span asp-validation-for="IATAExpiry" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <label asp-for="NTN" class="form-label"></label>
+                                        <input asp-for="NTN" class="form-control" placeholder="Enter NTN #" />
+                                        <span asp-validation-for="NTN" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- ==================== DIRECTOR DETAILS ==================== -->
+                                <hr class="my-4" />
+                                <h5 class="fw-bold text-primary">Director Details</h5>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="DirectorName" class="form-label"></label>
+                                        <input asp-for="DirectorName" class="form-control" placeholder="Enter Director Name" />
+                                        <span asp-validation-for="DirectorName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="DirectorCNIC" class="form-label"></label>
+                                        <input asp-for="DirectorCNIC" class="form-control" placeholder="Enter CNIC #" />
+                                        <span asp-validation-for="DirectorCNIC" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="DirectorCNICExpiry" class="form-label"></label>
+                                        <input asp-for="DirectorCNICExpiry" type="date" class="form-control" />
+                                        <span asp-validation-for="DirectorCNICExpiry" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="DirectorPhotoFile" class="form-label"></label>
+                                        <input asp-for="DirectorPhotoFile" type="file" class="form-control" />
+                                        <span asp-validation-for="DirectorPhotoFile" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="DirectorDetail" class="form-label"></label>
+                                        <textarea asp-for="DirectorDetail" class="form-control" placeholder="Enter Director Detail"></textarea>
+                                        <span asp-validation-for="DirectorDetail" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- ==================== BANK DETAILS ==================== -->
+                                <hr class="my-4" />
+                                <h5 class="fw-bold text-primary">Bank Details</h5>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="BankName" class="form-label"></label>
+                                        <input asp-for="BankName" class="form-control" placeholder="Enter Bank Name" />
+                                        <span asp-validation-for="BankName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="AccountTitle" class="form-label"></label>
+                                        <input asp-for="AccountTitle" class="form-control" placeholder="Enter Account Title" />
+                                        <span asp-validation-for="AccountTitle" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label asp-for="Branch" class="form-label"></label>
+                                        <input asp-for="Branch" class="form-control" placeholder="Enter Branch Name" />
+                                        <span asp-validation-for="Branch" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="AccountNumber" class="form-label"></label>
+                                        <input asp-for="AccountNumber" class="form-control" placeholder="Enter Account #" />
+                                        <span asp-validation-for="AccountNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <!-- ==================== NEW FIELDS END ==================== -->
+
+
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-justified-contact" role="tabpanel">
+                                <div id="addresses">
+                                    <div class="row" id="address_0">
+                                        <div class="col-sm-12 mb-2">
+                                            <h5 class="float-start">Address</h5>
+                                            <span asp-validation-for="Address" class="mx-2 text-danger"></span>
+                                            <button class="btn btn-outline-info float-end" type="button" onclick="addAddress(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Address Of <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <select class="form-select" name="AddressTypeId[]">
+                                                    <option>Select Address...</option>
+                                                    @foreach (CompanyAddressType ca in ViewBag.AddressTypes)
+                                                    {
+                                                        <option value="@ca.CompanyAddressTypeId">@ca.AddressType</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Address <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <input type="text" name="Address[]" class="form-control" placeholder="Enter Address" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Country <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <input type="text" name="Country[]" class="form-control" placeholder="Enter Country" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">City <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <input type="text" name="City[]" class="form-control" placeholder="Enter City" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Po Box <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <input type="text" name="PoBox[]" class="form-control" placeholder="Enter Po Box" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Zip Code <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                <input type="text" name="Zip[]" class="form-control" placeholder="Enter Zip Code" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Preferred? </label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                                                <select class="form-select" name="AddressPreferred[]">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr />
+
+                                    </div>
+                                </div>
+
+                                <div id="contacts">
+                                    <div class="row mt-2" id="contact_0">
+                                        <div class="col-sm-12 mb-2 ">
+                                            <h5 class="float-start">Contact</h5>
+                                            <span asp-validation-for="Contact" class="mx-2 text-danger"></span>
+                                            <button class="btn btn-outline-info float-end" type="button" onclick="addContact(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Contact Type <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-phone"></i></span>
+                                                <select class="form-select" name="ContactTypeId[]">
+                                                    <option>Select Contact Type...</option>
+                                                    @foreach (CompanyContactType ca in ViewBag.ContactTypes)
+                                                    {
+                                                        <option value="@ca.CompanyContactTypeId">@ca.ContactType</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Contact <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-phone"></i></span>
+                                                <input type="text" name="Contact[]" class="form-control" placeholder="Enter Contact" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Preferred?</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                                                <select class="form-select" name="ContactPreferred[]">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr />
+
+                                    </div>
+                                </div>
+
+                                <div id="emails">
+                                    <div class="row mt-2" id="email_0">
+                                        <div class="col-sm-12 mb-2 ">
+                                            <h5 class="float-start">Email</h5>
+                                            <span asp-validation-for="Email" class="mx-2 text-danger"></span>
+                                            <button class="btn btn-outline-info float-end" type="button" onclick="addEmail(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Email Type <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2"
+                                                      class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <select class="form-select" name="EmailTypeId[]">
+                                                    <option>Select Email Type...</option>
+                                                    @foreach (CompanyEmailType ca in ViewBag.EmailTypes)
+                                                    {
+                                                        <option value="@ca.CompanyEmailTypeId">@ca.EmailType</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Email <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <input type="text" name="Email[]" class="form-control" placeholder="Enter Email Address" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Preferred? </label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                                                <select class="form-select" name="EmailPreferred[]">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="navs-pills-justified-license" role="tabpanel">
+                                <div id="licenses">
+                                    <div class="row mt-2" id="license_0">
+                                        <div class="col-sm-12 mb-2 ">
+                                            <h5 class="float-start">Licenses</h5>
+                                            <span asp-validation-for="LicenseNo" class="mx-2 text-danger"></span>
+                                            <button class="btn btn-outline-info float-end" type="button" onclick="addLicense(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">License Type <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2"
+                                                      class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <select class="form-select" name="LicenseTypeId[]">
+                                                    <option>Select License Type...</option>
+                                                    @foreach (CompanyLicenseType ca in ViewBag.LicenseTypes)
+                                                    {
+                                                        <option value="@ca.CompanyLicenseTypeId">@ca.LicenseName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-8 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">License # <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <input type="text" name="LicenseNo[]" class="form-control" placeholder="Enter License #..." />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Place of Issue <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <input type="text" name="IssuePlace[]" class="form-control" placeholder="Enter Place of Issue..." />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Date of Issue <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <input type="date" name="IssueDate[]" class="form-control" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-3 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Valid Upto <span class="text-danger fw-bold"> *</span></label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                                <input type="date" name="ValidDate[]" class="form-control" />
+                                            </div>
+                                            <span class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-2 mb-3">
+                                            <label class="form-label" for="basic-icon-default-fullname" name="">Preferred?</label>
+                                            <div class="input-group input-group-merge">
+                                                <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                                                <select class="form-select" name="LicensePreferred[]">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 mb-3">
+                                        <button type="submit" class="btn btn-success float-end">Create</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    function addAddress() {
+        let rootNode = document.getElementById("addresses");
+        let id = Date.now() + Math.floor(Math.random() * 10000)
+        let row = document.createElement("DIV");
+        row.classList.add("row");
+        row.setAttribute("id", "address_" + id);
+
+        rootNode.appendChild(row);
+
+        let colAddressType = document.createElement("DIV");
+        let colAddress = document.createElement("DIV");
+        let colCountry = document.createElement("DIV");
+        let colCity = document.createElement("DIV");
+        let colZip = document.createElement("DIV");
+        let colPoBox = document.createElement("DIV");
+        let hr = document.createElement("HR");
+        let colPreferred = document.createElement("DIV");
+        let colDelete = document.createElement("DIV");
+
+        colAddressType.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colAddress.classList.add("col-sm-12", "col-md-6", "mb-3");
+        colCountry.classList.add("col-sm-6", "col-md-3", "mb-3");
+        colCity.classList.add("col-sm-6", "col-md-3", "mb-3");
+        colZip.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colPoBox.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colPreferred.classList.add("col-sm-12", "col-md-2", "mb-3");
+        colDelete.classList.add("col-sm-12", "col-md-1", "mb-3", "d-flex", "justify-content-center", "align-items-end");
+
+        colAddressType.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Address Of</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                    <select class="form-select" name="AddressTypeId[]">
+                        <option>Select Address...</option>
+    @foreach (CompanyAddressType ca in ViewBag.AddressTypes)
+    {
+                                            <option value="@ca.CompanyAddressTypeId">@ca.AddressType</option>
+    }
+                    </select>
+                </div>
+                `;
+
+        colAddress.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Address</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                    <input type="text" name="Address[]" class="form-control" placeholder="Enter Address">
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colCountry.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Country</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                    <input type="text" name="Country[]" class="form-control" placeholder="Enter Country">
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colCity.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">City</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                    <input type="text" name="City[]" class="form-control" placeholder="Enter City">
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colPoBox.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Po Box</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                        <input type="text" name="PoBox[]" class="form-control" placeholder="Enter Po Box">
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+
+        colZip.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Zip Code</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                        <input type="text" name="Zip[]" class="form-control" placeholder="Enter Zip Code">
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colPreferred.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Preferred</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                    <select class="form-select" name="AddressPreferred[]">
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+                    </select>
+                </div>`;
+
+        colDelete.innerHTML = `
+                <button type="button" class="btn btn-icon btn-danger" onclick="removeAddress(${id})"><i class="bx bx-trash"></i></button>
+                `;
+
+        row.appendChild(colAddressType);
+        row.appendChild(colAddress);
+        row.appendChild(colCountry);
+        row.appendChild(colCity);
+        row.appendChild(colPoBox);
+        row.appendChild(colZip);
+        row.appendChild(colPreferred);
+        row.appendChild(colDelete);
+        row.appendChild(hr);
+
+    }
+    function removeAddress(id) {
+        document.getElementById(`address_${id}`).remove();
+    }
+
+    function addContact() {
+
+        let id = Date.now()
+        let rootNode = document.getElementById("contacts");
+
+        let row = document.createElement("DIV");
+        row.classList.add("row");
+        row.setAttribute("id", "contact_" + id);
+
+        rootNode.appendChild(row);
+
+        let colContactType = document.createElement("DIV");
+        let colContact = document.createElement("DIV");
+        let colDelete = document.createElement("DIV");
+        let colPreferred = document.createElement("DIV");
+        let hr = document.createElement("HR");
+
+        colContactType.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colContact.classList.add("col-sm-12", "col-md-6", "mb-3");
+        colDelete.classList.add("col-sm-12", "col-md-1", "mb-3", "d-flex", "justify-content-center", "align-items-end");
+        colPreferred.classList.add("col-sm-12", "col-md-2", "mb-3");
+
+        colContactType.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Contact Type</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-phone"></i></span>
+                    <select class="form-select" name="ContactTypeId[]">
+                        <option>Select Contact Type...</option>
+    @foreach (CompanyContactType ca in ViewBag.ContactTypes)
+    {
+                                            <option value="@ca.CompanyContactTypeId">@ca.ContactType</option>
+    }
+                    </select>
+                </div>
+                `;
+
+        colContact.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Contact</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-phone"></i></span>
+                    <input type="text" name="Contact[]" class="form-control" placeholder="Enter Contact" />
+                </div>
+                <span class="text-danger"></span>`;
+
+        colPreferred.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Preferred</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                    <select class="form-select" name="ContactPreferred[]">
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+                    </select>
+                </div>
+                `;
+
+
+        colDelete.innerHTML = `
+                <button type="button" class="btn btn-icon btn-danger" onclick="removeContact(${id})"><i class="bx bx-trash"></i></button>
+                `;
+
+        row.appendChild(colContactType);
+        row.appendChild(colContact);
+        row.appendChild(colPreferred);
+        row.appendChild(colDelete);
+        row.appendChild(hr);
+
+    }
+    function removeContact(id) {
+        document.getElementById("contact_" + id).remove();
+    }
+
+    function addEmail() {
+        let rootNode = document.getElementById("emails");
+        let id = Date.now()
+        let row = document.createElement("DIV");
+        row.classList.add("row");
+        row.setAttribute("id", "email_" + id);
+
+        rootNode.appendChild(row);
+
+
+        let colEmailType = document.createElement("DIV");
+        let colEmail = document.createElement("DIV");
+
+        let colPreferred = document.createElement("DIV");
+        let colDelete = document.createElement("DIV");
+        let hr = document.createElement("HR");
+
+        colEmailType.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colEmail.classList.add("col-sm-12", "col-md-6", "mb-3");
+        colDelete.classList.add("col-sm-12", "col-md-1", "mb-3", "d-flex", "justify-content-center", "align-items-end");
+        colPreferred.classList.add("col-sm-12", "col-md-2", "mb-3");
+
+        colEmailType.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Email Type</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2"
+                        class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <select class="form-select" name="EmailTypeId[]">
+                        <option>Select Email Type...</option>
+    @foreach (CompanyEmailType ca in ViewBag.EmailTypes)
+    {
+                                            <option value="@ca.CompanyEmailTypeId">@ca.EmailType</option>
+    }
+                    </select>
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colEmail.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Email</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <input type="text" name="Email[]" class="form-control" placeholder="Enter Email Address" />
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colPreferred.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Preferred</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                    <select class="form-select" name="EmailPreferred[]">
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+                    </select>
+                </div>
+                `;
+
+
+        colDelete.innerHTML = `
+                <button type="button" class="btn btn-icon btn-danger" onclick="removeEmail(${id})"><i class="bx bx-trash"></i></button>
+                `;
+
+        row.appendChild(colEmailType);
+        row.appendChild(colEmail);
+        row.appendChild(colPreferred);
+        row.appendChild(colDelete);
+        row.appendChild(hr);
+    }
+    function removeEmail(id) {
+        document.getElementById("email_" + id).remove();
+    }
+
+    function addLicense() {
+        let rootNode = document.getElementById("licenses");
+        let id = Date.now() + Math.floor(Math.random * 10000)
+
+        let row = document.createElement("DIV");
+        row.classList.add("row");
+        row.setAttribute("id", "license_" + id);
+
+        rootNode.appendChild(row);
+
+        let colLicenseType = document.createElement("DIV");
+        let colLicense = document.createElement("DIV");
+        let colIssuePlace = document.createElement("DIV");
+        let colIssueDate = document.createElement("DIV");
+        let colValid = document.createElement("DIV");
+        let colPreferred = document.createElement("DIV");
+        let colDelete = document.createElement("DIV");
+        let hr = document.createElement("HR");
+
+
+        colLicenseType.classList.add("col-sm-12", "col-md-4", "mb-3");
+        colLicense.classList.add("col-sm-12", "col-md-8", "mb-3");
+        colIssuePlace.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colIssueDate.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colValid.classList.add("col-sm-12", "col-md-3", "mb-3");
+        colDelete.classList.add("col-sm-12", "col-md-1", "mb-3", "d-flex", "justify-content-center", "align-items-end");
+        colPreferred.classList.add("col-sm-12", "col-md-2", "mb-3");
+
+        colLicenseType.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">License Type</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2"
+                        class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <select class="form-select" name="LicenseTypeId[]">
+                        <option>Select License Type...</option>
+    @foreach (CompanyLicenseType ca in ViewBag.LicenseTypes)
+    {
+                                            <option value="@ca.CompanyLicenseTypeId">@ca.LicenseName</option>
+    }
+                    </select>
+                </div>
+                `;
+
+        colLicense.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">License #</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <input type="text" name="LicenseNo[]" class="form-control" placeholder="Enter License #..." />
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colIssuePlace.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Place of Issue</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                        <input type="text" name="IssuePlace[]" class="form-control" placeholder="Enter Place of Issue..." />
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colIssueDate.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Date of Issue</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <input type="date" name="IssueDate[]" class="form-control" />
+                </div>
+                <span class="text-danger"></span>
+
+                `;
+
+        colValid.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Valid Upto</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-envelope"></i></span>
+                    <input type="date" name="ValidDate[]" class="form-control" />
+                </div>
+                <span class="text-danger"></span>
+                `;
+
+        colPreferred.innerHTML = `
+                <label class="form-label" for="basic-icon-default-fullname" name="">Preferred</label>
+                <div class="input-group input-group-merge">
+                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-check"></i></span>
+                    <select class="form-select" name="LicensePreferred[]">
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+                    </select>
+                </div>
+                `;
+
+
+        colDelete.innerHTML = `
+                <button type="button" class="btn btn-icon btn-danger" onclick="removeLicense(${id})"><i class="bx bx-trash"></i></button>
+                `;
+
+
+        row.appendChild(colLicenseType);
+        row.appendChild(colLicense);
+        row.appendChild(colIssuePlace);
+        row.appendChild(colIssueDate);
+        row.appendChild(colValid);
+        row.appendChild(colPreferred);
+        row.appendChild(colDelete);
+        row.appendChild(hr);
+    }
+
+    function removeLicense(id) {
+        document.getElementById("license_" + id).remove();
+
+    }
+
+
+
+</script>

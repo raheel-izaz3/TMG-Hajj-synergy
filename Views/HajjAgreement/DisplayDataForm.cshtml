@@ -1,0 +1,1260 @@
+@model DataFormModel
+
+@{
+    Layout = "_PrintReportLayout";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+<style type="text/css">
+    .accommodation-row p {
+        padding: 3px 2px;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .user-img img,
+    .monogram img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .border-dark span {
+        border: none !important;
+    }
+
+    .monogram {
+        height: 60px;
+    }
+
+    .fields div {
+        border: none !important;
+    }
+
+    .user-img {
+        width: 130px;
+        height: 130px;
+    }
+
+    .h5,
+    .h6,
+    .border-right p {
+        font-weight: 500 !important;
+    }
+
+    p.h6 {
+        margin-bottom: 0;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        text-indent: 0;
+        font-size: small;
+        text-transform: uppercase;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+
+    .border-dark {
+        border: 0;
+        border-bottom-width: 1pt;
+        border-style: dashed !important;
+    }
+
+    .accommodation td {
+        border-bottom: none !important;
+        border-top: none !important;
+    }
+
+    .accommodation tr {
+        border-top-style: solid;
+        width: 33% !important;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    table, tbody {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    @@media print {
+        body {
+            -webkit-print-color-adjust: exact;
+        }
+
+        #noteBackground {
+            background-color: rgb(226, 226, 226) !important;
+            print-color-adjust: exact;
+        }
+
+        * {
+            font-size: 8.6pt !important;
+        }
+
+        .title {
+            font-size: 18px !important;
+            margin: 0;
+        }
+
+        .sub-title {
+            font-size: 14px !important;
+            margin: 0;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            vertical-align: middle;
+            overflow: visible;
+        }
+
+        .show-prices-fac {
+            display: none;
+        }
+
+        .hideInPrint {
+            display: none;
+        }
+
+        p.totalPackage {
+            font-size: 16px !important;
+            font-weight: bold !important;
+        }
+
+        span.totalPackage {
+            font-size: 16px !important;
+            font-weight: bolder !important;
+        }
+    }
+
+    p, h6 span {
+        font-weight: 100 !important;
+    }
+
+    .table tr td {
+        border-top-style: solid;
+        border-top-width: 1pt;
+        border-left-style: solid;
+        border-left-width: 1pt;
+        border-bottom-style: solid;
+        border-bottom-width: 1pt;
+        border-right-style: solid;
+        border-right-width: 1pt;
+    }
+
+    .additional-facility tr {
+        text-align: center;
+    }
+
+    .border {
+        border-width: 1pt !important;
+    }
+
+    .fillable {
+        font-weight: 400 !important;
+    }
+
+    .signature-section, .members-section {
+        page-break-inside: avoid;
+    }
+</style>
+
+<input type="hidden" id="email" value="@ViewBag.Email" />
+<button type="submit" class="btn btn-success float-end" onclick="sendEmail(event)">Send Email</button>
+
+<div class="dataform">
+    @{
+        int counter = 0;
+    }
+
+    @foreach (DataFormModelEntry item in Model.Entries)
+    {
+        if (counter > 0) break;
+        <div class="form-container container-fluid">
+            <div class="header-section d-flex justify-content-end">
+                <div class="mid-div col-4 text-center">
+                    <h1 class="fw-bold title">
+                        HAJJ FORM 2025 (1446 AH)
+                    </h1>
+                </div>
+                <div class="additional-fields d-flex justify-content-end col-4">
+                    <table class="table">
+                        <tr>
+                            <td class="fields text-right" style="text-wrap: nowrap;">
+                                <div class="border d-flex-column">
+                                    <p class="d-block border border-dark p-1 mb-2" style="text-align: center;">
+                                        APPLICANT TYPE:
+                                    </p>
+                                    <p class="d-block border border-dark p-1" style="text-align: center;">Hajj App #</p>
+                                </div>
+                            </td>
+                            <td class="fields text-right" style="text-wrap: nowrap;">
+                                <p></p>
+                                <div class="border">
+                                    <p class="d-block border border-dark p-1 mb-2" style="text-align: center;">
+                                        <span>@item.ApplicantType</span>
+                                    </p>
+                                    <p class="d-block border border-dark p-1" style="text-align: center;">
+                                        <span>@item.HajjAppNumber</span>
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <table class="table m-0 p-0">
+                <tr>
+                    <td class="border-right user-img" colspan="1" rowspan="3">
+                        <img loading="lazy" src="~/@item.FamilyHeadImage" alt="" class=" ">
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">CID</p>
+                        <span class="fillable">@item.CID</span>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">PACKAGE: </p>
+                        <span class="fillable">@item.PackageNameDuration</span>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">HGO NAME: </p>
+                        <span class="fillable">@item.HGOName</span>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">Cluster NAME: </p>
+                        <span class="fillable">@Model.MunazzimName</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right">
+                        <p class="d-inline">ENROLLMENT NO.</p>
+                        <span class="fillable">@item.EnrollmentNumber</span>
+                    </td>
+                    <td class="border-right">
+                        <p class="d-inline">STAY DURATION: <span class="fillable">@item.StayDuration</span></p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">MARRIED? </p>
+                        <p class="fillable d-inline">@item.IsMarried</p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">BLOOD GROUP:</p>
+                        <p class="fillable d-inline">@item.BloodGroup</p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">FIQAH: <span class="fillable">@item.Fiqah</span></p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">GENDER: <span class="fillable">@item.Gender</span></p>
+                    </td>
+                    <td colspan="2">
+                        <p class="text-nowrap h6 d-inline">CNIC No.</p>
+                        <p class="fillable d-inline">@item.CNIC</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p class="h6 mt-1">
+                            GIVEN NAME:
+                        </p>
+                        <span class="fillable">@item.GivenName</span>
+                    </td>
+                    <td>
+                        <p class="h6 mt-1">
+                            SURNAME:
+                        </p>
+                        <span class="fillable">@item.SurName</span>
+                    </td>
+                    <td>
+                        <p class="h6">
+                            D.O.B:
+                        </p>
+                        <p class="fillable">@item.DateOfBirth</p>
+                    </td>
+                    <td colspan="2">
+                        <p class="h6">
+                            FATHER’S /
+                            HUSBAND’S NAME
+                        </p>
+                        <p class="fillable">@item.FatherHusbandName</p>
+                    </td>
+                    <td>
+                        <p class="text-nowrap h6">
+                            PASSPORT NO.
+                        </p>
+                        <p class="fillable">@item.PassportNumber</p>
+                    </td>
+                    <td>
+                        <p class="text-nowrap h6">
+                            DATE OF
+                            EXPIRY
+                        </p>
+                        <p class="fillable">@item.PassportDateOfExpiry</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" style="vertical-align: top;" colspan="4">
+                        <p>
+                            ADDRESS: <span class="fillable d-inline">@item.PresentPostalAddress</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="1">
+                        <p>
+                            TEHSIL CODE: <span class="fillable d-inline">@item.TehsilCode</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="1">
+                        <p>
+                            MOBILE: <span class="fillable d-inline">@item.MobileNumber</span>
+                        </p>
+                    </td>
+                    <td class="border-right border-left" colspan="2">
+                        <p>
+                            EMAIL: <span class="fillable d-inline">@item.Email</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:15pt" class="text-nowrap">
+                    <td class="border-right" colspan="2">
+                        <p>
+                            PERFORMED HAJJ IN LAST FIVE YEARS?
+                            <span class="fillable px-3">@item.PerformedHajjInLast5Years</span>
+                        </p>
+                        @if (item.PerformedHajjInLast5Years.Equals("YES"))
+                        {
+                            <p>Years: @item.YearsPerformedHajj</p>
+                        }
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p>
+                            WANT TO PERFORM HAJJ-E-BADAL?
+                            <span class="fillable px-3">@item.WantToHajjEBadal</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p>
+                            WANT TO PERFORM HAJJ AS GROUP WORKER?
+                            <span class="fillable px-3">@item.WantToPerformHajjAsGroupWorker</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="3">
+                        <p>
+                            ARE YOU MEHRAM OF A LADY?
+                            <span class="fillable px-3">@item.AreYouMehramOfALady</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height: 70pt">
+                    <td class="border-right" colspan="4">
+                        <p><u>NOMINEE IN CASE OF DEATH (MUST BE ADULT/RELATIVE)</u></p>
+                        <p>NAME: <span class="fillable">@item.NomineeName</span></p>
+                        <p>RELATIONSHIP: <span class="fillable">@item.NomineeRelation</span></p>
+                        <p>CNIC NO. <span class="fillable">@item.NomineeCNIC</span></p>
+                        <p>MOBILE NO. <span class="fillable">@item.NomineeContact</span></p>
+                        <p>TELEPHONE NO. <span class="fillable">@item.NomineeTelephone</span></p>
+                    </td>
+                    <td class="border-right p-1" colspan="5">
+                        <p>
+                            <u>MEHRAM'S DETAILS <small>(FOR LADIES ONLY)</small></u>
+                            APPLICATION NO. CODE: <span>@item.MehramAppNumber</span> <small style="color: gray">
+                                (FOR OFFICE USE)
+                            </small>
+                        </p>
+                        <p>MEHRAM'S NAME: @item.MehramName RELATIONSHIP: @item.MehramRelationship</p>
+                        <p style="min-height: 80px;" class="border">
+                            <img loading="lazy" src="@item.MehramSignatureBase64" height="80" alt="">
+                        </p>
+                        <p class="text-center">SIGNATURE & THUMB IMPRESSION</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" colspan="9" id="noteBackground">
+                        <p class="d-inline">Note: </p>
+                        <p class="d-inline" style="font-weight: 400 !important; font-size: 0.9rem !important;">
+                            Every Hajji is required to personally complete their biometrics using the Saudi Bio App, if
+                            applicable (self-biometrics). The costs, charges, and results are the individual's responsibility.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <table cellspacing="0" class="table mb-0">
+                <tr>
+                    <td class="border-right" colspan="8">
+                        <p>
+                            HAJJ PACKAGE W/O TICKET INCLUDING ROOMS:
+                            <span class="fillable package-usd" style="display:inline">
+                                @Model.BaseCurrency @((Model.BasePackagePrice + Model.RoomPrice + Model.TrainPrice).ToString("N2")) /-
+                            </span>
+                        </p>
+                        <p>
+                            ** Add-ons:
+                            <span class="fillable package-usd" style="display:inline">@Model.BaseCurrency @Model.AddonsPrice.ToString("N2")/-</span>
+                        </p>
+                        <p>
+                            ** Add-ons Discount:
+                            <span class="fillable package-usd" style="display:inline">@Model.BaseCurrency @Model.AddonsDiscount.ToString("N2")/-</span>
+                        </p>
+                        <p>
+                            Discount:
+                            <span class="fillable package-usd" style="display:inline">@Model.BaseCurrency @Model.TotalDiscount.ToString("N2")/-</span>
+                        </p>
+                        <p>
+                            Flight TICKET:
+                            <span class="fillable package-usd" style="display:inline">
+                                @Model.BaseCurrency
+                                @Model.FlightPrice.ToString("N2")/-
+                            </span>
+                        </p>
+                        <p class="totalPackage">
+                            TOTAL PACKAGE:
+                            <span class="fillable package-usd totalPackage" style="display:inline">@Model.BaseCurrency @Model.TotalPackagePrice.ToString("N2")/-</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="9">
+                        @{
+                            int x = 1;
+                        }
+                        <p class="m-0">TRAINING SESSION</p>
+                        @foreach (DataFormTrainingSession t in item.TrainingSessions)
+                        {
+                            <span class="fillable mb-1"><b>@x</b>. <b>Session:</b> @t.TrainingSession <b>Expected Time:</b> @t.ExpectedTime<b> Expected Venue:</b> @t.ExpectedVenue</span>
+                            <br />
+                            x++;
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" colspan="17">
+                        <p class="h5 text-center mb-0">TRANSPORT</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" colspan="6">
+                        <p>ROUTES:</p>
+                        <ul>
+                            @if (ViewBag.Routes != null && ViewBag.Routes.Count > 0)
+                            {
+                                foreach (var route in ViewBag.Routes)
+                                {
+                                    <li style="margin-bottom: 10px">
+                                        <span class="fillable"><strong>Route:</strong> @route.TravelRoutes</span><br />
+                                        <span class="fillable"><strong>Vehicle:</strong> @route.VehicleName</span><br />
+                                        <div id="routeDateTime_@route.Id" class="routeDateTime" style="display:block;">
+                                            @* <span><strong>Departure:</strong> @route.CheckOut.ToString("dd/MMM")</span> *@
+                                            <span><strong>Arrival:</strong> @route.CheckIn.ToString("dd/MMM")</span>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No route details available.</li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="border-right" colspan="5">
+                        <p>FLIGHTS:</p>
+                        <ul>
+                            @if (ViewBag.Flights != null && ViewBag.Flights.Count > 0)
+                            {
+                                foreach (DataFormModelEntry flight in ViewBag.Flights)
+                                {
+                                    <li style="margin-bottom: 10px">
+                                        <span class="fillable"><strong>Location:</strong> @flight.Origin - @flight.Destination</span><br />
+                                        <span class="fillable"><strong>Airline:</strong> @flight.Airline</span><br />
+                                        <div id="flightDateTime_@flight.Id" class="flightDateTime" style="display:block;">
+                                            <span><strong>Departure:</strong> @flight.DepartureDateTime?.ToString("dd/MMM") @flight.DepartureTime?.ToString("HH:mm")</span>
+                                            <span><strong>Arrival:</strong> @flight.ArrivalDateTime?.ToString("dd/MMM") @flight.ArrivalTime?.ToString("HH:mm")</span>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No flight details available.</li>
+                            }
+                        </ul>
+                    </td>
+                    <td class="border-right" colspan="6">
+                        <p>TRAIN:</p>
+                        <ul>
+                            @if (ViewBag.Trains != null && ViewBag.Trains.Count > 0)
+                            {
+                                foreach (DataFormModelEntry train in ViewBag.Trains)
+                                {
+                                    <li style="margin-bottom: 10px">
+                                        <span class="fillable"><strong>Location:</strong> @train.TrainOrigin - @train.TrainDestination</span><br />
+                                        <span class="fillable"><strong>Cabin:</strong> @train.TrainClass</span><br />
+                                        <div id="trainDateTime_@train.Id" class="trainDateTime" style="display:block;">
+                                            <span><strong>Departure Date:</strong> @train.TrainDepartureDateTime?.ToString("dd/MMM") @train.TrainDepartureTime?.ToString("HH:mm")</span>
+                                            <span><strong>Arrival Date:</strong> @train.TrainArrivalDateTime?.ToString("dd/MMM") @train.TrainArrivalTime?.ToString("HH:mm")</span>
+                                        </div>
+                                    </li>
+                                }
+                            }
+                            else
+                            {
+                                <li>No train details available.</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" colspan="17">
+                        <p class="h5 text-center mb-0">ACCOMMODATION DETAILS</p>
+                    </td>
+                </tr>
+                <tr class="accommodation-row">
+                    @if (item.MedinahArrival.Equals("BEFORE"))
+                    {
+                        <td class="border-right" colspan="5" style="width: 20%;">
+                            <u class="d-block text-center">IN MEDINA</u>
+                            @if (item.MedinaAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.MedinaAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.MedinaAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.MedinaAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.MedinaAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.MedinaAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MedinaAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.MedinahRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="3" style="width: 20%;">
+                            <u class="d-block text-center">IN MAKKAH</u>
+                            @if (item.MakkahAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.MakkahAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.MakkahAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.MakkahAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.MakkahAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.MakkahAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MakkahAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.MakkahRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="5" style="width: 20%;">
+                            <u class="d-block text-center">IN AZIZIA</u>
+                            @if (item.AziziaAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.AziziaAccomodation.Name</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.AziziaAccomodation.CheckIn</span></p>
+
+                                <br />
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.AziziaAccomodation.CheckOut</span></p>
+
+                                <br />
+                                <p class="d-inline">DISTANCE (METER): <span class="fillable">@item.AziziaAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.AziziaAccomodation.FoodPackage</span></p>
+                                <p>HARAM SHUTTLE: <span class="fillable">@item.AziziaAccomodation.HaramShuttle</span></p>
+                                <p>RELIGIOUS LECTURES: <span class="fillable">@item.AziziaAccomodation.ReligiousLectures</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.AziziaRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="3" style="width: 23%;">
+                            <u class="d-block text-center">IN MASHAIR</u>
+                            @if (item.MinaAccomodation != null)
+                            {
+                                <p>
+                                    MAKTAB: <span class="fillable">@item.MinaAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">08ZH @ViewBag.HajjSeason?.Hijri-H</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MinaAccomodation.FoodPackage</span></p>
+                                <p>
+                                    SOFA MATTRESS / SITTING: <span class="fillable">@item.MinaAccomodation.SofaSitting</span><br />
+                                    CAMP/TENT SHARING: <span class="fillable">@item.MinaAccomodation.CampTent</span><br />
+                                    ARAFAT: <span class="fillable">@item.MinaAccomodation.Arafat</span><br />
+                                    RELIGIOUS LECTURES: <span class="fillable">@item.MinaAccomodation.ReligiousLectures</span><br />
+                                    Room Type: <span class="fillable">@ViewBag.MinaRoom</span>
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="3" style="width: 20%;">
+                            <u class="d-block text-center">IN MAKKAH</u>
+                            @if (item.SecondMakkahAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.SecondMakkahAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.SecondMakkahAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.SecondMakkahAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.SecondMakkahAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.SecondMakkahAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.SecondMakkahAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.SecondMakkah</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="border-right" colspan="3" style="width: 20%;">
+                            <u class="d-block text-center">IN MAKKAH</u>
+                            @if (item.MakkahAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.MakkahAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.MakkahAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.MakkahAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.MakkahAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.MakkahAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MakkahAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.MakkahRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="5" style="width: 20%;">
+                            <u class="d-block text-center">IN AZIZIA</u>
+                            @if (item.AziziaAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.AziziaAccomodation.Name</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.AziziaAccomodation.CheckIn</span></p>
+
+                                <br />
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.AziziaAccomodation.CheckOut</span></p>
+
+                                <br />
+                                <p class="d-inline">DISTANCE (METER): <span class="fillable">@item.AziziaAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.AziziaAccomodation.FoodPackage</span></p>
+                                <p>HARAM SHUTTLE: <span class="fillable">@item.AziziaAccomodation.HaramShuttle</span></p>
+                                <p>RELIGIOUS LECTURES: <span class="fillable">@item.AziziaAccomodation.ReligiousLectures</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.AziziaRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="3" style="width: 20%;">
+                            <u class="d-block text-center">IN MASHAIR</u>
+                            @if (item.MinaAccomodation != null)
+                            {
+                                <p>
+                                    MAKTAB: <span class="fillable">@item.MinaAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">08ZH @ViewBag.HajjSeason?.Hijri-H</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MinaAccomodation.FoodPackage</span></p>
+                                <p>
+                                    SOFA MATTRESS / SITTING: <span class="fillable">@item.MinaAccomodation.SofaSitting</span><br />
+                                    CAMP/TENT SHARING: <span class="fillable">@item.MinaAccomodation.CampTent</span><br />
+                                    ARAFAT: <span class="fillable">@item.MinaAccomodation.Arafat</span><br />
+                                    RELIGIOUS LECTURES: <span class="fillable">@item.MinaAccomodation.ReligiousLectures</span><br />
+                                    Room Type: <span class="fillable">@ViewBag.MinaRoom</span>
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="5" style="width: 20%;">
+                            <u class="d-block text-center">IN MEDINA</u>
+                            @if (item.MedinaAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.MedinaAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.MedinaAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.MedinaAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.MedinaAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.MedinaAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.MedinaAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.MedinahRoom</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                        <td class="border-right" colspan="3" style="width: 20%;">
+                            <u class="d-block text-center">IN MAKKAH</u>
+                            @if (item.SecondMakkahAccomodation != null)
+                            {
+                                <p>
+                                    Name: <span class="fillable">@item.SecondMakkahAccomodation.AccomodationName</span>
+                                </p>
+                                <p>
+                                    Category: <span class="fillable">@item.SecondMakkahAccomodation.Category</span>
+                                </p>
+                                <p class="d-inline">CHECK IN: <span class="fillable">@item.SecondMakkahAccomodation.CheckIn</span></p>
+                                <p class="d-inline">CHECK OUT: <span class="fillable">@item.SecondMakkahAccomodation.CheckOut</span></p>
+                                <p>DISTANCE (METERS): <span class="fillable">@item.SecondMakkahAccomodation.Distance</span></p>
+                                <p>FOOD PACKAGE: <span class="fillable">@item.SecondMakkahAccomodation.FoodPackage</span></p>
+                                <p>Room Type: <span class="fillable">@ViewBag.SecondMakkah</span></p>
+                            }
+                            else
+                            {
+                                <p class="text-center">N/A</p>
+                            }
+                        </td>
+                    }
+                </tr>
+            </table>
+            <table class="table accommodation">
+                <tr class="border">
+                    <td class="border-right" colspan="10">
+                        <p class="h5 text-center mb-0">ADD-ONS AND GIVEAWAYS</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right col-4">
+                        <h6>** Add-ons</h6>
+                        @{
+                            int n = 1;
+                        }
+                        @foreach (DataFormExtraFacility fac in item.ExtraFacilities)
+                        {
+                            <span>
+                                <b>** @n</b> - @fac.Description
+                            </span>
+                            <br />
+                            n++;
+                        }
+                    </td>
+                    <td class="border-right col-4">
+                        <h6>GIVEAWAYS</h6>
+                        @{
+                            int m = 1;
+                        }
+                        @foreach (DataFormGift gift in item.Gifts)
+                        {
+                            <span class="" style="padding-right: 10px">
+                                <b>@m</b>. @gift.Gift
+                            </span>
+                            m++;
+                        }
+                    </td>
+                </tr>
+                <tr class="border">
+                    <td class="border-right" colspan="10">
+                        <p class="d-inline fw-bold">Remarks: </p>
+                        @{
+                            int r = 0;
+                        }
+                        @if (item.Remarks.Count == 0)
+                        {
+                            <p class="d-inline fw-bold">N/A</p>
+                        }
+                        @foreach (string s in item.Remarks)
+                        {
+                            r++;
+                            <p class="d-inline">@r: @s</p>
+                        }
+                    </td>
+                </tr>
+                <tr class="border">
+                    <td class="border-right" colspan="10">
+                        <ul id="l1">
+                            <li data-list-text="-">
+                                I have read and accepted all terms and conditions of the package, including the agreement and
+                                details. I confirm my choices for Additional & Individual Additional Facilities. All provided
+                                information is accurate, and I commit to following MORA/MOH KSA regulations and Taleemat.
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            <table class="table signature-section">
+                <tr class="border">
+                    <td class="border-right" colspan="10">
+                        <div class="d-flex justify-content-around align-items-stretch">
+                            <div class="col-4 d-flex-column px-3">
+                                <p class="border-bottom border-dark d-flex justify-content-center align-items-end" style="height: 90px;">@item.SignedDate</p>
+                                <p class="text-center text-nowrap">Date</p>
+                            </div>
+                            <div class="col-5 d-flex-column px-3">
+                                @if (item.SignatureBase64 != null)
+                                {
+                                    <p class="text-center border-bottom border-dark">
+                                        <img loading="lazy" src="@item.SignatureBase64" width="180px" />
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="text-center">
+                                        <div style="height: 90px;" class="border-bottom border-dark"></div>
+                                    </p>
+                                }
+                                <p class="text-center text-nowrap">
+                                    SIGNATURE & THUMB IMPRESSION OF APPLICANT
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        counter++;
+    }
+
+  @*   <div class="form-container container-fluid">
+        <table class="table m-0 p-0">
+            <tr>
+                <td class="border-right border-left" colspan="17">
+                    <p class="h5 text-center mb-0">Terms & Conditions</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-right border-left" colspan="17">
+                    @(ViewBag.TermsAndCondition)
+                </td>
+            </tr>
+        </table>
+    </div> *@
+
+    @{
+        int subCounter = 0;
+    }
+
+    <div class="form-container container-fluid members-section">
+        <table class="table m-0 p-0">
+            <tr>
+                <td class="border-right border-left" colspan="9">
+                    <p class="h5 text-center mb-0">Members</p>
+                </td>
+            </tr>
+        </table>
+
+        @foreach (DataFormModelEntry memberItem in Model.Entries)
+        {
+            if (subCounter == 0)
+            {
+                subCounter++;
+                continue;
+            }
+
+            <table class="table m-0 p-0">
+                <tr>
+                    <td class="border-right user-img" colspan="1" rowspan="3">
+                        <img loading="lazy" src="~/@memberItem.FamilyHeadImage" alt="" class=" ">
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">CID</p>
+                        <span class="fillable">@memberItem.CID</span>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p class="d-inline">PACKAGE: </p>
+                        <span class="fillable">@memberItem.PackageNameDuration</span>
+                    </td>
+                    <td class="border-right" colspan="4">
+                        <p class="d-inline">HGO NAME: </p>
+                        <span class="fillable">@memberItem.HGOName</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right">
+                        <p class="d-inline">ENROLLMENT NO.</p>
+                        <span class="fillable">@memberItem.EnrollmentNumber</span>
+                    </td>
+                    <td class="border-right">
+                        <p class="d-inline">STAY DURATION: <span class="fillable">@memberItem.StayDuration</span></p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">MARRIED? </p>
+                        <p class="fillable d-inline">@memberItem.IsMarried</p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">BLOOD GROUP:</p>
+                        <p class="fillable d-inline">@memberItem.BloodGroup</p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">FIQAH: <span class="fillable">@memberItem.Fiqah</span></p>
+                    </td>
+                    <td>
+                        <p class="h6 d-inline">GENDER: <span class="fillable">@memberItem.Gender</span></p>
+                    </td>
+                    <td colspan="2">
+                        <p class="text-nowrap h6 d-inline">CNIC No.</p>
+                        <p class="fillable d-inline">@memberItem.CNIC</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p class="h6 mt-1">
+                            GIVEN NAME:
+                        </p>
+                        <span class="fillable">@memberItem.GivenName</span>
+                    </td>
+                    <td>
+                        <p class="h6 mt-1">
+                            SURNAME:
+                        </p>
+                        <span class="fillable">@memberItem.SurName</span>
+                    </td>
+                    <td>
+                        <p class="h6">
+                            D.O.B:
+                        </p>
+                        <p class="fillable">@memberItem.DateOfBirth</p>
+                    </td>
+                    <td colspan="2">
+                        <p class="h6">
+                            FATHER’S /
+                            HUSBAND’S NAME
+                        </p>
+                        <p class="fillable">@memberItem.FatherHusbandName</p>
+                    </td>
+                    <td>
+                        <p class="text-nowrap h6">
+                            PASSPORT NO.
+                        </p>
+                        <p class="fillable">@memberItem.PassportNumber</p>
+                    </td>
+                    <td>
+                        <p class="text-nowrap h6">
+                            DATE OF
+                            EXPIRY
+                        </p>
+                        <p class="fillable">@memberItem.PassportDateOfExpiry</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border-right" style="vertical-align: top;" colspan="4">
+                        <p>
+                            ADDRESS: <span class="fillable d-inline">@memberItem.PresentPostalAddress</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="1">
+                        <p>
+                            TEHSIL CODE: <span class="fillable d-inline">@memberItem.TehsilCode</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="1">
+                        <p>
+                            MOBILE: <span class="fillable d-inline">@memberItem.MobileNumber</span>
+                        </p>
+                    </td>
+                    <td class="border-right border-left" colspan="2">
+                        <p>
+                            EMAIL: <span class="fillable d-inline">@memberItem.Email</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height:15pt" class="text-nowrap">
+                    <td class="border-right" colspan="2">
+                        <p>
+                            PERFORMED HAJJ IN LAST FIVE YEARS?
+                            <span class="fillable px-3">@memberItem.PerformedHajjInLast5Years</span>
+                        </p>
+                        @if (memberItem.PerformedHajjInLast5Years.Equals("YES"))
+                        {
+                            <p>Years: @memberItem.YearsPerformedHajj</p>
+                        }
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p>
+                            WANT TO PERFORM HAJJ-E-BADAL?
+                            <span class="fillable px-3">@memberItem.WantToHajjEBadal</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="2">
+                        <p>
+                            WANT TO PERFORM HAJJ AS GROUP WORKER?
+                            <span class="fillable px-3">@memberItem.WantToPerformHajjAsGroupWorker</span>
+                        </p>
+                    </td>
+                    <td class="border-right" colspan="3">
+                        <p>
+                            ARE YOU MEHRAM OF A LADY?
+                            <span class="fillable px-3">@memberItem.AreYouMehramOfALady</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr style="height: 70pt">
+                    <td class="border-right" colspan="4">
+                        <p><u>NOMINEE IN CASE OF DEATH (MUST BE ADULT/RELATIVE)</u></p>
+                        <p>NAME: <span class="fillable">@memberItem.NomineeName</span></p>
+                        <p>RELATIONSHIP: <span class="fillable">@memberItem.NomineeRelation</span></p>
+                        <p>CNIC NO. <span class="fillable">@memberItem.NomineeCNIC</span></p>
+                        <p>MOBILE NO. <span class="fillable">@memberItem.NomineeContact</span></p>
+                        <p>TELEPHONE NO. <span class="fillable">@memberItem.NomineeTelephone</span></p>
+                    </td>
+                    <td class="border-right p-1" colspan="5">
+                        <p>
+                            <u>MEHRAM'S DETAILS <small>(FOR LADIES ONLY)</small></u>
+                            APPLICATION NO. CODE: <span>@memberItem.MehramAppNumber</span> <small style="color: gray">
+                                (FOR OFFICE USE)
+                            </small>
+                        </p>
+                        <p>MEHRAM'S NAME: @memberItem.MehramName RELATIONSHIP: @memberItem.MehramRelationship</p>
+                        <p style="min-height: 80px;" class="border">
+                            <img loading="lazy" src="@memberItem.MehramSignatureBase64" height="80" alt="">
+                        </p>
+                        <p class="text-center">SIGNATURE & THUMB IMPRESSION</p>
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+
+    <div class="form-container container-fluid">
+        <table class="table m-0 p-0">
+            <tr>
+                <td class="border-right border-left">
+                    <p class="h5 text-center mb-0">Missing Documents</p>
+                </td>
+            </tr>
+            <tr>
+                <th class="border-right border-left">Name</th>
+                @foreach (RequiredDocument document in ViewBag.Documents)
+                {
+                    <th class="border-right border-left">@document.Documents</th>
+                }
+            </tr>
+            @foreach (DataFormModelEntry item in Model.Entries)
+            {
+                <tr>
+                    <td class="border-right border-left" colspan="1">
+                        @item.GivenName @item.SurName
+                    </td>
+                    @foreach (RequiredDocument document in ViewBag.Documents)
+                    {
+                        bool found = false;
+                        @foreach (FamilyHeadDocument familyHeadDocument in item.Documents)
+                        {
+                            if (familyHeadDocument.RequiredDocumentId == document.RequiredDocumentId)
+                            {
+                                found = true;
+                                <td class="border-right border-left">@(familyHeadDocument.Recieved ? "✓" : "✗")</td>
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            <td class="border-right border-left"></td>
+                        }
+                    }
+                </tr>
+            }
+        </table>
+        <a class="btn btn-success" asp-controller="HajjAgreement" asp-action="NewDisplay"
+           asp-route-id="@ViewBag.HeadId">Proceed to Hajj Agreement</a>
+    </div>
+</div>
+
+<script>
+    function onFacPricesCheck(elem) {
+        const prices = document.getElementsByClassName('fac-prices');
+        for (let price of prices) {
+            price.style.display = elem.checked ? "inline" : "none";
+        }
+    }
+
+    function onExtraPricesCheck(elem) {
+        const prices = document.getElementsByClassName('extra-prices');
+        for (let price of prices) {
+            price.style.display = elem.checked ? "inline" : "none";
+        }
+    }
+
+    function onHajjPackageCurrencyChange(val) {
+        const pkrs = document.getElementsByClassName("package-pkr");
+        const sars = document.getElementsByClassName("package-sar");
+        const usds = document.getElementsByClassName("package-usd");
+        const pkrs_fac = document.getElementsByClassName("pkr-fac-prices");
+        const sars_fac = document.getElementsByClassName("sar-fac-prices");
+        const usds_fac = document.getElementsByClassName("usd-fac-prices");
+        const pkrs_extra_fac = document.getElementsByClassName("pkr-extra-prices");
+        const sars_extra_fac = document.getElementsByClassName("sar-extra-prices");
+        const usds_extra_fac = document.getElementsByClassName("usd-extra-prices");
+        const checkExtra = document.getElementById("check-extra");
+
+        if (val == "pkr") {
+            for (let e of pkrs) {
+                e.style.display = 'inline';
+            }
+            for (let e of pkrs_fac) {
+                e.style.display = 'inline';
+            }
+            for (let e of sars) {
+                e.style.display = 'none';
+            }
+            for (let e of sars_fac) {
+                e.style.display = 'none';
+            }
+            for (let e of usds) {
+                e.style.display = 'none';
+            }
+            for (let e of usds_fac) {
+                e.style.display = 'none';
+            }
+            if (checkExtra.checked) {
+                for (let e of pkrs_extra_fac) {
+                    e.style.display = 'inline';
+                }
+                for (let e of sars_extra_fac) {
+                    e.style.display = 'none';
+                }
+                for (let e of usds_extra_fac) {
+                    e.style.display = 'none';
+                }
+            }
+        }
+        else if (val == 'sar') {
+            for (let e of pkrs) {
+                e.style.display = 'none';
+            }
+            for (let e of pkrs_fac) {
+                e.style.display = 'none';
+            }
+            for (let e of sars) {
+                e.style.display = 'inline';
+            }
+            for (let e of sars_fac) {
+                e.style.display = 'inline';
+            }
+            for (let e of usds) {
+                e.style.display = 'none';
+            }
+            for (let e of usds_fac) {
+                e.style.display = 'none';
+            }
+            if (checkExtra.checked) {
+                for (let e of pkrs_extra_fac) {
+                    e.style.display = 'none';
+                }
+                for (let e of sars_extra_fac) {
+                    e.style.display = 'inline';
+                }
+                for (let e of usds_extra_fac) {
+                    e.style.display = 'none';
+                }
+            }
+        }
+        else {
+            for (let e of pkrs) {
+                e.style.display = 'none';
+            }
+            for (let e of pkrs_fac) {
+                e.style.display = 'none';
+            }
+            for (let e of sars) {
+                e.style.display = 'none';
+            }
+            for (let e of sars_fac) {
+                e.style.display = 'none';
+            }
+            for (let e of usds) {
+                e.style.display = 'inline';
+            }
+            for (let e of usds_fac) {
+                e.style.display = 'inline';
+            }
+            if (checkExtra.checked) {
+                for (let e of pkrs_extra_fac) {
+                    e.style.display = 'none';
+                }
+                for (let e of sars_extra_fac) {
+                    e.style.display = 'none';
+                }
+                for (let e of usds_extra_fac) {
+                    e.style.display = 'inline';
+                }
+            }
+        }
+    }
+</script>
+
+<script>
+    document.getElementById('download-pdf').addEventListener('click', function () {
+        var element = document.querySelector('.dataform');
+        var buttons = document.querySelectorAll('.print-btn');
+        buttons.forEach(button => button.style.display = 'none');
+        html2pdf().from(element).set({
+            margin: 1,
+            filename: 'DataFormV3.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        }).save().then(function () {
+            buttons.forEach(button => button.style.display = 'inline-block');
+        });
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function toggleAllDateTimes(className, isChecked) {
+        var elements = document.getElementsByClassName(className);
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].style.display = isChecked ? 'block' : 'none';
+        }
+    }
+
+    function sendEmail(event) {
+        event.preventDefault();
+        var email = $("#email").val();
+        var href = window.location.href;
+
+        $.ajax({
+            type: 'POST',
+            url: '/Email/SendAgreement',
+            data: { url: href, email: email },
+            success: function (response) {
+                alert('Email sent successfully.');
+            },
+            error: function (error) {
+                console.log('Error sending URL to the server:', error);
+            }
+        });
+    }
+</script>

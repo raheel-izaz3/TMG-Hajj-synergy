@@ -1,0 +1,535 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTable JQuery</title>
+    <!-- JQUERRY CDN LINK  -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript"></script>
+    <!-- DATA TABLE CDN LINK JS  -->
+    <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+    <!-- DATA-TABLE-BUTTONS CDN  -->
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet">
+    <!-- BOOTSTRAP 4 JS   -->
+    <script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+    <!-- BOOTSTRAP 4 CSS   -->
+    <link href="https://cdn.datatables.net/1.11.1/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        #top-heading{
+            display: block;
+        }
+
+        @@media print {
+
+            .print{
+                display: none !important;
+            }
+
+            label,
+            input {
+                display: none;
+            }
+
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+
+
+
+        .title-body {
+            text-align: center;
+            text-decoration: underline;
+
+        }
+
+        .reservaion-text {
+            text-decoration: underline;
+            margin-left: 12px;
+        }
+
+        .reservaion-text p {
+            padding: 0;
+            margin: 0;
+            line-height: 10px;
+        }
+
+        .top-heading {
+            position: relative;
+        }
+
+        .hotel-data {
+            display: flex;
+            justify-content: space-between;
+            /* align-items: left; */
+            width: 90%;
+            /* margin: 0 auto; */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            margin-left: 15px;
+            /* padding-top: 50px; */
+            /* position: absolute; */
+            /* bottom: -35px; */
+            /* left: 10px; */
+
+        }
+
+        .hotel-data h5 {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Table Styling  */
+        #table {}
+
+        #table th {
+            font-size: 10px;
+            text-align: center;
+        }
+
+        #table td {
+            vertical-align: middle;
+            font-size: 8px;
+            font-weight: 900;
+            text-align: center;
+            /* border-bottom: 2px solid black; */
+        }
+
+        .tfooter th {
+            background-color: lightblue;
+            border-bottom: 2px solid black;
+            text-align: center;
+            /* color: white; */
+            color: black;
+            padding: 2px;
+            margin: 2px;
+        }
+
+        .familyData {
+            margin-top: 20px;
+        }
+
+        .familyData table {
+            /* border: 1px solid red; */
+            border-collapse: collapse;
+            width: 50%;
+            /* margin: 10px; */
+            /* padding: 10px; */
+            line-height: 25px;
+
+        }
+
+        .familyData th {
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 900;
+            border-bottom: 2px solid rgba(192, 189, 189, 0.33);
+            border-top: 2px solid rgba(192, 189, 189, 0.33);
+        }
+
+        p {
+            margin: 0;
+        }
+
+        @@media print {
+            label {
+                visibility: hidden;
+            }
+        }
+
+        table img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .save {
+            display: inline-block;
+            width: 120px;
+            padding: 6px;
+            border: 1px solid white;
+            transition: ease-in-out .2s;
+            margin-top: 30px;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        /* .save:hover {
+            background-color: black;
+            color: white;
+
+        } */
+        .print {
+            display: inline-block;
+            width: 120px;
+            padding: 6px;
+            border: 1px solid white;
+            transition: ease-in-out .2s;
+            margin-top: 30px;
+            margin-left: 10px;
+            font-weight: 500;
+            color: white;
+            background-color: seagreen;
+        }
+
+        .inc-dec-button button {
+            border: 2px solid white;
+            display: inline-block;
+            padding: 6px;
+            font-size: 8px;
+            /* margin-bottom: -20px; */
+            position: relative;
+            top: -10px;
+            vertical-align: top;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <header>
+       
+        <button class="print" onclick="print()">Print</button>
+        <div class="checkbox-container">
+            <label for="checkbox1">Reservation Details</label>
+            <input type="checkbox" name="checkbox1" id="myCheckbox" onchange="toggleDiv()" checked>
+        </div>
+
+        <div class="title-body">
+            <h5>@ViewBag.MunazimName</h5>
+            <h5>@ViewBag.CompanyName</h5>
+           @*  <p> SUBGROUP:AZIZIA(22JUN04JUL) AB-19 -AZIZIA HOTEL AB-19 (AZIZIA) REPORT</p> *@
+            <p> GROUP:@ViewBag.GroupName</p>
+            <hr>
+        </div>
+    </header>
+
+    <section class="top-heading" id="top-heading">
+        <div class="hotel-data">
+        <div class="reservaion-text">
+            <p>RESERVATION DETAILS </p>
+        </div>
+            
+            <div>
+                <h5>HOTEL :@ViewBag.HotelName</h5>
+            </div>
+            <div>
+                <h5>CHECKIN: <SPAN id="checkIn">@ViewBag.CheckIn -18:00 00</SPAN></h5>
+            </div>
+            <div>
+                <h5>CHECKOUT: <SPAN id="checkIn">@ViewBag.CheckOut -12:00 00</SPAN></h5>
+            </div>
+            <div class="inc-dec-button">
+                <button id="increaseFontSizeBtn"> FLOOR FONT (+)</button>
+                <button id="decreaseFontSizeBtn"> FLOOR FONT (-)</button>
+
+                <!-- //ROOMS BUTTONS  -->
+                <button id="roomsBtnMax"> ROOM FONT (+)</button>
+                <button id="roomsBtnMin"> ROOM FONT (-)</button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <form action="/GroupReport/MedinaSave/@ViewBag.SubGroupId" name="memberForm" method="post">
+        <table id="" class="table ">
+            <thead>
+                <tr>
+                    <th>S#</th>
+                    <th>FCID</th>
+                    <th>CID</th>
+                    <th>PHOTO</th>
+                    <th>FULLNAME</th>
+                    <th>GENDER</th>
+                    <th>EMAIL</th>
+                    <th>MOB# KSA</th>
+                    <th>PP#</th>
+                    <th>VISA#</th>
+                    <th>Hajj App #</th>
+                    <th>ROOM TYPE</th>
+                    <th>Floor#</th>
+                    <th>ROOMS#</th>
+                    <th>REMARKS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int srn = 1;
+                    string oldfcid = "";
+                    bool idChange = true;
+
+                }
+                @foreach (var item in ViewBag.Modal)
+                {
+                    
+                    if(oldfcid == "")
+                    {
+                        oldfcid = item.FcId;
+                    }
+                    else
+                    {
+                        if (oldfcid != item.FcId)
+                        {
+                            idChange = true;
+                            oldfcid = item.FcId;
+                        }
+                        else
+                        {
+                            idChange = false;
+                        }
+                    }
+
+                    <tr style="border-top: @(idChange ? "3px solid black" : "") ">
+                        <td>@srn</td>
+                    <td> @item.FcId</td>
+                    <td>@item.CID</td>
+                    <td><img src="~/@item.MemberImage" alt=""></td>
+                    <td>@item.FullName</td>
+                    <td>@item.Gender</td>
+                    <td>@item.Email</td>
+                    <td>
+                            @item.KSAMobileNumber
+                        @* <input type="number" name="KSAMobile[]" id="" value="@item.KSAMobileNumber"> *@
+                    </td>
+                    <td>@item.PassportNumber</td>
+                    <td>
+                            @item.VisaNumber
+                       @*  <input type="number" name="VisaNumber[]" id="" value="@item.VisaNumber"> *@
+                    </td>
+                    <td>@item.HajjApplicationNumber</td>
+                        <td>@item.RoomCodeNew</td>
+
+                        <td>
+                            @if (ViewBag.rooms.Count == 0)
+                            {
+                                <input type="text" name="StayRoomNumbers[]" id="" value="">
+                            }
+                            else
+                            {
+                                @foreach (var rooms in ViewBag.rooms)
+                                {
+                                    if (rooms.FamilyHeadId == item.FamilyHeadId)
+                                    {
+                                        <input type="text" name="StayRoomNumbers[]" id="" value="@rooms.RoomNumber">
+                                    }
+                                }
+                            }
+                            
+                        </td>
+                    <!-- <td rowspan="">15</td> -->
+                        <td>
+                            @if (ViewBag.rooms.Count ==0)
+                            {
+                                <input type="text" name="StayFloorNumbers[]" id="" value="">
+                            }
+                            else
+                            {
+                                @foreach (var rooms in ViewBag.rooms)
+                                {
+                                    if (rooms.FamilyHeadId == item.FamilyHeadId)
+                                    {
+                                        <input type="text" name="StayFloorNumbers[]" id="" value="@rooms.FloorNumber">
+                                    }
+                                }
+                            }
+                            
+                           
+                            </td>
+                    
+                        <td>-----<input type="hidden" value="@item.FamilyHeadId" name="FamilyHeadIds[]" /></td>
+                    
+                </tr>
+                srn++;
+                }
+                
+
+               
+        </tfoot> 
+
+            </tbody>
+        </table>
+        <button class="save">Save </button>
+    </form>
+    <section>
+        <div class="summary">
+            <h5 style="text-align: center; margin-top: 10px;"> <u>SUMMARY</u> </h5>
+        </div>
+
+        <div style=" width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <div style=" width: 50%;" class="familyData">
+                <div class="total-memeber" style="text-align: center; font-weight: 600; ">
+                    <p>TOTAL MEMBERS : <span id="totalMembers">@ViewBag.TotalMember</span></p>
+                </div>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                           @*  <th>adult: 17</th> *@
+                            <th>Male: @ViewBag.MaleCount <br>@* child: 0 *@</th>
+                           @*  <th>infant: 0</th> *@
+                        </tr>
+                        <tr>
+                           @*  <th>adult: 17</th> *@
+                            <th>Female: @ViewBag.FemaleCount <br>@* child: 0 *@</th>
+                            @* <th>infant: 0</th> *@
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div style=" width: 50%;" class="familyData">
+                <div class="total-memeber" style="text-align: center; font-weight: 600; ">
+                    <p>TOTAL ROOMS : <span id="totalRooms"></span></p>
+                </div>
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            @*  <th>adult: 17</th> *@
+                            <th>DOUBLE:  @ViewBag.dblroom <br>@* child: 0 *@</th>
+                            @*  <th>infant: 0</th> *@
+                        </tr>
+                        <tr>
+                            @*  <th>adult: 17</th> *@
+                            <th>TRIPLE:  @ViewBag.triroom <br>@* child: 0 *@</th>
+                            @* <th>infant: 0</th> *@
+                        </tr>
+                        <tr>
+                            @*  <th>adult: 17</th> *@
+                            <th>QAUD: @ViewBag.quadroom <br>@* child: 0 *@</th>
+                            @* <th>infant: 0</th> *@
+                        </tr> 
+                        <tr>
+                            @*  <th>adult: 17</th> *@
+                            <th>QUINT: @ViewBag.quintroom <br>@* child: 0 *@</th>
+                            @* <th>infant: 0</th> *@
+                        </tr> 
+                        <tr>
+                            @*  <th>adult: 17</th> *@
+                            <th>SHARING: @ViewBag.sharingroom <br>@* child: 0 *@</th>
+                            @* <th>infant: 0</th> *@
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            @* <div style="font-size: 10px; font-weight: bold;">
+                <p>TOTAL ROOMS</p>
+                <p>DOUBLE : <span> @ViewBag.dblroom</span></p>
+                <p>TRIPLE : <span> @ViewBag.triroom</span></p>
+                <p>QAUD : <span> @ViewBag.quadroom</span></p>
+                <p>QUINT : <span> @ViewBag.quintroom</span></p>
+                <p>SHARING : <span> @ViewBag.sharingroom</span></p>
+                 <p>ONE BR-SUITE <span>(ONE BR-SUITE)</span>: <span>4</span></p>
+                <p>GENDER SHARING DOUBLE(S-DB2): <span>1</span></p> 
+
+            </div> *@
+        </div>
+
+
+    </section>
+    <br />
+    <div class="row" style="width:1000px; height:1000px;">
+        @foreach (var item in ViewBag.passportVisa)
+        {
+            <img src="~/@item.passport" style="style="width:100%;height:100%" alt="Passport Image" />
+          
+        }
+       
+    </div>
+    <!-- Table-Data-Jquery -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $("#table").DataTable({
+                "info": false,
+                "bPaginate": false,
+            });
+        });
+    </script>
+
+    <script>
+        // increaseFontSizeBtn
+        document.getElementById('increaseFontSizeBtn').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontSizeBtn');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize + 1) + 'px';
+            });
+        });
+
+        //  DecreaseFontSizeBtn
+        document.getElementById('decreaseFontSizeBtn').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontSizeBtn');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize - 1) + 'px';
+            });
+        });
+
+        // rOOMS bUTTON fUNCTION 
+        // increaseFontSizeBtn
+        document.getElementById('roomsBtnMax').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontIncText1');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize + 1) + 'px';
+            });
+        });
+
+        //  DecreaseFontSizeBtn
+        document.getElementById('roomsBtnMin').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontIncText1');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize - 1) + 'px';
+            });
+        });
+
+
+
+    </script>
+
+    <script>
+        function toggleDiv() {
+            var checkbox = document.getElementById('myCheckbox');
+            var div = document.getElementById('top-heading');
+
+            if (checkbox.checked) {
+                div.style.display = 'block';
+            } else {
+                div.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

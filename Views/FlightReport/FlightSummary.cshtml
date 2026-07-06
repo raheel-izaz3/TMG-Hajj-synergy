@@ -1,0 +1,604 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<TMG.Controllers.FamilyControllers.FlightSummaryModel>
+
+
+<!-- Jquery  -->
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<!-- Data Tables.min.js  -->
+<script type="text/javascript"
+        src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+<!-- DataTable min.css -->
+<link rel="stylesheet" type="text/css"
+      href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<link href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css" rel="stylesheet" />
+<script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+<style>
+    .dx-datagrid-summary-item {
+        font-weight: bold;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    div#example_filter {
+        margin-bottom: 10px;
+    }
+
+    body {
+        /* width: 100vw; */
+        /* height: 100vh; */
+        /* overflow-x: hidden; */
+        font-family: monospace;
+        /* font-family: sans-serif; */
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+        padding: 0;
+        margin: 0;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: none !important;
+    }
+
+        table th {
+            padding: 3px 4px !important;
+            font-size: 10px !important;
+            text-align: center !important;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            font-weight: bold;
+            border: 1px solid #b49164 !important;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        table td {
+            font-size: 8px !important;
+            /* outline: 1px solid #fedf7b; */
+            /* border: 1px solid #fedf7b; */
+            padding: 5px 2px !important;
+            margin: 0 !important;
+            text-align: center;
+            border: 1px solid #b0872e;
+        }
+
+
+
+    caption {
+        background-color: #b0872e;
+        color: white;
+        padding: 7px;
+        font-size: 18px !important;
+    }
+
+    tfoot {
+        background-color: #f6f3ee !important;
+        color: #b49164;
+        font-weight: bold;
+        border: 1px solid #b49164 !important;
+        position: sticky;
+        bottom: 0;
+        z-index: 2;
+    }
+
+    table.dataTable thead .sorting {
+        background-image: none !important;
+    }
+
+    th.sorting {
+        /* background: none !important; */
+        /* border: none !important; */
+    }
+
+    .check-box {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    @@media print {
+
+        label,
+        input {
+            display: none;
+        }
+
+        button.dt-button.buttons-excel.buttons-html5 {
+            display: none;
+        }
+
+        button {
+            display: none;
+        }
+    }
+
+    label {
+        font-size: 9px !important;
+    }
+
+    .check-box input {
+        width: 20px;
+    }
+
+    .check-box {
+        margin: 10px 0;
+    }
+
+    /* ******************* Hide and Show Check Box *************** */
+    #summaryData.hide1 tr > *:nth-child(1) {
+        display: none;
+    }
+
+    #summaryData.hide2 tr > *:nth-child(2) {
+        display: none;
+    }
+
+    #summaryData.hide3 tr > *:nth-child(3) {
+        display: none;
+    }
+
+    #summaryData.hide4 tr > *:nth-child(4) {
+        display: none;
+    }
+
+    #summaryData.hide5 tr > *:nth-child(5) {
+        display: none;
+    }
+
+    #summaryData.hide6 tr > *:nth-child(6) {
+        display: none;
+    }
+
+    #summaryData.hide7 tr > *:nth-child(7) {
+        display: none;
+    }
+
+    #summaryData.hide8 tr > *:nth-child(8) {
+        display: none;
+    }
+
+    #summaryData.hide9 tr > *:nth-child(9) {
+        display: none;
+    }
+
+    #summaryData.hide10 tr > *:nth-child(10) {
+        display: none;
+    }
+
+    #summaryData.hide11 tr > *:nth-child(11) {
+        display: none;
+    }
+
+    #summaryData.hide12 tr > *:nth-child(12) {
+        display: none;
+    }
+
+    #summaryData.hide13 tr > *:nth-child(13) {
+        display: none;
+    }
+
+    #summaryData.hide14 tr > *:nth-child(14) {
+        display: none;
+    }
+
+    #summaryData.hide15 tr > *:nth-child(15) {
+        display: none;
+    }
+
+    #summaryData.hide16 tr > *:nth-child(16) {
+        display: none;
+    }
+
+    #summaryData.hide17 tr > *:nth-child(17) {
+        display: none;
+    }
+
+    #summaryData.hide18 tr > *:nth-child(18) {
+        display: none;
+    }
+
+    #summaryData.hide19 tr > *:nth-child(19) {
+        display: none;
+    }
+
+    #summaryData.hide20 tr > *:nth-child(20) {
+        display: none;
+    }
+
+    #summaryData.hide21 tr > *:nth-child(21) {
+        display: none;
+    }
+
+    #summaryData.hide22 tr > *:nth-child(22) {
+        display: none;
+    }
+
+    #summaryData.hide23 tr > *:nth-child(23) {
+        display: none;
+    }
+
+    #summaryData.hide24 tr > *:nth-child(24) {
+        display: none;
+    }
+
+    #summaryData.hide25 tr > *:nth-child(25) {
+        display: none;
+    }
+
+    #summaryData.hide26 tr > *:nth-child(26) {
+        display: none;
+    }
+
+    #summaryData.hide27 tr > *:nth-child(27) {
+        display: none;
+    }
+
+    #summaryData.hide28 tr > *:nth-child(28) {
+        display: none;
+    }
+
+    #summaryData.hide29 tr > *:nth-child(29) {
+        display: none;
+    }
+
+    button.dt-button,
+    div.dt-button,
+    a.dt-button {
+        background-color: #185B36 !important;
+        background-image: none !important;
+        color: aliceblue !important;
+        border-radius: 10px;
+        padding: 0.5em 24px;
+        margin-bottom: 1rem;
+    }
+
+    button {
+        float: left;
+        box-sizing: border-box;
+        margin-left: 15px;
+        border-radius: 8px;
+        padding: 0.5em 24px;
+        cursor: pointer;
+        font-size: 0.88em;
+        line-height: 1.6em;
+        white-space: nowrap;
+        background-color: #f6f3ee !important;
+        color: #b49164;
+        position: relative;
+        border: 1px solid rgb(255, 255, 255);
+        font-weight: 600;
+    }
+
+    .btn-clear {
+        float: left;
+        box-sizing: border-box;
+        margin-left: 15px;
+        border-radius: 8px;
+        padding: 0.5em 24px;
+        cursor: pointer;
+        font-size: 0.88em;
+        line-height: 1.6em;
+        white-space: nowrap;
+        background-color: #f6f3ee !important;
+        color: #b49164;
+        text-decoration: none;
+        position: relative;
+        border: 1px solid rgb(255, 255, 255);
+        font-weight: 600;
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
+
+<h1>Flight Summary Report</h1>
+
+
+@* <div class="check-box">
+<label for="toggleSrNo" class="toggle-label"> SrNo </label>
+<input type="checkbox" id="toggleSrNo" class="toggle-checkbox" checked>
+
+<label for="togglePkgName" class="toggle-label"> Package Name </label>
+<input type="checkbox" id="togglePkgName" class="toggle-checkbox" checked>
+
+<label for="toggleHotelName" class="toggle-label"> Hotel Name </label>
+<input type="checkbox" id="toggleHotelName" class="toggle-checkbox" checked>
+
+<label for="toggleHGO" class="toggle-label"> HGO </label>
+<input type="checkbox" id="toggleHGO" class="toggle-checkbox" checked>
+
+<label for="toggleGroup" class="toggle-label"> Group </label>
+<input type="checkbox" id="toggleGroup" class="toggle-checkbox" checked>
+
+<label for="togglePAXName" class="toggle-label"> PAX Name </label>
+<input type="checkbox" id="togglePAXName" class="toggle-checkbox" checked>
+
+<label for="toggleAirlineName" class="toggle-label"> Airline Name </label>
+<input type="checkbox" id="toggleAirlineName" class="toggle-checkbox" checked>
+
+<label for="toggleDD" class="toggle-label"> Departure Date </label>
+<input type="checkbox" id="toggleDD" class="toggle-checkbox" checked>
+
+<label for="togglePNR" class="toggle-label"> PNR </label>
+<input type="checkbox" id="togglePNR" class="toggle-checkbox" checked>
+
+<label for="toggleOB" class="toggle-label"> OutBound </label>
+<input type="checkbox" id="toggleOB" class="toggle-checkbox" checked>
+
+<label for="toggleOBFlightNo" class="toggle-label"> OB Flight No. </label>
+<input type="checkbox" id="toggleOBFlightNo" class="toggle-checkbox" checked>
+
+<label for="toggleOBPAKTime" class="toggle-label"> OB PAK Time </label>
+<input type="checkbox" id="toggleOBPAKTime" class="toggle-checkbox" checked>
+
+<label for="toggleOBKSATime" class="toggle-label"> OB KSA Time </label>
+<input type="checkbox" id="toggleOBKSATime" class="toggle-checkbox" checked>
+
+<label for="toggleOBKSADate" class="toggle-label"> OB KSA Date </label>
+<input type="checkbox" id="toggleOBKSADate" class="toggle-checkbox" checked>
+
+<label for="toggleOutB" class="toggle-label"> Hide Outbound </label>
+<input type="checkbox" id="toggleOutB" class="toggle-checkbox" checked>
+
+<label for="toggleInbound" class="toggle-label"> Inbound </label>
+<input type="checkbox" id="toggleInbound" class="toggle-checkbox" checked>
+
+<label for="toggleIbFlightNo" class="toggle-label"> IB Flight No. </label>
+<input type="checkbox" id="toggleIbFlightNo" class="toggle-checkbox" checked>
+
+<label for="toggleIBPAKTIME" class="toggle-label"> IB PAK Time </label>
+<input type="checkbox" id="toggleIBPAKTIME" class="toggle-checkbox" checked>
+
+<label for="toggleIBKSA" class="toggle-label"> IB KSA Time </label>
+<input type="checkbox" id="toggleIBKSA" class="toggle-checkbox" checked>
+
+<label for="toggleIBKSADATE" class="toggle-label"> IB KSA Date </label>
+<input type="checkbox" id="toggleIBKSADATE" class="toggle-checkbox" checked>
+
+<label for="toggleInB" class="toggle-label"> Hide Inbound </label>
+<input type="checkbox" id="toggleInB" class="toggle-checkbox" checked>
+
+</div> *@
+
+<div class="big-table-record" id="summaryData">
+    @*  <form method="get" action="FlightSummary">
+    <div class="form-group" style="float: left;">
+    <label for="dateType">Filter by:</label>
+    <select id="dateType" name="dateType" class="form-control">
+    <option value="arrival">Arrival Date</option>
+    <option value="departure">Departure Date</option>
+    </select>
+    </div>
+    <div class="form-group" style="float: left;">
+    <label for="filterDate">Select Date:</label>
+    <input type="date" id="filterDate" name="filterDate" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="FlightSummary" class="btn-clear">Clear Filter</a>
+    </form>
+    <table style="width:100%" id="myTable" class="table-responsive">
+    <thead>
+    <tr>
+    <th>S.No</th>
+    <th>Name</th>
+    <th>Passport #</th>
+    <th>Passport Expiry</th>
+    <th>Date of Birth</th>
+    <th>Group Name</th>
+    <th>Package Name</th>
+    <th>Flight Type</th>
+    <th>Class</th>
+    <th>Origin</th>
+    <th>Destination</th>
+    <th>Flight No.</th>
+    <th>Ticket No.</th>
+    <th>PNR No.</th>
+    <th>Departure Date</th>
+    <th>Departure Time</th>
+    <th>Arrival Date</th>
+    <th>Arrival Time</th>
+    <th>Total</th>
+    <th>Transport to Hotel / Airport</th>
+    </tr>
+    </thead>
+    <tbody>
+    @{
+    int i = 1;
+    }
+    @foreach (var flight in Model)
+    {
+    <tr>
+    <td>@i</td>
+    <td>@flight.FamilyHeadName</td>
+    <td>@flight.PassportNumber</td>
+    <td>@flight.PassportExpiry</td>
+    <td>@flight.DateOfBirth</td>
+    <td>@flight.GroupName</td>
+    <td>@flight.PackageName</td>
+    <td>@flight.FlightType</td>
+    <td>@flight.Class</td>
+    <td>@flight.Origin</td>
+    <td>@flight.Destination</td>
+    <td>@flight.FlightNo</td>
+    <td>@flight.TicketNo</td>
+    <td>@flight.PNRNo</td>
+    <td>@flight.DepartureDateTime?.ToString("dd/MMM/yyyy")</td>
+    <td>@flight.DepartureDateTime?.ToString("HH:mm")</td>
+    <td>@flight.ArrivalDateTime?.ToString("dd/MMM/yyyy")</td>
+    <td>@flight.ArrivalDateTime?.ToString("HH:mm")</td>
+    <td>@flight.Total</td>
+    <td>@flight.VehicleToHotel</td>
+    </tr>
+
+    i++;
+    }
+    </tbody>
+    </table> *@
+
+    <div id="gridContainer"></div>
+</div>
+<script>
+    // Initialize DataTable
+    // $(document).ready(function () {
+    //     $('#myTable').DataTable({
+    //         dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+    //         buttons: [
+    //             {
+    //                 extend: "excel",
+    //                 footer: true,
+    //                 text: "Excel",
+    //                 filename: 'FlightSummaryReport'
+    //             },
+    //             {
+    //                 extend: "copy",
+    //                 text: "Copy",
+    //             },
+    //             {
+    //                 extend: "print",
+    //                 text: "Print",
+    //             }
+    //         ],
+    //         "scrollCollapse": true,
+    //         "paging": false,
+    //         "info": false,
+    //         "ordering": false,
+    //         "searching": true,
+    //     });
+    // });
+
+    $(function () {
+        var dataSource = @Html.Raw(Json.Serialize(Model));
+        console.log(dataSource);
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: dataSource,
+            columns: [
+                { dataField: "familyHeadGivenName", caption: "Given Name" },
+                { dataField: "familyHeadSurName", caption: "Sur Name" },
+                { dataField: "hbNo", caption: "HB #" },
+                { dataField: "passportNumber", caption: "Passport Number" },
+                { dataField: "passportExpiry", caption: "Passport Expiry", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "dateOfBirth", caption: "Date of Birth", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "groupName", caption: "Group Name" },
+                { dataField: "packageName", caption: "Package Name" },
+                { dataField: "airline", caption: "Airline" },
+                { dataField: "flightType", caption: "Flight Type" },
+                { dataField: "class", caption: "Class" },
+                { dataField: "origin", caption: "Origin" },
+                { dataField: "destination", caption: "Destination" },
+                { dataField: "departureDate", caption: "Departure Date", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "departureTime", caption: "Departure Time" },
+                { dataField: "arrivalDate", caption: "Arrival Date", dataType: "date", format: "dd-MMM-yyyy" },
+                { dataField: "arrivalTime", caption: "Arrival Time" },
+                { dataField: "flightNo", caption: "Flight Number" },
+                { dataField: "pnrNo", caption: "PNR Number" },
+                { dataField: "total", caption: "Total", dataType: "number", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "vehicleToHotel", caption: "Vehicle to Hotel / Airport" },
+            ],
+            paging: {
+                pageSize: 15000,
+            },
+            searchPanel: {
+                visible: true
+            },
+            filterRow: {
+                visible: true
+            },
+            sorting: {
+                mode: "multiple"
+            },
+            headerFilter: {
+                visible: true
+            },
+            selection: {
+                mode: "single"
+            },
+            summary: {
+                totalItems: [
+                    {
+                        column: "total",
+                        summaryType: "sum",
+                        displayFormat: "Total: {0}",
+                        valueFormat: "fixedPoint",
+                        showInColumn: "total",
+                        skipEmptyValues: false
+                    }
+                ]
+            },
+            export: {
+                enabled: true,
+                fileName: "FlightSummary"
+            }
+        });
+    });
+
+    document.querySelectorAll('.toggle-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            var sectionClass = this.id.replace('toggle', '').toLowerCase();
+            var toggleSections = document.querySelectorAll('.toggle-section.' + sectionClass);
+            toggleSections.forEach(function (section) {
+                if (checkbox.checked) {
+                    section.classList.remove('hide');
+                } else {
+                    section.classList.add('hide');
+                }
+            });
+
+            // Check if checkbox is for hiding Outbound or Inbound
+            if (checkbox.id === 'toggleHideOB') {
+                var hideOBCheckbox = document.getElementById('toggleHideOB');
+                if (hideOBCheckbox.checked) {
+                    document.querySelectorAll('.toggle-section.OB').forEach(function (section) {
+                        section.classList.add('hide');
+                    });
+                } else {
+                    document.querySelectorAll('.toggle-section.OB').forEach(function (section) {
+                        section.classList.remove('hide');
+                    });
+                }
+            }
+
+            if (checkbox.id === 'toggleHideIB') {
+                var hideIBCheckbox = document.getElementById('toggleHideIB');
+                if (hideIBCheckbox.checked) {
+                    document.querySelectorAll('.toggle-section.IB').forEach(function (section) {
+                        section.classList.add('hide');
+                    });
+                } else {
+                    document.querySelectorAll('.toggle-section.IB').forEach(function (section) {
+                        section.classList.remove('hide');
+                    });
+                }
+            }
+        });
+    });
+
+    // document.getElementById('exportButton').addEventListener('click', function () {
+    //     // Get table data
+    //     var table = document.getElementById('myTable');
+    //     var wb = XLSX.utils.table_to_book(table, { sheet: "FlightSummary" });
+    //     // Save as Excel file
+    //     XLSX.writeFile(wb, 'FlightSummary.xlsx');
+    // });
+</script>

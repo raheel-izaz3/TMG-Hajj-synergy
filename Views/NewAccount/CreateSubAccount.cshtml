@@ -1,0 +1,127 @@
+﻿@model TMG.Models.NewChartOfAccounts.NewAccount.NewAccount
+
+@{
+    Layout = "~/Views/Shared/_AccountsLayout.cshtml";
+    string modelName = "NewAccount";
+    string modelNamePlural = "NewAccount";
+    string modelControllerRoute = "NewAccount";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" asp-action="Create">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CompanyId" class="form-control">
+                                        <option value="">Select Haji Booking...</option>
+                                        @foreach (Company com in ViewBag.Companies)
+                                        {
+                                            <option value="@com.CompanyId">@com.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Group</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="NewAccountGroupId" class="form-control">
+                                        <option value="">Select Haji Booking...</option>
+                                        @foreach (NewAccountGroup com in ViewBag.NewAccountGroups)
+                                        {
+                                            <option value="@com.NewAccountGroupId">@com.GroupName - @com.GroupCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Parent Account</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="ParentAccountId" class="form-control">
+                                        <option value="">Select Account...</option>
+                                        @foreach (NewAccount com in ViewBag.NewAccounts)
+                                        {
+                                            <option value="@com.NewAccountId">@com.AccountName - @com.AccountCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="AccountName" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountName"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountCode"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="AccountCode" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountCode"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select OpeningType</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="OpeningType" class="form-control">
+                                        <option value="">Select OpeningType...</option>
+                                        @foreach (var com in ViewBag.OpeningType)
+                                        {
+                                            <option value="@com.Id">@com.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label">Opening Balance Amount</label>
+                                <input name="OpeningAmount" type="text" class="form-control" step="0.01" oninput="formatNumber(this)" />
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" type="checkbox" asp-for="AllowPosting" />
+                                    <label class="form-check-label" asp-for="AllowPosting">
+                                        Posting Allowed
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    function formatNumber(input) {
+        // Remove non-digits (except dot)
+        let value = input.value.replace(/,/g, "");
+
+        if (!isNaN(value) && value !== "") {
+            // Format with thousand separator
+            input.value = Number(value).toLocaleString("en-US", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            });
+        }
+    }
+</script>

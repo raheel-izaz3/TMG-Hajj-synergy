@@ -1,0 +1,92 @@
+﻿@model InquiryEmail
+
+@{
+    string modelName = "InquiryEmail";
+    string modelNamePlural = "InquiryEmails";
+    string modelControllerRoute = "InquiryEmail";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="NoOfDays"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="NoOfDays" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="NoOfDays"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Type"></label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="Type" class="form-control">
+                                        <option value="" selected disabled>Select Type</option>
+                                        <option value="Hajj">Hajj</option>
+                                        <option value="Umrah">Umrah</option>
+                                        <option value="UmrahRamadan">Umrah Ramadan</option>
+                                        <option value="Tour">Tour</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Type"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Subject"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Subject" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Subject"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Attachment"></label>
+                                <div class="input-group input-group-merge">
+                                    <input type="file" name="file" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Attachment"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Message"></label>
+                                <div class="input-group input-group-merge">
+                                    <textarea asp-for="Message" class="form-control" id="summernote"></textarea>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Message"></span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+     $(document).ready(function () {
+        $('#summernote').summernote({
+            height: 200,
+            placeholder: 'Write your message here...',
+        });
+    });
+</script>

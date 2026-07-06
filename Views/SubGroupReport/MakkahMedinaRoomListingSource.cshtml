@@ -1,0 +1,132 @@
+@model RoomListingModel
+
+@{
+    Layout = "_PrintReportLayout";
+}
+
+<style>
+    @@media print {
+        .hideInPrint {
+            display: none;
+        }
+
+        @@page {
+            size: A4;
+            margin: .2cm;
+            zoom: 80%;
+        }
+    }
+</style>
+
+<a asp-controller="SubGroup" asp-action="Index" class="btn btn-primary text-white m-2 hideInPrint">Back To Dashboard</a>
+<button onclick="document.memberForm.submit()" class="btn btn-success m-2 hideInPrint">Save</button>
+<div class="container-fluid mt-3">
+
+    <h5 class="text-center"><u>@Model.Company</u></h5>
+    @* <p class="text-center mb-0"><u>(MUNAZZIM# 2712) [HP# 4187/K]</u></p> *@
+    <p class="text-center mb-0"><u>Sub Group: @Model.SubGroup</u></p>
+    <p class="text-center mb-0 fw-bold">Report</p>
+
+    <p class="text-center mt-1"><u>Group: @Model.Group</u></p>
+
+    <hr class="my-3">
+
+    <form action="/SubGroupReport/MakkahMedinaSave/@Model.SubGroupId" name="memberForm" method="post">
+        <table style="width: 100%" class="table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Company</th>
+                    <th class="text-center">Package</th>
+                    <th class="text-center">Group</th>
+                    <th class="text-center">Room Type</th>
+                    <th class="text-center">HB #</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Age</th>
+                    <th class="text-center">Gender</th>
+                    <th class="text-center">Passport</th>
+                    @* <th class="text-center">Floor #</th> *@
+                    <th class="text-center">Floor #</th>
+                    <th class="text-center">Room #</th>
+                    <th class="text-center">Stay With</th>
+                    <th class="text-center">Floor # Connection</th>
+                    <th class="text-center">Room #</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Members)
+                {
+                    <input type="hidden" name="FamilyHeadIds[]" value="@item.FamilyHeadId">
+                    <input type="hidden" name="RoomIds[]" value="@item.RoomId">
+                    <tr>
+                        <td class="text-center">@item.SNo</td>
+                        <td class="text-center">@item.Company</td>
+                        <td class="text-center">@item.Package</td>
+                        <td class="text-center">@item.Group</td>
+                        <td class="text-center">@item.RoomType</td>
+                        <td class="text-center">@item.FcId</td>
+                        <td class="text-center">@item.Name</td>
+                        <td class="text-center">@item.Age</td>
+                        <td class="text-center">@item.Gender</td>
+                        <td class="text-center">@item.Passport</td>
+                        <td class="text-center"><input style="width: 100px" data-room-pax="@item.RoomPax" type="text"
+                                name="StayFloorNumbers[]" value="@item.FloorNumber"></td>
+                        <td class="text-center"><input style="width: 100px" data-room-pax="@item.RoomPax" type="text"
+                                name="StayRoomNumbers[]" value="@item.RoomNumber"></td>
+                        <td class="text-center">
+                            @item.StayWith
+                        </td>
+                        <td class="text-center"><input style="width: 100px" type="text"
+                                name="ConnectedFloorNumbers[]" value="@item.ConnectedFloorNumber"></td>
+                        <td class="text-center"><input style="width: 100px" type="text"
+                                   name="ConnectedRoomNumbers[]" value="@item.ConnectedRoomNumber">
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </form>
+
+    <h5 class="text-center mt-4"><u>Room Summary</u></h5>
+    <div class="row">
+        <div class="col-sm-6">
+            <table class="table">
+                <tr>
+                    <th class="border-bottom text-center" colspan="3">Total Members: @Model.MemberSummary.TotalMembers
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center" colspan="3">Male: @Model.MemberSummary.MaleCount</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Adult: @Model.MemberSummary.AdultMales</td>
+                    <td class="text-center">Child: @Model.MemberSummary.ChildMales</td>
+                    <td class="text-center">Infant: @Model.MemberSummary.InfantMales</td>
+                </tr>
+                <tr>
+                    <th class="text-center" colspan="3">Female: @Model.MemberSummary.FemaleCount</th>
+                </tr>
+                <tr>
+                    <td class="text-center">Adult: @Model.MemberSummary.AdultFemales</td>
+                    <td class="text-center">Child: @Model.MemberSummary.ChildFemales</td>
+                    <td class="text-center">Infant: @Model.MemberSummary.InfantFemales</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-6">
+            <table class="table">
+                <tr>
+                    <th class="border-bottom text-center" colspan="3">Total Rooms</th>
+                </tr>
+                @foreach (var room in Model.Rooms)
+                {
+                    <tr>
+                        <td><b>@room.RoomCode:</b> @room.Pax</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

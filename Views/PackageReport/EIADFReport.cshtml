@@ -1,0 +1,76 @@
+﻿@model EIADFReportModel
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> EI-ADF Report</h4>
+    <h5 class="fw-bold">
+        <span class="text-muted fw-light"></span> @Model.PackageName <small>(@Model.PackageCode)</small>
+    </h5>
+
+    @{
+        int i = 0;
+    }
+    <h3 class="mb-3 mt-4"></h3>
+
+    <div class="card mb-3 p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="">
+                @foreach(var item in Model.Descriptions)
+                {
+                    <tr>
+                        <th>@item.Key: @item.Value</th>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="card mb-3 p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="">
+                <thead>
+                    <tr>
+                        <th>SR</th>
+                        <th>Mega Reference</th>
+                        <th>HB #</th>
+                        <th>Full Name</th>
+                        <th>EI-ADF</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (var e in Model.Members)
+                    {
+                        <tr>
+                            <td>@e.SR</td>
+                            <td>@e.MegaReference</td>
+                            <td>@e.FCID</td>
+                            <td>@e.FullName</td>
+                            <td>@e.EIADF</td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    let table = new DataTable('#reportTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible:not(:last-child)'
+            }
+        }]
+    });
+
+</script>
+

@@ -1,0 +1,67 @@
+﻿@{
+
+    string modelName = "Report";
+    string modelNamePlural = "Company Wise Haji";
+    string modelControllerRoute = "Report";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Company Vise Haji / </span> Index</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                @* <form method="post" enctype="multipart/form-data"> *@
+                @*  <input type="hidden" asp-for="" /> *@
+                <div class="card">
+                    <div class="tab-content">
+                        <div class="tab-pane fade  show active" role="tabpanel">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Select Company</label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" id="companySelect">
+                                            <option value="">Select Company</option>
+                                            @foreach (var item in ViewBag.CompanyWiseHajji)
+                                            {
+                                                <option value="@item.CompanyId">@item.CompanyName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 mt-3">
+                                    <button type="submit" class="btn btn-warning float-end" id="showReportButton">Show Report</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#showReportButton').on('click', function (e) {
+            e.preventDefault();
+            var companyId = $('#companySelect').val();
+
+            if (companyId) {
+                window.location.href = '@Url.Action("Report", "CompanyReport")?id=' + companyId;
+            } else {
+                alert("Please select a company.");
+            }
+        });
+    });
+</script>
+
+

@@ -1,0 +1,220 @@
+﻿@using System.Text.RegularExpressions;
+@{
+    Layout = null;
+}
+@model IdCardReportModel
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Buttons CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+    <!-- DataTables Buttons JavaScript -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Additional DataTables Extensions (optional) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+    <script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+
+    <!-- Bootstrap CSS (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+
+
+
+    <style>
+        body {
+            font-size: 10px !important;
+        }
+
+        .table {
+            border: solid 1px black !important;
+            font-size: 8.5px !important;
+        }
+
+        thead {
+            border: solid 1px black !important;
+        }
+
+        .chk-buttons {
+            display: flex;
+        }
+        #copyTable{
+            margin-bottom: 5vh !important;
+            width: 80px !important;
+        }
+        @@media print {
+            body {
+                overflow-x: hidden !important;
+            }
+
+            table {
+                overflow-x: hidden !important;
+            }
+
+            .chk-buttons {
+                display: none !important;
+            }
+
+            button {
+                display: none !important;
+            }
+
+            label {
+                display: none;
+            }
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold"><span class="text-muted fw-light"></span> Package Details</h4>
+
+
+        <p>
+            @{
+                string[] suffixesToRemove = { "LIMITED", "SERVICES", "PRIVATE LIMITED", "(PRIVATE)", "& UMRAH", "FOR HAJJ" };
+
+                string RemoveSuffixes(string companyName, string[] suffixes)
+                {
+                    foreach (string suffix in suffixes)
+                    {
+                        companyName = Regex.Replace(companyName, $@"\s*{Regex.Escape(suffix)}\s*", "", RegexOptions.IgnoreCase).Trim();
+                    }
+                    return companyName;
+                }
+
+                // Example usage
+                string formattedMunazzim = RemoveSuffixes(Model.Munazzim, suffixesToRemove);
+                string formattedCompany = RemoveSuffixes(Model.Company, suffixesToRemove);
+            }
+            <b>Munazzim Name:</b> @formattedMunazzim | <b>HGO Name:</b> @formattedCompany | <b>Company No:</b> HP# @Model.CompanyLicenseNo |
+            @*  <b>Package Name:</b> @Model.Package | *@ <b>Maktab:</b> @Model.Maktab | <b>Makkah Hotel Name:</b> @Model.MakkahAccomodation |
+            <b>Medinah Hotel Name:</b> @Model.MedinahAccomodation | <b>Azizia Hotel Name:</b> @Model.AziziaAccomodation | <br />
+            @if (Model.Munazzim == "AL BAYAN MUNAZZAM (PRIVATE) LIMITED")
+            {
+                <b>Munazzim No:</b> <span>HP# K-407-M#20046</span>
+            }
+            else if (Model.Munazzim == "AL MAIRAJ MUNAZZAM (PRIVATE) LIMITED")
+            {
+                <b>Munazzim No:</b> <span>HP# K-408-M#20047</span>
+            }
+            else if (Model.Munazzim == "AL HAMID MUNAZZAM (PRIVATE) LIMITED")
+            {
+                <b>Munazzim No:</b> <span>HP# K-415-M#20048</span>
+            }
+
+        </p>
+
+
+
+        <hr class="mb-4" />
+        <br><br>
+        <div class="card p-2">
+            <button onclick="copyTablee()" id="copyTable">Copy Table</button>
+            <div class="table-responsive text-nowrap ">
+                <table class="table table-hover table-bordered" id="reportTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Haji Image</th>
+                            <th>Haji Name</th>
+                            <th>Father / HUsband Name</th>
+                            <th>CID</th>
+                            <th>Passport</th>
+                            <th>Hajj App No</th>
+                            <th>Makkah Accomodation</th>
+                            @* <th>Makkah Accomodation Location</th> *@
+                            <th>Medinah Accomodation</th>
+                            @* <th>Medinah Accomodation Location</th> *@
+                            <th>Aziza Accomodation</th>
+                            <th>Aziza Accomodation Location</th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1" style="border: solid 1px black !important;">
+                        @{
+                            int i = 0;
+                        }
+                        @foreach (IdCardReportMemberModel m in Model.Members)
+                        {
+                            i++;
+
+                            <tr>
+                                <td>@i</td>
+                                <td><img src="~/@m.HajiImg" width="100" /></td>
+                                <td>@m.HajiName</td>
+                                <td>@m.FatherName</td>
+                                <td>@m.CID</td>
+                                <td>@m.Passport</td>
+                                <td>@m.HajjAppNo</td>
+                                <td>@m.MakkahAccomodation</td>
+                                @* <td>@m.MakkahLocation</td> *@
+                                <td>@m.MedinahAccomodation</td>
+                                @* <td>@m.MedinahLocation</td> *@
+                                <td>@m.AziziaAccomodation</td>
+                                <td>@m.AziziaLocation</td>
+
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var table = $('#reportTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [{
+                text: 'Export to Excel',
+                extend: 'excelHtml5',
+                className: 'btn btn-dark',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            }],
+            fixedHeader: true,
+            paging: false,
+            info: false
+        });
+
+
+        function copyTablee() {
+            var table = document.getElementById('reportTable');
+            var range = document.createRange();
+            range.selectNode(table);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            alert('Table content copied to clipboard!');
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+﻿<script>
+
+    function addNominee() {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        let row = "";
+
+        row += `
+                                                   <div class="row" id="nominee_${id}">
+                                                                    <div class="col-sm-12 col-md-3 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Name</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                                <input type="text"    
+                                                                                name="NomineeNames[]" 
+                                                                                class="form-control" 
+                                                                                placeholder="Enter Name..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+
+                                                                    <div class="col-sm-12 col-md-3 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Relation</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <select name="NomineeRelations[]" class="form-control">
+                                                                            <option value="">Select Nominee Relation...</option>
+    @foreach (NomineeRelation relation in ViewBag.NomineeRels)
+    {
+                                                                                        <option value="@relation.NomineeRelationId">@relation.Relation</option>
+    }
+                                                                            </select>
+                                                                            </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+
+                                                                    <div class="col-sm-12 col-md-3 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's CNIC</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                                <input type="text" 
+                                                                                maxlength="15" 
+                                                                                oninput="formatCnicInput(this)" 
+                                                                                name="NomineeCNICs[]" 
+                                                                                class="form-control" 
+                                                                                placeholder="Enter CNIC..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+
+                                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                                            <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's CNIC</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                    <input type="file"
+                                                                                    name="NomineeCnic[]"
+                                                                                    class="form-control" />
+                                                                            </div>
+                                                                            <span class="text-danger"></span>
+                                                                        </div>
+
+                                                                    <div class="col-sm-12 col-md-6 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Address</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <input type="text" name="NomineeAddresses[]" class="form-control" placeholder="Enter Address..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+
+                                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Country</label>
+                                                    <div class="input-group input-group-merge">
+                                                            <select class="form-control" name="NomineeCountriesId">
+    @foreach (Country country in ViewBag.Country)
+    {
+                                                                    <option value="@country.CountryId">@country.Name</option>
+    }
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger"></span>
+                                                </div>
+                                                                        <div class="col-sm-12 col-md-3 mb-3">
+                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's City</label>
+                                                    <div class="input-group input-group-merge">
+    @* <input type="text" value="@nominee.City" name="NomineeCities[]"
+                                                               class="form-control" placeholder="Enter City..." /> *@
+                                                        <select class="form-control" name="NomineeCitiesId">
+    @foreach (City city in ViewBag.City)
+    {
+                                                                    <option value="@city.CityId">@city.Name</option>
+    }
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger"></span>
+                                                </div>
+
+                                                                    <div class="col-sm-12 col-md-2 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Zip Code</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <input type="text"  name="NomineeZipCodes[]" class="form-control" placeholder="Enter Zip Code..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-2 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Po Box</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <input type="text"  name="NomineePoBoxes[]" class="form-control" placeholder="Enter Po Box..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-2 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Contact</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <input type="text" name="NomineeContacts[]" class="form-control" placeholder="Enter Country..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-3 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Nominee's Email</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <input type="text"  name="NomineeEmails[]" class="form-control" placeholder="Enter Email..." />
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-2 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname" name="">Preferred?</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <select class="form-select" name="NomineePreferred[]">
+                                                                                        <option value="true" selected>Yes</option>
+                                                                                        <option value="false">No</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+                                                                        <label class="form-label"></label>
+                                                                        <button type="button" class="btn btn-icon btn-danger" onclick="removeNominee(${id})"><i class='bx bxs-trash'></i></button>
+                                                                    </div>
+                                                                    <hr>
+                                                                </div>
+                                                        `
+
+        $("#nominees").append(row);
+    }
+
+    function removeNominee(id) {
+        document.getElementById("nominee_" + id).remove();
+    }
+
+
+
+</script>

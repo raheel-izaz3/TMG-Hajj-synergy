@@ -1,0 +1,561 @@
+﻿@model MedicalAffidavitModel
+
+@{
+    Layout = "";
+}
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css"
+        integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <title>Medical Affidavit</title>
+    <style>
+        .toper-header-pic {
+            /* object-fit: cover; */
+            width: 100%;
+            height: 900px;
+
+        }
+
+        .toper-header-pic img {
+            width: 100%;
+
+        }
+
+        .corona-vaccine table {
+            margin: 0;
+            padding: 0;
+        }
+
+        .corona-vaccine td {
+            /* margin: 2px; */
+            padding: 2px;
+        }
+
+        /* .wrapper ol li {
+            line-height: 16px;
+        } */
+
+        .bolder-font {
+
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.788);
+
+        }
+
+
+
+        @@media print {
+            .hideInPrint {
+                display: none;
+            }
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
+        }
+
+        .user-img img,
+        .img-stamp {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            /* border: 1px solid black; */
+
+        }
+
+        .user-img {
+            height: 140px;
+            width: 140px;
+        }
+
+        .user-img img {
+            width: 100% !important;
+        }
+
+        .doc-approval table {
+            height: 100px;
+            text-transform: capitalize;
+            text-align: center;
+        }
+
+        .doc-approval table td:not(td[class='seal-sig-doc']) {
+            vertical-align: middle;
+        }
+
+        .urdu {
+            src: url('https://www.fontsaddict.com/fontface/jameel-noori-nastaleeq.ttf');
+            font-family: 'Jameel Noori Nastaleeq';
+        }
+
+        .half-nama-bold {
+            font-family: Jameel Noori;
+            font-weight: bolder;
+        }
+
+
+        @@media print {
+            .hide-in-print {
+                display: none;
+            }
+
+            .img-stamp {
+                object-fit: contain;
+            }
+
+            title {
+                display: none
+            }
+
+            @@page {
+                margin: 0;
+                margin-top: 20px;
+                margin-inline: 30px;
+
+            }
+
+
+            .seal-sig-doc p {
+                text-wrap: nowrap;
+                font-size: 6pt !important;
+                font-weight: 100 !important;
+            }
+
+            .seal-sig-doc {
+                overflow-y: hidden !important;
+            }
+
+            .stamp-img {
+                border-top: .5px solid !important;
+            }
+        }
+
+        .mr-2 {
+            margin-right: 1%;
+        }
+
+        * {
+            font-size: 8pt;
+            line-height: 12px;
+        }
+
+        .fillable {
+            font-family: monospace;
+            text-transform: uppercase;
+        }
+
+        table td {
+            border: 0.5px solid black !important;
+        }
+
+        .seal-sig-doc {
+            vertical-align: bottom !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .seal-sig-doc p {
+            text-wrap: nowrap;
+            font-size: xx-small;
+            font-weight: 100 !important;
+        }
+
+        .halaf-nama {
+            direction: rtl !important;
+
+        }
+
+        .halaf-nama li {
+            line-height: 22px;
+        }
+
+
+
+        .page-break {
+            page-break-after: always;
+            /* or 'auto' or 'avoid' */
+        }
+    </style>
+
+    <script>
+        function onDoctorCheck(elem) {
+            const checkBoxes = document.getElementsByName("doctorCheckBox")
+            const id = elem.value
+
+            const name = document.querySelectorAll("#doctor-name")
+            const hospital = document.querySelectorAll("#doctor-hospital")
+            const tehsil = document.querySelectorAll("#doctor-tehsil")
+            const district = document.querySelectorAll("#doctor-district")
+            const landline = document.querySelectorAll("#doctor-landline")
+            const cell = document.querySelectorAll("#doctor-cell")
+            const pmdc = document.querySelectorAll("#doctor-pmdc")
+            const seal1 = document.querySelectorAll("#doctor-seal-1")
+            const seal2 = document.querySelectorAll("#doctor-seal-2")
+
+            if (elem.checked) {
+                for (let c of checkBoxes) {
+                    if (c.value == id) {
+                        c.checked = true;
+                    }
+                    else {
+                        c.checked = false;
+                    }
+                }
+
+                if (id != "none") {
+                    fetch("/Doctor/Get/" + id)
+                        .then(res => res.json())
+                        .then(res => {
+                            for (let i = 0; i < name.length; i++) {
+                                name[i].innerHTML = res.name;
+                                hospital[i].innerHTML = res.hospitalName;
+                                tehsil[i].innerHTML = res.tehsil.name;
+                                district[i].innerHTML = res.district;
+                                landline[i].innerHTML = res.landline;
+                                cell[i].innerHTML = res.cellNumber;
+                                seal1[i].src = "/" + res.sealSignaturePath;
+
+                                const stampPlaceholders = document.querySelectorAll("#stampPlaceholder")
+                                for (let p of stampPlaceholders) {
+                                    p.style.display = "none"
+                                }
+
+                                pmdc[i].innerHTML = `
+                                    <td class="fillable text-uppercase">pmdc</td>
+                                `
+
+                                for (let x = 0; x < res.registrationNumber.length; x++) {
+                                    pmdc[i].innerHTML += ` <td class="p-2 fillable">
+                            ${res.registrationNumber[x]}</td>`
+                                }
+                            }
+                        })
+                }
+                else {
+                    for (let i = 0; i < name.length; i++) {
+                        name[i].innerHTML = "";
+                        hospital[i].innerHTML = "";
+                        tehsil[i].innerHTML = "";
+                        district[i].innerHTML = "";
+                        landline[i].innerHTML = "";
+                        cell[i].innerHTML = "";
+
+                        seal1[i].src = "";
+
+                        @* const stampPlaceholders = document.querySelectorAll("#stampPlaceholder")
+                        for (let p of stampPlaceholders) {
+                            p.style.display = "block"
+                        } *@
+
+                        pmdc[i].innerHTML = `
+                        <td class="fillable text-uppercase">pmdc</td>
+                                    <td class="p-2 fillable"></td>
+                                    <td class="p-2 fillable"></td>
+                                    <td class="p-2 fillable"></td>
+                                    <td class="p-2 fillable"></td>
+                                    <td class="p-2 fillable"></td>
+                                    <td class="p-2 fillable"></td>
+                                    `
+                    }
+                }
+            }
+
+        }
+
+        function hidediv(elem) {
+            if (elem.checked) {
+                document.querySelector("#hideCoronaHeading").style.visibility = 'visible'
+                document.querySelector("#hideCoronaTable").style.display = 'table'
+
+            } else {
+                document.querySelector("#hideCoronaHeading").style.visibility = 'hidden'
+                document.querySelector("#hideCoronaTable").style.display = 'none'
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="row hide-in-print p-3">
+        <div>
+            <input type="checkbox" name="coronaCheckBox" onchange="hidediv(this)" value="Corona" />
+            <label>Corona</label>
+        </div>
+        <div>
+            <input type="checkbox" name="doctorCheckBox" onchange="onDoctorCheck(this)" value="none" />
+            <label>None</label>
+        </div>
+        @foreach (Doctor doc in Model.Doctors)
+        {
+            <div>
+                <input type="checkbox" name="doctorCheckBox" onchange="onDoctorCheck(this)" value="@doc.DoctorId" />
+                <label>@doc.Name</label>
+            </div>
+        }
+    </div>
+    @foreach (MedicalAffidavitModelEntry entry in Model.Entries)
+    {
+
+        <section class="container-fluid med-form-main border-white p-3" style="border: 1px solid black !important;">
+        <img src="~/top-section.jpg" alt="" width="100%" style="margin-top: 5px; padding: 0 5px;" />
+            <div class="wrapper">
+
+                <div class="row">
+                    <div class="col-12 d-flex">
+                        <span class="h6 text-capitalize mr-2 text-nowrap mb-2">name of doctor: </span>
+                        <p class="col border-bottom border-dark px-2 fillable" id="doctor-name"></p>
+                    </div>
+
+                    <div class="col-12 d-flex">
+                        <span class="h6 text-capitalize  mr-2 text-nowrap ">name of hospital:</span>
+                        <p class="col border-bottom border-dark px-2 fillable" id="doctor-hospital"></p>
+                    </div>
+                    <div class="col-12 d-flex ">
+
+                        <span class="h6 text-capitalize ">tehsil:</span>
+                        <p class="col border-bottom border-dark fillable mt-0 mx-2" id="doctor-tehsil"> </p>
+
+                        <span class="h6 text-capitalize mx-2 ">district:</span>
+                        <p class="col border-bottom border-dark fillable mt-0" id="doctor-district"></p>
+
+                        <span class="h6 text-capitalize mx-2">landline:</span>
+                        <p class="col border-bottom border-dark fillable mt-0" id="doctor-landline"></p>
+
+                        <span class="h6 text-capitalize mx-2">cell no.</span>
+                        <p class="col border-bottom border-dark fillable " id="doctor-cell"></p>
+                    </div>
+                    <div class="col-12 d-flex align-items-center">
+                        <span class="h6 text-capitalize mr-2 mt-2">
+                            registration no of doctor with pakistan medical or dental
+                            council
+                        </span>
+                        <table class="col-3 border text-center text-capitalize">
+                            <tr id="doctor-pmdc">
+                                <td class="fillable text-uppercase">pmdc</td>
+                                <td class="p-2 fillable"></td>
+                                <td class="p-2 fillable"></td>
+                                <td class="p-2 fillable"></td>
+                                <td class="p-2 fillable"></td>
+                                <td class="p-2 fillable"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="d-flex">
+                        <p class="h6 text-nowrap mr-2 mt-2 bolder-font"> it is certified that i have examined Mr./Ms.</p>
+                        <span class="col border-bottom border-dark fillable mt-2">@entry.Name</span>
+                    </div>
+                    <div class="col-12 d-flex align-items-center mt-2 ">
+                        <span class="h6 text-capitalize  text-capitalize text-center mr-2 bolder-font">S/o, W/o, d/o </span>
+                        <span class="col border-bottom border-dark fillable ">@entry.FatherHusbandName</span>
+
+                        <span class="h6  text-center mr-2 mx-2 mt-2">bearing CNIC </span>
+                        <span class="col border-bottom border-dark fillable">@entry.CNIC</span>
+
+                        <span class="h6 text-capitalize  text-capitalize text-center mr-2 mt-2">& Passport No </span>
+                        <span class="col border-bottom border-dark fillable">@entry.PassportNumber</span>
+                    </div>
+                    <p class="h5 mx-0 py-0 ">and my opinion is given below.</p>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table border mt-1 mb-1">
+                                <tr>
+                                    <td class="fw-bold text-capitalize">age</td>
+                                    <td class="fw-bold text-capitalize">blood group</td>
+                                    <td class="text-capitalize">allergy to following medicines chronic diseases</td>
+                                    <td class="text-capitalize">chronic diseases requiring regular medication</td>
+                                </tr>
+                                <tr>
+                                    <td class="fillable align-middle text-center" rowspan="3">@entry.Age</td>
+                                    <td class="fillable align-middle text-center" rowspan="3">@entry.BloodGroup</td>
+                                    <td style="padding-top: 12px;">
+                                        <span>(i)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+                                    </td>
+                                    <td style="padding-top: 12px;">
+                                        <span>(i)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 12px;">
+                                        <span>(ii)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+                                    </td>
+                                    <td style="padding-top: 12px;">
+                                        <span>(ii)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+
+                                    <td style="padding-top: 12px;">
+
+                                        <span>(iii)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+
+                                    </td>
+                                    <td style="padding-top: 12px;">
+
+                                        <span>(iii)</span>
+                                        <span class="border-bottom border-dark d-inline-block w-50 fillable">
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h5 class="h4 mx-0 my-0 " id="hideCoronaHeading" style="letter-spacing: 1px; font-weight: bolder; text-decoration: underline;">
+                        Detail of
+                        Corona Vaccine
+                        Administered
+                    </h5>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table my-0 corona-vaccine" id="hideCoronaTable">
+                                <tr>
+                                    <td class="border-0 text-center" style="width:100px;">Dose</td>
+                                    <td class="border-0 text-center" style="width:70px;">Covid-19 Vaccine Name </td>
+                                    <td class="border-0 text-center" style="width: 70px;">Batch</td>
+                                    <td class="border-0 text-center" style="width:70px;">Date</td>
+                                </tr>
+                                <tr>
+                                    <td class="h6 fw-bold ">1st Dose</td>
+                                    <td class="fillable text-center ">@entry.Vaccine1</td>
+                                    <td class="fillable text-center "></td>
+                                    <td class="fillable text-center ">@entry.DoseDate1</td>
+                                </tr>
+                                <tr>
+                                    <td class="h6 fw-bold">2nd Dose</td>
+                                    <td class="fillable text-center ">@entry.Vaccine2</td>
+                                    <td class="fillable text-center "></td>
+                                    <td class="fillable text-center ">@entry.DoseDate2</td>
+                                </tr>
+                                <tr>
+                                    <td class="h6  fw-bold">
+                                        1st Booster
+                                        <small class="fw-bold"></small>
+                                    </td>
+                                    <td class="fillable text-center ">@entry.Vaccine3</td>
+                                    <td class="fillable text-center "></td>
+                                    <td class="fillable text-center ">@entry.DoseDate3</td>
+                                </tr>
+                                <tr>
+                                    <td class="h6  fw-bold">
+                                        2nd Booster
+                                        <small class="h6"> <br> (if applicable)</small>
+                                    </td>
+                                    <td class="fillable text-center ">@entry.Vaccine4</td>
+                                    <td class="fillable text-center "></td>
+                                    <td class="fillable text-center ">@entry.DoseDate4</td>
+                                </tr>
+                                <tr>
+                                    <td class="h6 fw-bold">
+                                        3rd Booster
+                                        <small class="fw-fw-bold h6"> <br> (if applicable)</small>
+                                    </td>
+                                    <td class="fillable text-center ">@entry.Vaccine5</td>
+                                    <td class="fillable text-center "></td>
+                                    <td class="fillable text-center ">@entry.DoseDate5</td>
+                                </tr>
+                            </table>
+
+                        </div>
+                        <div class="col-3 user-img">
+                            <img src="~/@entry.ImagePath" style="border: 1px solid black; padding: 5px;">
+                        </div>
+                        <div class="row">
+                            <p class="h6 bolder-font mt-1 mb-2" style="text-decoration: underline ; ">*Attach
+                                NADRA issued Corona
+                                Vaccination
+                                certificate </p>
+                            <div class="doc-approval col-6">
+                                <table class="table  mx-0 my-0">
+                                    <tr>
+                                        <td class="col-4 fw-bold">applicant <br> is fit for <br> hajj <br> journey</td>
+                                        <td class="col-6 seal-sig-doc bprder-dark align-end overflow-hidden">
+                                            <img id="doctor-seal-1" style="height: 100px">
+                                            @* <img src="" class="stamp-img" height="120px"
+                                                id="doctor-seal-1" /> *@
+                                            <p class="fw-bold text-capitalize ">
+                                                seal and signature of the doctor
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="doc-approval col-6">
+                                <table class="table">
+                                    <tr>
+                                        <td class="col-2 fw-bold">can <br> perform <br> hajj with <br> helper</td>
+                                        <td class="col-2 fw-bold">requires <br> the help of <br> a wheel <br> chair</td>
+                                        <td class="col-6 seal-sig-doc bprder-dark align-end overflow-hidden">
+                                            <div style="height: 100px;"></div>
+                                            <p class="fw-bold text-capitalize ">
+                                                seal and signature of the doctor
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+                        <img src="~/urdu-img.jpg" alt="">
+
+                        <div class="signature-and-sign-img" style="margin-left: 23px; padding-left: 40px; ">
+                            @if (entry.ShowSignature)
+                            {
+                                <img src="@entry.SignatureBase64" alt="Sign-Here" class="signtoo"
+                                    style="width: 100px; height: 50px;  display: inline-block; ">
+                            }
+                            else
+                            {
+                                <img src="" alt="Sign-Here" class="signtoo"
+                                    style="width: 100px; height: 50px;  visibility: hidden; display: inline-block; border: 1px solid black;">
+                            }
+                            <h4 class="urdu text-left ">دستخط درخواست گزار</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="urdu-img-sign text-left " >
+            </div>
+        </section>
+        <div class="page-break"></div>
+    }
+
+    <!-- <img src="./ssss.png" alt=""> -->
+
+</body>
+
+</html>

@@ -1,0 +1,145 @@
+﻿@model Account
+
+@{
+    string modelName = "Account";
+    string modelNamePlural = "Accounts";
+    string modelControllerRoute = "Account";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <input type="hidden" asp-for="AccountId">
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company</label>
+                                <select class="form-control" id="companyId" onchange="getSubTypes()">
+                                    <option value="">Select Company</option>
+                                    @foreach (Company company in ViewBag.Companies)
+                                    {
+                                        if (company.CompanyId == ViewBag.CompanyId)
+                                        {
+                                            <option selected value="@company.CompanyId">@company.CompanyName</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@company.CompanyId">@company.CompanyName</option>
+                                        }
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Type</label>
+                                <select class="form-control" id="typeId" onchange="getSubTypes(this.value)">
+                                    <option value="">Select Account Type</option>
+                                    @foreach (Type type in ViewBag.Types)
+                                    {
+                                        if(type.TypeId == ViewBag.TypeId)
+                                        {
+                                            <option selected value="@type.TypeId">@type.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@type.TypeId">@type.Name</option>
+                                        }
+                                    }
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Sub Type</label>
+                                <select class="form-control" id="subTypes" onchange="getCategories(this.value)">
+                                    <option value="">Select Account Type First</option>
+
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Category Type</label>
+                                <select class="form-control" id="categories" asp-for="CategoryId">
+                                    <option value="">Select Account Sub Type First</option>
+
+                                </select>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<script>
+    getSubTypes(@ViewBag.TypeId)
+    getCategories(@ViewBag.SubTypeId)
+
+    function getCategories(id) {
+        $.ajax({
+            url: "/SubType/GetCategories/" + id,
+            method: "GET",
+            success: res => {
+                console.log(res)
+                let html = `<option value="">Select Category...</option>`;
+                for (let category of res) {
+                    html += `<option ${category.categoryId == @Model.CategoryId ? "selected" : ""} value="${category.categoryId}">${category.name}</option>`;
+                }
+                $("#categories").html(html);
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+    function getSubTypes(id) {
+        var companyId = $("#companyId").val();
+        var typeId = $("#typeId").val();
+
+        console.log(companyId)
+        console.log(typeId)
+
+        if (companyId && typeId) {
+            $.ajax({
+                url: "/Type/GetSubTypes/",
+                data: { companyId: companyId, typeId: typeId },
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    let html = `<option value="">Select Sub Type</option>`;
+
+                    for (let subtype of res) {
+                        html += `<option value="${subtype.subTypeId}" ${subtype.subTypeId == @ViewBag.SubTypeId ? "selected" : ""}>${subtype.name}</option>`;
+                    }
+                    $("#subTypes").html(html);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        } else {
+            $("#subTypes").html('<option value="">Second Select Type </option>');
+        }
+    }
+</script>

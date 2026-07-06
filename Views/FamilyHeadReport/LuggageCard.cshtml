@@ -1,0 +1,366 @@
+﻿@using System.Text.RegularExpressions;
+@{
+    Layout = null;
+}
+@model CardModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luggage Card </title>
+    <style>
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-weight: bolder;
+        }
+
+
+        .card {
+            float: left;
+            width: 3.0in;
+            height: 4.0in;
+            background-color: black;
+            border-radius: 15px;
+            margin-left: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative !important;
+            overflow: hidden;
+        }
+
+
+        .al-barkha-img {
+            width: 100%;
+            height: 100%;
+            margin-top: 0;
+            position: absolute;
+            z-index: 1;
+            object-fit: fill;
+            object-position: top;
+            top: 0;
+            left: 0;
+        }
+
+        .hajjwithkhairlogo {
+            width: 150px;
+            height: 150px;
+            text-align: center;
+            margin: 0 auto;
+            display: block;
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+            .hajjwithkhairlogo img {
+                width: 100%;
+                text-align: center;
+            }
+
+
+
+        .Hajji_name {
+            color: white;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+
+
+        .password-box {
+            color: white;
+            margin-top: 160px;
+            margin-left: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .HB #-Box {
+            color: white;
+            margin-left: 25px;
+            margin-top: 15px;
+            float: left;
+        }
+
+        .no-text {
+            font-size: 25px;
+        }
+
+
+
+        .luggage-company-name {
+            color: white;
+            /* clear: both; */
+            text-align: center;
+            padding: 5px;
+            /* margin-top: 39px; */
+            position: relative;
+            /* bottom: -10px; */
+            bottom: 0px;
+            z-index: 2;
+        }
+
+        /* BackCard-Design Staye */
+        .backcard-desin {
+            float: left;
+            width: 3.0in;
+            height: 4.0in;
+            background-color: black;
+            border-radius: 15px;
+            margin-left: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative !important;
+            overflow: hidden;
+        }
+
+        .jwithkhairlogo {
+            width: 180px;
+            height: 180px;
+            text-align: center;
+            margin: 20px auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .compnay-name-title {
+            text-align: center;
+            text-transform: uppercase;
+            color: black;
+            margin-top: 30px;
+            margin-right: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hajj-name-title {
+            color: black;  
+            font-size: 16px;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            text-align: center;
+        }
+
+        .Luggage-card-text {
+            text-align: center;
+            background-color: white;
+            color: black;
+            font-size: 13px;
+            border-radius: 3px;
+            padding: 3px 5px;
+            text-transform: uppercase;
+        }
+
+        .box-img {
+            position: absolute;
+            height: 70px;
+            width: 70px;
+            right: 15px;
+            top: 240px;
+            border-radius: 14px;
+        }
+
+            .box-img img {
+                z-index: -999;
+                width: 100%;
+                border-radius: 10px;
+            }
+
+        .luggage-box {
+            position: absolute;
+            top: 250px;
+            right: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            border-radius: 10px;
+            padding: 5px;
+            color: black;
+        }
+
+        .name-gradient-image {
+            width: 215px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+            .name-gradient-image img {
+                width: 100%;
+                height: 65px;
+                border-radius: 20px;
+                position: absolute;
+                left: 36px;
+            }
+
+
+        .packeg-title-name {
+            font-size: 14px;
+            position: absolute;
+            top: 130px; /* Isko adjust karein agar zaroorat ho */
+            left: 50%;
+            transform: translateX(-50%);
+            color: black;
+            text-align: center;
+            width: max-content;
+        }
+
+
+        .maktab-box-container {
+            position: relative;
+            z-index: 2;
+            margin-top: 180px;
+        }
+
+        .qr-back-container {
+            position: absolute;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: right;
+            width: 75%;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .qr-back {
+            width: 45%;
+            padding: 6px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+            .qr-back img {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                margin-bottom: 4px;
+            }
+
+            .qr-back p {
+                margin: 2px 0;
+                font-size: 8px;
+                color: black;
+            }
+
+    </style>
+</head>
+
+<body>
+
+    @foreach (var m in Model.Members)
+    {
+        <div class="card">
+            <div>
+                @* <img src="~/Cards/luggagecard front.jpg" alt="" class="al-barkha-img"> *@
+                <img src="~/Cards/Idcarback.jpg" alt="" class="al-barkha-img">
+            </div>
+            <div class="Hajji_name">
+                <div class="name-gradient-image">
+                    @* <img src="~/Images/Cards/capture.jpg" alt="" style="display: none;"> *@
+                </div>
+                <h1 class="hajj-name-title">
+                    @m.HajiName <br> @m.HajiSurName
+                </h1>
+                <h2 class="packeg-title-name"> @m.PackageName </h2>
+                @* <h2 style="text-align: center; font-size: 16px; font-weight: bold; margin-top: 5px;">
+                    @m.PackageName
+                </h2> *@
+
+                
+            </div>
+            <hr />
+            <hr />
+
+            <div class="maktab-box-container">
+                <div class="HB #-Box">
+                    <h3 style="font-size: 13px;">Passport NO</h3>
+                    <h3 style="font-size: 13px; width: 150px; ">
+                        @m.Passport
+                    </h3>
+                </div>
+                <div class="HB #-Box">
+                    <h3 style="font-size: 13px;">HB# @m.HbNo</h3>
+                    <h3 style="font-size: 13px; width: 150px; ">
+                        @m.CID
+                    </h3>
+                </div>
+                <div class="box-img">
+                    <img src="~/Images/Cards/capture.jpg">
+                </div>
+                @* <div class="luggage-box">
+
+                    <h3 style="font-size: 10px;"><u>Al-Bait</u></h3>
+                    <h3 style="font-size: 13px;">Maktab</h3>
+                    <h1 class="no-text">@m.minaAccomodation</h1>
+                    <h5 style="font-size: 8px;">Service Center </h5>
+                </div> *@
+            </div>
+
+            <div class="cleard" style="clear: both;"></div>
+            <div class="luggage-company-name">
+                <strong class="Luggage-card-text">
+                    Luggage Cards
+                </strong>
+                <h4 style="font-size: 12px;margin-top:6px; color:black;"> @m.CompanyVisaName </h4>
+            </div>
+        </div>
+
+        <!-- backdesign Start here  Okey -->
+        <div class="backcard-desin">
+            <div>
+                <img src="~/Cards/luggagecard back.jpg" alt="" class="al-barkha-img">
+            </div>
+
+            <div class="hajjwithkhairlogo">
+                <img src="~/Images/Cards/HAJJ WITH KHAIR.png" alt="">
+            </div>
+
+            <div class="qr-back-container">
+                <div class="qr-back">
+                    <img src="~/left.jpg" alt="QR Back 1" />
+                    <p><strong>PARK IN BY RADISSON</strong></p>
+                    <p>AZIZIYAH, 2516 AL MASJID AL HARAM ROAD ALMURSALAT, MAKKAH 24247, SAUDI ARABIA</p>
+                </div>
+                <div class="qr-back">
+                    <img src="~/right.jpg" alt="QR Back 2" />
+                    <p><strong>SNAF INN AZIZIA</strong></p>
+                    <p>3501 AL MASJID AL HARAM RD, AL MURSALAT، 7851, MAKKAH 24243, SAUDI ARABIA</p>
+                </div>
+            </div>
+
+            <div style="position: absolute; bottom: 40px; width: 100%; text-align: center; z-index: 1000;">
+                <h3 style="color: #ff0000;font-size: 19px;margin-bottom: 17px;">HAJJ With TMG</h3>
+            </div>
+            <div style="position: absolute; bottom: 10px; left: 10px; text-align: left; font-size: 10px; z-index: 1000;">
+                <p><strong style="color: red;">HAJJ (MEDINAH):</strong></p>
+                <p>0096-59-826 2771</p>
+                <p>00966-58-038 0049</p>
+            </div>
+
+            <div style="position: absolute; bottom: 10px; right: 10px; text-align: right;  font-size: 10px; z-index: 1000;">
+                <p><strong style="color: red;">HAJJ (MAKKAH):</strong></p>
+                <p>00966-50 871 9876</p>
+                <p>00966-56 881 1786</p>
+            </div>
+        <!-- backdesign Ended Card  -->
+        </div>
+    }
+
+
+</body>
+
+</html>
+
+

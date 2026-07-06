@@ -1,0 +1,2386 @@
+﻿@model RolePrivilegeRequest
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Roles / </span> Set Priviliges</h4>
+
+    <hr class="mb-4" />
+
+
+    <form method="post">
+        <input type="hidden" asp-for="RoleId">
+        <button type="submit" class="mb-3 btn btn-warning">Save Changes</button>
+
+        <h5 class="fw-bold" style="margin-right: 15px">User Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Users</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'users')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="users" asp-for="Permissions[0]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="users" asp-for="Permissions[1]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="users" asp-for="Permissions[2]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="users" asp-for="Permissions[3]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="users" asp-for="Permissions[4]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Roles</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'roles')">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-3">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[5]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[6]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[7]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[8]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[9]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark">Set Privileges</label>
+                            <input class="form-check-input" type="checkbox" id="roles" asp-for="Permissions[10]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Company Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Company</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'company')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[11]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[12]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[13]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[14]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[15]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Details</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[15]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Combine Report</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[16]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Individual Report</label>
+                            <input class="form-check-input" type="checkbox" id="company" asp-for="Permissions[17]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Address</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'companyaddress')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="companyaddress" asp-for="Permissions[18]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="companyaddress" asp-for="Permissions[19]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="companyaddress" asp-for="Permissions[20]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="companyaddress" asp-for="Permissions[21]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="companyaddress" asp-for="Permissions[22]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Contact</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'companycontact')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="companycontact" asp-for="Permissions[23]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="companycontact" asp-for="Permissions[24]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="companycontact" asp-for="Permissions[25]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="companycontact" asp-for="Permissions[26]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="companycontact" asp-for="Permissions[27]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Email</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'companyemail')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="companyemail" asp-for="Permissions[28]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="companyemail" asp-for="Permissions[29]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="companyemail" asp-for="Permissions[30]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="companyemail" asp-for="Permissions[31]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="companyemail" asp-for="Permissions[32]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">License</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'companylicense')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="companylicense" asp-for="Permissions[33]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="companylicense" asp-for="Permissions[34]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="companylicense" asp-for="Permissions[35]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="companylicense" asp-for="Permissions[36]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="companylicense" asp-for="Permissions[37]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Staff Members</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'staffmember')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="staffmember" asp-for="Permissions[38]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="staffmember" asp-for="Permissions[39]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="staffmember" asp-for="Permissions[40]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="staffmember" asp-for="Permissions[41]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="staffmember" asp-for="Permissions[42]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Designation</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'designation')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="designation" asp-for="Permissions[43]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="designation" asp-for="Permissions[44]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="designation" asp-for="Permissions[45]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="designation" asp-for="Permissions[46]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="designation" asp-for="Permissions[47]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Logistics Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Vehicle Types</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'vehicle')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="vehicle" asp-for="Permissions[48]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="vehicle" asp-for="Permissions[49]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="vehicle" asp-for="Permissions[50]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="vehicle" asp-for="Permissions[51]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="vehicle" asp-for="Permissions[52]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Routes</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'route')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="route" asp-for="Permissions[53]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="route" asp-for="Permissions[54]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="route" asp-for="Permissions[55]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="route" asp-for="Permissions[56]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="route" asp-for="Permissions[57]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Travel Routes</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'travelRoute')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="travelRoute" asp-for="Permissions[58]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="travelRoute" asp-for="Permissions[59]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="travelRoute" asp-for="Permissions[60]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="travelRoute" asp-for="Permissions[61]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="travelRoute" asp-for="Permissions[62]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Reports</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'logreports')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="logreports" asp-for="Permissions[63]">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Accommodation Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Rooms</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'rooms')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="rooms" asp-for="Permissions[64]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="rooms" asp-for="Permissions[65]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="rooms" asp-for="Permissions[66]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="rooms" asp-for="Permissions[67]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="rooms" asp-for="Permissions[68]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Places</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'places')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="places" asp-for="Permissions[69]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="places" asp-for="Permissions[70]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="places" asp-for="Permissions[71]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="places" asp-for="Permissions[72]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="places" asp-for="Permissions[73]">
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <span class="fw-bold" style="margin-right: 15px">Accommodations</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'accommodations')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="accommodations" asp-for="Permissions[74]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="accommodations" asp-for="Permissions[75]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="accommodations" asp-for="Permissions[76]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="accommodations" asp-for="Permissions[77]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="accommodations" asp-for="Permissions[78]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Saudi Star Rating</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'saudistar')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="saudistar" asp-for="Permissions[79]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="saudistar" asp-for="Permissions[80]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="saudistar" asp-for="Permissions[81]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="saudistar" asp-for="Permissions[82]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="saudistar" asp-for="Permissions[83]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Food Packages</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'foodpackages')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="foodpackages" asp-for="Permissions[84]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="foodpackages" asp-for="Permissions[85]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="foodpackages" asp-for="Permissions[86]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="foodpackages" asp-for="Permissions[87]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="foodpackages" asp-for="Permissions[88]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <h5 class="fw-bold" style="margin-right: 15px">Package Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Packages</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'package')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[164]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[165]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[166]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[167]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[168]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Reports</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[169]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Copy</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[170]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Details</label>
+                            <input class="form-check-input" type="checkbox" id="package" asp-for="Permissions[171]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Quotation Packages</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'quoPackages')">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-3">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[172]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Customize Package</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[173]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[174]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[175]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[176]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark">Details</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[177]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark">Quotation</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[178]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark">Book</label>
+                            <input class="form-check-input" type="checkbox" id="quoPackages" asp-for="Permissions[179]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Misc. Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Gifts / Giveaways</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'gifts')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="gifts" asp-for="Permissions[89]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="gifts" asp-for="Permissions[90]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="gifts" asp-for="Permissions[91]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="gifts" asp-for="Permissions[92]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="gifts" asp-for="Permissions[93]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Training Sessions</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'trainings')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="trainings" asp-for="Permissions[94]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="trainings" asp-for="Permissions[95]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="trainings" asp-for="Permissions[96]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="trainings" asp-for="Permissions[97]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="trainings" asp-for="Permissions[98]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Banks</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'banks')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="banks" asp-for="Permissions[99]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="banks" asp-for="Permissions[100]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="banks" asp-for="Permissions[101]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="banks" asp-for="Permissions[102]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="banks" asp-for="Permissions[103]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Honorfics</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'honorfics')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="honorfics" asp-for="Permissions[104]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="honorfics" asp-for="Permissions[105]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="honorfics" asp-for="Permissions[106]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="honorfics" asp-for="Permissions[107]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="honorfics" asp-for="Permissions[108]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Fiqah</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'fiqah')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="fiqah" asp-for="Permissions[109]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="fiqah" asp-for="Permissions[110]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="fiqah" asp-for="Permissions[111]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="fiqah" asp-for="Permissions[112]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="fiqah" asp-for="Permissions[113]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Tehsil</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'tehsil')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="tehsil" asp-for="Permissions[114]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="tehsil" asp-for="Permissions[115]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="tehsil" asp-for="Permissions[116]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="tehsil" asp-for="Permissions[117]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="tehsil" asp-for="Permissions[118]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">References</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'references')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="references" asp-for="Permissions[119]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="references" asp-for="Permissions[120]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="references" asp-for="Permissions[121]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="references" asp-for="Permissions[122]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="references" asp-for="Permissions[123]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Family Head Relations</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'familyHeadRel')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="familyHeadRel" asp-for="Permissions[124]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="familyHeadRel" asp-for="Permissions[125]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="familyHeadRel" asp-for="Permissions[126]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="familyHeadRel" asp-for="Permissions[127]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="familyHeadRel" asp-for="Permissions[128]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Mehram Relations</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'memhramRel')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="memhramRel" asp-for="Permissions[129]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="memhramRel" asp-for="Permissions[130]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="memhramRel" asp-for="Permissions[131]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="memhramRel" asp-for="Permissions[132]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="memhramRel" asp-for="Permissions[133]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Nominee Relations</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'nomineeRel')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="nomineeRel" asp-for="Permissions[134]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="nomineeRel" asp-for="Permissions[135]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="nomineeRel" asp-for="Permissions[136]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="nomineeRel" asp-for="Permissions[137]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="nomineeRel" asp-for="Permissions[138]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Required Documents</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'reqDoc')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="reqDoc" asp-for="Permissions[139]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="reqDoc" asp-for="Permissions[140]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="reqDoc" asp-for="Permissions[141]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="reqDoc" asp-for="Permissions[142]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="reqDoc" asp-for="Permissions[143]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Payment Notes</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'paymentNotes')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="paymentNotes" asp-for="Permissions[144]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="paymentNotes" asp-for="Permissions[145]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="paymentNotes" asp-for="Permissions[146]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="paymentNotes" asp-for="Permissions[147]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="paymentNotes" asp-for="Permissions[148]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Vaccines</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'vaccine')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="vaccine" asp-for="Permissions[149]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="vaccine" asp-for="Permissions[150]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="vaccine" asp-for="Permissions[151]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="vaccine" asp-for="Permissions[152]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="vaccine" asp-for="Permissions[153]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Quotation Payment Policies</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'ppp')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="ppp" asp-for="Permissions[154]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="ppp" asp-for="Permissions[155]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="ppp" asp-for="Permissions[156]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="ppp" asp-for="Permissions[157]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="ppp" asp-for="Permissions[158]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Quotation T & Cs</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'tcs')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="tcs" asp-for="Permissions[159]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="tcs" asp-for="Permissions[160]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="tcs" asp-for="Permissions[161]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="tcs" asp-for="Permissions[162]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="tcs" asp-for="Permissions[163]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Member Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Type</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'membertype')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="membertype" asp-for="Permissions[180]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="membertype" asp-for="Permissions[181]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="membertype" asp-for="Permissions[182]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="membertype" asp-for="Permissions[183]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="membertype" asp-for="Permissions[184]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Address</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'memberaddress')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="memberaddress" asp-for="Permissions[185]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="memberaddress" asp-for="Permissions[186]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="memberaddress" asp-for="Permissions[187]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="memberaddress" asp-for="Permissions[188]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="memberaddress" asp-for="Permissions[189]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Contact</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'membercontact')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="membercontact" asp-for="Permissions[190]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="membercontact" asp-for="Permissions[191]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="membercontact" asp-for="Permissions[192]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="membercontact" asp-for="Permissions[193]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="membercontact" asp-for="Permissions[194]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Email</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'memberemail')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="memberemail" asp-for="Permissions[195]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="memberemail" asp-for="Permissions[196]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="memberemail" asp-for="Permissions[197]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="memberemail" asp-for="Permissions[198]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="memberemail" asp-for="Permissions[199]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Airline Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Airline</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'airline')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="airline" asp-for="Permissions[200]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="airline" asp-for="Permissions[201]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="airline" asp-for="Permissions[202]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="airline" asp-for="Permissions[203]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="airline" asp-for="Permissions[204]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Class</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'airlineclass')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="airlineclass" asp-for="Permissions[205]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="airlineclass" asp-for="Permissions[206]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="airlineclass" asp-for="Permissions[207]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="airlineclass" asp-for="Permissions[208]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="airlineclass" asp-for="Permissions[209]">
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="fw-bold" style="margin-right: 15px">Fare</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'airlinefare')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="airlinefare" asp-for="Permissions[210]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="airlinefare" asp-for="Permissions[211]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="airlinefare" asp-for="Permissions[212]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="airlinefare" asp-for="Permissions[213]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="airlinefare" asp-for="Permissions[214]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Family Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Families</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'families')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[215]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create Family</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[216]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[217]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[218]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[219]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">View Family</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[220]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Letter Head</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[221]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Invoice</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[222]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Add Member</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[223]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Verify</label>
+                            <input class="form-check-input" type="checkbox" id="families" asp-for="Permissions[224]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Receipt Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Receipt List</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'receipts')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[225]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[226]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[227]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[228]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[229]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Change Status</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[230]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Slip</label>
+                            <input class="form-check-input" type="checkbox" id="receipts" asp-for="Permissions[231]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Client Statement</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'client')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="client" asp-for="Permissions[232]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Mini Statement</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'mini')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="mini" asp-for="Permissions[233]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Reservation Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+            <div class="card-body">
+                <span class="fw-bold" style="margin-right: 15px">Hotels</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'hotel')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="hotel" asp-for="Permissions[234]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="hotel" asp-for="Permissions[235]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="hotel" asp-for="Permissions[236]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="hotel" asp-for="Permissions[237]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="hotel" asp-for="Permissions[238]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Room Allotments</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'roomallotment')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="roomallotment" asp-for="Permissions[239]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="roomallotment" asp-for="Permissions[240]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="roomallotment" asp-for="Permissions[241]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="roomallotment" asp-for="Permissions[242]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="roomallotment" asp-for="Permissions[243]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">Room Summary</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'hotelroom')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Hotel Room Summary</label>
+                            <input class="form-check-input" type="checkbox" id="hotelroom" asp-for="Permissions[244]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Daily Hotel Room Summary</label>
+                            <input class="form-check-input" type="checkbox" id="hotelroom" asp-for="Permissions[245]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action d-none">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Daily Hotel Room Summary</label>
+                            <input class="form-check-input" type="checkbox" id="hotelroom" asp-for="Permissions[246]">
+                        </div>
+                    </div>
+                </div>
+
+                <span class="fw-bold" style="margin-right: 15px">PO Ticket</span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'poticket')" id="">
+                    <label class="form-check-label" for="">Select All</label>
+                </div>
+                <hr class="" />
+
+                <div class="list-group list-group-horizontal-md text-md-center mb-4">
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">List</label>
+                            <input class="form-check-input" type="checkbox" id="poticket" asp-for="Permissions[247]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Create</label>
+                            <input class="form-check-input" type="checkbox" id="poticket" asp-for="Permissions[248]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Edit</label>
+                            <input class="form-check-input" type="checkbox" id="poticket" asp-for="Permissions[249]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Trash</label>
+                            <input class="form-check-input" type="checkbox" id="poticket" asp-for="Permissions[250]">
+                        </div>
+                    </div>
+                    <div class="list-group-item list-group-item-action">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label text-dark" for="">Restore</label>
+                            <input class="form-check-input" type="checkbox" id="poticket" asp-for="Permissions[251]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        @*
+        <h5 class="fw-bold" style="margin-right: 15px; margin-top: 10px;">Groups Module</h5>
+        <hr class="" />
+        <div class="card mb-4">
+        <div class="card-body">
+        <span class="fw-bold" style="margin-right: 15px">Coordinator Role</span>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'coordrole')" id="">
+        <label class="form-check-label" for="">Select All</label>
+        </div>
+        <hr class="" />
+
+        <div class="list-group list-group-horizontal-md text-md-center mb-4">
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">List</label>
+        <input class="form-check-input" type="checkbox" id="coordrole" asp-for="Permissions[11]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Create</label>
+        <input class="form-check-input" type="checkbox" id="coordrole" asp-for="Permissions[12]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Edit</label>
+        <input class="form-check-input" type="checkbox" id="coordrole" asp-for="Permissions[13]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Trash</label>
+        <input class="form-check-input" type="checkbox" id="coordrole" asp-for="Permissions[14]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Restore</label>
+        <input class="form-check-input" type="checkbox" id="coordrole" asp-for="Permissions[15]">
+        </div>
+        </div>
+        </div>
+
+        <span class="fw-bold" style="margin-right: 15px">Coordinator</span>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'coord')" id="">
+        <label class="form-check-label" for="">Select All</label>
+        </div>
+        <hr class="" />
+
+        <div class="list-group list-group-horizontal-md text-md-center mb-4">
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">List</label>
+        <input class="form-check-input" type="checkbox" id="coord" asp-for="Permissions[18]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Create</label>
+        <input class="form-check-input" type="checkbox" id="coord" asp-for="Permissions[19]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Edit</label>
+        <input class="form-check-input" type="checkbox" id="coord" asp-for="Permissions[20]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Trash</label>
+        <input class="form-check-input" type="checkbox" id="coord" asp-for="Permissions[21]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Restore</label>
+        <input class="form-check-input" type="checkbox" id="coord" asp-for="Permissions[22]">
+        </div>
+        </div>
+        </div>
+
+
+        <span class="fw-bold" style="margin-right: 15px">Groups</span>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'groups')" id="">
+        <label class="form-check-label" for="">Select All</label>
+        </div>
+        <hr class="" />
+
+        <div class="list-group list-group-horizontal-md text-md-center mb-4">
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">List</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[23]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Create</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[24]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Edit</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[25]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Trash</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[26]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Restore</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Reports</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Add or Remove Family</label>
+        <input class="form-check-input" type="checkbox" id="groups" asp-for="Permissions[27]">
+        </div>
+        </div>
+        </div>
+
+
+        <span class="fw-bold" style="margin-right: 15px">Sub Groups</span>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'subgroup')" id="">
+        <label class="form-check-label" for="">Select All</label>
+        </div>
+        <hr class="" />
+
+        <div class="list-group list-group-horizontal-md text-md-center mb-4">
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">List</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[23]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Create</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[24]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Edit</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[25]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Trash</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[26]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Restore</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Reports</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Add or Remove Family</label>
+        <input class="form-check-input" type="checkbox" id="subgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        </div>
+
+        <span class="fw-bold" style="margin-right: 15px">Airline Sub Groups</span>
+        <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" onchange="checkAll(this, 'airlinesubgroup')" id="">
+        <label class="form-check-label" for="">Select All</label>
+        </div>
+        <hr class="" />
+
+        <div class="list-group list-group-horizontal-md text-md-center mb-4">
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">List</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[23]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Create</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[24]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Edit</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[25]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Trash</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[26]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Restore</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Reports</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        <div class="list-group-item list-group-item-action">
+        <div class="form-check form-check-inline">
+        <label class="form-check-label text-dark" for="">Add or Remove Family</label>
+        <input class="form-check-input" type="checkbox" id="airlinesubgroup" asp-for="Permissions[27]">
+        </div>
+        </div>
+        </div>
+
+
+        </div>
+        </div> *@
+    </form>
+
+</div>
+
+<script>
+    function checkAll(elem, id) {
+        const elementsToCheck = document.querySelectorAll(`#${id}`);
+        //console.log(elementsToCheck)
+        for (let e of elementsToCheck) {
+            e.checked = elem.checked;
+        }
+
+    }
+</script>

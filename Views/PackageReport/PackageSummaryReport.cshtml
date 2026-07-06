@@ -1,0 +1,779 @@
+﻿@{
+    Layout = "";
+}
+
+@model PackageReportModel
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Package Summary Report</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+            table th {
+                /* border: 1px solid #fedf7b !important;
+              padding: 3px 4px !important;
+              font-size: 10px !important;
+              /* width: fit-content !important;
+              text-align: center !important;
+              background-color: #f6f3ee !important;
+              color: #b49164;
+              font-weight: bold;
+              border: 1px solid #b49164 !important; */
+
+                position: sticky;
+                top: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table tfoot {
+                position: sticky;
+                bottom: 0;
+                padding: 3px 4px !important;
+                font-size: 10px !important;
+                text-align: center !important;
+                background-color: #f6f3ee !important;
+                color: #b49164;
+                font-weight: bold;
+                border: 1px solid #b49164 !important;
+            }
+
+            table td {
+                font-size: 8px !important;
+                /* outline: 1px solid #fedf7b; */
+                /* border: 1px solid #fedf7b; */
+                padding: 5px 2px !important;
+                margin: 0 !important;
+                text-align: center;
+                border: 1px solid #b0872e;
+            }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        table.dataTable thead .sorting {
+            background-image: none !important;
+        }
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr > *:nth-child(1) {
+            display: none;
+        }
+
+        #summaryData.hide2 tr > *:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr > *:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr > *:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr > *:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr > *:nth-child(6) {
+            display: none;
+        }
+
+        #summaryData.hide7 tr > *:nth-child(7) {
+            display: none;
+        }
+
+        #summaryData.hide8 tr > *:nth-child(8) {
+            display: none;
+        }
+
+        #summaryData.hide9 tr > *:nth-child(9) {
+            display: none;
+        }
+
+        #summaryData.hide10 tr > *:nth-child(10) {
+            display: none;
+        }
+
+        #summaryData.hide11 tr > *:nth-child(11) {
+            display: none;
+        }
+
+        #summaryData.hide12 tr > *:nth-child(12) {
+            display: none;
+        }
+
+        #summaryData.hide13 tr > *:nth-child(13) {
+            display: none;
+        }
+
+        #summaryData.hide14 tr > *:nth-child(14) {
+            display: none;
+        }
+
+        #summaryData.hide15 tr > *:nth-child(15) {
+            display: none;
+        }
+
+        #summaryData.hide16 tr > *:nth-child(16) {
+            display: none;
+        }
+
+        #summaryData.hide17 tr > *:nth-child(17) {
+            display: none;
+        }
+
+        #summaryData.hide18 tr > *:nth-child(18) {
+            display: none;
+        }
+
+        #summaryData.hide19 tr > *:nth-child(19) {
+            display: none;
+        }
+
+        #summaryData.hide20 tr > *:nth-child(20) {
+            display: none;
+        }
+
+        #summaryData.hide21 tr > *:nth-child(21) {
+            display: none;
+        }
+
+        #summaryData.hide22 tr > *:nth-child(22) {
+            display: none;
+        }
+
+        #summaryData.hide23 tr > *:nth-child(23) {
+            display: none;
+        }
+
+        #summaryData.hide24 tr > *:nth-child(24) {
+            display: none;
+        }
+
+        #summaryData.hide25 tr > *:nth-child(25) {
+            display: none;
+        }
+
+        #summaryData.hide26 tr > *:nth-child(26) {
+            display: none;
+        }
+
+        #summaryData.hide27 tr > *:nth-child(27) {
+            display: none;
+        }
+
+        #summaryData.hide28 tr > *:nth-child(28) {
+            display: none;
+        }
+
+        #summaryData.hide29 tr > *:nth-child(29) {
+            display: none;
+        }
+
+        #summaryData.hide30 tr > *:nth-child(30) {
+            display: none;
+        }
+
+        #summaryData.hide31 tr > *:nth-child(31) {
+            display: none;
+        }
+
+        #summaryData.hide32 tr > *:nth-child(32) {
+            display: none;
+        }
+
+        #summaryData.hide33 tr > *:nth-child(33) {
+            display: none;
+        }
+
+        #summaryData.hide34 tr > *:nth-child(34) {
+            display: none;
+        }
+
+        #summaryData.hide35 tr > *:nth-child(35) {
+            display: none;
+        }
+
+        button.dt-button,
+        div.dt-button,
+        a.dt-button {
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            float: left;
+            box-sizing: border-box;
+            margin-left: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            padding: 0.5em 24px;
+            cursor: pointer;
+            font-size: 0.88em;
+            line-height: 1.6em;
+            white-space: nowrap;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            /* background-image: linear-gradient(to bottom, #dbd4d4 0%, #e9e9e9 100%); */
+            position: relative;
+            border: 1px solid rgb(255, 255, 255);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="checkbox-container">
+        <label for="checkbox1">SR</label>
+        <input type="checkbox" name="checkbox1" id="checkbox1"
+               onchange='document.getElementById("summaryData").classList.toggle("hide1")' checked>
+        <label for="checkbox2">Mega Reference</label>
+        <input type="checkbox" name="checkbox2" id="checkbox2"
+               onchange='document.getElementById("summaryData").classList.toggle("hide2")' checked>
+        <label for="checkbox3">HB #</label>
+        <input type="checkbox" name="checkbox3" id="checkbox3"
+               onchange='document.getElementById("summaryData").classList.toggle("hide3")' checked>
+        <label for="checkbox4">Family Head Name</label>
+        <input type="checkbox" name="checkbox" id="checkbox4"
+               onchange='document.getElementById("summaryData").classList.toggle("hide4")' checked>
+        <label for="checkbox5">POD</label>
+        <input type="checkbox" name="checkbox" id="checkbox5"
+               onchange='document.getElementById("summaryData").classList.toggle("hide5")' checked>
+        @* <label for="checkbox6">Makkah</label>
+        <input type="checkbox" name="checkbox" id="checkbox6"
+        onchange='document.getElementById("summaryData").classList.toggle("hide6")' checked>
+        <label for="checkbox7">Medinah</label>
+        <input type="checkbox" name="checkbox" id="checkbox7"
+        onchange='document.getElementById("summaryData").classList.toggle("hide7")' checked>
+        <label for="checkbox8">Azizia</label>
+        <input type="checkbox" name="checkbox" id="checkbox8"
+        onchange='document.getElementById("summaryData").classList.toggle("hide8")' checked> *@
+        <label for="checkbox9">Pax</label>
+        <input type="checkbox" name="checkbox" id="checkbox9"
+               onchange='document.getElementById("summaryData").classList.toggle("hide9")' checked>
+        <label for="checkbox10">M</label>
+        <input type="checkbox" name="checkbox" id="checkbox10"
+               onchange='document.getElementById("summaryData").classList.toggle("hide10")' checked>
+        <label for="checkbox11">F</label>
+        <input type="checkbox" name="checkbox" id="checkbox11"
+               onchange='document.getElementById("summaryData").classList.toggle("hide11")' checked>
+        <label for="checkbox12">C</label>
+        <input type="checkbox" name="checkbox" id="checkbox12"
+               onchange='document.getElementById("summaryData").classList.toggle("hide12")' checked>
+        <label for="checkbox13">I</label>
+        <input type="checkbox" name="checkbox" id="checkbox13"
+               onchange='document.getElementById("summaryData").classList.toggle("hide13")' checked>
+        <label for="checkbox14">Remarks (Stay With)</label>
+        <input type="checkbox" name="checkbox" id="checkbox14"
+               onchange='document.getElementById("summaryData").classList.toggle("hide14")' checked>
+        <label for="checkbox15">Basic Package</label>
+        <input type="checkbox" name="checkbox" id="checkbox15"
+               onchange='document.getElementById("summaryData").classList.toggle("hide15")' checked>
+
+        <label for="checkbox17">EI-ADF Amount</label>
+        <input type="checkbox" name="checkbox" id="checkbox17"
+               onchange='document.getElementById("summaryData").classList.toggle("hide17")' checked>
+        <label for="checkbox18">Ticket Amount</label>
+        <input type="checkbox" name="checkbox" id="checkbox18"
+               onchange='document.getElementById("summaryData").classList.toggle("hide18")' checked>
+        <label for="checkbox19">Discount</label>
+        <input type="checkbox" name="checkbox" id="checkbox19"
+               onchange='document.getElementById("summaryData").classList.toggle("hide19")' checked>
+        <label for="checkbox20">Total Package</label>
+        <input type="checkbox" name="checkbox" id="checkbox20"
+               onchange='document.getElementById("summaryData").classList.toggle("hide20")' checked>
+        <label for="checkbox21">Received Amount</label>
+        <input type="checkbox" name="checkbox" id="checkbox21"
+               onchange='document.getElementById("summaryData").classList.toggle("hide21")' checked>
+        <label for="checkbox22">Received Amount (PKR)</label>
+        <input type="checkbox" name="checkbox" id="checkbox22"
+               onchange='document.getElementById("summaryData").classList.toggle("hide22")' checked>
+        <label for="checkbox23">Balance Before Transit</label>
+        <input type="checkbox" name="checkbox" id="checkbox23"
+               onchange='document.getElementById("summaryData").classList.toggle("hide23")' checked>
+        <label for="checkbox24">Payment in Transit</label>
+        <input type="checkbox" name="checkbox" id="checkbox24"
+               onchange='document.getElementById("summaryData").classList.toggle("hide24")' checked>
+        <label for="checkbox25">Final Balance Receivable</label>
+        <input type="checkbox" name="checkbox" id="checkbox25"
+               onchange='document.getElementById("summaryData").classList.toggle("hide25")' checked>
+        <label for="checkbox26">Received Amount %</label>
+        <input type="checkbox" name="checkbox" id="checkbox26"
+               onchange='document.getElementById("summaryData").classList.toggle("hide26")' checked>
+        <label for="checkbox27">Last Payment Rec Date</label>
+        <input type="checkbox" name="checkbox" id="checkbox27"
+               onchange='document.getElementById("summaryData").classList.toggle("hide27")' checked>
+        <label for="checkbox28">Days</label>
+        <input type="checkbox" name="checkbox" id="checkbox28"
+               onchange='document.getElementById("summaryData").classList.toggle("hide28")' checked>
+        <label for="checkbox29">Receipt No:</label>
+        <input type="checkbox" name="checkbox" id="checkbox29"
+               onchange='document.getElementById("summaryData").classList.toggle("hide29")' checked>
+        <label for="checkbox30">Category</label>
+        <input type="checkbox" name="checkbox" id="checkbox30"
+               onchange='document.getElementById("summaryData").classList.toggle("hide30")' checked />
+        <label for="checkbox30">Residency</label>
+        <input type="checkbox" name="checkbox" id="checkbox31"
+               onchange='document.getElementById("summaryData").classList.toggle("hide31")' checked />
+        <label for="checkbox30">Bio Status</label>
+        <input type="checkbox" name="checkbox" id="checkbox32"
+               onchange='document.getElementById("summaryData").classList.toggle("hide32")' checked />
+        <label for="checkbox30">Agreement Signed</label>
+        <input type="checkbox" name="checkbox" id="checkbox33"
+               onchange='document.getElementById("summaryData").classList.toggle("hide33")' checked />
+        <label for="checkbox30">Data Form Signed</label>
+        <input type="checkbox" name="checkbox" id="checkbox34"
+               onchange='document.getElementById("summaryData").classList.toggle("hide34")' checked />
+        <label for="checkbox30">E Hajj</label>
+        <input type="checkbox" name="checkbox" id="checkbox35"
+               onchange='document.getElementById("summaryData").classList.toggle("hide35")' checked />
+
+    </div>
+
+
+
+
+    <!-- =======  Data-Table  = Start  ========================== -->
+    <div class="big-table-record" id="summaryData">
+        <table style="width:100%" id="myTable" class="table-responsive">
+            <div style="display: flex; padding: 4px; margin: 5px 0;  background-color: #b49164; color: white; border-radius: 2px; padding:7px;">
+
+
+                <h2> Package Summary: @Model.PackageName </h2>
+                <h2 style="width: 80%; text-align: center; ">@Model.CompanyName </h2>
+
+
+            </div>
+            <button onclick="print()">Print</button>
+            <thead>
+            <th>Sr</th>
+            <th>Mega Reference</th>
+            <th>HB # </th>
+            <th>Family Head Name </th>
+            <th>POD </th>
+                @* <th>Makkah</th>
+            <th>Medinah</th>
+            <th>Azizia</th> *@
+            <th>Pax</th>
+            <th>M</th>
+            <th>F</th>
+            <th>C</th>
+            <th>I</th>
+                @* <th>Remarks (Stay With)</th> *@
+            <th>Basic Package (SAR)</th>
+            <th>EI-ADF Amount (SAR)</th>
+            <th>Ticket Amount (SAR)</th>
+            <th>Discount (SAR)</th>
+            <th>Total Package (SAR)</th>
+            <th>Received Amount (SAR)</th>
+                @* <th>Received Amount (PKR)</th> *@
+            <th>Balance Before Transit (SAR)</th>
+            <th>Payment in Transit (SAR)</th>
+            <th>Final Balance Receivable (SAR)</th>
+            <th>Received Amount %</th>
+            <th>Last Payment Rec Date</th>
+            <th>Days</th>
+            <th>Receipt No:</th>
+            <th>Category</th>
+            <th>Residency</th>
+                @* <th>Bio Status</th>
+            <th>Agreement Signed</th>
+            <th>Data From Signed</th>
+            <th>E Hajj</th> *@
+            </thead>
+
+            @{
+                int i = 0;
+            }
+
+            <tbody>
+
+                @for (i = 0; i < Model.FamilyMembers.Count; i++)
+                {
+
+                    var currentMember = Model.FamilyMembers.ElementAt(i);
+
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td>@currentMember.MegaId</td>
+                        <td>@currentMember.FID</td>
+                        <td>@currentMember.HeadName</td>
+                        <td>@currentMember.POD</td>
+                        @* <td>@currentMember.Makkah</td>
+                    <td>@currentMember.Medinah</td>
+                    <td>@currentMember.Azizia</td> *@
+                        <td>
+                            @currentMember.pax
+                        </td>
+                        <td>@currentMember.M</td>
+                        <td>@currentMember.F</td>
+                        <td>@currentMember.C</td>
+                        <td>@currentMember.I</td>
+                        @* <td>@currentMember.remarks</td> *@
+
+                        <td>@currentMember.BasicPackageAmount</td>
+                        <td>@currentMember.EIADFAmount</td>
+                        <td>@currentMember.TicketAmount</td>
+                        <td>@currentMember.DiscountAmount</td>
+                        <td>@currentMember.PackageAmount</td>
+                        <td>@currentMember.ReceivedAmountUSD</td>
+                        @* <td>@currentMember.ReceivedAmountPKR</td> *@
+                        <td>@currentMember.BalanceBeforeTransit</td>
+                        <td>@currentMember.PaymentinTransit</td>
+                        <td>@currentMember.FinalBalanceReceivable</td>
+                        <td>@currentMember.ReceivedAmountPercent</td>
+                        <td>@currentMember.LastPaymentRecDate</td>
+                        <td>@currentMember.Days</td>
+                        <td>@currentMember.ReceiptNo</td>
+                        <td>@currentMember.Category</td>
+                        <td>@currentMember.Residency</td>
+                        @* <td>@currentMember.BioStatus</td>
+                    <td>@currentMember.AgreementSign</td>
+                    <td>@currentMember.DateFromSign</td>
+                    <td>@currentMember.EHajj</td> *@
+
+                    </tr>
+                }
+
+            </tbody>
+
+            <tfoot>
+
+                <tr style="background-color: #f6f3ee !important; color: #b49164; font-weight: bolder;">
+                    <td colspan="5">Total</td>
+                    <td>
+                        @Model.totalpax
+                    </td>
+                    <td>
+                        @Model.totalmale
+                    </td>
+                    <td>
+                        @Model.totalfemale
+                    </td>
+                    <td>
+                        @Model.totalchild
+                    </td>
+                    <td>
+                        @Model.totalinfant
+                    </td>
+                    <td>@Model.TotalBasicPackage.ToString("N0")</td>
+                    <td>@Model.TotalEIADFAmount.ToString("N0")</td>
+                    <td>@Model.TotalTicketAmount.ToString("N0")</td>
+                    <td>@Model.TotalDiscount.ToString("N0")</td>
+                    <td>@Model.GrandTotalPackage.ToString("N0")</td>
+                    <td>@Model.TotalReceivedAmount.ToString("N0")</td>
+                    <td>@Model.TotalBalanceBeforeTransitAmount.ToString("N0")</td>
+                    <td>@Model.TotalPaymentInTransit.ToString("N0")</td>
+                    <td>@Model.TotalFinalBalanceReceivable.ToString("N0")</td>
+
+                    <td colspan="4" style="text-align: right;">Regular / Sponser</td>
+                    <td>
+                        @Model.totalregular
+                        @if (i > 0)
+                        {
+                            int percentage = (int)((decimal)Model.totalregular / i * 100);
+                            @(percentage.ToString("(0.##") + "%)")
+                            ;
+                        }
+                        else
+                        {
+                            @(0 + "%")
+                        }
+                        <br>
+
+                        @Model.totalsponser
+                        @if (i > 0)
+                        {
+                            int percentage = (int)((decimal)Model.totalsponser / i * 100);
+                            @(percentage.ToString("(0.##") + "%)")
+                            ;
+                        }
+                        else
+                        {
+                            @(0 + "%")
+                        }
+
+                    </td>
+                    <td></td>
+                    @*  <td> @Model.totalbiostatus
+                    @if (i > 0)
+                    {
+                    int percentage = (int)((decimal)Model.totalbiostatus / i * 100);
+                    @(percentage.ToString("(0.##") + "%)")
+                    ;
+                    }
+                    else
+                    {
+                    @(0 + "%")
+                    }
+                    </td>
+                    <td>  @Model.totalagreementsign
+                    @if (i > 0)
+                    {
+                    int percentage = (int)((decimal)Model.totalagreementsign / i * 100);
+                    @(percentage.ToString("(0.##") + "%)")
+                    ;
+                    }
+                    else
+                    {
+                    @(0 + "%")
+                    }
+                    </td>
+                    <td>  @Model.totaldataformsign
+                    @if (i > 0)
+                    {
+                    int percentage = (int)((decimal)Model.totaldataformsign / i * 100);
+                    @(percentage.ToString("(0.##") + "%)")
+                    ;
+                    }
+                    else
+                    {
+                    @(0 + "%")
+                    }
+                    </td>
+                    <td>
+                    @Model.TotalEHajj <br />
+                    @if (i > 0)
+                    {
+                    int percentage = (int)((decimal)Model.TotalEHajj / i * 100);
+                    @(percentage.ToString("(0.##") + "%)");
+                    }
+                    else
+                    {
+                    @(0 + "%")
+                    }
+                    </td> *@
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+@* 
+    <div style="margin-top: 10px;">
+        <h2 style="text-align: center; color: aliceblue; background: #b49164; margin: 0; padding: 0; width:100%;">
+            Airline
+            Summary
+        </h2>
+    </div>
+
+    <div style="margin: 0;" class="airline-summary">
+        <table class="airline-table">
+            <thead>
+            <th>POD</th>
+            <th>Pax</th>
+            <th>PNR Name</th>
+            <th>PNR No.</th>
+            <th>Arrival</th>
+            <th>Sector</th>
+            <th>Time</th>
+            <th>Departure</th>
+            <th>Sector</th>
+            <th>Time</th>
+            </thead>
+            <tbody>
+                @for (int a = 0; a < Model.AirlineSummary.Count; a++)
+                {
+
+                    var currentAirline = Model.AirlineSummary.ElementAt(a);
+
+                    <tr>
+                        <td>@(a + 1)</td>
+                        <td>@currentAirline.POD</td> 
+                        <td>@currentAirline.Pax</td>
+                        <td>@currentAirline.PNRName</td>
+                        <td>@currentAirline.PNRNo</td>
+                        <td>@currentAirline.Arrival</td>
+                        <td>@currentAirline.Sector</td>
+                        <td>@currentAirline.Time</td>
+                        <td>@currentAirline.Departure</td>
+                        <td>@currentAirline.DepSector</td>
+                        <td>@currentAirline.DepTime</td>
+                    </tr>
+                }
+            </tbody>
+
+            <tr style="background-color: #f6f3ee; color: #b0872e;">
+                <td colspan="1">Total </td>
+                <td>0</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 15px;">
+        <h2 style="text-align: center; color: aliceblue; background: #b49164; margin: 0; padding: 0; width: 100%;">
+            Train
+            Summary
+        </h2>
+    </div>
+    <div class="train-summary" style="margin: 0px;">
+        <table class="train-table">
+
+            <thead>
+            <th>POD</th>
+            <th>Pax</th>
+            <th>PNR Name</th>
+            <th>PNR No.</th>
+            <th>Departure</th>
+            <th>From</th>
+            <th>Time</th>
+            <th>Arrival</th>
+            <th>Destination</th>
+            <th>Time</th>
+            </thead>
+            <tbody>
+                @for (int b = 0; i < Model.TrainSummary.Count; b++)
+                {
+
+                    var currentAirline = Model.TrainSummary.ElementAt(b);
+
+                    <tr>
+                        <td>@(b + 1)</td>
+                        <td>@currentAirline.POD</td>
+                        <td>@currentAirline.Pax</td>
+                        <td>@currentAirline.PNRName</td>
+                        <td>@currentAirline.PNRNo</td>
+                        <td>@currentAirline.Departure</td>
+                        <td>@currentAirline.Sector</td>
+                        <td>@currentAirline.Time</td>
+                        <td>@currentAirline.Arrival</td>
+                        <td>@currentAirline.ArrSector</td>
+                        <td>@currentAirline.ArrTime</td>
+                    </tr>
+                }
+            </tbody>
+            <tr style="background-color: #f6f3ee; color: #b0872e;">
+                <td colspan="1">Total </td>
+                <td>0</td>
+            </tr>
+        </table>
+    </div>
+ *@
+    </div>
+</body>
+<script>
+    // Initialize DataTable
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+            buttons: [
+                {
+                    extend: "excel",
+                    footer: true, // Include footer rows in Excel export
+                    text: "Excel",
+                },
+            ],
+            // "scrollY": "200px", // Adjust height as needed
+            "scrollCollapse": true,
+            "paging": false, // Disable pagination if necessary
+            "info": false,
+            // "sScrollY": false,
+            "ordering": true,
+        });
+
+    });
+</script>

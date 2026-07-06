@@ -1,0 +1,353 @@
+@* @model IEnumerable<AgreementDisplayModel> *@
+@model UserHajjAgreement
+
+@{
+    Layout = "_PrintReportLayout";
+}
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+
+<a asp-controller="HajjAgreement" asp-action="DisplayDataForm"
+    asp-route-p="@ApplicationManager.Encrypt(Model.PassportNumber)">Go Back to Data Form</a>
+<br>
+<div class="container mt-5" id="aggrement">
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h5 class="text-center">AGREEMENT - HAJJ <span id="yearGregorian"></span> (1445-H)</h5>
+        </div>
+        <div class="col-md-12 text-center">
+            <p class="fs-12">
+                Made on @DateTimeManager.Today 
+                between First Part, is 
+                M/s @Model.CompanyName,
+                a cluster part of @Model.ClusterName, a collaborative Cluster-affiliate Hajj Group Management Company & the Second Part (as per below)
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <ul class="fs-12 list-unstyled">
+                <li>
+                    <b>
+                        @Model.Title @Model.Name (@Model.CID) Passport Number.
+                        @Model.PassportNumber
+                    </b>
+                </li>
+                <li>Address: @Model.Address</li>
+                <li>Contact: @Model.Contact</li>
+                <li>Email: @Model.Email</li>
+                <li>Category: @Model.ApplicantType</li>
+                <li>Hajj Application No: @Model.HajjAppNumber</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="~/@Model.HajjiImage" width="100%" height="100%" />
+                </div>
+                <div class="col-md-8">
+                    <table class="table fs-12">
+                        <thead>
+                            <tr>
+                                <th>PRICING</th>
+                                <th>USD</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPrice">
+                            <tr>
+                                <th>Per Person</th>
+                                <td style="text-align:right;">@Model.PricingPerPersonUsd</td>
+                            </tr>
+                            <tr>
+                                <th>I-ADF Amount</th>
+                                <td style="text-align:right;">@Model.IADFPriceUsd</td>
+                            </tr>
+                            <tr>
+                                <th>EI-ADF Amount</th>
+                                <td style="text-align:right;">@Model.EIADFPriceUsd</td>
+                            </tr>
+                            <tr>
+                                <th>Discount / Rebate / ROE Adjustment</th>
+                                <td style="text-align:right;">@Model.DiscountUsd</td>
+                            </tr>
+                            <tr>
+                                <th>@Model.TicketString</th>
+                                <td style="text-align:right;">@Model.TotalPerPersonUsd</td>
+                            </tr>
+                            <tr>
+                                <th>Grand Total With Family</th>
+                                <td style="text-align:right;">@Model.TotalWithFamilyUsd</td>
+                            </tr>
+                            <tr>
+                                <th>Amount Received</th>
+                                <td style="text-align:right;">0</td>
+                            </tr>
+
+                            <tr>
+                                <th>Balance Due</th>
+                                <td style="text-align:right;">@Model.TotalWithFamilyUsd</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>PACKAGE DETAIL</th>
+                        <th>TRANSPORT ROUTE</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyPackage">
+                    <tr>
+                        <td>@Model.Package</td>
+                        <td>Upon Arrival in KSA, Airport to Hotel / Building by Airport Naqaba Sharing Group Bus</td>
+                    </tr>
+                    <tr>
+                        <td>Makkah: @Model.MakkahFacilities</td>
+                        <td>
+                            Hotel to Train Station & Train Station to Accommodation (Intercity) by Group Bus
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Medina: @Model.MedinaFacilities</td>
+                        <td>
+                            Med to Mak / Mak to Med by Bus or by Train in Economy Class with Hand Carry only
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Azizia: @Model.AziziaFacilities</td>
+                        <td>
+                            Luggage will be Shuttled separately in a Truck with approximate 8hrs journey (in-case of a
+                            train)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mashair: @Model.MashairFacilities</td>
+                        <td>Mashair: Mina, Arafat, Muzdalfa & Back to Azizia by Group Bus Seat to Seat</td>
+                    </tr>
+                    <tr>
+                        <td>Airline: @Model.Airline</td>
+                        <td>Makkah/Medinah Accommodation to Airport by Group Sharing Bus</td>
+                    </tr>
+                    <tr>
+                        <td>Medina Arrival: @Model.MedinahArrival</td>
+                        <td>Ziarat in Makkah & Medinah (as per package) by Group Sharing Bus</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12" id="defination">
+            @Html.Raw(Model.SharedAgreement)
+            <hr class="my-3">
+            @Html.Raw(Model.SpecificAgreement)
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12 text-center">
+            <b class="fs-12">
+                I HAVE CAREFULLY READ AND UNDERSTOOD THE TERMS AND CONDITIONS OF THIS AGREEMENT AND THESE
+                ARE CORRECT
+            </b>
+        </div>
+        <div class="col-md-12  text-center">
+            <p class="fs-12">
+                <b>IN WITNESS WHEREOF</b> , the parties hereto have executed this Hajj Program Reservation
+                Agreement as of the date first above written.
+            </p>
+        </div>
+    </div>
+
+    <div class="row mt-20">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2 text-center" style="display: flex;justify-content: center;align-items: flex-end;flex-direction: row;align-content: center;">
+                    <p id="date"></p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3 text-center" style="display: flex;justify-content: center;align-items: flex-end;flex-direction: row;align-content: center;">
+                    <img src="" id="signatureImage"  />
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-center">
+                    <img src="~/@Model.CompanySeal" id="signatureStamp" width="300" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 bt-2 text-center">
+                    <p>Date</p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-3 bt-2 text-center">
+                    <p>Applicant's Signature & Thumb Impression </p>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 bt-2 text-center">
+                    <p>Company Seal & Sign</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form action="/HajjAgreement/Save" method="post" onsubmit="return confirm('Are You Sure?')">
+
+    <input type="hidden" asp-for="CompanySeal" />
+
+    <input type="hidden" asp-for="CompanyName" />
+    <input type="hidden" asp-for="ClusterName" />
+
+    <input type="hidden" asp-for="FamilyHeadId" />
+
+    <input type="hidden" asp-for="Title" />
+    <input type="hidden" asp-for="Name" />
+    <input type="hidden" asp-for="CID" />
+    <input type="hidden" asp-for="PassportNumber" />
+    <input type="hidden" asp-for="Address" />
+    <input type="hidden" asp-for="Contact" />
+    <input type="hidden" asp-for="ApplicantType" />
+    <input type="hidden" asp-for="HajjAppNumber" />
+    <input type="hidden" asp-for="HajjiImage" />
+
+    <input type="hidden" asp-for="PricingPerPersonPkr" />
+    <input type="hidden" asp-for="PricingPerPersonSar" />
+    <input type="hidden" asp-for="PricingPerPersonUsd" />
+
+    <input type="hidden" asp-for="IADFPricePkr" />
+    <input type="hidden" asp-for="IADFPriceSar" />
+    <input type="hidden" asp-for="IADFPriceUsd" />
+
+    <input type="hidden" asp-for="EIADFPricePkr" />
+    <input type="hidden" asp-for="EIADFPriceSar" />
+    <input type="hidden" asp-for="EIADFPriceUsd" />
+
+    
+    <input type="hidden" asp-for="TicketString" />
+    <input type="hidden" asp-for="FlightTicketPricePkr" />
+    <input type="hidden" asp-for="FlightTicketPriceSar" />
+    <input type="hidden" asp-for="FlightTicketPriceUsd" />
+    
+
+    <input type="hidden" asp-for="DiscountPkr" />
+    <input type="hidden" asp-for="DiscountSar" />
+    <input type="hidden" asp-for="DiscountUsd" />
+
+    <input type="hidden" asp-for="TotalPerPersonPkr" />
+    <input type="hidden" asp-for="TotalPerPersonSar" />
+    <input type="hidden" asp-for="TotalPerPersonUsd" />
+
+    <input type="hidden" asp-for="TotalWithFamilyPkr" />
+    <input type="hidden" asp-for="TotalWithFamilySar" />
+    <input type="hidden" asp-for="TotalWithFamilyUsd" />
+
+    <input type="hidden" asp-for="AmountReceivedPkr" />
+    <input type="hidden" asp-for="AmountReceivedSar" />
+    <input type="hidden" asp-for="AmountReceivedUsd" />
+
+    <input type="hidden" asp-for="BalanceDuePkr" />
+    <input type="hidden" asp-for="BalanceDueSar" />
+    <input type="hidden" asp-for="BalanceDueUsd" />
+
+    <input type="hidden" asp-for="Package" />
+    <input type="hidden" asp-for="MakkahFacilities" />
+    <input type="hidden" asp-for="MedinaFacilities" />
+    <input type="hidden" asp-for="AziziaFacilities" />
+    <input type="hidden" asp-for="MashairFacilities" />
+    <input type="hidden" asp-for="Airline" />
+    <input type="hidden" asp-for="MedinahArrival" />
+    <input type="hidden" asp-for="MedicallyAble" value="false" />
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <label>Select Date</label>
+                <input type="date" name="SignedOn" class="form-control" onchange="showDate(this.value)" required />
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+                <label>Verify Email: </label>
+                <input type="email" asp-for="Email" class="form-control" />
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-12 mt-3">
+                <div class="form-check-inline" id="signatureBox">
+                    <input class="form-check-input" type="checkbox" checked id="dataform">
+                    <label class="form-check-label" for="dataform">
+                        I want to sign my Hajj Agreement
+                    </label>
+                </div>
+                <div class="form-check-inline" id="signatureBox">
+                    <input class="form-check-input" type="checkbox" asp-for="SignDataForm" checked id="medical">
+                    <label class="form-check-label" for="medical">
+                        I want to sign my Data Form
+                    </label>
+                </div>
+                <div class="form-check" id="signatureBox">
+                    <input class="form-check-input" type="checkbox" asp-for="SignMedicalAffidavit" checked id="medical">
+                    <label class="form-check-label" for="medical">
+                        <b>Medical Fitness Certificate:</b><br>
+                        I want to sign my Medical Affidavit as I am medically fit for Hajj journey & I do not require a helper for wheel chair.
+                    </label>
+                </div>                
+                <div class="form-check" id="signatureBox">
+                    <input class="form-check-input" type="checkbox" value="" id="showhide"
+                           onchange="showHideSignatureBox()">
+                    <label class="form-check-label" for="showhide">
+                        I have reviewed the Hajj Data Form, confirmed the Hajj Agreement, and confirmed my medical fitness. <br> I hereby confirm all and affix my signature.
+                    </label>
+                </div>
+                
+            </div>
+            
+            <div class="col-md-12 mt-3">
+                <canvas id="signatureCanvas"></canvas>
+            </div>
+            <div class="col-md-12 mt-3">
+                <input type="hidden" name="SignatureBase64" id="signature_data" />
+                <div class="btn-group" id="signatureButtons" style="display: none;">
+                    <button class="btn btn-primary" type="button" onclick="captureSignature(); SaveToBase64()">
+                        Sign
+                        Document
+                    </button>
+                    <button class="btn btn-danger" type="button" onclick="clearSignature()">Clear Signature</button>
+                    <button class="btn btn-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+</form>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <img src="" id="convertedImage" />
+    </div>
+</div>
+
+
+
+<style>
+    #signatureCanvas {
+        border: 1px solid black;
+    }
+</style>
+
+
+<script src="~/assets/js/mainFromSign.js"></script>
+<script src="~/assets/js/signature.js"></script>

@@ -1,0 +1,248 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+
+@{
+    Layout = null;
+    var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Hajj Summary Report</title>
+
+
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.4/css/dx.light.css" />
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- ✅ Required Libraries -->
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/jszip.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
+
+    <!-- ✅ jsPDF & DevExtreme PDF Exporter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.exporter.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #hajjSummaryGrid {
+            height: auto;
+        }
+
+        .top-buttons {
+            margin-bottom: 15px;
+        }
+
+        #exportToPdf {
+            padding: 8px 16px;
+            background-color: #f60000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .checkboxes {
+            margin-bottom: 20px;
+        }
+
+            .checkboxes label {
+                margin-right: 15px;
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Hajj Summary</h2>
+
+
+    <div class="checkboxes">
+        <label><input type="checkbox" id="sNoCheckbox" checked /> S.No</label>
+        <label><input type="checkbox" id="hajjiNameCheckbox" checked /> Hajji Name</label>
+        <label><input type="checkbox" id="hbNoCheckbox" checked /> HBNo</label>
+        <label><input type="checkbox" id="genderCheckbox" checked /> Gender</label>
+        <label><input type="checkbox" id="passportNoCheckbox" checked /> Passport #</label>
+        <label><input type="checkbox" id="countryNameCheckbox" checked /> Country</label>
+        <label><input type="checkbox" id="cityNameCheckbox" checked /> City</label>
+        <label><input type="checkbox" id="addressCheckbox" checked /> Address</label>
+        <label><input type="checkbox" id="contactCheckbox" checked /> Contact</label>
+    </div>
+
+    <div class="top-buttons">
+        <button id="exportToPdf">Download PDF</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-evenly;">
+        <h5>Total Families: @ViewBag.Family</h5>
+        <h5>Total Males: @ViewBag.MaleCount</h5>
+        <h5>Total Females: @ViewBag.FemaleCount</h5>
+        <h5>Total PAX: @ViewBag.PAX</h5>
+    </div>
+
+    <div id="hajjSummaryGrid"></div>
+
+    <script>
+        let data = @Html.Raw(jsonData);
+        let gridInstance;
+
+        $(function () {
+
+            data.forEach((item, index) => {
+                item.SNo = index + 1;
+            });
+
+
+            $("#hajjSummaryGrid").dxDataGrid({
+                dataSource: data,
+                showBorders: true,
+                columnAutoWidth: true,
+                paging: false,
+                searchPanel: {
+                    visible: true,
+                    highlightCaseSensitive: false
+                },
+                headerFilter: {
+                    visible: true
+                },
+                sorting: {
+                    mode: "multiple"
+                },
+                export: {
+                    enabled: true,
+                    fileName: "HajjSummary"
+                },
+                onInitialized: function (e) {
+                    gridInstance = e.component;
+                },
+                columns: [
+                    // { caption: "S.No", dataField: "SNo", width: 60 },
+        {
+                                caption: "S.No",
+                                width: 60,
+                                cellTemplate: function (container, options) {
+                                    const visibleRows = options.component.getVisibleRows();
+                                    const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+                                    container.text(rowIndex + 1);
+                                }
+                            },
+                    { dataField: "HajjiName", caption: "Hajji Name", width: 250 },
+                    { dataField: "HBNo", caption: "HBNo", width: 100 },
+                    { dataField: "Gender", caption: "Gender", width: 100 },
+                    { dataField: "PassportNo", caption: "Passport #", width: 100 },
+                    { dataField: "CountryName", caption: "Country", width: 100 },
+                    { dataField: "CityName", caption: "City", width: 100 },
+                    { dataField: "Address", caption: "Address", width: 600 },
+                    { dataField: "Number", caption: "Contact", width: 600 },
+                ]
+            });
+
+
+            $("#sNoCheckbox").on("change", function () {
+                gridInstance.columnOption("SNo", "visible", this.checked);
+            });
+            $("#hajjiNameCheckbox").on("change", function () {
+                gridInstance.columnOption("HajjiName", "visible", this.checked);
+            });
+            $("#hbNoCheckbox").on("change", function () {
+                gridInstance.columnOption("HBNo", "visible", this.checked);
+            });
+            $("#genderCheckbox").on("change", function () {
+                gridInstance.columnOption("Gender", "visible", this.checked);
+            });
+            $("#passportNoCheckbox").on("change", function () {
+                gridInstance.columnOption("PassportNo", "visible", this.checked);
+            });
+            $("#countryNameCheckbox").on("change", function () {
+                gridInstance.columnOption("CountryName", "visible", this.checked);
+            });
+            $("#cityNameCheckbox").on("change", function () {
+                gridInstance.columnOption("CityName", "visible", this.checked);
+            });
+            $("#addressCheckbox").on("change", function () {
+                gridInstance.columnOption("Address", "visible", this.checked);
+            });
+            $("#contactCheckbox").on("change", function () {
+                gridInstance.columnOption("Number", "visible", this.checked);
+            });
+
+
+
+                      $("#exportToPdf").on("click", async function () {
+            const { jsPDF } = window.jspdf;
+            if (!jsPDF) {
+                alert("jsPDF library not loaded");
+                return;
+            }
+
+            const doc = new jsPDF({
+                orientation: "landscape",
+                unit: "pt",
+                format: "a3"
+            });
+
+            const loadImage = (src) => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
+                });
+            };
+
+            let topMargin = 20; 
+
+            try {
+                const img = await loadImage('/reportlogo/GroupLogo.png');
+                const imgWidth = 60;
+                const imgHeight = 25;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const x = pageWidth - imgWidth - 40;
+                const y = 10;
+
+                doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+
+                
+                topMargin = imgHeight + y + 10; 
+            } catch (err) {
+                console.error("Image failed to load", err);
+            }
+
+            await DevExpress.pdfExporter.exportDataGrid({
+                jsPDFDocument: doc,
+                component: gridInstance,
+                margin: { top: topMargin, left: 20, right: 20, bottom: 20 },
+                customizeCell: function (options) {
+                    if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+                        const visibleRows = gridInstance.getVisibleRows();
+                        const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+                        options.pdfCell.text = (rowIndex + 1).toString();
+                    }
+                    options.pdfCell.font = { size: 8 };
+                }
+            });
+
+            doc.save("ApplicantReport.pdf");
+        });
+
+
+            function updateSerialNumbers() {
+                if (gridInstance) {
+                    const visibleRows = gridInstance.getVisibleRows();
+                    visibleRows.forEach((row, index) => {
+                        if (row && row.data) {
+                            row.data.SerialNo = index + 1;
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

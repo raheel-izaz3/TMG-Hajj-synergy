@@ -1,0 +1,27 @@
+﻿<script>
+    
+    function getPackageFlights(id) {
+       if(id != ''){
+            $.ajax({
+                url: "/Flight/GetPackageFlights/"+id,
+                success: res => {
+                    console.log(res)
+                    const flightSelect = document.querySelector("#FlightId")
+                    let html = `<option value = "" >No Flights...</option>`
+                    for (let f of res) {
+                        html += `
+                        <option value="${f.flightId}">${f.name}</option>
+                        `
+                    }
+
+                    flightSelect.innerHTML = html
+
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+       }
+    }
+
+</script>

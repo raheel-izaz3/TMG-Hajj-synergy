@@ -1,0 +1,285 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@model FamilyMemberRegisterRequest
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Family Head / </span> Add Member</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-passport" aria-controls="navs-pills-justified-passport" aria-selected="false">
+                            Passport
+                        </button>
+                    </li>
+                </ul>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card">
+                        <div class="tab-content">
+                            <div class="tab-pane fade  show active" id="navs-pills-justified-passport" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="SPOId"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-control" asp-for="SPOId">
+                                                <option value="">Select SPO</option>
+                                                @foreach (SPO spo in ViewBag.SPOs)
+                                                {
+                                                    if (spo.SPOId == ViewBag.SPOId)
+                                                    {
+
+                                                        <option selected value="@spo.SPOId">@spo.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@spo.SPOId">@spo.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="SPOId"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="FeedBy"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="FeedBy" class="form-control" value="@ViewBag.FeedBy">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="FeedBy"></span>
+                                    </div>
+                                    <div class="col-sm-12 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" asp-for="ApplicantType"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-control" asp-for="ApplicantType"
+                                                    asp-items="Html.GetEnumSelectList<ApplicantType>()">
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="ApplicantType"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="HonorificsId"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-select" asp-for="HonorificsId">
+                                                <option value="">Select Honorifics...</option>
+                                                @foreach (Honorifics honorifics in ViewBag.Honorifics)
+                                                {
+                                                    <option value="@honorifics.HonorificsId">@honorifics.Title </option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="HonorificsId"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="SurName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="SurName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="SurName"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="GivenName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                            <input asp-for="GivenName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="GivenName"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" asp-for="MehramRelationEnum"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <select asp-for="MehramRelationEnum" class="form-control">
+                                                <option value="1">Father</option>
+                                                <option value="2">Husband</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="MehramRelationEnum"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="FatherHusbandName"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="FatherHusbandName" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="FatherHusbandName"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" asp-for="CNIC"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input asp-for="CNIC" class="form-control" maxlength="15" oninput="formatCnicInput(this)">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CNIC"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="DateOfBirth"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="DateOfBirth" max="@DateTimeManager.Today" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="DateOfBirth"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="PlaceOfBirth"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="PlaceOfBirth" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PlaceOfBirth"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="Nationality"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                            <input asp-for="Nationality" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Nationality"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="Gender"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <select class="form-select" asp-for="Gender" onchange="showMehram(this.value)">
+                                                <option value="0" selected>Male</option>
+                                                <option value="1">Female</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Gender"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" asp-for="BloodGroup"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-select" asp-for="BloodGroup">
+                                                <option value="">Select Blood Group...</option>
+                                                <option value="A-">A-</option>
+                                                <option value="A+">A+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="AB-">AB-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="O-">O-</option>
+                                                <option value="O+">O+</option>
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="BloodGroup"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" asp-for="FiqahId"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-select" asp-for="FiqahId">
+                                                <option value="">Select Fiqah...</option>
+                                                @foreach (Fiqah fiqah in ViewBag.Fiqahs)
+                                                {
+                                                    <option value="@fiqah.FiqahId">@fiqah.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="FiqahId"></span>
+                                    </div>
+
+
+                                    <div class="col-sm-12 col-md-2 mb-3">
+                                        <label class="form-label" asp-for="IsMarried"></label>
+                                        <div class="input-group input-group-merge">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" asp-for="IsMarried" type="checkbox">
+                                                <label class="form-check-label" for="before">Yes</label>
+                                            </div>
+
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="IsMarried"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="Residency"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Residency" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Residency"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="PassportType"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="PassportType" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PassportType"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="CountryCode"></label>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="CountryCode" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="CountryCode"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" asp-for="PassportNumber"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="PassportNumber" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PassportNumber"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4  mb-3">
+                                        <label class="form-label" asp-for="PassportDateOfIssue"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="PassportDateOfIssue" max="@DateTimeManager.Today" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PassportDateOfIssue"></span>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4  mb-3">
+                                        <label class="form-label" asp-for="PassportDateOfExpiry"></label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="PassportDateOfExpiry" min="@DateTimeManager.Today" class="form-control">
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="PassportDateOfExpiry"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 mt-3">
+                                    <button type="submit" class="btn btn-success float-end">Create</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @Html.AntiForgeryToken()
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

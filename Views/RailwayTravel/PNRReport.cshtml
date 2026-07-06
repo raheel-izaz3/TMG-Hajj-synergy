@@ -1,0 +1,192 @@
+﻿@model RailwayPNRReportModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> PNR Report</h4>
+
+    <hr class="mb-4" />
+
+    <h5 class="fw-bold mb-2">Sectors</h5>
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover sectorTable" id="sectorTable">
+                <thead>
+                    <tr>
+                        <th>Train Number</th>
+                        <th>Destination</th>
+                        <th>Departure Date</th>
+                        <th>Departure Time</th>
+                        <th>Arrival Date</th>
+                        <th>Arrival Time</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+
+                    <tr>
+                        <td>@Model.RailwayNumber</td>
+                        <td>@Model.Destination</td>
+                        <td>@Model.DepartureDate</td>
+                        <td>@Model.DepartureTime</td>
+                        <td>@Model.ArrivalDate</td>
+                        <td>@Model.ArrivalTime</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+
+    <p class="fw-bold">Choose Table Headers</p>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+            checked value="option1">
+        <label class="form-check-label" for="inlineCheckbox1">#</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox1"
+            checked value="option1">
+        <label class="form-check-label" for="inlineCheckbox1">Package Name</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox2"
+            checked value="option2">
+        <label class="form-check-label" for="inlineCheckbox2">Given Name</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox3"
+            checked value="option3">
+        <label class="form-check-label" for="inlineCheckbox3">Sur Name</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox4"
+            checked value="option4">
+        <label class="form-check-label" for="inlineCheckbox4">Gender</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox5"
+            checked value="option5">
+        <label class="form-check-label" for="inlineCheckbox5">Passport #</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox6"
+            checked value="option6">
+        <label class="form-check-label" for="inlineCheckbox6">D.O.B</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" id="inlineCheckbox7"
+            checked value="option7">
+        <label class="form-check-label" for="inlineCheckbox7">Passport D.O.E</label>
+    </div>
+
+    @foreach (RailwayPNRReportEntryModel entry in Model.Entries)
+    {
+        <hr class="mb-3" />
+
+        <h5 class="mb-4" id="@entry.PNR">@entry.PNR</h5>
+
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <table class="table table-hover pnrTables" id="reportTable-@entry.PNR" name="pnrTables"
+                    data-table-id="@entry.PNR">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>SPO</th>
+                            <th>Package Name</th>
+                            <th>Given Name</th>
+                            <th>Sur Name</th>
+                            <th>Gender</th>
+                            <th>Passport #</th>
+                            <th>D.O.B</th>
+                            <th>Passport D.O.E</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1">
+                        @for (int i = 0; i < entry.PNRMembers.Count; i++)
+                        {
+                            var currentMember = entry.PNRMembers.ElementAt(i);
+
+                            <tr>
+                                <td>@currentMember.SNo</td>
+                                <td>@currentMember.SPOName</td>
+                                <td>@currentMember.PackageName</td>
+                                <td>@currentMember.GivenName</td>
+                                <td>@currentMember.SurName</td>
+                                <td>@currentMember.Gender</td>
+                                <td>@currentMember.PassportNumber</td>
+                                <td>@currentMember.DateOfBirth</td>
+                                <td>@currentMember.PassportDOE</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    }
+
+</div>
+
+<script>
+    let sectorTable = new DataTable('.pnrTables', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+    let reportTable = new DataTable('.sectorTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+
+    const checkHeaders = document.querySelectorAll(".check-header")
+    let i = 0;
+    for (let check of checkHeaders) {
+        check.setAttribute("data-column-index", i)
+        check.setAttribute("data-pnr-index", i)
+        i++
+    }
+
+    function colVis(elem) {
+        let index = parseInt(elem.getAttribute('data-column-index'))
+        // const tables = document.getElementsByName('pnrTables')
+        // console.log(tables)
+
+        if (elem.checked) {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).show();
+        }
+        else {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).hide();
+        }
+
+    }
+</script>

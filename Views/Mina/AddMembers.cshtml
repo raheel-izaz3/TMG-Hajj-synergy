@@ -1,0 +1,316 @@
+﻿@model PNRAddMembersModel
+
+@{
+    string modelName = "PNR";
+    string modelNamePlural = "PNRs";
+    string modelControllerRoute = "PNR";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Add / Remove Members To PNR</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row mb-3">
+       @*  <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Flight</label>
+            <p>@Model.Flight</p>
+        </div> *@
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Mina</label>
+            <p>@Model.PNR</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Mina PAX</label>
+            <p>@Model.PAX</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Selected</label>
+            <p id="selected">@Model.Selected</p>
+        </div>
+        @* <div class="col-sm-12 col-md-6">
+            <label class="fw-bold">Departure - Arrival</label>
+            @* <p>@Model.DepartureArrivalDateTime</p> 
+        </div> *@
+    </div>
+
+    <button onclick="distribute()" class="btn btn-info">Distribute Families</button>
+    @* <button onclick="uncheckAll()" class="btn btn-info">Un-Select All</button> *@
+    <br><br>
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Company Code</th>
+                        <th>Package</th>
+                        <th>HB #</th>
+                        @* <th>C ID</th> *@
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Passport</th>
+                        <th>Passport D.O.E</th>
+                        <th>D.O.B</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1" id="table">
+                    @foreach (PNRMemberModel m in Model.Entries)
+                    {
+                        string textAlign = m.IsHead ? "left" : "right";
+                        string border = m.IsHead ? "border-top: 2px solid black" : "";
+                        string selected = m.Selected ? "checked" : "";
+
+                        string disabled = "";
+                        if (m.InSamePnr is null)
+                        {
+                            disabled = "";
+                        }
+                        else if (m?.InSamePnr == true)
+                        {
+                            disabled = "";
+                        }
+                        else if (m?.InSamePnr == false)
+                        {
+                            disabled = "disabled";
+                        }
+
+                        <tr>
+                            <td>
+                                <input class="form-check-input" name="selected[]" @disabled
+                                       onchange="updateSelected(this, @m.FamilyHeadId, @Model.PNRId)"
+                                       type="checkbox" data-is-head="@m.IsHead"
+                                       data-fc-id="@m.FamilyHeadId" data-head-id="@m.HeadId" @selected />
+                            </td>
+                            <td style="text-align: @textAlign; @border;">@m.Company</td>
+                            <td style="text-align: @textAlign; @border;">@m.Package</td>
+                            <td style="text-align: @textAlign; @border;">@m.FCId</td>
+                            @* <td style="text-align: @textAlign; @border;">@m.CId</td> *@
+                            <td style="text-align: @textAlign; @border;">@m.Name</td>
+                            <td style="text-align: @textAlign; @border;">@m.Age</td>
+                            <td style="text-align: @textAlign; @border;">@m.Gender</td>
+                            <td style="text-align: @textAlign; @border;">@m.Passport</td>
+                            <td style="text-align: @textAlign; @border;">@m.PassportExpiry</td>
+                            <td style="text-align: @textAlign; @border;">@m.DOB</td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let table = new DataTable('#table', {
+        dom: 'fp',
+        paging: false,
+        lengthChange: false
+    });
+
+    function updateSelectedCount() {
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        $("#selected").html(selectedCheckboxes.length);
+    }
+
+
+    function updateSelected(elem, familyHeadId, pnrId) {
+        const MAX = @Model.PAX;
+
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        const length = selectedCheckboxes.length;
+
+        if (length > MAX) {
+            alert("Limit Exceeded");
+            elem.checked = false;
+            return;
+        }
+
+        updateSelectedCount();
+
+        const isHead = elem.getAttribute("data-is-head");
+        const elemFcId = elem.getAttribute("data-fc-id");
+
+        if (isHead === "True" && elem.checked) {
+            const attributeName = 'data-head-id';
+            const elements = document.querySelectorAll(`[${attributeName}="${familyHeadId}"]`);
+
+            if ((elements.length + length) > MAX) {
+                if (!confirm("Cannot select this family. Limit will exceed. Proceed with selection?")) {
+                    elem.checked = false;
+                    return;
+                }
+            }
+
+            for (let check of elements) {
+                if (check.hasAttribute('disabled')) continue;
+                check.checked = elem.checked;
+                const fcId = check.getAttribute('data-fc-id');
+                if (elem.checked) {
+                    addMember(pnrId, fcId);
+                } else {
+                    removeMember(pnrId, fcId);
+                }
+            }
+        } else {
+            if (elem.checked) {
+                addMember(pnrId, elemFcId);
+            } else {
+                removeMember(pnrId, elemFcId);
+            }
+        }
+    }
+
+
+
+    function addMember(pnrId, familyHeadId) {
+        $.ajax({
+            url: "/Mina/AddMember",
+            method: "POST",
+            data: {
+                familyHeadId: familyHeadId,
+                pnrId: pnrId
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+    function removeMember(pnrId, familyHeadId) {
+        $.ajax({
+            url: "/Mina/RemoveMember",
+            method: "post",
+            data: {
+                familyHeadId: familyHeadId,
+                pnrId: pnrId
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+    function distribute() {
+        if (!confirm("Are you sure?")) return
+
+        const familyHeads = document.querySelectorAll(`[data-is-head="True"]`)
+        const limit = @Model.PAX
+
+             const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        const length = selectedCheckboxes.length;
+        let pnrId = @Model.PNRId;
+
+        // reset all checks
+        for (let check of selectedCheckboxes) {
+            if (check.hasAttribute('disabled')) continue;
+
+            let fcId = check.getAttribute('data-fc-id');
+
+            if (check.checked) removeMember(pnrId, fcId)
+            check.checked = false
+        }
+
+        // loop over all family heads
+        for (let fh of familyHeads) {
+            const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+            const length = selectedCheckboxes.length;
+
+            let headId = fh.getAttribute("data-head-id")
+            const familyMembers = document.querySelectorAll(`[data-head-id="${headId}"]`)
+            const memberCount = familyMembers.length
+
+            if ((memberCount + length) > @Model.PAX) {
+                continue
+            }
+
+            // loop over all members of the current family head
+            for (let m of familyMembers) {
+                if (m.hasAttribute('disabled')) continue;
+                if (m.checked) continue;
+
+                m.checked = true
+                let fcId = m.getAttribute('data-fc-id')
+                addMember(pnrId, fcId)
+            }
+        }
+        updateSelectedCount()
+    }
+
+
+    function uncheckAll() {
+        if (confirm("Are you sure?")) {
+            const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+            for (let checkbox of selectedCheckboxes) {
+                checkbox.checked = false;
+                let fcId = checkbox.getAttribute('data-fc-id');
+                if (!checkbox.hasAttribute('disabled')) {
+                    removeMember(@Model.PNRId, fcId);
+                }
+            }
+            updateSelectedCount();
+        }
+    }
+
+
+</script>
+
+
+

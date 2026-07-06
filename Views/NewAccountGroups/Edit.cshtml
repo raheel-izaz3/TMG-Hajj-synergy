@@ -1,0 +1,71 @@
+﻿@model TMG.Models.NewChartOfAccounts.NewAccount.NewAccountGroup
+
+@{
+    Layout = "~/Views/Shared/_AccountsLayout.cshtml";
+    string modelName = "NewAccountGroups";
+    string modelNamePlural = "NewAccountGroups";
+    string modelControllerRoute = "NewAccountGroups";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="NewAccountGroupId" />
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Select Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="CompanyId" class="form-control">
+                                        <option value="">Select Company...</option>
+                                        @foreach (Company com in ViewBag.Companies)
+                                        {
+                                            <!option value="@com.CompanyId" @(com.CompanyId == Model.CompanyId ? "selected" : "")>@com.CompanyName</!option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GroupName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="GroupName" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="GroupName"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="GroupCode"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="GroupCode" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="GroupCode"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Nature"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Nature" type="text" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Nature"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

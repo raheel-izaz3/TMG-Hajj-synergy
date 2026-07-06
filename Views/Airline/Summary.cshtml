@@ -1,0 +1,97 @@
+﻿@model AirlineSummaryModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @Model.Airline Summary</h4>
+
+    <hr class="mb-4" />
+    @*
+    <h5 class="fw-bold mb-2">Sectors</h5> *@
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="sectorTable">
+                <thead>
+                    <tr>
+                        @Html.Raw(Model.TableHeader)
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (AirlineSummaryEntryModel entry in Model.Entries)
+                    {
+                        <tr>
+                            <td>@entry.SNo</td>
+                            <td>
+                                <a href="/FlightReport/PNRReport/@entry.FlightId#@entry.PNRNumber" target="_blank">@entry.PNRNumber</a>
+                            </td>
+                            <td>@entry.PNRName</td>
+                            <td>@entry.Class</td>
+                            <td>@entry.Company</td>
+                            <td>@entry.Package</td>
+                            <td>@entry.Airline</td>
+                            <td>@entry.FirstSectorDestination</td>
+                            <td>@entry.FirstSectorFlightNumber</td>
+                            <td>@entry.FirstSectorFlightNo</td>
+                            <td>@entry.FirstSectorDepartureDate</td>
+                            <td>@entry.FirstSectorDepartureTime</td>
+                            <td>@entry.FirstSectorArrivalDate</td>
+                            <td>@entry.FirstSectorArrivalTime</td>
+                            <td>@entry.Capacity</td>
+                            <td>@entry.Booked</td>
+                            <td>@entry.Balance</td>
+                            @for(int i = 0; i < Model.HighestSectorCount - 1; i++)
+                            {
+                                AirlineSummarySectorModel sec = @entry.Sectors.ElementAtOrDefault(i);
+
+                                <td>@sec?.Destination</td>
+                                <td>@sec?.FlightNumber</td>
+                                <td>@sec?.FlightNo</td>
+                                <td>@sec?.Date</td>
+                                <td>@sec?.Time</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let sectorTable = new DataTable('#sectorTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+
+    const checkHeaders = document.querySelectorAll(".check-header")
+    let i = 0;
+    for (let check of checkHeaders) {
+        check.setAttribute("data-column-index", i)
+        check.setAttribute("data-pnr-index", i)
+        i++
+    }
+
+    function colVis(elem) {
+        let index = parseInt(elem.getAttribute('data-column-index'))
+        // const tables = document.getElementsByName('pnrTables')
+        // console.log(tables)
+
+        if (elem.checked) {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).show();
+        }
+        else {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).hide();
+        }
+
+    }
+</script>

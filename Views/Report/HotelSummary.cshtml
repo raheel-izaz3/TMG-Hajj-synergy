@@ -1,0 +1,216 @@
+﻿@model IEnumerable<TMG.Controllers.ReportController.HajjSummaryData>
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Hotel Summary Report</title>
+
+	<!-- Styles -->
+	<style>
+		#downloadPdf {
+			padding: 8px 16px !important;
+			background-color: #f60000 !important;
+			color: white !important;
+			border: none !important;
+			border-radius: 4px !important;
+			cursor: pointer !important;
+			margin-bottom: 10px !important;
+			font-size: 14px;
+		}
+
+		Customer_Info{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: space-evenly;
+		}
+
+		#columnSelectors {
+			padding: 10px;
+			background-color: #f9f9f9;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin-bottom: 15px;
+		}
+
+			#columnSelectors label {
+				display: flex;
+				align-items: center;
+				font-size: 14px;
+				background: #f1f1f1;
+				padding: 6px 10px;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			#columnSelectors input[type="checkbox"] {
+				margin-right: 5px;
+				cursor: pointer;
+			}
+	</style>
+
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+	<button id="downloadPdf">Download PDF</button>
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+
+		
+		<div id="columnSelectors">
+			<label><input type="checkbox" class="toggle-column" data-column="HajjiName" checked> Hajji Name</label>
+			<label><input type="checkbox" class="toggle-column" data-column="HBNo" checked> HbNo</label>
+			<label><input type="checkbox" class="toggle-column" data-column="Gender" checked> Gender</label>
+			<label><input type="checkbox" class="toggle-column" data-column="PackageName" checked> Package Name</label>
+			<label><input type="checkbox" class="toggle-column" data-column="PassportNo" checked> Passport No.</label>
+			<label><input type="checkbox" class="toggle-column" data-column="GroupName" checked> Group No.</label>
+			<label><input type="checkbox" class="toggle-column" data-column="CheckIn" checked> Check In</label>
+			<label><input type="checkbox" class="toggle-column" data-column="CheckOut" checked> Check Out</label>
+		</div>
+
+		
+		<div class="proforma_title">
+			<h4 id="miniStatement_Title">Hotel Summary Report</h4>
+		</div>
+		<div class="Invoice_to_section">
+			<div class="Customer_Info" style="
+				justify-content: space-evenly;
+				flex-flow: nowrap;
+				display: flex;
+				flex-direction: row;">
+				<h4>Total Males: <span>@ViewBag.MaleCount</span></h4>
+				<h4>Total Females: <span>@ViewBag.FemaleCount</span></h4>
+				<h4>Total Males Room: <span>@ViewBag.MaleRatio</span></h4>
+				<h4>Total Females Room: <span>@ViewBag.FemaleRatio</span></h4>
+			</div>
+		</div>
+
+		
+		<div id="reportGrid"></div>
+	</div>
+	<script>
+		let data = @Html.Raw(jsonData);
+		data = data.map((item, index) => ({ SNo: index + 1, ...item }));
+		let gridInstance;
+
+		$(function () {
+			
+			gridInstance = $("#reportGrid").dxDataGrid({
+				dataSource: data,
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: false,
+				searchPanel: { visible: true },
+				filterRow: { visible: true, applyFilter: "auto" },
+				headerFilter: { visible: true },
+				export: {
+					enabled: true,
+					fileName: "Hotel Summary Report"
+				},
+				columns: [
+					 {
+						caption: "S.No",
+						width: 60,
+						cellTemplate: function (container, options) {
+							const visibleRows = options.component.getVisibleRows();
+							const rowIndex = visibleRows.findIndex(r => r.data === options.data);
+							container.text(rowIndex + 1);
+						}
+					},
+					{ dataField: "HajjiName", caption: "Hajji Name" },
+					{ dataField: "HBNo", caption: "HBNo" },
+					{ dataField: "Gender", caption: "Gender" },
+					{ dataField: "PackageName", caption: "Package Name" },
+					{ dataField: "PassportNo", caption: "Passport No" },
+					{ dataField: "GroupName", caption: "Group No." },
+					{ dataField: "CheckIn", caption: "Check In", format: "dd/MMM/yyyy" },
+					{ dataField: "CheckOut", caption: "Check Out", format: "dd/MMM/yyyy" }
+				]
+			}).dxDataGrid("instance");
+
+			
+			$('.toggle-column').on('change', function () {
+				const field = $(this).data('column');
+				const isVisible = $(this).is(':checked');
+				gridInstance.columnOption(field, 'visible', isVisible);
+			});
+
+			
+			$("#downloadPdf").on("click", async function () {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "a3" });
+				const loadImage = (src) => {
+					return new Promise((resolve, reject) => {
+						const img = new Image();
+						img.src = src;
+						img.onload = () => resolve(img);
+						img.onerror = reject;
+					});
+				};
+
+				try {
+					const img = await loadImage('/reportlogo/GroupLogo.png');
+					const imgWidth = 60;
+					const imgHeight = 25;
+					const pageWidth = doc.internal.pageSize.getWidth();
+					const x = pageWidth - imgWidth - 40;
+					const y = 10;
+					doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+				} catch (err) {
+					console.error("Image failed to load", err);
+				}
+
+				doc.setFontSize(18);
+				doc.text("Hotel Summary Report", 40, 40);
+
+				const printedDate = "Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")";
+				doc.setFontSize(10);
+				doc.text(printedDate, 40, 60);
+
+				await DevExpress.pdfExporter.exportDataGrid({
+					jsPDFDocument: doc,
+					component: gridInstance,
+					topLeft: { x: 40, y: 80 },
+					margin: { top: 20, left: 20, right: 20, bottom: 20 },
+					customizeCell: function (options) {
+					if (options.gridCell.rowType === "data" && options.gridCell.column.caption === "S.No") {
+						const visibleRows = gridInstance.getVisibleRows();
+						const rowIndex = visibleRows.findIndex(r => r.data === options.gridCell.data);
+						options.pdfCell.text = (rowIndex + 1).toString();
+					}
+					options.pdfCell.font = { size: 8 };
+				}
+				});
+				doc.save("Hotel Summary Report.pdf");
+			});
+			function updateSerialNumbers() {
+				if (gridInstance) {
+					const visibleRows = gridInstance.getVisibleRows();
+					visibleRows.forEach((row, index) => {
+						if (row && row.data) {
+							row.data.SerialNo = index + 1;
+						}
+					});
+				}
+			}
+		});
+	</script>
+</body>
+</html>

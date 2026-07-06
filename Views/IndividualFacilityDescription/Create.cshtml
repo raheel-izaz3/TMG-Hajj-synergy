@@ -1,0 +1,89 @@
+﻿@model TMG.Models.MiscModels.IndividualFacilityDescription
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @ViewData["Title"] / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label">Room</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="RoomId" class="form-control">
+                                        @foreach(var item in ViewBag.RoomId)
+                                        {
+                                            <option value="@item.RoomId">@item.RoomName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="RoomId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Place</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="PlaceId" class="form-control">
+                                        @foreach (var item in ViewBag.PlaceId)
+                                        {
+                                            <option value="@item.PlaceId">@item.PlaceName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="PlaceId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Accomodation</label>
+                                <div class="input-group input-group-merge">
+                                    <select asp-for="AccomodationId" class="form-control">
+                                        @foreach (var item in ViewBag.AccomodationId)
+                                        {
+                                            <option value="@item.AccomodationId">@item.AccomodationName</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="AccomodationId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-5 mb-3">
+                                <label class="form-label" asp-for="Description"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Description" class="form-control">
+                                </div>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6 col-md-5 mb-3">
+                                <label class="form-label">Price (SAR)</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Price" class="form-control">
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-6 col-md-2 mb-3">
+                                <label class="form-label">Is Price Include?</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="checkbox" name="IsSharingB" class="form-check-input" value="true" />
+                                </div>
+                                <span asp-validation-for="IsSharing" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

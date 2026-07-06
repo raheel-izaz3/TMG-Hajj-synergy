@@ -1,0 +1,214 @@
+﻿@model IEnumerable<QurbaniIndividualReceiptModel>
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qurbani Token</title>
+    <style>
+        .page-break {
+            page-break-after: always;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .part {
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        hr {
+            margin-block: 20px;
+        }
+
+        .part img {
+            margin: 0 auto;
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 100px;
+        }
+
+        .part h3 {
+            font-size: 16px;
+        }
+
+        .part table {
+            width: 100%;
+            font-size: 0.7rem;
+        }
+
+            .part table thead th {
+                background-color: rgb(192, 192, 192);
+                padding: 5px;
+                border: 1px solid black;
+            }
+
+            .part table tbody td {
+                padding: 5px;
+                border: 1px solid black;
+            }
+
+        .part .part-p {
+            text-align: left;
+            margin-top: 40px;
+            font-size: 12px;
+        }
+
+        .options {
+            width: 100%;
+            float: left;
+        }
+
+        .option {
+            width: 50%;
+            height: 100%;
+            border: 1px solid black;
+            float: left;
+            padding: 10px 20px;
+        }
+
+            .option p {
+                font-size: 12px;
+                text-align: left;
+            }
+
+            .option ul li {
+                font-size: 12px;
+                text-align: left;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="root">
+
+        @foreach (var token in Model)
+        {
+            <div class="part">
+                <img src="~/alkurbani.png" alt="">
+                <h3>QURBANI SLIP HAJJ 2024</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>HB #</th>
+                            <th>CID</th>
+                            <th>MOB #</th>
+                            <th>KSA MOB #</th>
+                            <th>TOKEN #</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@token.Name</td>
+                            <td>@token.FcId</td>
+                            <td>@token.CID</td>
+                            <td>@token.MobNumber</td>
+                            <td>@token.KSANumber</td>
+                            <td>@token.TokenNumber</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="part-p"><b>TERMS & CONDITIONS APPLY (SEE BELOW):</b></p>
+
+            </div>
+            <hr>
+            <div class="part">
+                <img src="~/alkurbani.png" alt="">
+                <h3>QURBANI SLIP HAJJ 2024</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NAME</th>
+                            <th>HB #</th>
+                            <th>CID</th>
+                            <th>MOB #</th>
+                            <th>KSA MOB #</th>
+                            <th>TOKEN #</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@token.Name</td>
+                            <td>@token.FcId</td>
+                            <td>@token.CID</td>
+                            <td>@token.MobNumber</td>
+                            <td>@token.KSANumber</td>
+                            <td>@token.TokenNumber</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="part-p"><b>Hajj Qurbani Terms & Conditions (Step-by-Step):</b></p>
+                <div class="options" style="margin-bottom: 20px;">
+                    <div class="option">
+                        <p><b>Option 1: Procedure through Qurbani Online Link:</b></p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=[URL LINK]/PackageReport/QurbaniQueueForm/@token.HeadId" style="width: 60px; float:right; margin: 10px; border: 1px solid black">
+                        <ul>
+                            <li>
+                                Scan QR Code or Click the link provided in the email or the link in your WhatsApp group (this link is also
+                                pinned in your WhatsApp group).
+                            </li>
+                            <li>
+                                Select your name from the list. Make sure Rami on Day 1 is completed before moving to the
+                                next step.
+                            </li>
+                            <li>
+                                Press "Proceed Qurbani" (this button will be activated on the 10th of Dhul-Hijjah only).
+                            </li>
+                            <li>Batch Number will be issued. Remember this number to follow your Qurbani status.</li>
+                            <li>A Qurbani Timer will be activated. Follow the timer for updates (minimum 6 hours).</li>
+                            <li>
+                                A WhatsApp link will be provided. Click it to join the respective/dedicated Hajj Qurbani
+                                Batch Number WhatsApp group.
+                            </li>
+                            <li>
+                                Once the Qurbani is completed, the status will be updated on the link and in the Hajj
+                                Qurbani WhatsApp group.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="option">
+                        <p><b>Option 2: Manual Procedure:</b></p>
+                        <ul>
+                            <li>Submit the Qurbani Slip at the Qurbani Counter in the Azizia Building/Hotel after Rami Day 1.</li>
+                            <li>Upon submission, a Batch Number will be issued.</li>
+                            <li>Join the dedicated Batch Number WhatsApp group through a QR code or invite link.</li>
+                            <li>The Qurbani process will take a minimum of 6 hours.</li>
+                            <li>Follow updates in the dedicated/respective Batch Number WhatsApp group.</li>
+                            <li>
+                                Qurbani updates will only be communicated through the dedicated/respective Batch Number
+                                WhatsApp group.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="part-p">
+                    <b>Note: </b>No updates will be provided through phone calls or personal WhatsApp
+                    messages.
+                </p>
+                <p style="margin-top: 5px;" class="part-p">
+                    <b>Disclaimer: </b>Delays can occur due to unforeseen
+                    circumstances or unexpected rush. The management
+                    will not be responsible for any such delays.
+                </p>
+
+                <p style="margin-top: 5px;" class="part-p">Thank you!</p>
+
+            </div>
+
+            <div class="page-break"></div>
+        }
+
+
+    </div>
+</body>
+
+</html>

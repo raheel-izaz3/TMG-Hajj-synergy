@@ -1,0 +1,167 @@
+﻿@model Mina
+
+@{
+    string modelName = "Mina";
+    string modelNamePlural = "Minas";
+    string modelControllerRoute = "Mina";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Name</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Code</label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Code" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Code"></span>
+                            </div>
+
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="CampNumber"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="CampNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CampNumber"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label">CheckIn</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="CheckIn" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CheckIn"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label">CheckOut</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="datetime-local" asp-for="CheckOut" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CheckOut"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Tawafah</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="CompanyVisasId">
+                                        @foreach (CompanyVisas company in ViewBag.CompanyVisa)
+                                        {
+                                            <option value="@company.CompanyVisasId">@company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyVisasId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label">Gender</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="Gender">
+                                        <option value="0">Male</option>
+                                        <option value="1">Female</option>
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Gender"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="Capacity"></label>
+                                <small id="RemainingCapacity"></small>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Capacity" min="0" value="0" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Capacity"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="Price"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Price" min="0" value="0" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Price"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">
+                                    Select
+                                    Packages
+                                </label>
+                                <br />
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (var package in ViewBag.Packages)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="hidden" value="@package.PackageId" asp-for="PackageIds" />
+
+                                        <input class="form-check-input" type="checkbox" id="@package.PackageId"
+                                               asp-for="PackagesSelected[i]">
+
+                                        <label class="form-check-label"
+                                               for="@package.PackageId">@package.Name</label>
+                                    </div>
+                                    i++;
+                                }
+                            </div>
+
+
+                            <div class="col-sm-12 mb-3">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    function onTypeSelect(typeId) {
+        let flightId = document.querySelector("#FlightId").value
+        if (typeId != '' && flightId != '') {
+            $.ajax({
+                url: "/PNR/GetRemainingCapacity/",
+                method: "GET",
+                data: {
+                    flightId: flightId,
+                    typeId: typeId
+                },
+                success: res => {
+                    console.log(res);
+                    document.querySelector(`#RemainingCapacity`).innerHTML = ` (${res})`;
+                    document.querySelector(`#Capacity`).setAttribute('max', res);
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+</script>

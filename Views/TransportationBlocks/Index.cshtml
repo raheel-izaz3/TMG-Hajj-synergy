@@ -1,0 +1,164 @@
+﻿@model IEnumerable<TransportationBlocks>
+
+@{
+    string modelName = "TransportationBlocks";
+    string modelNamePlural = "TransportationBlocks";
+    string modelControllerRoute = "TransportationBlocks";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Itinerary Block</h4>
+
+    <hr class="mb-4" />
+
+    <a asp-action="Create" class="btn btn-info">Create</a>
+    @* <a asp-action="CreateForMina" class="btn btn-info">Create Mina</a> *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end">
+        <i class="bx bx-trash me-1"></i> Trash
+        (@ViewBag.TrashCount)
+    </a>
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 500px">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Route</th>
+                        <th>Place</th>
+                        <th>PAX</th>
+                        <th>Date</th>
+                        <th>Selected</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                        var members = ViewBag.MemberCounts as IEnumerable<int>;
+                    }
+                    @foreach (TransportationBlocks group in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@i</strong>
+                            </td>
+                            <td>@group.Route.FullRoute</td>
+                            <td>@group.Place.PlaceName</td>
+                            <td>@group.PAX</td>
+                            <td>@DateTimeManager.DateToHtmlFormat(group.Date)</td>
+                            <td>@ViewBag.Selected[i - 1]</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@group.TransportationBlocksId">
+                                        <i class="bx bx-edit-alt me-1"></i> Edit
+                                    </a>
+                                    <a class="btn btn-success" asp-action="AddMember" asp-route-GroupId="@group.TransportationBlocksId" asp-route-RouteId="@group.RouteId" asp-route-PlaceId="@group.PlaceId">
+                                        <i class="bx bx-add-to-queue me-1"></i> Add
+                                    </a>
+
+                                    <div class="btn-group" id="dropdown-icon-demo">
+                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bxs-report"></i> Reports
+                                        </button>
+                                        <ul class="dropdown-menu" style="">
+                                            <li>
+                                                <a target="_blank" asp-action="Report"
+                                                   asp-route-id="@group.PackageId" asp-route-Groupid="@group.TransportationBlocksId"
+                                                   class="dropdown-item d-flex align-items-center">1. Group Report</a>
+                                            </li>
+
+                                            <li>
+                                                <a target="_blank" asp-action="TransportationBlockSource" asp-route-id="@group.TransportationBlocksId" asp-route-RouteId="@group.RouteId" asp-route-PackageId="@group.PackageId"
+                                                   asp-route-PlaceId="@group.PlaceId" class="dropdown-item d-flex align-items-center">
+                                                    1. Transport Listing
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a target="_blank" asp-action="UnAllocatedMember" asp-route-id="@group.TransportationBlocksId" asp-route-PackageId="@group.PackageId"
+                                                   class="dropdown-item d-flex align-items-center">
+                                                    2. Un Allocated Member For Transportation
+                                                </a>
+                                            </li>
+
+
+                                        </ul>
+                                    </div>
+                                    <button onclick="confirmDelete(@group.TransportationBlocksId)" class="btn btn-outline-danger">
+                                        <i class="bx bx-trash me-1"></i> Trash
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/TransportationBlocks/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        paging: false
+    });
+</script>

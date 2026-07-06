@@ -1,0 +1,121 @@
+﻿@model ApplicationSettings
+@if (TempData.ContainsKey("roe-updated"))
+{
+    if ((bool)TempData["roe-updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'ROE Updated!', { timeOut: 2000 })
+        </script>
+        TempData["roe-updated"] = false;
+    }
+}
+@if (TempData.ContainsKey("vaccine-updated"))
+{
+    if ((bool)TempData["vaccine-updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Vaccine Count Updated!', { timeOut: 2000 })
+        </script>
+        TempData["vaccine-updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;">Settings</h4>
+
+    <hr class="mb-4" />
+
+    <h5>Rate of Exchange</h5>
+    <form method="POST" asp-action="UpdateROE">
+        <div class="row">
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label" asp-for="SARROE"></label>
+                <div class="input-group input-group-merge">
+                    <input type="number" class="form-control" asp-for="SARROE" min="0">
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label" asp-for="USDROE"></label>
+                <div class="input-group input-group-merge">
+                    <input type="number" class="form-control" asp-for="USDROE" min="0" value="@Model.USDROE">
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label"></label>
+                <div class="input-group input-group-merge">
+                    <button class="btn btn-warning">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <h5 class="mt-2">Vaccine</h5>
+    <form method="POST" asp-action="UpdateVaccineCount">
+        <div class="row">
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label" asp-for="VaccineCount"></label>
+                <div class="input-group input-group-merge">
+                    <input type="number" class="form-control" asp-for="VaccineCount" min="0">
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-2 mb-3">
+                <label class="form-label"></label>
+                <div class="input-group input-group-merge">
+                    <button class="btn btn-warning">Save Changes</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <h5 class="mt-2">Enable Qurbani</h5>
+    <div class="row">
+        <div class="col-sm-12 col-md-3 mb-3">
+            <div class="input-group input-group-merge">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" asp-for="EnableQurbani" id="enableQurbani" onchange="enableQurbani(this.checked)">
+                    <label class="form-check-label" for="enableQurbani" >Start Qurbani</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function enableQurbani(val){
+        let confirmMsg = val ? 
+            "Are you sure you want to enable Qurbani. This action will show 'Proceed To Qurbani' button in Qurbani Links." :
+            "Are you sure you want to disable Qurbani. This action will remove 'Proceed To Qurbani' button from Qurbani Links.";
+
+        let con = confirm(confirmMsg);
+        if(con){
+            $.ajax({
+                url: "/Qurbani/Enable",
+                method: "POST",
+                data: {
+                    enable: val
+                },
+                success: res => {
+                    alert("Qurbani " + (val ? "Enabled" : "Disabled"))
+                },
+                error: err => {
+                    alert("There was an error")
+                    console.log(err)
+                }
+            })
+        }
+    }
+</script>

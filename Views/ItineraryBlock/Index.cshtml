@@ -1,0 +1,335 @@
+﻿@* @model IEnumerable<ItineraryBlock> *@
+
+@model TMG.Controllers.POControllers.ItineraryViewModel
+
+
+@{
+    string modelName = "ItineraryBlock";
+    string modelNamePlural = "ItineraryBlocks";
+    string modelControllerRoute = "ItineraryBlock";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+
+
+
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Group Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Itinerary Block</h4>
+
+    <hr class="mb-4" />
+
+    <a asp-action="Create" class="btn btn-info">Create</a>
+    @* <a asp-action="CreateForMina" class="btn btn-info">Create Mina</a> *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end">
+        <i class="bx bx-trash me-1"></i> Trash
+        (@ViewBag.TrashCount)
+    </a>
+    <br />
+    <br />
+    <div class="card p-2">
+        @*<div class="table-responsive text-nowrap " style="padding-bottom: 500px">
+             <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>HotelName</th>
+                        <th>Code</th>
+                        <th>PAX</th>
+                        <th>Selected</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                        var members = ViewBag.MemberCounts as IEnumerable<int>;
+                    }
+                    @foreach (ItineraryBlock group in Model.ItineraryBlocks)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@i</strong>
+                            </td>
+                            <td>@group.POHotels.Hotel.HotelName</td>
+                            <td>@group.POHotels.Code</td>
+                            <td>@group.PAX</td>
+                            <td>@ViewBag.Selected[i - 1]</td>
+                            <td>
+                                <div class="dropdown">
+
+
+                                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@group.ItineraryBlockId">
+                                        <i class="bx bx-edit-alt me-1"></i> Edit
+                                    </a>
+                                    <a class="btn btn-success" asp-action="AddMember" asp-route-GroupId="@group.ItineraryBlockId" asp-route-PlaceId="@group.POHotels.PlaceId">
+                                        <i class="bx bx-add-to-queue me-1"></i> Add
+                                    </a>
+                                    <div class="btn-group" id="dropdown-icon-demo">
+                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bxs-report"></i> Reports
+                                        </button>
+                                        <ul class="dropdown-menu" style="">
+                                            <li>
+                                                <a target="_blank" asp-action="Report"
+                                                   asp-route-id="@group.PackageId" asp-route-Groupid="@group.ItineraryBlockId" asp-route-PlaceId="@group.POHotels.PlaceId"
+                                                   class="dropdown-item d-flex align-items-center">1. Group Report</a>
+                                            </li>
+                                            @if (group.POHotels.PlaceId == 4)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-action="AziziaRoomListingSource" asp-route-PlaceId="@group.POHotels.PlaceId" asp-route-POHotelsId="@group.POHotelsId" asp-route-id="@group.ItineraryBlockId" asp-route-PackageId="@group.PackageId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        1. Room Listing Azizia
+                                                        Source
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-action="UnAllocatedMember" asp-route-id="@group.ItineraryBlockId" asp-route-PackageId="@group.PackageId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        2. Un Allocated Member For Azizia
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (group.POHotels.PlaceId == 1)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-action="MakkahRoomListingSource" asp-route-id="@group.ItineraryBlockId" asp-route-PlaceId="@group.POHotels.PlaceId"
+                                                       asp-route-POHotelsId="@group.POHotelsId" class="dropdown-item d-flex align-items-center">
+                                                        1. Room Listing Makkah
+                                                        Source
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-action="UnAllocatedMemberForMakkah" asp-route-id="@group.ItineraryBlockId" asp-route-PackageId="@group.PackageId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        2. Un Allocated Member For Makkah
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (group.POHotels.PlaceId == 2)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-action="MadinahRoomListingSource" asp-route-id="@group.ItineraryBlockId" asp-route-PlaceId="@group.POHotels.PlaceId"
+                                                       asp-route-POHotelsId="@group.POHotelsId" asp-route-PackageId="@group.PackageId" class="dropdown-item d-flex align-items-center">
+                                                        1. Room Listing Madinah
+                                                        Source
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-action="UnAllocatedMemberForMadinah" asp-route-id="@group.ItineraryBlockId" asp-route-PackageId="@group.PackageId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        2. Un Allocated Member For Madinah
+                                                    </a>
+                                                </li>
+                                            }
+                                            @if (group.POHotels.PlaceId == 3)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-action="MinaRoomListingSource" asp-route-id="@group.ItineraryBlockId" asp-route-PlaceId="@group.POHotels.PlaceId"
+                                                       asp-route-POHotelsId="@group.POHotelsId" asp-route-PackageId="@group.PackageId" class="dropdown-item d-flex align-items-center">
+                                                        1. Room Listing Minah
+                                                        Source
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-action="UnAllocatedMemberForMinah" asp-route-id="@group.ItineraryBlockId" asp-route-PackageId="@group.PackageId"
+                                                       class="dropdown-item d-flex align-items-center">
+                                                        2. Un Allocated Member For Minah
+                                                    </a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </div>
+                                    <button onclick="confirmDelete(@group.ItineraryBlockId)" class="btn btn-outline-danger">
+                                        <i class="bx bx-trash me-1"></i> Trash
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table> 
+        </div>*@
+            <div id="gridContainer"></div>
+    </div>
+</div>
+
+<script>
+     const itineraryData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ItineraryBlocks));
+    const selectedMemberCounts = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedMemberCounts));
+    const checkInDates = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CheckIn));
+    const checkOutDates = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.CheckOut));
+
+       $(function () {
+        $("#gridContainer").dxDataGrid({
+            dataSource: itineraryData,
+            keyExpr: "ItineraryBlockId",
+            showBorders: true,
+            columnAutoWidth: true,
+
+            // ✅ Added search panel
+            searchPanel: {
+                visible: true,
+                highlightCaseSensitive: false,
+                placeholder: "Search..."
+            }, 
+            columns: [
+                {
+                    caption: "#",
+                    cellTemplate: function (container, options) {
+                        container.text(options.rowIndex + 1);
+                    },
+                    width: 50
+                },
+                {
+                    dataField: "POHotels.Hotel.HotelName",
+                    caption: "Hotel Name"
+                },
+                {
+                    dataField: "POHotels.Code",
+                    caption: "Code"
+                },
+                {
+                    dataField: "PAX",
+                    caption: "PAX"
+                },
+                {
+                    caption: "CheckIn",
+                    cellTemplate: function (container, options) {
+                        const index = options.rowIndex;
+                        const date = checkInDates[index];
+                        container.text(date ? new Date(date).toLocaleDateString() : "");
+                    }
+                },
+                {
+                    caption: "CheckOut",
+                    cellTemplate: function (container, options) {
+                        const index = options.rowIndex;
+                        const date = checkOutDates[index];
+                        container.text(date ? new Date(date).toLocaleDateString() : "");
+                    }
+                },
+                {
+                    caption: "Selected",
+                    cellTemplate: function (container, options) {
+                        const index = options.rowIndex;
+                        container.text(selectedMemberCounts[index]);
+                    }
+                },
+                {
+                    caption: "Actions",
+                    cellTemplate: function (container, options) {
+                        const data = options.data;
+                        const id = data.ItineraryBlockId;
+                        const placeId = data.POHotels.PlaceId;
+                        const packageId = data.PackageId;
+                        const poHotelsId = data.POHotelsId;
+
+                        const editBtn = `<a class='btn btn-warning btn-sm me-1' href='/ItineraryBlock/Edit/${id}'>
+                                            <i class='bx bx-edit-alt'></i> Edit</a>`;
+
+                        const addBtn = `<a class='btn btn-success btn-sm me-1' href='/ItineraryBlock/AddMember?GroupId=${id}&PlaceId=${placeId}'>
+                                            <i class='bx bx-add-to-queue'></i> Add</a>`;
+
+                        // Common group report
+                        let reportLinks = `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/Report?id=${packageId}&Groupid=${id}&PlaceId=${placeId}'>Group Report</a>`;
+
+                        // Place-specific reports
+                        if (placeId === 4) {
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/AziziaRoomListingSource?id=${id}&PlaceId=${placeId}&POHotelsId=${poHotelsId}&PackageId=${packageId}'>Room Listing Azizia</a>`;
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/UnAllocatedMember?id=${id}&PackageId=${packageId}'>Unallocated Azizia</a>`;
+                        } else if (placeId === 1) {
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/MakkahRoomListingSource?id=${id}&PlaceId=${placeId}&POHotelsId=${poHotelsId}'>Room Listing Makkah</a>`;
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/UnAllocatedMemberForMakkah?id=${id}&PackageId=${packageId}'>Unallocated Makkah</a>`;
+                        } else if (placeId === 2) {
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/MadinahRoomListingSource?id=${id}&PlaceId=${placeId}&POHotelsId=${poHotelsId}&PackageId=${packageId}'>Room Listing Madinah</a>`;
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/UnAllocatedMemberForMadinah?id=${id}&PackageId=${packageId}'>Unallocated Madinah</a>`;
+                        } else if (placeId === 3) {
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/MinaRoomListingSource?id=${id}&PlaceId=${placeId}&POHotelsId=${poHotelsId}&PackageId=${packageId}'>Room Listing Minah</a>`;
+                            reportLinks += `<a class='btn btn-info btn-sm me-1' target='_blank' href='/ItineraryBlock/UnAllocatedMemberForMinah?id=${id}&PackageId=${packageId}'>Unallocated Minah</a>`;
+                        }
+
+                        const deleteBtn = `<button onclick='confirmDelete(${id})' class='btn btn-outline-danger btn-sm'><i class='bx bx-trash'></i> Trash</button>`;
+
+                        container.append(editBtn + addBtn + reportLinks + deleteBtn);
+                    }
+                }
+
+            ]
+        });
+    });
+
+
+    function confirmDelete(id) {
+        if (confirm("Are you sure you want to delete this itinerary block?")) {
+            window.location.href = `/ItineraryBlock/Delete/${id}`;
+        }
+    }
+</script>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/ItineraryBlock/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        paging: false
+    });
+</script>

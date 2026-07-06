@@ -1,0 +1,79 @@
+﻿<script>
+
+
+    function addFacility() {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                                                                                                    <div class="row mt-2" id="facility_${id}">
+
+                                                                                                                                <div class="col-sm-12 col-md-2 mb-3">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Code</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <input type="text" name="FacilityCode[]" class="form-control" placeholder="Enter Code" />
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-12 col-md-3 mb-3" style='display: none;'>
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Description</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <input type="text" name="FacilityDesc[]" class="form-control" placeholder="Enter Description" />
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-12 col-md-3 mb-3">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Description</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <select name="ExtraFacilityIds[]" class="form-control">
+                                                                                                                                            @foreach(var extra in ViewBag.ExtraFacilityDesc){
+                                                                                                                                                <option value='@extra.ExtraFacilityDescriptionId'>@extra.Description</option>
+                                                                                                                                            }
+                                                                                                                                        </select>
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-6 col-md-2 mb-3">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Price (PKR)</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <input type="text" name="FacilityPrice[]" id="FacilityPricePkr_${id}" class="form-control" placeholder="Enter Price"
+                                                                                                                                        oninput="pkrToOtherCurr('FacilityPricePkr_${id}', 'FacilityPriceSar_${id}', 'FacilityPriceUsd_${id}')"
+                                                                                                                                        />
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-6 col-md-2 mb-3">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Price (SAR)</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <input type="text" name="FacilityPriceSar[]" id="FacilityPriceSar_${id}" class="form-control" placeholder="Enter Price (Sar)"
+                                                                                                                                        oninput="sarToOtherCurr('FacilityPriceSar_${id}', 'FacilityPricePkr_${id}', 'FacilityPriceUsd_${id}')" />
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-6 col-md-2 mb-3">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name="">Price (USD)</label>
+                                                                                                                                    <div class="input-group input-group-merge">
+                                                                                                                                        <input type="text" name="FacilityPriceUsd[]" id="FacilityPriceUsd_${id}" class="form-control" placeholder="Enter Price (Usd)"
+                                                                                                                                        oninput="usdToOtherCurr('FacilityPriceUsd_${id}', 'FacilityPricePkr_${id}', 'FacilityPriceSar_${id}')" />
+                                                                                                                                    </div>
+                                                                                                                                    <span class="text-danger"></span>
+                                                                                                                                </div>
+
+                                                                                                                                <div class="col-sm-12 col-md-1" style="display:flex;flex-direction: column;justify-content: center;flex-wrap: wrap;align-content: center;">
+                                                                                                                                    <label class="form-label" for="basic-icon-default-fullname" name=""></label>
+                                                                                                                                    <button type="button" class="btn btn-icon btn-danger" onclick="removeFacility(${id})"><i class='bx bxs-trash'></i></button>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                            `;
+
+        $("#facilities").append(row);
+    }
+
+    function removeFacility(id) {
+        document.getElementById(`facility_${id}`).remove();
+    }
+
+</script>

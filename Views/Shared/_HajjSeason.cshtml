@@ -1,0 +1,17 @@
+﻿@model IEnumerable<HajjSeasons>
+
+@{
+}
+<select class="form-control">
+    @if (Model is not null)
+    {
+        @foreach (var item in Model)
+        {
+            <option value="@item.Season">@item.Season</option>
+        }
+    }
+    else
+    {
+        <p>No Data</p>
+    }
+</select>

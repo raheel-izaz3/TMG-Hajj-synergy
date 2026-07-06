@@ -1,0 +1,39 @@
+﻿@*
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model FamilyHead
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> View Documents</h4>
+
+    <hr class="mb-4" />
+    @if (Model.VisaImage is not null)
+    {
+        <a target="_blank" href="~/@Model.VisaImage"> Visa</a> <br />
+    }
+    @if (Model.InsuranceImage is not null)
+    {
+        <a target="_blank" href="~/@Model.InsuranceImage"> Insurance Image</a>
+        <br />
+    }
+    @if (Model.SignedMISPdfPath is not null)
+    {
+        <a target="_blank" href="~/@Model.SignedMISPdfPath"> Signed MIS Pdf Path</a>
+        <br />
+    }
+    @if (Model.AirlineTicketImage is not null)
+    {
+        <a target="_blank" href="~/@Model.AirlineTicketImage"> Airline Ticket Image</a>
+        <br />
+    }
+    @if (Model.TrainTicketImage is not null)
+    {
+        <a target="_blank" href="~/@Model.TrainTicketImage"> Train Ticket Image</a>
+        <br />
+    }
+
+
+
+</div>

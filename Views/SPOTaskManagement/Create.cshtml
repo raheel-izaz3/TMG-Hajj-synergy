@@ -1,0 +1,105 @@
+﻿@model SPOTaskManagement
+
+@{
+    string modelName = "SPOTaskManagement";
+    string modelNamePlural = "Cities";
+    string modelControllerRoute = "SPOTaskManagement";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Assigend SPO</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="AssignedSPOId">
+                                        @foreach(SPO asSPO in ViewBag.SPOs)
+                                        {
+                                            <option value="@asSPO.SPOId">@asSPO.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="AssignedSPOId"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Assigend By</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="AssignedById">
+                                        @foreach (SPO bySPO in ViewBag.SPOs)
+                                        {
+                                            <option value="@bySPO.SPOId">@bySPO.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="AssignedById"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Task File</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="file" name="file" class="form-control"/>
+                                </div>
+                                <span class="text-danger" asp-validation-for="TaskFile"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Assigend By</label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input type="date" asp-for="DateOfAssigned" class="form-control" />
+                                </div>
+                                <span class="text-danger" asp-validation-for="DateOfAssigned"></span>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Task</label>
+                                <div class="input-group input-group-merge">
+                                    <textarea id="summernote" asp-for="Task"></textarea>
+                                </div>
+                                <span class="text-danger" asp-validation-for="Task"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+     $(document).ready(function () {
+        $('#summernote').summernote({
+            placeholder: 'Write your content here...',
+            tabsize: 2,
+            height: 200
+        });
+
+        $('select[name="AssignedById"]').select2({
+            placeholder: "Select Type",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+
+        $('select[name="AssignedSPOId"]').select2({
+            placeholder: "Select Mina",
+            allowClear: true,
+            width: '100%',
+            dropdownCssClass: 'form-control',
+            selectionCssClass: 'form-control'
+        });
+    });
+</script>

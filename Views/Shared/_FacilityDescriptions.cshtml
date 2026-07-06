@@ -1,0 +1,31 @@
+﻿@model IEnumerable<TMG.Models.MiscModels.IndividualFacilityDescription>
+@{
+    int i = 0; 
+}
+
+<div class="form-check d-flex">
+    @foreach (var facility in Model)
+    {
+        <div style="margin-left: 30px;">
+            <input type="hidden" value="@facility.IndividualFacilityDescriptionId" name="PackageFacilitiesIds[@i]" />
+            <input type="hidden" value="false" id="addFac_@i" name="SelectedFacilities[@i]" />
+            <input type="checkbox" class="form-check-input mr-1" onchange="checkAddFac(@i, this)" />
+            <label class="mx-2" for="addFac_@i" style="font-size: 13px;">
+                @facility.Description
+            </label>
+        </div>
+        i++;
+    }
+</div>
+
+<script>
+    function checkAddFac(id, elem) {
+        const other = document.querySelector("#addFac_" + id)
+        if (elem.checked) {
+            other.value = true
+        }
+        else {
+            other.value = false
+        }
+    }
+</script>

@@ -1,0 +1,596 @@
+﻿@* @{
+    Layout = null;
+    
+}
+@model PassportReportModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+    <!-- pdfmake.min.js  -->
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <meta charset="utf-8" />
+
+    <title>Passport Report</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        color: #333;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      div.dom_wrapper {
+        position: sticky; 
+        top: 0;
+        padding: 5px;
+        background: rgba(255, 255, 255, 1); 
+      }
+      table {
+        margin-top: 60px !important;
+      }
+      table tr th {
+        font-size: 8px;
+        background-color: lightblue;
+        padding: 10px !important;
+        margin: 0px !important    ;
+      }
+    
+      table tr td {
+          border-right: solid 1px black !important;
+        font-size: 6px;
+        text-align: center;
+        margin: 0px !important;
+        padding: 5px !important;
+       
+      }
+
+
+            table tbody tr:not(:has(td[rowspan])) td {
+                border-top: solid 1px #c9e3f5 !important;
+            }
+            table tbody tr td:not(:nth-child(5)) {
+                border-bottom: solid 1px black !important;
+            }
+
+        .hide {
+            display: none;
+        
+        }
+      @@media print{
+          button, label{
+              display:none !important;
+          }
+      }
+    </style>
+</head>
+<body>
+    <div style="
+        font-size: 15px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background-color: lightblue;
+        padding: 20px;
+        font-weight: bold;
+        margin: 10px 0px;
+      "
+         class="card-header">
+        <span>@Model.PackageName</span>
+        <span style="float: right"> @Model.CompanyName</span>
+    </div>
+    <div class="container">
+        <div class="card-body">
+            <table id="datatable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 10px;">Sr</th>
+                        <th style="width: 100px !important;">MEGA REFFERENCE</th>
+                        <th style="width: 10px; ">SPO</t>
+                        <th style="width: 15px;">HB #</th>
+                        <th style="width: 100px !important;">FULL-NAME</th>
+                        <th style="width: 10px;">PAX</th>
+                        <th style="width: 10px;">PP REC</th>
+                        <th style="width: 10px;">TKN REC</th>
+                        <th style="width:200px!important; ">REMARKS</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var member in Model.FamilyMembers)
+                    {
+                        <tr>
+                            <td>@member.SrNo</td>
+                            <td>@member.MegaReference</td>
+                            <td>@member.SPO</td>
+                            <td>@member.FCID</td>
+                            <td style="@(member.IsHead ? "border-top: 1px solid black !important": "")">@member.FullName</td>
+                            @if (member.IsHead)
+                            {
+                                <td style="@(member.IsHead ? "border-top: 1px solid black" : "")" rowspan="@member.PAX">
+                                    @member.PAX
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="hide"></td>
+                            }
+                            <td>@member.PassportReceived</td>
+                            <td>@member.TokenReceived</td>
+                            <td>@member.TokenRemarks</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot style="background-color: lightblue; font-weight: bold">
+                    <tr >
+                        <td colspan="5">Total</td>
+                        <td>@Model.TotalPax</td>
+                        <td>@Model.TotalPassports</td>
+                        <td colspan="1">@Model.TotalTokens</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            var table = $("#datatable").DataTable({
+                dom: 'Bfrtip',
+                buttons: ["print", "excelHtml5"],
+                pageLength: 20,
+                fixedHeader: true,
+                paging: false,
+                info: false,
+                autoPrint: false
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+<td style="@(member.IsHead ? "border-top: 1px solid black !important": "")">@member.FullName</td>
+                            @if (member.IsHead)
+                            {
+                                <td style="@(member.IsHead ? "border-top: 1px solid black" : "")" rowspan="@member.PAX">
+                                    @member.PAX
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="hide"></td>
+                            }
+ *@
+ @{
+    Layout = null;
+    
+}
+@model PassportReportModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Report</title>
+    <!-- Jquery  -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <!-- Data Tables.min.js  -->
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.js"></script>
+
+    <!-- DataTable min.css -->
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-colvis-1.5.1/b-html5-1.5.1/b-print-1.5.1/fh-3.1.3/datatables.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        div#example_filter {
+            margin-bottom: 10px;
+        }
+
+        body {
+            /* width: 100vw; */
+            /* height: 100vh; */
+            /* overflow-x: hidden; */
+            font-family: monospace;
+            /* font-family: sans-serif; */
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: none !important;
+        }
+
+        table th {
+            /* border: 1px solid #fedf7b !important; */
+            padding: 3px 4px !important;
+            font-size: 10px !important;
+            /* width: fit-content !important; */
+            text-align: center !important;
+            background-color: #f6f3ee !important;
+            color: #b49164;
+            font-weight: bold;
+            border: 1px solid #b49164 !important;
+        }
+
+        table td {
+            font-size: 8px !important;
+            /* outline: 1px solid #fedf7b; */
+            /* border: 1px solid #fedf7b; */
+            padding: 5px 2px !important;
+            margin: 0 !important;
+            text-align: center;
+            border: 1px solid #b0872e;
+        }
+
+
+
+        caption {
+            background-color: #b0872e;
+            color: white;
+            padding: 7px;
+            font-size: 18px !important;
+        }
+
+
+        /* table.dataTable thead .sorting {
+            background-image: none !important;
+        } */
+
+        th.sorting {
+            /* background: none !important; */
+            /* border: none !important; */
+
+        }
+
+        .check-box {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        @@media print {
+
+            label,
+            input {
+                display: none;
+            }
+            button.dt-button.buttons-excel.buttons-html5 {
+                display: none;
+            }
+            button{
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 9px !important;
+        }
+
+        .check-box input {
+            width: 20px;
+        }
+
+        .check-box {
+            margin: 10px 0;
+        }
+
+        /* ******************* Hide and Show Check Box *************** */
+        #summaryData.hide1 tr>*:nth-child(1) {
+            display: none;
+        }
+
+        #summaryData.hide2 tr>*:nth-child(2) {
+            display: none;
+        }
+
+        #summaryData.hide3 tr>*:nth-child(3) {
+            display: none;
+        }
+
+        #summaryData.hide4 tr>*:nth-child(4) {
+            display: none;
+        }
+
+        #summaryData.hide5 tr>*:nth-child(5) {
+            display: none;
+        }
+
+        #summaryData.hide6 tr>*:nth-child(6) {
+            display: none;
+        }
+
+        #summaryData.hide7 tr>*:nth-child(7) {
+            display: none;
+        }
+
+        #summaryData.hide8 tr>*:nth-child(8) {
+            display: none;
+        }
+
+        #summaryData.hide9 tr>*:nth-child(9) {
+            display: none;
+        }
+
+        #summaryData.hide10 tr>*:nth-child(10) {
+            display: none;
+        }
+
+        #summaryData.hide11 tr>*:nth-child(11) {
+            display: none;
+        }
+
+        #summaryData.hide12 tr>*:nth-child(12) {
+            display: none;
+        }
+
+        #summaryData.hide13 tr>*:nth-child(13) {
+            display: none;
+        }
+
+        #summaryData.hide14 tr>*:nth-child(14) {
+            display: none;
+        }
+
+        #summaryData.hide15 tr>*:nth-child(15) {
+            display: none;
+        }
+
+        #summaryData.hide16 tr>*:nth-child(16) {
+            display: none;
+        }
+
+        #summaryData.hide17 tr>*:nth-child(17) {
+            display: none;
+        }
+
+        #summaryData.hide18 tr>*:nth-child(18) {
+            display: none;
+        }
+
+        #summaryData.hide19 tr>*:nth-child(19) {
+            display: none;
+        }
+
+        #summaryData.hide20 tr>*:nth-child(20) {
+            display: none;
+        }
+
+        #summaryData.hide21 tr>*:nth-child(21) {
+            display: none;
+        }
+
+        #summaryData.hide22 tr>*:nth-child(22) {
+            display: none;
+        }
+
+        #summaryData.hide23 tr>*:nth-child(23) {
+            display: none;
+        }
+
+        #summaryData.hide24 tr>*:nth-child(24) {
+            display: none;
+        }
+
+        #summaryData.hide25 tr>*:nth-child(25) {
+            display: none;
+        }
+
+        #summaryData.hide26 tr>*:nth-child(26) {
+            display: none;
+        }
+        button.dt-button, div.dt-button, a.dt-button{
+            background-color: #185B36 !important;
+            background-image: none !important;
+            color: aliceblue !important;
+            border-radius: 10px;
+            padding: 0.5em 24px;
+            margin-bottom: 1rem;
+
+        }
+        button {
+        float: left;
+        box-sizing: border-box;
+        margin-left: 15px;
+        margin-top: 20px;
+        border-radius: 8px;
+        padding: 0.5em 24px;
+        cursor: pointer;
+        font-size: 0.88em;
+        line-height: 1.6em;
+        white-space: nowrap;
+        background-color: #f6f3ee !important;
+        color: #b49164;
+        /* background-image: linear-gradient(to bottom, #dbd4d4 0%, #e9e9e9 100%); */
+        position: relative;
+        border: 1px solid rgb(255, 255, 255);
+        font-weight: 600;
+      }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+<body>
+
+    <div class="check-box">
+        <label for="checkbox1">Sr.</label>
+        <input type="checkbox" name="checkbox1" id="checkbox1"
+            onchange='document.getElementById("summaryData").classList.toggle("hide1")' checked>
+
+        <label for="checkbox2">MEGA REFFERENCE</label>
+        <input type="checkbox" name="checkbox2" id="checkbox2"
+            onchange='document.getElementById("summaryData").classList.toggle("hide2")' checked>
+
+        <label for="checkbox3">SPO</label>
+        <input type="checkbox" name="checkbox3" id="checkbox3"
+            onchange='document.getElementById("summaryData").classList.toggle("hide3")' checked>
+
+        <label for="checkbox4">HB #</label>
+        <input type="checkbox" name="checkbox4" id="checkbox4"
+            onchange='document.getElementById("summaryData").classList.toggle("hide4")' checked>
+
+        <label for="checkbox5">PASSPORT RECEIVED</label>
+        <input type="checkbox" name="checkbox5" id="checkbox5"
+            onchange='document.getElementById("summaryData").classList.toggle("hide5")' checked>
+
+        <label for="checkbox6">FULL-NAME</label>
+        <input type="checkbox" name="checkbox6" id="checkbox6"
+            onchange='document.getElementById("summaryData").classList.toggle("hide6")' checked>
+
+        <label for="checkbox7">PAX</label>
+        <input type="checkbox" name="checkbox7" id="checkbox7"
+            onchange='document.getElementById("summaryData").classList.toggle("hide7")' checked>
+
+        <label for="checkbox8">TOKEN RECEIVED</label>
+        <input type="checkbox" name="checkbox8" id="checkbox8"
+            onchange='document.getElementById("summaryData").classList.toggle("hide8")' checked>
+
+        <label for="checkbox9">TOKEN REMARKS</label>
+        <input type="checkbox" name="checkbox9" id="checkbox9"
+            onchange='document.getElementById("summaryData").classList.toggle("hide9")' checked>
+
+        <label for="checkbox10">REMARKS</label>
+        <input type="checkbox" name="checkbox10" id="checkbox10"
+            onchange='document.getElementById("summaryData").classList.toggle("hide10")' checked>
+
+        
+    </div>
+    <!-- DataTable -->
+    <!-- <h2 style="text-align: center; background-color: #fedf7b; padding: 5px;"></h2> -->
+    <div class="myTable" id="summaryData">
+        <table id="example" class="display" style="width: 100%; ">
+            <div
+                style="display: flex; padding: 4px; margin: 5px 0;  background-color: #b49164; color: white; border-radius: 2px; padding:7px;">
+
+
+                <h2> @Model.PackageName </h2>
+                <h2 style="width: 80%; text-align: center; ">@Model.CompanyName</h2>
+
+
+            </div>
+
+    <button onclick="print()">Print</button>
+
+
+
+            <thead>
+                <tr>
+                    <th>Sr </th>
+                    <th>MEGA REFFERENCE</th>
+                    <th>SPO</th>
+                    <th>HB #</th>
+                    <th>FULL NAME</th>
+                    <th>PAX</th>
+                    <th>PASSPORT RECEIVED</th>
+                    <th>TOKEN RECEIVED</th>
+                    <th>TOKEN REMARKS</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in Model.FamilyMembers)
+                    {
+                <tr>
+                    <td>@member.SrNo</td>
+                    <td> @member.MegaReference</td>
+                    <td>@member.SPO</td>
+                    <td>@member.FCID</td>
+
+
+                    @* <td> @member.FullName</td>
+                    <td>PAX </td> *@
+
+                        <td style="@(member.IsHead ? "border-top: 1px solid black !important": "")">@member.FullName</td>
+                        @if (member.IsHead)
+                        {
+                            <td style="@(member.IsHead ? "border-top: 1px solid black" : "")" rowspan="@member.PAX">
+                                @member.PAX
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="hide"></td>
+                        }
+
+                    <td> @member.PassportReceived</td>
+                    <td>@member.TokenReceived</td>
+                    <td>@member.TokenRemarks</td>
+                </tr>
+                    }
+            </tbody>
+            <tr style="background-color: #f6f3ee !important; color: #b49164; font-weight: bolder;">
+                <td colspan="5">TOTAL</td>
+                <td>@Model.TotalPassports</td>
+                <td>@Model.TotalPax</td>
+                <td colspan="3">@Model.TotalTokens</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <!-- JS Scripting  -->
+    <script>
+        // Initialize DataTable
+        $(document).ready(function () {
+            $('#example').DataTable({
+                dom: '<"dom_wrapper fh-fixedHeader"Bf>tip',
+          buttons: [
+            {
+              extend: "excel",
+              footer: true, // Include footer rows in Excel export
+              text: "Excel",
+            },
+          ],
+                // "scrollY": "200px", // Adjust height as needed
+                "scrollCollapse": true,
+                "paging": false, // Disable pagination if necessary
+                "info": false,
+                // "sScrollY": false,
+                "ordering": false,
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

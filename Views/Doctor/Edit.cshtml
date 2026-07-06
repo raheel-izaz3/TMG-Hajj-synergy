@@ -1,0 +1,106 @@
+﻿@model Doctor
+
+@{
+    string modelName = "Doctor";
+    string modelNamePlural = "Doctors";
+    string modelControllerRoute = "Doctor";
+    
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span>  Edit</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <input type="hidden" asp-for="DoctorId">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="Name"></label>
+                                <span class="fw-bold text-danger"> *</span>
+                                <div class="input-group input-group-merge">
+
+                                    <input asp-for="Name" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="HospitalName"></label>
+                                <span class="fw-bold text-danger"> *</span>
+                                <div class="input-group input-group-merge">
+
+                                    <input asp-for="HospitalName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="HospitalName"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label"
+                                       asp-for="RegistrationNumber"></label>
+                                <span class="fw-bold text-danger"> *</span>
+                                <div class="input-group input-group-merge">
+
+                                    <input asp-for="RegistrationNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="RegistrationNumber"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label"
+                                       asp-for="CellNumber"></label>
+                                <div class="input-group input-group-merge">
+
+                                    <input asp-for="CellNumber" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CellNumber"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label"
+                                       asp-for="Landline"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="Landline" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Landline"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" asp-for="TehsilId"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-select" asp-for="TehsilId">
+                                        @foreach (Tehsil tehsil in ViewBag.Tehsils)
+                                        {
+                                            <option value="@tehsil.TehsilId">@tehsil.Code - @tehsil.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label"
+                                       asp-for="District"></label>
+                                <div class="input-group input-group-merge">
+
+                                    <input asp-for="District" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="District"></span>
+                            </div>
+
+                            <div class="col-sm-12 mb-3">
+                                <a asp-action="ChangeSeal" 
+                                asp-route-id="@Model.DoctorId">Change Signature & Seal Image</a>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-warning float-end">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,281 @@
+﻿@model TMG.Controllers.FamilyControllers.Visas
+
+@{
+	Layout = "";
+}
+@{
+	var fileUrl = Url.Content("~/" + Model.VisaImage);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Print</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			background: #f8f8f8;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			flex-direction: column;
+			padding: 10px;
+		}
+
+		.invoice-container {
+			position: relative;
+			background-size: contain;
+			background-position: center;
+			background-repeat: no-repeat;
+			width: 794px; /* A4 Width at 96 DPI */
+			height: 1123px; /* A4 Height at 96 DPI */
+			padding: 20px;
+			border: 2px solid #ddd;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.image-container {
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+
+
+		.left-image {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			width: 120px;
+		}
+
+			.left-image img {
+				margin-top: -40px;
+				margin-left: -40px;
+				width: 90px;
+				height: 110px;
+			}
+
+
+		.right-images {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 10px;
+		}
+
+			.right-images img:first-child {
+				width: 108px;
+				margin-right: -71px;
+				margin-top: -50px;
+				height: 106px;
+			}
+
+			.right-images img:last-child {
+				margin-top: -26px;
+				margin-right: -43px;
+				width: 60px;
+				height: auto;
+			}
+
+
+		.content-area {
+			padding: 100px 140px 60px;
+			text-align: center;
+			overflow-wrap: break-word;
+			font-size: 18px;
+			color: #000;
+			height: 100%;
+			overflow-y: auto;
+		}
+
+		.footer {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			text-align: center;
+		}
+
+			.footer img {
+				margin-bottom: -4px;
+				width: 100%;
+			}
+
+		.tmg-stamp {
+			position: absolute;
+			top: 534px;
+			left: 180px;
+			width: 100px;
+			height: 100px;
+		}
+
+			.tmg-stamp img {
+				width: 88%;
+				height: 100%;
+				object-fit: contain;
+				margin-left: -46px;
+				margin-top: 178px;
+			}
+
+
+		.export-btn {
+			margin-top: 40px;
+			padding: 12px 24px;
+			font-size: 13px;
+			font-weight: bold;
+			color: white;
+			background-color: #404346;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background 0.3s ease-in-out;
+		}
+
+			.export-btn:hover {
+				background-color: red;
+			}
+
+		@@media (max-width: 768px) {
+			.invoice-container {
+				width: 90%;
+				height: auto;
+			}
+
+			.content-area {
+				padding: 80px 80px 60px;
+			}
+
+			.left-image, .right-images {
+				display: none;
+			}
+		}
+	</style>
+</head>
+<body>
+
+
+	@* <div id="invoice" class="invoice-container" style="background-image: url('@Url.Content("~/" + Model.VisaImage)');">
+		<div class="image-container">
+			<div class="tmg-stamp">
+				<img src="~/hajj mabroor By TMG 1.png" alt="TMG Stamp" />
+			</div>
+		</div>
+	</div> *@
+
+	@if (Model.FileExtension == ".pdf")
+	{
+		<!-- 📄 PDF with Stamp on Canvas -->
+		<div class="invoice-container">
+			<div class="image-container">
+				<canvas id="pdf-canvas" style="width: 100%; height: auto;"></canvas>
+			</div>
+		</div>
+
+		<!-- ✅ PDF.js Bundle -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+		<script>
+			pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js";
+
+			const url = '@fileUrl';
+			const loadingTask = pdfjsLib.getDocument(url);
+			loadingTask.promise.then(pdf => pdf.getPage(1)).then(page => {
+				const scale = 1.5;
+				const viewport = page.getViewport({ scale });
+
+				const canvas = document.getElementById('pdf-canvas');
+				const context = canvas.getContext('2d');
+				canvas.width = viewport.width;
+				canvas.height = viewport.height;
+
+				const renderContext = {
+					canvasContext: context,
+					viewport: viewport
+				};
+
+				// Render PDF page
+				return page.render(renderContext).promise.then(() => {
+					// Load and draw the stamp image onto the canvas
+					const stampImg = new Image();
+					stampImg.src = '/hajj%20mabroor%20By%20TMG%201.png'; // make sure the path is correct
+
+					stampImg.onload = function () {
+						const padding = 20;
+
+						// ✅ Resize stamp (fixed size or proportional)
+						const stampWidth = 120; // Set fixed width
+						const stampHeight = (stampImg.height / stampImg.width) * stampWidth; // Maintain aspect ratio
+
+						const x = canvas.width - stampWidth - padding;
+						const y = canvas.height - stampHeight - padding - 40;
+
+						context.drawImage(stampImg, x, y, stampWidth, stampHeight);
+					};
+				});
+			});
+		</script>
+	}
+	else
+	{
+		<!-- 🖼️ JPG with Stamp -->
+		<div id="invoice" class="invoice-container" style="background-image: url('@fileUrl'); position: relative;">
+			<div class="image-container">
+				<div class="tmg-stamp" style="position: absolute; bottom: 20px; right: 20px; width: 120px;">
+					<img src="~/hajj mabroor By TMG 1.png" alt="TMG Stamp" style="width: 100%;" />
+				</div>
+			</div>
+		</div>
+	}
+
+
+	<button class="export-btn" onclick="exportToImage()">Export as Image</button>
+
+
+	<script>
+		function exportToImage() {
+			const canvas = document.getElementById("pdf-canvas");
+			if (canvas) {
+				// ✅ Export canvas as image (PDF case)
+				const link = document.createElement("a");
+				link.href = canvas.toDataURL("image/png");
+				link.download = "visa-pdf.png";
+				link.click();
+			} else {
+				// ✅ Export full HTML using html2canvas (JPG case)
+				const invoice = document.getElementById("invoice");
+				html2canvas(invoice, {
+					scrollY: -window.scrollY,
+					width: invoice.scrollWidth,
+					height: invoice.scrollHeight,
+					backgroundColor: null,
+					scale: 2,
+					useCORS: true
+				}).then(function (canvas) {
+					const link = document.createElement("a");
+					link.href = canvas.toDataURL("image/png");
+					link.download = "visa-img.png";
+					link.click();
+				});
+			}
+		}
+	</script>
+</body>
+</html>

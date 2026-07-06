@@ -1,0 +1,302 @@
+﻿@model IEnumerable<FamilyMembers>
+
+@{
+    string modelName = "Family Head";
+    string modelNamePlural = "Family Heads";
+    string modelControllerRoute = "FamilyHead";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Add / Remove Members To Group</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Itinerary Block Code</label>
+            <p>@ViewBag.GroupCode</p>
+        </div>
+        @* <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Group Name</label>
+            <p>@ViewBag.GroupName</p>
+        </div>*@
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Group PAX</label>
+            <p>@ViewBag.GroupPAX</p>
+        </div> 
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Selected</label>
+            <p id="selected">@ViewBag.GroupMembersCount</p>
+        </div>
+    </div>
+
+    <div class="card pt-3">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 200px;">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Mega ID</th>
+                        <th>Group</th>
+                        <th>F ID</th>
+                        <th>C ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Passport</th>
+                        <th>Friend ID</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @if (Model.Count() == 0)
+                    {
+                        <tr>
+                            <td colspan="7" class="text-danger text-center">No Data Found!</td>
+                        </tr>
+                    }
+                    @foreach (FamilyMembers fm in Model)
+                    {
+
+                        i++;
+
+                        bool found = false;
+                        bool AnotherGroupfound = false;
+                        foreach (ItineraryBlockGroupMmebers member in ViewBag.GroupMembers)
+                        {
+                            if (fm.FamilyHeadId == member.FamilyHeadId)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        foreach (ItineraryBlockGroupMmebers member in ViewBag.selectedmemebers)
+                        {
+                            if (fm.FamilyHeadId == member.FamilyHeadId)
+                            {
+                                AnotherGroupfound = true;
+                                break;
+                            }
+                        }
+                        string check = "";
+                        if (found)
+                        {
+                            check = "checked";
+                        }
+                        string disabled = "";
+                        if (ViewBag.InSameGroup is null)
+                        {
+                            disabled = "";
+                        }
+                        else if (ViewBag.InSameGroup == true)
+                        {
+                            disabled = "";
+                        }
+                        @* else if (ViewBag.InSameGroup == false)
+                        {
+                            disabled = "disabled";
+                        } *@
+                        if (AnotherGroupfound == true)
+                        {
+                            disabled = "disabled";
+                        }
+                        string textAlign = fm.IsHead ? "left" : "right";
+
+
+                        <tr style="border-top: @(fm.IsHead ? "2px solid black":"");">
+                            <td>
+                                <input @disabled @check class="form-check-input" name="selected[]"
+                                    onchange="updateSelected(this, @fm.FamilyHeadId, @ViewBag.GroupId)" type="checkbox"
+                                    data-is-head="@fm.IsHead" data-hb-number="@fm.FamilyHeadId" data-head-id="@fm.HeadId" />
+                            </td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.Package.Company.CompanyCode</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.Package.Name</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.Reference?.ReferenceCode</td>
+                            <td style="text-align: @textAlign; ">-</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.FcId</td>
+                            <td style="text-align: @textAlign; ">-</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.GivenName @fm.FamilyHead.SurName</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.Age</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.Gender</td>
+                            <td style="text-align: @textAlign; ">@fm.FamilyHead.PassportNumber</td>
+                            <td style="text-align: @textAlign; ">-</td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let table = new DataTable('#table', {
+        dom: 'fp',
+        paging: false,
+        lengthChange: false
+    });
+</script>
+
+<script>
+    function updateSelectedCount() {
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        $("#selected").html(selectedCheckboxes.length);
+    }
+
+    function updateSelected(elem, familyHeadId, groupId) {
+
+        const MAX = @ViewBag.GroupPAX;
+
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+
+        const length = selectedCheckboxes.length;
+
+        if (length > MAX) {
+            alert("Limit Exceeded");
+            //elem.checked = false
+            //return;
+        }
+
+        updateSelectedCount()
+
+        const isHead = elem.getAttribute("data-is-head")
+        const headId = elem.getAttribute("data-head-id")
+        const elemFcId = elem.getAttribute("data-hb-number")
+
+        if (isHead == "True" && elem.checked) {
+            const attributeName = 'data-head-id';
+            const elements = document.querySelectorAll(`[${attributeName}="${headId}"]`);
+
+            if ((elements.length - 1) + length > MAX) {
+                if (confirm("Cannot select this family. Limit will exceed. would you like to proceed w/ selection?")) {
+                    elem.checked = true;
+                    addMember(elemFcId, groupId)
+                    updateSelectedCount()
+                    return;
+                }
+                else {
+                    elem.checked = false
+                    removeMember(elemFcId, groupId)
+                    updateSelectedCount()
+                    return;
+                }
+            }
+
+            if (elem.checked) {
+                for (let check of elements) {
+                    if (check.hasAttribute('disabled')) continue;
+                    check.checked = true
+                    let fcId = check.getAttribute('data-hb-number')
+                    addMember(fcId, groupId)
+                }
+            }
+            else {
+                elem.checked = false;
+                removeMember(elemFcId, groupId)
+            }
+            updateSelectedCount()
+        }
+        else if (elem.checked && isHead == "False") {
+            addMember(elemFcId, groupId)
+        }
+        else {
+            removeMember(elemFcId, groupId)
+        }
+
+
+    }
+
+    function addMember(familyHeadId, groupId) {
+        $.ajax({
+            url: "/ItineraryBlock/AddMemberForMinaSave",
+            method: "POST",
+            data: {
+                memberId: familyHeadId,
+                groupId: groupId
+            },
+            success: res => {
+
+                console.log(res)
+            },
+            error: err => {
+                alert("Group Limit exceeded");
+                window.location.reload();
+                console.log(err)
+            }
+        });
+    }
+
+    function removeMember(familyHeadId, groupId) {
+        $.ajax({
+            url: "/ItineraryBlock/RemoveMember",
+            method: "POST",
+            data: {
+                memberId: familyHeadId,
+                groupId: groupId
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+</script>

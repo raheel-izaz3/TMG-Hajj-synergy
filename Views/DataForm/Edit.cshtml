@@ -1,0 +1,331 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
+
+@model FamilyHeadEditRequest
+
+<style>
+    .d-width {
+        width: 111px;
+    }
+
+    .f-width {
+        width: 185px;
+    }
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <a asp-controller="DataForm" asp-action="ViewFamily" asp-route-id="@ViewBag.ViewFamilyId" class="btn btn-success float-end mb-2">Back</a>
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> Hajj 2026 Registration / </span> Edit</h4>
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nav-align-top mb-4">
+                <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-pills-justified-passport" aria-controls="navs-pills-justified-passport" aria-selected="false">
+                            Passport
+                        </button>
+                    </li>
+                </ul>
+                @* <form method="post" enctype="multipart/form-data"> *@
+                <input type="hidden" asp-for="FamilyHeadId" />
+                <div class="card">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="navs-pills-justified-passport" role="tabpanel">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="SPOId"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <select class="form-control" asp-for="SPOId">
+                                            <option value="">Select SPO</option>
+                                            @foreach (SPO spo in ViewBag.SPOs)
+                                            {
+                                                <option value="@spo.SPOId">@spo.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="SPOId"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="FeedBy"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="FeedBy" class="form-control"
+                                               value="@http.HttpContext.Session.GetString("Username")">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="FeedBy"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="SurName"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="SurName" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="SurName"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="GivenName"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                                        <input asp-for="GivenName" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="GivenName"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="FatherName"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="FatherName" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="FatherName"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="Number"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="Number" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="Number"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="Email"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="Email" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="Email"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="CNIC"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                        <input asp-for="CNIC" class="form-control" maxlength="15" oninput="formatCnicInput(this)">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="CNIC"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname" asp-for="DateOfBirth"></label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="DateOfBirth" type="date" max="@DateTimeManager.Today" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="DateOfBirth"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Registration Date</label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="DateOfR" type="date" max="@DateTimeManager.Today" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="DateOfR"></span>
+                                </div>
+                                @if (Model.IsHead)
+                                {
+                                    <div class="col-sm-12 col-md-4 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname">Password</label>
+                                        <span class="fw-bold text-danger"> *</span>
+                                        <div class="input-group input-group-merge">
+                                            <input asp-for="Password" type="password" class="form-control" id="passwordInput">
+                                            <span class="input-group-text" onclick="togglePasswordVisibility()" style="cursor: pointer;">
+                                                <i class="bx bx-show" id="togglePasswordIcon"></i>
+                                            </span>
+                                        </div>
+                                        <span class="text-danger" asp-validation-for="Password"></span>
+                                    </div>
+                                }
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Registration Code</label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="GroupNo" type="text" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="GroupNo"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Passport Attachment</label>
+                                    <span class="fw-bold text-danger">
+                                        @if (Model.PAttachment is not null)
+                                        {
+                                            <a href="~/@Model.PAttachment">View Image</a>
+                                        }
+                                    </span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="PassportAttachment" type="file" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="PassportAttachment"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">CNIC Front Attachment</label>
+                                    <span class="fw-bold text-danger">
+                                        @if (Model.CAttachment is not null)
+                                        {
+                                            <a href="~/@Model.CAttachment">View Image</a>
+                                        }
+                                    </span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="CNICAttachment" type="file" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="CNICAttachment"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">CNIC Back Attachment</label>
+                                    <span class="fw-bold text-danger">
+                                        @if (Model.CAttachment is not null)
+                                        {
+                                            <a href="~/@Model.CBackAttachment">View Image</a>
+                                        }
+                                    </span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="CNICBackAttachment" type="file" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="CNICBackAttachment"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Member Image</label>
+                                    <span class="fw-bold text-danger">
+                                        @if (Model.MImage is not null)
+                                        {
+                                            <a href="~/@Model.MImage">View Image</a>
+                                        }
+                                    </span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="MemberImage" type="file" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="MemberImage"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Form Attachment</label>
+                                    <span class="fw-bold text-danger"> 
+                                        @if (Model.FAttachment is not null)
+                                        {
+                                            <a href="~/@Model.FAttachment">View Image</a>
+                                        }
+                                    </span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="FormAttachment" type="file" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="FormAttachment"></span>
+                                </div>
+                                <div class="col-sm-12 col-md-4 mb-3">
+                                    <label class="form-label" for="basic-icon-default-fullname">Status</label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <select class="form-select" asp-items="@Html.GetEnumSelectList<DataStatus>()" asp-for="DataStatus">
+                                        </select>
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="MemberImage"></span>
+                                </div>
+                                <div class="col-sm-12">
+                                    <label class="form-label" for="basic-icon-default-fullname">Address</label>
+                                    <span class="fw-bold text-danger"> *</span>
+                                    <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-globe"></i></span>
+                                        <input asp-for="Address" type="text" class="form-control">
+                                    </div>
+                                    <span class="text-danger" asp-validation-for="Address"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mt-3">
+                                <button type="submit" class="btn btn-warning float-end" id="savePassportButton">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @Html.AntiForgeryToken()
+                @*  </form> *@
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $("#savePassportButton").on("click", function () {
+            var id = $("#FamilyHeadId").val();
+
+            var formData = new FormData();
+
+            formData.append("SPId", $("#SPOId").val());
+            formData.append("FeedBy", $("#FeedBy").val());
+            formData.append("SurName", $("#SurName").val());
+            formData.append("GivenName", $("#GivenName").val());
+            formData.append("FatherName", $("#FatherName").val());
+            formData.append("CNIC", $("#CNIC").val());
+            formData.append("DateOfBirth", $("#DateOfBirth").val());
+            formData.append("DateOfR", $("#DateOfR").val());
+            formData.append("Number", $("#Number").val());
+            formData.append("Email", $("#Email").val());
+            formData.append("Password", $("#Password").val());
+            formData.append("GroupNo", $("#GroupNo").val());
+            formData.append("Address", $("#Address").val());
+
+            formData.append("PassportAttachment", $('input[name="PassportAttachment"]')[0].files[0]);
+            formData.append("CNICAttachment", $('input[name="CNICAttachment"]')[0].files[0]);
+            formData.append("FormAttachment", $('input[name="FormAttachment"]')[0].files[0]);
+            formData.append("MemberImage", $('input[name="MemberImage"]')[0].files[0]);
+            formData.append("CNICBackAttachment", $('input[name="CNICBackAttachment"]')[0].files[0]);
+
+            formData.append("id", id);
+
+            $.ajax({
+                url: '/DataForm/Save',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    if (response.status === 200) {
+                        alert("Passport details saved successfully!");
+                    } else {
+                        alert("Error: " + response.msg);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred: " + xhr.responseText);
+                }
+            });
+        });
+    });
+
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("passwordInput");
+        var toggleIcon = document.getElementById("togglePasswordIcon");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("bx-show");
+            toggleIcon.classList.add("bx-hide");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("bx-hide");
+            toggleIcon.classList.add("bx-show");
+        }
+    }
+
+</script>
+
+<partial name="~/Views/Shared/_CNICFormatScriptPartial.cshtml" />

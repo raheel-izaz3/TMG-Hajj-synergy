@@ -1,0 +1,1142 @@
+@model ProformaViewModel
+
+@{
+  Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title></title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial,
+        sans-serif;
+      overflow-x: hidden;
+
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin: 0;
+      padding: 0;
+    }
+
+    p {
+      font-size: 9px;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Table styling  */
+    table tr th {
+      font-size: 10px;
+    }
+
+    table tr td {
+      font-size: 9px !important;
+    }
+
+    .AMounttotelvalue {
+      font-size: 12px !important;
+      color: white;
+      background-color: black;
+    }
+
+    .TotalAMountTitle {
+      font-size: 10px !important;
+      color: white;
+      background-color: black;
+    }
+
+    #discountRateHideShow {
+      display: none;
+    }
+
+    #totalAmountHideShow {
+      display: none;
+    }
+
+
+    /* Table styling  End */
+    .downloade_btn {
+      padding: 10px 45px;
+      background-color: lightblue;
+      outline: none;
+      border: 1px solid black;
+      font-weight: bold;
+      font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial,
+        sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .downloade_btn:hover {
+      background-color: white;
+    }
+
+    /* Check-Box Styling  */
+    .check_box_container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .check_box_container .CheckBox {
+      width: 20px;
+      height: 12px;
+      margin: 0;
+      padding: 0;
+    }
+
+    @@media print {
+      .check_box_container {
+        display: none !important;
+      }
+
+      button {
+        display: none;
+      }
+    }
+
+    /* Check-Box Styling End */
+    .parent {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+    }
+
+    .container .logo {
+      width: 55px;
+    }
+
+    .container .logo img {
+      width: 100%;
+    }
+
+    .AL_Khair_Title {
+      font-size: 18px;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
+    .title_break {
+      font-size: 12px;
+      margin-left: 15px;
+      font-weight: bold;
+    }
+
+    .qr-code p {
+      padding: 0;
+      margin: 0;
+    }
+
+    .qr-code {
+      padding: 0;
+      padding-top: 20px;
+    }
+
+    .qr_number {
+      text-align: right;
+
+      margin: 0px;
+      font-weight: bold;
+    }
+
+    .horizantal_line {
+      border: 1px solid black;
+    }
+
+
+    .Invoice_to_section {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .proforma_title {
+      text-align: center;
+      padding-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    .Customer_Info p {
+      padding: 1px 0;
+      font-weight: bold !important;
+    }
+
+    .Customer_Col_2 p {
+      padding: 1px 0;
+      font-weight: bold;
+    }
+
+    .Customer_Col_2 span {
+      font-weight: normal;
+    }
+
+    .Customer_Info span {
+      font-weight: normal;
+    }
+
+    .ALL_MEMBERS_NAMES p {
+      padding: 1px 0;
+    }
+
+    .ALL_MEMBERS_NAMES span {
+      font-weight: bold;
+    }
+
+    /* Table Styling Start  */
+    .Service_Table {
+      width: 100%;
+    }
+
+    .Service_Table tr th {
+      font-size: 10px;
+      text-align: right;
+    }
+
+    .Service_Table tr td {
+      border-bottom: 1px solid black;
+      font-size: 10px;
+    }
+
+    .Service_Table tr td:nth-child(2) {
+      text-align: right;
+      width: 130px;
+    }
+
+    .Service_Table tr:nth-last-child(1) {
+      font-weight: bold;
+    }
+
+    /* MEdia Querry  */
+    @@media (max-width :768px) {
+      .Bank_Table {
+        width: 100% !important;
+      }
+    }
+
+    .Bank_Table {
+      margin-top: 20px;
+      border: 1px solid black;
+      border-collapse: collapse;
+      width: 60%;
+    }
+
+    .Bank_Table tr {
+      border: 1px solid black;
+    }
+
+    .Bank_Table tr th {
+      border: 1px solid black !important;
+      background-color: lightblue;
+      text-align: left;
+      padding-left: 5px;
+      font-size: 10px;
+    }
+
+    .Bank_Table tr td:nth-child(1) {
+      font-weight: bold;
+    }
+
+    .Bank_Table tr td {
+      text-align: left;
+      border: 1px solid black;
+
+      padding-left: 5px;
+      font-size: 10px;
+    }
+
+    /* ADF_Details_Table styling Start  */
+    .Receipt_container {
+      margin-top: 7px;
+    }
+
+
+    .ADF_Container {
+      width: 60%;
+    }
+
+    .ADF_Details_Box {
+      margin-bottom: 10px;
+    }
+
+    .ADF_heading {
+      background-color: lightblue;
+      font-weight: bold;
+      font-size: 10px !important;
+      text-align: center;
+      color: black !important;
+    }
+
+    @@media (max-width:768px) {
+      .ADF_Container {
+        width: 100% !important;
+      }
+    }
+
+    .ADF_Details_Box table {
+      border-collapse: collapse;
+      border: 1px solid black;
+      width: 100%;
+    }
+
+    .ADF_Details_Box tr th {
+      border: 1px solid black;
+    }
+
+    .ADF_Details_Box tr td {
+      border: 1px solid black;
+    }
+
+
+    .totalText,
+    .amountText {
+      font-weight: bold !important;
+      background-color: lightblue;
+      font-size: 10px !important;
+      color: black !important;
+    }
+
+    /*############ ADF_Details_Table styling End ############## */
+    /* *********Note List ********** */
+    .terms_condition_list {
+      margin-left: 6px;
+      margin: 20px 0px !important;
+    }
+
+    .note_heading {
+      font-size: 10px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .Notes_order_list {
+      padding: 0;
+
+      margin: 8px;
+    }
+
+    .Notes_order_list li {
+      font-size: 8px;
+      padding: 2px;
+    }
+
+    /* *********Note List  END********** */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+    }
+
+    .footer_address {
+
+      border-top: 1px solid black;
+      text-align: center;
+
+
+    }
+
+    .footer_address h6 {
+      font-weight: normal !important;
+    }
+
+
+
+    .top_service_table {
+      border: 1px solid black;
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 0px;
+      margin-top: 10px;
+    }
+
+    .top_service_table tr th,
+    td {
+      border: 1px solid black;
+    }
+
+    .top_service_table tr {
+      border: 1px solid black;
+    }
+
+    .top_service_table tr:nth-child(1) {
+      border: none !important;
+      outline: none;
+    }
+
+    .top_service_table tr td:nth-child(2) {
+      text-align: right;
+    }
+
+    .top_service_table tr:nth-last-child(1) {
+      font-weight: bold;
+      font-size: 10px !important;
+      background-color: lightblue;
+      color: white;
+    }
+
+    /* ________Content_Editable Row _____ */
+    [contenteditable] {
+      width: 100px;
+    }
+
+    /* ________Content_Editable Row _____ */
+    /* Hide And Show Table Styling  */
+    #Receipt_PaymentRecord,
+    #Payment_Subject {
+      display: none;
+    }
+
+
+    #Memberbreaktable {
+      display: none;
+      text-align: center;
+    }
+
+    .MembersName tr th:nth-child(1) {
+      text-align: left !important;
+    }
+
+    .MembersName tr,
+    th,
+    td:nth-child(1) {
+      text-align: left;
+    }
+
+    .MembersName tr th:nth-child(2),
+    .MembersName tr th:nth-child(3),
+    .MembersName tr th:nth-child(4),
+    .MembersName tr th:nth-child(5),
+    .MembersName tr th:nth-child(6) {
+      text-align: center !important;
+    }
+
+    .MembersName th:nth-child(1),
+    .MembersName th:nth-child(1),
+    .MembersName tH:nth-child(4) {
+      text-align: left;
+    }
+
+    .MembersName th,
+    td {
+      text-align: center;
+    }
+
+    /* Media Querry Check-box and Label button  */
+    label {
+      font-size: 14px !important;
+    }
+
+    @@media (max-width: 768px) {
+      label {
+        font-size: 14px;
+      }
+
+      input[type="checkbox"] {
+        transform: scale(0.8);
+      }
+    }
+
+    .check_box_container span {
+      font-weight: bold;
+    }
+
+    .flex-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .start-iadf td {
+      text-align: left !important;
+    }
+  </style>
+  <!-- html2pdf CDN Link  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+  <button class="downloade_btn" onclick="print()">Print </button>
+  <div class="check_box_container">
+    <label for="MiniTitleChange">Mini Statement</label>
+    <input type="checkbox" name="MiniTitleChange" id="MiniTitleChange" class="CheckBox"
+      onchange="Minititletoggle(this)" />
+
+    <span>|</span>
+
+
+    <label for="hideShow_I_ADF">* I-ADF-Details</label>
+    <input type="checkbox" name="hideShow_I_ADF" id="hideShow_I_ADF" class="CheckBox" onchange="StarIADF(this)"
+      checked /><span>|</span>
+
+    <label for="start-E-IADF">** EI-ADF</label>
+    <input type="checkbox" name="start-E-IADF" id="start-E-IADF" class="CheckBox" onchange="Start_E_IADF(this)"
+      checked />
+    <span>|</span>
+
+    <label for="MembersName">All Members Name</label>
+    <input type="checkbox" name="MembersName" id="MembersName" class="CheckBox" checked
+      onchange="MYCompanymembers(this)" />
+    <span>|</span>
+    <label for="CompanyName">Company Name</label>
+    <input type="checkbox" name="CompanyName" id="CompanyName" class="CheckBox" onchange="TitleNameChanged(this)" />
+    <span>|</span>
+    <!-- Note Check Box Check  -->
+    <label for="NoteCheckBox">Note</label>
+    <input type="checkbox" name="NoteCheckBox" id="NoteCheckBox" checked onchange="noteCheckBox(this)" />
+    <label for="toggleApplicable">PKR Amount </label>
+    <input type="checkbox" name="toggleApplicable" id="toggleApplicable" checked onchange="applicable()" />
+
+    <label for="toggleDiscount">Discount</label>
+    <input type="checkbox" name="toggleDiscount" id="toggleDiscount" onchange="discountFun()" />
+
+    <label for="lastPayment">Last Payment</label>
+    <input type="checkbox" name="lastPayment" id="lastPayment" />
+
+    <label for="ticketNote">Show / Hide Ticket Note </label>
+    <input type="checkbox" name="ticketNote" id="ticketNote" onchange="hideShowTicketNote(this)" checked />
+
+    
+    <label for="remarks">Remarks </label>
+    <input type="checkbox" name="remarks" id="remarks" onchange="remarksShowHide(this)" checked />
+
+    @foreach (TMG.Models.AccountModels.CompanyBankAccount bank in Model.BankDetails)
+    {
+      <label>@bank.Bank</label>
+      <input type="checkbox" checked
+        onchange="document.getElementById('bank_@bank.CompanyBankAccountId').style.display = this.checked ? 'table' : 'none'" />
+    }
+
+  </div>
+  <div id="incoice_page_body">
+    <div class="parent">
+      <div class="container">
+        <div class="logo">
+          <img src="~/@Model.CompanyLogo" id="companyLogo" alt="Logo" />
+        </div>
+
+        <div class="title">
+          <p class="AL_Khair_Title" id="companyName">@Model.CompanyName</p>
+        </div>
+      </div>
+      @* <div class="qr-code">
+      <img src="./images/QR-Code.png" alt="QR-Code" style="width: 75px; height: 75px" />
+      </div> *@
+    </div>
+    <div class="qr_number">
+      <p>C.I.D: <span id="cid">@Model.CID</span></p>
+    </div>
+    <div class="horizantal_line"></div>
+    <div class="proforma_title">
+      <h4 id="miniStatement_Title">PROFORMA INVOICE</h4>
+    </div>
+    <div class="Invoice_to_section">
+      <div>
+        <h6>INVOICE TO: <span id="invoiceToCustomer">@Model.InvoiceToCustomer</span><span id="invoiceToCompany"
+            style="display: none;">@Model.CompanyName</span></h6>
+        <div class="Customer_Info">
+          <p>GUEST NAME: <span id="headName">@Model.GuestName</span></p>
+          <p>CONTACT: <span id="headContact">@Model.Contact</span></p>
+          <p>CNIC: <span id="cnic"> @Model.CNIC</span> </p>
+          <p> PASSPORT: <span id="passport">@Model.Passport</span> </p>
+          <p>
+            ADDRESS: <span id="headAddress">@Model.Address</span>
+          </p>
+        </div>
+      </div>
+      <div class="Customer_Col_2">
+        <p><span id="invNumberText" style="font-weight: bold;">INVOICE NUMBER: </span><span>@Model.FCID <span
+              id="invNumber">@Model.InvoiceNumber</span></span></p>
+        <p>DATE: <span id="date"> @Model.Date</span></p>
+        <p> SPO: <span id="spo">@Model.SPO</span> </p>
+        <p>PURPOSE:<span id="purpose">@Model.Purpose</span></p>
+        <p>CATEGORY: <span id="category">@Model.Category</span> </p>
+        <p>MEGA REFERENCE: <span id="mega">@Model.MegaReference</span> </p>
+      </div>
+      <div class="ALL_MEMBERS_NAMES" id="MemebrsName_hide">
+        <p style="font-weight: bold;"> PAX: <span style="font-weight: normal;" id="pax">@Model.Pax</span> </p>
+        <p>
+          <u><b>ALL MEMBERS NAMES:</b></u>
+        </p>
+
+        <div id="allMembers">
+          @foreach (string s in Model.Members)
+          {
+            <p>@s</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Service Section Start   -->
+    <table class="top_service_table">
+      <tr>
+        <th style="
+              text-align: left;
+              font-size: 10px;
+              color: black;
+              background-color: lightblue;
+              font-weight: bolder;
+            ">
+          DESCRIPTION
+        </th>
+
+        <th style="
+        text-align: left;
+        font-size: 10px;
+        color: black;
+        background-color: lightblue;
+        font-weight: bolder;
+      ">
+
+        </th>
+        <th style="
+        text-align: right;
+        font-size: 10px;
+        color: black;
+        background-color: lightblue;
+
+      ">
+          AMOUNT (USD)
+        </th>
+
+      </tr>
+      <tr>
+        <td colspan="3"> BASIC PACKAGE WITHOUT AIR TICKET, INCLUDING *I-ADF: (@Model.PackageDetails) </td>
+      </tr>
+      @foreach (var i in Model.IADFRows)
+      {
+        <tr>
+          <td><span contenteditable="true">0</span>  @i.RoomType @i.PerPersonCalc</td>
+          <td style="text-align: center;"> @i.RoomMembers</td>
+          <td style="text-align: right;">@i.PriceString</td>
+        </tr>
+      }
+       <tr>
+        @* @foreach (var e in Model.EIADFDetails)
+          { *@
+              <td>** EI-ADF (EXTRA INDIVIDUAL ADDITIONAL FACILITY) </td>
+               <td style="text-align: center;">@Model.EIADFMembers</td>
+             <td id="eiadfPrice" style="text-align: right;">@Model.EIADFPriceUsd</td>
+          @* } *@
+      <tr>
+  @*    <tr>
+        <td>** EI-ADF (EXTRA INDIVIDUAL ADDITIONAL FACILITY) </td>
+        <td style="text-align: center;" id="eiadfIndString">@Model.EIADFMembers</td>
+        <td id="eiadfPrice" style="text-align: right;">@Model.EIADFPriceUsd</td>
+      </tr> *@
+      <tr>
+        <td>AIR TICKET <span id="airTicketString"
+            style="display: @(Model.FlightTicketType != FlightTicketType.Excluded ? "": "none");">@Model.AirTicketPaxString</span>
+        </td>
+        <td></td>
+        <td id="ticketPrice" style="text-align: right;">@Model.AirTicketUsd</td>
+      </tr>
+      <tr>
+        <td>AIR TICKET DIFFERENCE AMOUNT (IF APPLICABLE)</td>
+        <td></td>
+        <td id="diffPrice" style="text-align: right;">@Model.AirTicketDifferenceUsd</td>
+      </tr>
+
+      <tr class="TotalAMountTitle" id="totalAmountHideShow">
+        <td class="TotalAMountTitle">TOTAL AMOUNT (USD)</td>
+        <td></td>
+        <td style="text-align: right;" class="AMounttotelvalue">@Model.Total</td>
+      </tr>
+
+      <tr id="discountRateHideShow">
+        <td>DISCOUNT/REBATE/ROE ADJUSTMENT (IF APPLICABLE)</td>
+        <td></td>
+        <td style="text-align: right;" id="discount">@Model.Discount</td>
+      </tr>
+      <tr style="background-color: black; color: white;">
+        <td>NET RECEIVABLE AMOUNT (USD)</td>
+        <td></td>
+        <td style="text-align: right;">@Model.NetReceivable</td>
+      </tr>
+      <tr style="background-color: grey !important; color: white">
+        <td>PAYMENT RECEIVED (USD) </td>
+        <td id="pkrApplicableText" style="text-align: right;">@Model.PaymentReceivedUSD</td>
+        <td style="text-align: right;">@Model.PaymentReceivedUSD</td>
+      </tr>
+      @if (Model.ShowTransitRows)
+      {
+        <tr style="background-color: lightblue !important; color: black">
+          <td>BALANCE RECEIVABLE (USD) (BEFORE PAYMENT IN TRANSIT-SUB TO REALIZATION IN BANK) </td>
+          <td></td>
+          <td style="text-align: right;">@Model.BalanceReceivable</td>
+        </tr>
+        <tr>
+          <td>TOTAL PAYMENT IN TRANSIT (USD) (SUBJECT TO REALIZATION IN BANK) </td>
+          <td id="pkrApplicableText2"> @Model.TotalInTransitPKR</td>
+          <td style="text-align: right;">@Model.TotalInTransit</td>
+        </tr>
+      }
+      <tr>
+        <td style="color: black;">FINAL BALANCE RECEIVABLE (USD)</td>
+        <td></td>
+        <td style="text-align: right; color: black;">@Model.FinalBalance</td>
+      </tr>
+    </table>
+
+    <!-- Bank Details in Table form  -->
+    <div id="banks">
+      @foreach (CompanyBankAccount account in Model.BankDetails)
+      {
+        <table class="Bank_Table" style="margin-block: 10px;" id="bank_@account.CompanyBankAccountId">
+          <tr>
+            <th style="color: black">BANK DETAILS</th>
+            <th style="color: black">CURRENCY: @account.AccountCurrency</th>
+          </tr>
+          <tr>
+            <td>BANK NAME</td>
+            <td>@account.Bank</td>
+          </tr>
+          <tr>
+            <td>ACCOUNT TITLE</td>
+            <td>@account.Title</td>
+          </tr>
+          <tr>
+            <td>ACCOUNT NUMBER</td>
+            <td>@account.Number</td>
+          </tr>
+          <tr>
+            <td>IBAN</td>
+            <td>@account.IBAN</td>
+          </tr>
+          <tr>
+            <td>BRANCH CODE</td>
+            <td>@account.BranchCode</td>
+          </tr>
+          <tr>
+            <td>SWIFT CODE</td>
+            <td>@account.Swift</td>
+          </tr>
+          <tr>
+            <td>GOVERNMENT ID / NTN</td>
+            <td>@account.NTN</td>
+          </tr>
+          <tr>
+            <td>BANK ADDRESS</td>
+            <td>
+              @account.BankAddress
+            </td>
+          </tr>
+        </table>
+      }
+    </div>
+    <!-- Note Section Start  -->
+
+    <div class="terms_condition_list" id="NoteHideShow">
+      <p class="note_heading">Notes</p>
+      <ol class="Notes_order_list" id="paymentNotes">
+        <li>
+          ALL ITEMS, PACKAGE DETAILS & TERMS & CONDITIONS AS PER AGREEMENT
+        </li>
+        <li>
+          FINAL PACKAGE IS SUBJECT TO ANNOUNCEMENT & APPROVAL OF HAJJ POLICY
+          2024
+        </li>
+        <li id="listHide" style="background-color: #add8e6; width: max-content">
+          YOUR NEXT PAYMENT IS DUE FROM <span id="currentDate" contenteditable="true"></span> TILL <span
+            id="dateAfter6Days" contenteditable="true"></Span>
+        </li>
+
+        <li id="note4" style="display: @(Model.FlightTicketType != FlightTicketType.Excluded ? "": "none");">
+          BASIC TICKET OF ANY ECONOMY CLASS WITH TRANSIT FROM PAKISTAN/UAE IS
+          INCLUDED
+        </li>
+
+      </ol>
+    </div>
+
+
+    <!-- Start *I-ADF_ Hide And show Table  -->
+    <div class="ADF_Container" id="Stat_IADF_hideShow" style="margin-top: 10px;">
+      <div class="ADF_Details_Box">
+        <table style="border: 1px solid black;" class="start-iadf">
+          <tr style="background-color: lightblue;">
+            <td colspan="3" class="ADF_heading">*I-ADF: (INDIVIDUAL ADDITIONAL FACILITIES INCLUDED)</td>
+          </tr>
+          <tr>
+            <th>SR</th>
+            <th class="Description_align">DESCRIPTION</th>
+            <th>MEMBERS</th>
+          </tr>
+          @foreach (var e in Model.IADFDetails)
+          {
+            <tr>
+              <td>@e.Sr</td>
+              <td style="text-align: left;"> @e.Description</td>
+              <td style="text-align: left;"> @e.Ids</td>
+            </tr>
+          }
+        </table>
+      </div>
+    </div>
+
+    <!-- Start E-IADF-Table Hide and Show  -->
+    <div class="ADF_Container" id="Start_E_IADF_table">
+      <div class="ADF_Details_Box">
+        <table style="border: 1px solid black;">
+          <tr style="background-color: lightblue;">
+            <td colspan="3" class="ADF_heading">**EI-ADF: (EXTRA INDIVIDUAL ADDITIONAL FACILITIES INCLUDED)</td>
+          </tr>
+          <tr>
+            <th>SR</th>
+            <th class="Description_align">DESCRIPTION</th>
+            <th class="Description_align">MEMBERS</th>
+          </tr>
+          @foreach (var e in Model.EIADFDetails)
+          {
+            <tr>
+              <td>@e.Sr</td>
+              <td style="text-align: left;"> @e.Description</td>
+              <td style="text-align: left;"> @e.Ids</td>
+            </tr>
+          }
+        </table>
+      </div>
+    </div>
+
+    <div class="ADF_Container" id="Remarks_table">
+      <div class="ADF_Details_Box">
+        <table style="border: 1px solid black;">
+          <tr style="background-color: lightblue;">
+            <td colspan="3" class="ADF_heading">REMARKS</td>
+          </tr>
+          <tr>
+            <th>SR</th>
+            <th class="Description_align">REMARKS</th>
+            <th class="Description_align">MEMBERS</th>
+          </tr>
+                   
+          @foreach (var e in Model.Remarks)
+          {
+            <tr>
+              <td>@e.Sr</td>
+              <td style="text-align: left;">@e.Remarks</td>
+              <td style="text-align: left;">@e.IndivdualId</td>
+            </tr>
+          }
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer_address" id="footer">
+        <h6 style="position: relative; top: -15px; font-weight: bold !important;">THIS IS A SYSTEM GENERATED MINI
+          STATEMENT. IN CASE OF ANY DISCREPANCIES, PLEASE CONTACT YOUR COORDINATOR.</h6>
+        <h6>
+          Add: @Model.CompanyAddress
+        </h6>
+        <h6>
+          Phone: @Model.CompanyContact Email: @Model.CompanyEmail Web: @Model.CompanySite
+        </h6>
+      </div>
+    </footer>
+  </div>
+  <script>
+
+      function hideShowPaymentNote(elem) {
+          if (elem.checked) {
+            document.getElementById('paymentNote').style.display = '';
+          }
+          else {
+            document.getElementById('paymentNote').style.display = 'none';
+
+          }
+      }
+
+      function remarksShowHide(elem) {
+          if (elem.checked) {
+            document.getElementById('Remarks_table').style.display = '';
+          }
+          else {
+            document.getElementById('Remarks_table').style.display = 'none';
+
+          }
+      }
+
+    function hideShowTicketNote(elem) {
+      if (elem.checked) {
+        document.getElementById('note4').style.display = '';
+        document.getElementById('airTicketString').style.display = '';
+      }
+      else {
+        document.getElementById('note4').style.display = 'none';
+        document.getElementById('airTicketString').style.display = 'none';
+
+      }
+    }
+
+    var lastpayment = document.getElementById("lastPayment").addEventListener("change", function () {
+      var listHide = document.getElementById("listHide")
+      if (this.checked) {
+        listHide.style.display = "none"
+
+      } else {
+        listHide.style.display = ""
+      }
+    })
+
+    //     //  Bank Receipt Record
+    var toggleCheckboxbtn = document.getElementById("toggleCheckboxbtn");
+    var Receipt_PaymentRecord = document.getElementById(
+      "Receipt_PaymentRecord"
+    );
+    var Payment_Subject = document.getElementById("Payment_Subject");
+    function togglebtn(checkbox) {
+      if (checkbox.checked) {
+        Receipt_PaymentRecord.style.display = "block";
+        Payment_Subject.style.display = "block";
+      } else {
+        Receipt_PaymentRecord.style.display = "none";
+        Payment_Subject.style.display = "none";
+      }
+    }
+    //  Start * I_ADF Table  Hide  And Show
+    var Stat_IADF_hideShow = document.getElementById("Stat_IADF_hideShow");
+    function StarIADF(checkbox) {
+      if (checkbox.checked) {
+        Stat_IADF_hideShow.style.display = "block";
+
+
+
+      } else {
+        Stat_IADF_hideShow.style.display = "none";
+        Stat_IADF_hideShow.style.margin = '20px 0px';
+
+      }
+    }
+    //  * E-I_ADF Table   Hide  And Show Doubble
+    var Start_E_IADF_table = document.getElementById("Start_E_IADF_table");
+    function Start_E_IADF(checkbox) {
+      if (checkbox.checked) {
+        Start_E_IADF_table.style.display = "block";
+
+      } else {
+        Start_E_IADF_table.style.display = "none";
+
+      }
+    }
+    // All Member BreakDown Check box Js
+    var Memberbreaktable = document.getElementById("Memberbreaktable");
+    function MemberBreakCheck(checkbox) {
+      if (checkbox.checked) {
+        Memberbreaktable.style.display = "block";
+      } else {
+        Memberbreaktable.style.display = "none";
+      }
+    }
+    // Bank Detals CheckBox
+    var BankDetails_Table = document.querySelectorAll(
+      "#Bank_details_table_hideShow"
+    );
+    function bankDetails(checkbox) {
+      if (checkbox.checked) {
+        for (var t of BankDetails_Table) {
+          t.style.display = "table";
+        }
+      } else {
+        for (var t of BankDetails_Table) {
+          t.style.display = "none";
+        }
+      }
+    }
+    //  IADF CHECK BOX JS Start
+    var IADFboxhide = document.getElementById("IADFboxhide");
+    function change(checkbox) {
+      if (checkbox.checked) {
+        IADFboxhide.style.display = "block";
+      } else {
+        IADFboxhide.style.display = "none";
+      }
+    }
+    //  Extra-IADF JS CODE
+    var extraADFboxhide = document.getElementById("extraADFboxhide");
+    function changed(checkbox) {
+      if (checkbox.checked) {
+        extraADFboxhide.style.display = "block";
+      } else {
+        extraADFboxhide.style.display = "none";
+      }
+    }
+    //  Extra-IADF JS CODE
+    // All Company  Memebrs Name ShowHide Check Box
+    function MYCompanymembers(checkbox) {
+      var membersList = document.getElementById("MemebrsName_hide");
+      if (checkbox.checked) {
+        membersList.style.visibility = "visible";
+      } else {
+        membersList.style.visibility = "hidden";
+      }
+    }
+
+    // CompanyTitleChange  Check Box Toggle Button
+    function TitleNameChanged(checkbox) {
+      if (checkbox.checked == false) {
+        document.getElementById("invoiceToCustomer").style.display = "inline";
+        document.getElementById("invoiceToCompany").style.display = "none";
+      } else {
+        document.getElementById("invoiceToCustomer").style.display = "none";
+        document.getElementById("invoiceToCompany").style.display = "inline";
+      }
+    }
+    // MiniTitleName Checkbox
+    var miniStatement_Tittle = document.getElementById(
+      "miniStatement_Title"
+    ).innerHTML;
+    function Minititletoggle(checkbox) {
+      if (checkbox.checked == true) {
+        document.getElementById("miniStatement_Title").innerHTML =
+          "MINI STATEMENT";
+        document.getElementById("invNumber").style.display = 'none'
+        document.getElementById("invNumberText").innerHTML = 'HB #: '
+      } else {
+        document.getElementById("miniStatement_Title").innerHTML =
+          "PROFORMA INVOICE";
+
+        document.getElementById("invNumber").style.display = 'inline'
+        document.getElementById("invNumberText").innerHTML = 'INVOICE NUMBER: '
+
+
+      }
+    }
+    // Note-Check-Box
+    var noteDiv = document.getElementById("NoteHideShow");
+    function noteCheckBox(checkbox) {
+      if (checkbox.checked) {
+        noteDiv.style.display = "block";
+      } else {
+        noteDiv.style.display = "none";
+      }
+    }
+
+    @* window.onload = function () {
+      document.getElementById("download").addEventListener("click", () => {
+      const invoice = this.document.getElementById("incoice_page_body");
+      console.log(window);
+      var opt = {
+      margin: 0.5,
+      filename: "Al-TMG Services Invoice.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "A4", orientation: "portrait" },
+      };
+      html2pdf().from(invoice).set(opt).save();
+      });
+      }; *@
+      // PKR USD Check Box
+      function DueAmountPKR(checkbox) {
+        var amountPKRRow = document.getElementById("AmountPKR_Row");
+        if (checkbox.checked) {
+          amountPKRRow.style.display = "table-row";
+        } else {
+          amountPKRRow.style.display = "none";
+        }
+      }
+
+
+    // DUe  AMount USD and PKR CHeck-BOx Row
+    function DueAmountUSD(checkbox) {
+      var amountUSDRow = document.getElementById("AmountUSD_ROW");
+      if (checkbox.checked) {
+        amountUSDRow.style.display = "table-row";
+      } else {
+        amountUSDRow.style.display = "none";
+      }
+    }
+
+    function applicable() {
+      var pkrApplicableText = document.getElementById("pkrApplicableText");
+      var pkrApplicableText2 = document.getElementById("pkrApplicableText2");
+      var checkbox = document.getElementById("toggleApplicable");
+
+      if (checkbox.checked) {
+        pkrApplicableText.style.visibility = "visible";
+        pkrApplicableText2.style.visibility = "visible";
+      } else {
+        pkrApplicableText.style.visibility = "hidden";
+        pkrApplicableText2.style.visibility = "hidden";
+      }
+    }
+
+
+    function discountFun() {
+      var toggleDiscount = document.getElementById("toggleDiscount")
+      var totalAmountHideShow = document.getElementById("totalAmountHideShow");
+      var discountRateHideShow = document.getElementById("discountRateHideShow");
+
+      if (toggleDiscount.checked) {
+        totalAmountHideShow.style.display = "table-row"
+        discountRateHideShow.style.display = "table-row"
+      } else {
+        totalAmountHideShow.style.display = "none"
+        discountRateHideShow.style.display = "none"
+
+      }
+    }
+
+
+    function calculateAge(dateOfBirth) {
+      let full_date = new Date(dateOfBirth);
+      let only_date = full_date.toISOString().split('T')[0];
+
+      var dob = new Date(full_date);
+      var currentDate = new Date();
+      var age = currentDate.getFullYear() - dob.getFullYear();
+      if (
+        currentDate.getMonth() < dob.getMonth() ||
+        (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())
+      ) {
+        age--;
+      }
+      return age;
+    }
+
+
+
+    var currentDateObj = new Date();
+    var currentDate = `${currentDateObj.getDate()}/${currentDateObj.getMonth() + 1}/${currentDateObj.getFullYear()}`
+    document.getElementById("currentDate").innerHTML = currentDate;
+
+
+    // Get the date after 6 days
+    var dateAfter6Days = new Date();
+    dateAfter6Days.setDate(dateAfter6Days.getDate() + 4);
+    console.log(dateAfter6Days)
+
+    // Display the date after 6 days
+    document.getElementById("dateAfter6Days").innerHTML = `${dateAfter6Days.getDate()}/${dateAfter6Days.getMonth() + 1}/${dateAfter6Days.getFullYear()}`;
+
+  </script>
+  <!-- JS End -->
+</body>
+
+</html>

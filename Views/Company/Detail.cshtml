@@ -1,0 +1,170 @@
+﻿@model Company
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Companies /</span> Details</h4>
+
+    <hr class="my-4">
+
+    <h5 class="fw-bold ml-3">Basic Detail</h5>
+    <div class="card pt-3">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="fw-bold">Company Name:</label>
+                    <p>@Model.CompanyName</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Company Code:</label>
+                    <p>@Model.CompanyCode</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Company Quota:</label>
+                    <p>@Model.Quota</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Company POD:</label>
+                    <p>@Model.POD</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Status at Date of Establishment:</label>
+                    <p>@Model.CompanyStatus</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Current Status:</label>
+                    <p>@Model.CurrentStatus</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold">Date of Establishment:</label>
+                    <p>@DateTimeManager.GetDate(Model.EstablishmentDate)</p>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-sm-12 col-md-6">
+                    <img class="img-fluid" src="~/@Model.Logo" width="200" alt="Company Logo">
+                </div>
+                <div class="col-sm-12 col-md-6 text-end">
+                    <img class="img-fluid" width="200" src="~/@Model.Stamp" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+
+    <h5 class="fw-bold ml-3">Addresses</h5>
+    @foreach (CompanyAddresses address in ViewBag.Addresses)
+    {
+        <div class="card pt-3 mb-2">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <i class="fa fa-check"></i>
+                        <label class="fw-bold">
+                            @if (address.Preferred)
+                            {
+                                <i class="bx text-success bxs-badge-check"></i>
+                            }@address.CompanyAddress.AddressType: 
+                        </label>
+                        <p>@address.Address</p>
+                    </div>
+                    <div class="col-md-6" style="display:flex">
+                        <label class="fw-bold">Zip Code: </label>
+                        <p> @address.ZipCode</p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                        <label class="fw-bold">PO Box: </label>
+                        <p> @address.PoBox</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <hr class="my-4">
+
+    <!-- Contacts -->
+    <h5 class="fw-bold ml-3">Contacts</h5>
+    <div class="card pt-3">
+        <div class="container">
+            <div class="row">
+                @foreach (CompanyContacts contacts in ViewBag.Contacts)
+                {
+                    string preferred = contacts.Preferred ? "<i class='bx bx-check'></i>" : "";
+
+                    <div class="col-sm-12 col-md-4">
+                        <label class="underline fw-bold">
+                            @if (contacts.Preferred)
+                            {
+                                <i class="bx text-success bxs-badge-check"></i>
+                            }@contacts.CompanyContactType.ContactType:
+                        </label>
+                        <p>@contacts.CompanyContact</p>
+                    </div>
+
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <h5 class="fw-bold ml-3">Emails</h5>
+    <div class="card pt-3">
+        <div class="container">
+            <div class="row">
+                @foreach (CompanyEmails email in ViewBag.Emails)
+                {
+                    <div class="col-sm-12 col-md-4">
+                        <label class="underline fw-bold">
+                            @if (email.Preferred)
+                            {
+                                <i class="bx text-success bxs-badge-check"></i>
+                            }@email.CompanyEmailType.EmailType:
+                        </label>
+                        <p><a href="mailto:@email.CompanyEmail">@email.CompanyEmail</a></p>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+
+    <!-- Licences -->
+    <h5 class="fw-bold ml-3">Licences</h5>
+    <div class="card pt-3">
+        <div class="container">
+            @foreach (CompanyLicenses licenses in ViewBag.Licenses)
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="fw-bold">
+                            @if (licenses.Preferred)
+                            {
+                                <i class="bx text-success bxs-badge-check"></i>
+                            }@licenses.CompanyLicenseType.LicenseName:
+                        </label>
+                        <p>@licenses.CompanyLicense</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="fw-bold">Place of Issue:</label>
+                        <p>@licenses.IssuePlace</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="fw-bold">Date of Issue:</label>
+                        <p>@DateTimeManager.GetDate(licenses.IssueDate)</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="fw-bold">Valid up to:</label>
+                        <p>@DateTimeManager.GetDate(@licenses.ValidUpto)</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+

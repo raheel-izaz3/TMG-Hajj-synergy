@@ -1,0 +1,583 @@
+﻿@model RoomListingModel
+@using Newtonsoft.Json
+
+@{
+	Layout = "_PrintReportLayout";
+	var jsonData = JsonConvert.SerializeObject(ViewBag.Counts);
+
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- DevExtreme -->
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.3/css/dx.light.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/exporter/jspdf/dx.exporter.js"></script>
+<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+<script src="https://cdn3.devexpress.com/jslib/22.2.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/22.2.3/js/dx.all.js"></script>
+
+
+<style>
+	@@media print {
+		.hideInPrint, button, .btn, #copyTable, #copyTableContent {
+			display: none !important;
+		}
+
+		a {
+			display: none !important;
+		}
+
+		input, select {
+			border: none !important;
+			background: transparent !important;
+			pointer-events: none !important;
+		}
+
+		.passport-img,
+		.visa-img {
+			max-width: 100%;
+			height: auto;
+		}
+
+		canvas {
+			width: 100% !important;
+			height: auto !important;
+		}
+
+		body {
+			-webkit-print-color-adjust: exact !important;
+		}
+
+		.container-fluid {
+			padding: 0;
+			margin: 0;
+		}
+
+		table {
+			page-break-inside: auto;
+		}
+
+		tr {
+			page-break-inside: avoid;
+			page-break-after: auto;
+		}
+
+		hr {
+			border: 1px solid #000 !important;
+		}
+	}
+
+	/* .passport-div {
+		max-height: 55% !important;
+		max-width: 55% !important;
+		}
+
+		.passport-img {
+		width: 55% !important;
+		} */
+
+	.passport-div {
+		max-height: 55% !important;
+		max-width: 55% !important;
+		overflow: hidden;
+		margin: auto;
+	}
+
+	.passport-img {
+		width: 55% !important;
+		object-fit: cover;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+	}
+
+	.visa-div {
+		width: 400px;
+		height: 700px; /* Increase height here */
+		margin: auto;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		overflow: hidden;
+	}
+
+	.visa-iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	#pdf-canvas-@@i {
+		width: 100%;
+		height: auto; /* Ensure it scales properly */
+		max-height: 100%; /* Restrict the height to the container's max height */
+	}
+</style>
+
+<a asp-controller="TransportationBlocks" asp-action="Index" class="btn btn-primary text-white m-2 hideInPrint">Back To Dashboard</a>
+
+
+<button id="export-pdf" class="btn btn-primary mb-2">Export to PDF</button>
+<button id="export-Vehicle-pdf" class="btn btn-success mt-2">Export Vehicles PDF</button>
+
+
+<div class="container-fluid mt-3">
+	<h5 class="text-center"><u>Transportation Block Listing</u></h5>
+	<p class="text-center mb-0 fw-bold">Report</p>
+	<p class="text-center mt-1"><u>Group: @Model.Group</u></p>
+
+	<hr class="my-3">
+	<form name="memberForm" asp-action="Save" asp-route-id="@Model.GroupId" method="post">
+		<div id="transportationGrid"></div>
+
+		@* <div class="text-end mt-3">
+			<button type="submit" class="btn btn-primary">
+				Save Transportation Info
+			</button>
+		</div> *@
+
+		@Html.AntiForgeryToken()
+
+	</form>
+
+	<div class="container mt-4" id="vehicle-container"></div>
+</div>
+
+<script>
+	$(function () {
+	const data = @Html.Raw(jsonData); // Your data from server
+
+		// Group data by CheckInDate
+		const grouped = data.reduce((acc, item) => {
+			const key = item.ArrivalFlightNumber;
+			if (!acc[key]) acc[key] = [];
+			acc[key].push(item);
+			return acc;
+		}, {});
+
+		// Store vehicle grid instances globally for export
+		window.vehicleGridInstances = [];
+
+		Object.entries(grouped).forEach(([date, items]) => {
+		const panel = $('<div class="border rounded mb-3 shadow-sm p-2"></div>');
+
+		let header; // Declare outside so it's accessible after if/else
+
+		if(items[0].RouteId == 20 || items[0].RouteId == 21 || items[0].RouteId == 22|| items[0].RouteId == 24) {
+			header = $(`
+				<div class="d-flex justify-content-between align-items-center bg-light p-2" style="cursor:pointer;">
+					<strong>${date}</strong>
+					<span class="toggle-arrow">▼</span>
+				</div>
+			`);
+		} else {
+			header = $(`
+				<div class="d-flex justify-content-between align-items-center bg-light p-2" style="cursor:pointer;">
+					<strong>${date} - ${items[0].ArrivalTime}- ${items[0].CheckInDate}</strong>
+					<span class="toggle-arrow">▼</span>
+				</div>
+			`);
+		}
+
+		const gridContainer = $('<div style="margin-top:10px;"></div>');
+
+		// Toggle grid visibility on header click
+		header.click(function () {
+		  gridContainer.toggle();
+		  const arrow = $(this).find('.toggle-arrow');
+		  arrow.text(arrow.text() === '▼' ? '▲' : '▼');
+		});
+
+		panel.append(header);
+		panel.append(gridContainer);
+		$("#vehicle-container").append(panel);
+
+		// Initialize dxDataGrid and save instance with title
+		const gridInstance = gridContainer.dxDataGrid({
+		  dataSource: items,
+		  export: {
+				enabled: true,
+				formats: ['pdf']
+		  },
+		  columns: [
+			{ dataField: "VehicleName", caption: "Vehicle Name" },
+			{ dataField: "StayWithCount", caption: "Quantity" }
+		  ],
+		  showBorders: true,
+		  rowAlternationEnabled: true,
+		  paging: false
+		}).dxDataGrid("instance");
+
+		window.vehicleGridInstances.push({ instance: gridInstance, title: `${date} - ${items[0].ArrivalTime}` });
+
+		// Initially hide grid, arrow pointing up
+		gridContainer.hide();
+		header.find('.toggle-arrow').text('▲');
+	  });
+
+		$('#export-Vehicle-pdf').on('click', async function () {
+		const { jsPDF } = window.jspdf;
+
+		for (let i = 0; i < window.vehicleGridInstances.length; i++) {
+			const grid = window.vehicleGridInstances[i];
+
+			const doc = new jsPDF({ orientation: "landscape" });
+
+			// Title text above the grid
+			const titleY = 10;
+			doc.setFontSize(14);
+			doc.text(grid.title, 10, titleY);
+
+			await DevExpress.pdfExporter.exportDataGrid({
+				jsPDFDocument: doc,
+				component: grid.instance,
+				topLeft: { x: 10, y: titleY + 10 }, // Add spacing after the title
+				margin: { left: 10, right: 10 },
+				customizeCell: function (options) {
+					if (options.pdfCell && options.pdfCell.styles) {
+						options.pdfCell.styles.fontSize = 8;
+					}
+				}
+			});
+
+			// Save the file
+			const safeTitle = grid.title.replace(/[:\/\\ ]+/g, '_'); // Clean for filename
+			doc.save(`${safeTitle}.pdf`);
+		}
+	});
+
+
+	});
+</script>
+
+<script>
+	var membersData = @Html.Raw(Json.Serialize(Model.Members));
+	console.log(membersData);
+</script>
+
+<script>
+	$(function () {
+		var gridInstance;
+
+		// Determine whether to show Flight/Train or Actual Check columns
+		const hasAnyActualDates = membersData.some(row =>
+			row.actualCheckIn || row.actualCheckOut
+		);
+
+		gridInstance = $("#transportationGrid").dxDataGrid({
+			dataSource: membersData,
+			showBorders: true,
+			paging: { enabled: false },
+			pager: { visible: false },
+			columnAutoWidth: true, // ✅ Added this line
+			editing: {
+				mode: "cell",
+				allowUpdating: true
+			},
+			filterRow: { visible: true, showEnabled: true },
+			headerFilter: { visible: true },
+			searchPanel: {
+				visible: true,
+				width: 240,
+				placeholder: "Search…",
+				searchVisibleColumnsOnly: true
+			},
+			export: {
+				enabled: true,
+				formats: ['pdf']
+			},
+			columns: [
+				{
+					dataField: "sNo",
+					caption: "#",
+					width: 50,
+					allowEditing: false,
+					calculateCellValue: function () { return ""; },
+					cellTemplate: function (container, options) {
+						const visibleIndex = options.component.getRowIndexByKey(options.key);
+						$("<div>").text(visibleIndex + 1).appendTo(container);
+					}
+				},
+				{ dataField: "company", dataType: "string", caption: "Company", allowEditing: false },
+				{ dataField: "package", dataType: "string", caption: "Package", allowEditing: false },
+				{ dataField: "fcId", dataType: "string", caption: "HB #", allowEditing: false },
+				{ dataField: "name", dataType: "string", caption: "Name", allowEditing: false },
+				{ dataField: "companyNames", dataType: "string", caption: "Twafa / Third Party", allowEditing: false },
+				{
+					dataField: "arrivalFlightNumber",
+					dataType: "string",
+					caption: "Flight No",
+					allowEditing: false,
+					visible: !hasAnyActualDates
+				},
+				{
+					dataField: "flightArrival",
+					caption: "Flight Arrival",
+					dataType: "string",
+					format: "HH:mm",
+					allowEditing: false,
+					visible: !hasAnyActualDates,
+					calculateDisplayValue: function (rowData) {
+						if (!rowData.flightArrival) return "";
+						let date = new Date(rowData.flightArrival);
+						return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+					},
+					filterOperations: ["="],
+					filterCellTemplate: function (cellElement, info) {
+						$("<input type='time' class='dx-texteditor-input' />")
+							.val(info.value || "")
+							.on("change", function (e) {
+								info.setValue(e.target.value);
+							})
+							.appendTo(cellElement);
+					}
+				},
+				{ dataField: "arrivalDate", dataType: "date", format: "yyyy-MM-dd", allowEditing: false, visible: !hasAnyActualDates },
+				{
+					dataField: "flightDeparture",
+					caption: "Flight Departure",
+					dataType: "string",
+					format: "HH:mm",
+					allowEditing: false,
+					visible: !hasAnyActualDates,
+					calculateDisplayValue: function (rowData) {
+						if (!rowData.flightDeparture) return "";
+						let date = new Date(rowData.flightDeparture);
+						return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+					},
+					filterOperations: ["="],
+					filterCellTemplate: function (cellElement, info) {
+						$("<input type='time' class='dx-texteditor-input' />")
+							.val(info.value || "")
+							.on("change", function (e) {
+								info.setValue(e.target.value);
+							})
+							.appendTo(cellElement);
+					}
+				},
+				{ dataField: "departureDate", dataType: "date", format: "yyyy-MM-dd", allowEditing: false, visible: !hasAnyActualDates },
+				{ dataField: "trainNumber", dataType: "string", allowEditing: false},
+				{ dataField: "trainArrival", dataType: "datetime", format: "yyyy-MM-dd HH:mm", allowEditing: true, visible: hasAnyActualDates },
+				{ dataField: "trainDeparture", dataType: "datetime", format: "yyyy-MM-dd HH:mm", allowEditing: true, visible: hasAnyActualDates },
+				{ dataField: "actualCheckIn", dataType: "datetime", format: "yyyy-MM-dd HH:mm", allowEditing: false, visible: hasAnyActualDates },
+				{ dataField: "actualCheckOut", dataType: "datetime", format: "yyyy-MM-dd HH:mm", allowEditing: false, visible: hasAnyActualDates },
+				{ dataField: "age", dataType: "number", allowEditing: false },
+				{ dataField: "passport", dataType: "string", allowEditing: false },
+				{ dataField: "visaNumber", dataType: "string", caption: "Visa No", allowEditing: false },
+				{ dataField: "gender", dataType: "string", allowEditing: false },
+				{ dataField: "hotelName", dataType: "string", caption: "Hotel Name", allowEditing: false },
+				{ dataField: "nextHotelName", dataType: "string", caption: "Next Hotel Name", allowEditing: false },
+				{ dataField: "routeName", dataType: "string", allowEditing: false },
+				{
+					dataField: "transpotationVehicleId",
+					caption: "Vehicle",
+					dataType: "number",
+					allowEditing: true,
+					calculateCellValue: function (rowData) {
+						return rowData.transpotationVehicleId != null ? rowData.transpotationVehicleId : rowData.vehicleId;
+					},
+					lookup: {
+						dataSource: @Html.Raw(Json.Serialize(ViewBag.Vehicles)),
+						valueExpr: "vehicleId",
+						displayExpr: "vehicleType"
+					},
+
+				},
+				
+				{ dataField: "noofVehicle", dataType: "number", caption: "No Of Vehicle", allowEditing: true },
+				{ dataField: "connectedNumber", dataType: "string", caption: "Vehicle Share", allowEditing: true },
+				{ dataField: "familyHeadId", dataType: "number", visible: false }
+			],
+			columnChooser: {
+				enabled: true,
+				mode: "select"
+			},
+			// onEditorPreparing: function(e) {
+			// 	if (e.dataField === "transpotationVehicleId") {
+			// 		e.editorOptions.onValueChanged = function(ev) {
+			// 			const rowData = e.row.data;
+			// 			rowData.transpotationVehicleId = ev.value;
+			// 			console.log("onValueChanged triggered", rowData);
+			// 			saveRowData(rowData);
+			// 		};
+			// 	}
+			// },
+			onEditorPreparing: function(e) {
+				if (e.dataField === "transpotationVehicleId") {
+					e.editorOptions.onValueChanged = function(ev) {
+						const rowData = e.row.data;
+						rowData.transpotationVehicleId = ev.value;
+						console.log("Vehicle changed", rowData);
+						saveRowData(rowData);
+					};
+				}
+
+				if (e.dataField === "noofVehicle" || e.dataField === "connectedNumber") {
+					e.editorOptions.onValueChanged = function (ev) {
+						const rowIndex = e.row.rowIndex;
+						const grid = e.component;
+						const rowData = grid.getVisibleRows()[rowIndex].data;
+
+						// Update value manually
+						rowData[e.dataField] = ev.value;
+
+						console.log("Updated Row", rowData); // ✅ check yahan null hai ya nahi
+
+						saveVehicleInfo(rowData);
+					};
+				}
+			},
+
+		}).dxDataGrid("instance");
+
+		// Export PDF Button
+		$('#export-pdf').on('click', function () {
+			const { jsPDF } = window.jspdf;
+
+			const doc = new jsPDF({ orientation: "landscape" });
+
+			DevExpress.pdfExporter.exportDataGrid({
+				jsPDFDocument: doc,
+				component: gridInstance,
+				margin: { top: 10, left: 10, right: 10, bottom: 10 },
+				customizeCell: function (options) {
+					if (options.pdfCell && options.pdfCell.styles) {
+						options.pdfCell.styles.fontSize = 8;
+					}
+				}
+			}).then(() => {
+				doc.save('TransportationGrid_Landscape.pdf');
+			});
+		});
+
+		// Form Submission - Hidden Inputs
+		$('form[name="memberForm"]').on('submit', function () {
+			const $form = $(this);
+			const data = gridInstance.option("dataSource");
+
+			$form.find("input[name^='FamilyHeadIds'], input[name^='FlightArrival'], input[name^='ArrivalDate'], input[name^='FlightDeparture'], input[name^='DepartureDate'], input[name^='TrainArrival'], input[name^='TrainDeparture'], input[name^='VehicleNumbers'], input[name^='NoofVehicle'], input[name^='ConnectedNumber'], input[name^='ArrivalFlightNumber'], input[name^='ActualCheckIn'], input[name^='ActualCheckOut']").remove();
+			// $form.find("input[name^='FamilyHeadIds'], input[name^='VehicleNumbers'], input[name^='NoofVehicle'], input[name^='ConnectedNumber'], input[name^='ArrivalFlightNumber']").remove();
+
+			data.forEach(function (row, idx) {
+				const appendInput = (name, value) => {
+					$('<input>', {
+						type: 'hidden',
+						name: `${name}[${idx}]`,
+						value: value ?? ""
+					}).appendTo($form);
+				};
+
+				appendInput("FamilyHeadIds", row.familyHeadId);
+
+				const hasActualCheck = row.actualCheckIn || row.actualCheckOut;
+
+				if (hasActualCheck) {
+					appendInput("TrainArrival", row.trainArrival);
+					appendInput("TrainDeparture", row.trainDeparture);
+					appendInput("ActualCheckIn", row.actualCheckIn);
+					appendInput("ActualCheckOut", row.actualCheckOut);
+				} else {
+					appendInput("FlightArrival", row.flightArrival);
+					appendInput("ArrivalDate", row.arrivalDate);
+					appendInput("FlightDeparture", row.flightDeparture);
+					appendInput("DepartureDate", row.departureDate);
+				}
+
+				appendInput("ArrivalFlightNumber", row.arrivalFlightNumber);
+
+				const selectedVehicleId = row.transpotationVehicleId != null ? row.transpotationVehicleId : row.vehicleId;
+				appendInput("VehicleNumbers", selectedVehicleId);
+				appendInput("NoofVehicle", row.noofVehicle);
+				appendInput("ConnectedNumber", row.connectedNumber);
+			});
+
+		});
+	});
+
+	function saveRowData(row) {
+		const hasActualCheck = row.actualCheckIn || row.actualCheckOut;
+
+		const postData = {
+			familyHeadId: row.familyHeadId,
+			arrivalFlightNumber: row.arrivalFlightNumber,
+			vehicleId: row.transpotationVehicleId != null ? row.transpotationVehicleId : row.vehicleId,
+			noOfVehicle: row.noofVehicle,
+			connectedNumber: row.connectedNumber,
+			blockId: @Model.GroupId // if available
+		};
+
+		if (hasActualCheck) {
+			postData.trainArrival = row.trainArrival;
+			postData.trainDeparture = row.trainDeparture;
+			postData.actualCheckIn = row.actualCheckIn;
+			postData.actualCheckOut = row.actualCheckOut;
+		} else {
+			postData.flightArrival = row.flightArrival;
+			postData.arrivalDate = row.arrivalDate;
+			postData.flightDeparture = row.flightDeparture;
+			postData.departureDate = row.departureDate;
+		}
+
+		$.ajax({
+			url: '/TransportationBlocks/SaveSingleTransportation',
+			method: 'POST',
+			data: postData,
+			id:@Model.GroupId,
+			success: function (res) {
+				if (res.success) {
+					DevExpress.ui.notify("Saved successfully!", "success", 2000);
+				} else {
+					DevExpress.ui.notify("Save failed: " + res.message, "error", 2000);
+				}
+			},
+			error: function (xhr) {
+				console.error('Error:', xhr);
+				alert('Error saving vehicle selection');
+			}
+		});
+	}
+
+		function saveVehicleInfo(rowData) {
+		$.ajax({
+			type: "POST",
+			url: '/TransportationBlocks/SaveVehicleInfo?id=@Model.GroupId',
+			data: {
+				id: @Model.GroupId,
+				familyHeadId: rowData.familyHeadId,
+				noofVehicle: rowData.noofVehicle,
+				connectedNumber: rowData.connectedNumber
+			},
+			success: function (res) {
+				if (res.success) {
+					DevExpress.ui.notify("Saved successfully!", "success", 2000);
+				} else {
+					DevExpress.ui.notify("Save failed: " + res.message, "error", 2000);
+				}
+			},
+			error: function (err) {
+				console.log("Error:", err);
+			}
+		});
+	}
+
+
+</script>
+
+
+<script>
+	function toggleColumn(columnName) {
+		const columnCells = document.querySelectorAll(`td[data-column="${columnName}"]`);
+		const headerCell = document.querySelector(`th[data-column="${columnName}"]`);
+		const isChecked = document.getElementById(`toggle${columnName}`).checked;
+
+		columnCells.forEach(cell => {
+			cell.style.display = isChecked ? '' : 'none';
+		});
+
+		headerCell.style.display = isChecked ? '' : 'none';
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		const checkboxes = document.querySelectorAll('[id^="toggle"]');
+		checkboxes.forEach(checkbox => {
+			checkbox.checked = true;
+		});
+	});
+</script>

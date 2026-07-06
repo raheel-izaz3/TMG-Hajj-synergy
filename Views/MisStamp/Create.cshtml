@@ -1,0 +1,68 @@
+﻿@model MisStamp
+
+@{
+    string modelName = "Mis Stamp";
+    string modelNamePlural = "Mis Stamps";
+    string modelControllerRoute = "MisStamp";
+    TMG.Data.TMGDbContext _db;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-12 W mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CompanyId"></label>
+                                <div class="input-group input-group-merge">
+                                    @* <input asp-for="CompanyId" class="form-control"> *@
+                                    <select asp-for="CompanyId" class="form-control">
+                                        @foreach (var item in ViewBag.Companies)
+                                        {
+                                            <option value="@item.CompanyId">@item.CompanyCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+                            <div class="col-sm-12 W mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="File"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="File" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="File"></span>
+                            </div>
+                            <div class="col-sm-12 W mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="FileSignature"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="FileSignature" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="FileSignature"></span>
+                            </div>
+
+                            <div class="col-sm-12 W mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="AccountantSignatureFile"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="AccountantSignatureFile" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="AccountantSignatureFile"></span>
+                            </div>
+                           
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

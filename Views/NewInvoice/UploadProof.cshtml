@@ -1,0 +1,50 @@
+﻿@model NewInvoice
+
+@{
+    string modelName = "Receipt";
+    string modelNamePlural = "Receipts";
+    string modelControllerRoute = "NewInvoice";
+}
+
+<style>
+    @*#video{transform:scaleX(-1);}*@
+</style>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Upload Proof</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="NewInvoiceId" value="@Model.NewInvoiceId" />
+                        <div class="row">
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Current Image</label>
+                                <div class="input-group input-group-merge">
+                                    <img src="~/@Model.ImagePath" alt="" width="300">
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="File"></label>
+                                <div class="input-group input-group-merge">
+                                    <input asp-for="File" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="File"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

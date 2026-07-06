@@ -1,0 +1,60 @@
+﻿<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Bank Account Ledger</h4>
+
+    <hr class="mb-4" />
+
+    <br />
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" asp-action="LedgerReport">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Start Date</label>
+                                <input type="date" name="startDate" class="form-control" value="@DateTimeManager.Today" />
+                            </div>
+                            <div class="col-md-4">
+                                <label>End Date</label>
+                                <input type="date" name="endDate" class="form-control" value="@DateTimeManager.Today" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="basic-icon-default-fullname"></label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" name="accountId">
+                                        <option value="">Select Bank Account</option>
+                                        @foreach (CompanyBankAccount account in ViewBag.CompanyBankAccounts)
+                                        {
+                                            <option value="@account.CompanyBankAccountId">@account.Title</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary">Get Ledger</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select[name="accountId"]').select2({
+            placeholder: "Select Bank Account",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>
+

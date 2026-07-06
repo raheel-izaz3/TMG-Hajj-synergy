@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Company>
+
+
+
+@{
+    string modelName = "Company";
+    string modelNamePlural = "Companies";
+    string modelControllerRoute = "Company";
+    TMG.Data.TMGDbContext _db;
+}
+
+
+@if (TempData.ContainsKey("restored"))
+{
+    if ((bool)TempData["restored"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', 'Role Restored Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["restored"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Companies/</span> Trash</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Website</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @*     @if (Model.Count() == 0)
+                    {
+                    <tr>
+                    <td colspan="5" class="text-danger text-center">No Data Found!</td>
+                    </tr>
+                    } *@
+                    @foreach (Company company in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@company.CompanyId</strong>
+                            </td>
+                            <td>@company.CompanyName</td>
+                            <td>@company.CompanyCode</td>
+                            <td>@company.Website</td>
+                            <td>@company.CreatedAt</td>
+                            <td>@company.UpdatedAt</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-info" asp-action="Restore" asp-route-id="@company.CompanyId"><i class="bx bx-recycle me-1"></i> Restore</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

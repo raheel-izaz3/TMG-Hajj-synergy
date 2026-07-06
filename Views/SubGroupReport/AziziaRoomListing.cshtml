@@ -1,0 +1,418 @@
+@model AziziaRoomListingModel
+
+@{
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azizia Room Listing</title>
+    <!-- JQUERRY CDN LINK  -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" type="text/javascript"></script>
+    <!-- DATA TABLE CDN LINK JS  -->
+    <script src="https://cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+    <!-- DATA-TABLE-BUTTONS CDN  -->
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet">
+    <!-- BOOTSTRAP 4 JS   -->
+    <script src="https://cdn.datatables.net/1.11.1/js/dataTables.bootstrap4.min.js" type="text/javascript"></script>
+    <!-- BOOTSTRAP 4 CSS   -->
+    <link href="https://cdn.datatables.net/1.11.1/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- Add the html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+
+        body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .title-body {
+            text-align: center;
+        }
+
+        .reservaion-text {
+            text-decoration: underline;
+            margin-left: 12px;
+        }
+
+        .reservaion-text p {
+            padding: 0;
+            margin: 0;
+            line-height: 10px;
+        }
+
+        .top-heading {
+            position: relative;
+        }
+
+        .hotel-data {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            margin-left: 15px;
+        }
+
+        .hotel-data h5 {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Table Styling */
+        #table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #table th,
+        #table td {
+            font-size: 9px;
+            text-align: center;
+            border: 1px solid #b49164;
+            padding: 4px;
+        }
+
+        #table th {
+            background-color: #f6f3ee;
+            color: #b49164;
+            font-weight: 700;
+        }
+
+        .familyData {
+            margin-top: 20px;
+        }
+
+        .familyData table {
+            border-collapse: collapse;
+            width: 50%;
+            line-height: 1.5;
+        }
+
+        .familyData th {
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 8px;
+            font-weight: 900;
+            border: 1px solid #b49164;
+            padding: 4px;
+        }
+
+        /* Hide elements in print */
+        @@media print {
+
+            .save,
+            .print,
+            .inc-dec-button {
+                display: none !important;
+            }
+        }
+
+        table img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .save {
+            display: inline-block;
+            width: 120px;
+            padding: 6px;
+            color: #b49164;
+            border-radius: 10px;
+            border: none;
+            background-color: #f6f3ee;
+            transition: ease-in-out .2s;
+            margin-top: 10px;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        /* .save:hover {
+                    background-color: black;
+                    color: white;
+
+                } */
+        .print {
+            display: inline-block;
+            width: 120px;
+            padding: 6px;
+            border: none;
+            transition: ease-in-out .2s;
+            margin-top: 10px;
+            margin-left: 10px;
+            font-weight: 500;
+            color: #b49164;
+            border-radius: 10px;
+            background-color: #f6f3ee;
+        }
+
+        .inc-dec-button button {
+            border: 2px solid white;
+            display: inline-block;
+            padding: 6px;
+            font-size: 8px;
+            /* margin-bottom: -20px; */
+            position: relative;
+            top: -10px;
+            vertical-align: top;
+            font-weight: 500;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <form action="/GroupReport/NewRoomListing" method="post">
+        <header>
+
+            <div class="title-body">
+                <h5 style="background-color: #b49164; color: aliceblue; padding: 8px 0;">@Model.CompanyName</h5>
+                <p>SUBGROUP: @Model.SubGroupName REPORT</p>
+                <p>GROUP: @Model.GroupName</p>
+                <hr>
+            </div>
+
+            <button type="button" style="margin-bottom: 20px;" class="print" onclick="print()">Print</button>
+            <button type="submit" style="margin-bottom: 20px;" class="print">Save</button>
+
+            <div class="reservaion-text">
+                <p>RESERVATION DETAILS </p>
+            </div>
+        </header>
+
+        <section class="top-heading">
+            <div class="hotel-data">
+                <div>
+                    <h5>HOTEL: @Model.HotelName</h5>
+                </div>
+                <div>
+                    <h5>CHECK IN: <SPAN id="checkIn">@Model.CheckIn</SPAN></h5>
+                </div>
+                <div>
+                    <h5>CHECK OUT: <SPAN id="checkIn">@Model.CheckOut</SPAN></h5>
+                </div>
+                <div class="inc-dec-button">
+                    <button id="increaseFontSizeBtn"> FLOOR FONT (+)</button>
+                    <button id="decreaseFontSizeBtn"> FLOOR FONT (-)</button>
+
+                    <button id="roomsBtnMax"> ROOM FONT (+)</button>
+                    <button id="roomsBtnMin"> ROOM FONT (-)</button>
+                </div>
+            </div>
+        </section>
+
+        <table id="table" class="table ">
+            <thead>
+                <tr>
+                    <th>S#</th>
+                    <th>HB #</th>
+                    <th>MEGA ID</th>
+                    <th>CID</th>
+                    <th>PHOTO</th>
+                    <th>FULLNAME</th>
+                    <th>GENDER</th>
+                    <th>EMAIL</th>
+                    <th>MOB# KSA</th>
+                    <th>PP#</th>
+                    <th>VISA#</th>
+                    <th>PKG ROOM TYPE</th>
+                    <th>ROOM TYPE</th>
+                    <th>Floor#</th>
+                    <th>ROOMS#</th>
+                    <th>REMARKS</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var member in Model.Members)
+                {
+                    <tr>
+                        <input type="hidden" name="FamilyHeadIds[]" value="@member.FamilyHeadId">
+                        <td>@member.SrNo</td>
+                        <td>@member.FcId</td>
+                        <td>@member.MegaId</td>
+                        <td>@member.CID</td>
+                        <td>
+                            <img src="~/@member.Photo" alt="">
+                        </td>
+                        <td>@member.FullName</td>
+                        <td>@member.Gender</td>
+                        <td>@member.Email</td>
+                        <td>
+                            <input type="text" value="@member.MOBKSA" name="MOBKSAs[]" id="">
+                        </td>
+                        <td>@member.PP</td>
+                        <td>
+                            <input type="text" value="@member.Visa" name="VisaNumbers[]" id="">
+                        </td>
+                        <td style="vertical-align: middle;">@member.PackageRoomType</td>
+                        @if (member.IsHead)
+                        {
+                            <td style="border-inline: 1px solid black; vertical-align: middle;" rowspan="@member.RowSpan">
+                                @member.RoomType</td>
+                            <td style="border-inline: 1px solid black; vertical-align: middle;" rowspan="@member.RowSpan"
+                                id="fontSizeBtn">
+                                @member.FloorNumber</td>
+                            <td style="border-inline: 1px solid black; vertical-align: middle;" rowspan="@member.RowSpan"
+                                id="fontIncText1">
+                                @member.RoomNumber</td>
+                        }
+                        <td>-----</td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </form>
+    @*
+    <section>
+    <div class="summary">
+    <h5
+    style="background-color: #f6f3ee; font-weight: bold; color: #b49164; text-align: center; margin-top: 15px;">
+    SUMMARY </h5>
+    </div>
+
+    <div style=" width: 100%; display: flex; justify-content: space-between; align-items: center;">
+    <div style=" width: 50%;" class="familyData">
+    <div class="total-memeber" style="text-align: center; font-weight: 600; ">
+    <p style="color: #b49164;">TOTAL MEMBERS : <span id="totalMembers">@Model.TotalMembers</span></p>
+    </div>
+    <table style="width: 100%;">
+    <thead>
+    <tr>
+    <th>Adult: @Model.TotalMaleAdult</th>
+    <th>Male: @Model.TotalMale <br>Child: @Model.TotalMaleChild</th>
+    <th>Infant: @Model.TotalMaleInfant</th>
+    </tr>
+    <tr>
+    <th>Adult: @Model.TotalFemaleAdult</th>
+    <th>Female: @Model.TotalFemale <br>Child: @Model.TotalFemaleChild</th>
+    <th>Infant: @Model.TotalFemaleInfant</th>
+    </tr>
+    </thead>
+    </table>
+    </div>
+
+    <div style="font-size: 10px; font-weight: bold;">
+    <p>TOTAL ROOMS</p>
+    <p>DOUBLE (DB2): <span>7</span></p>
+    <p>ONE BR-SUITE <span>(ONE BR-SUITE)</span>: <span>4</span></p>
+    <p>GENDER SHARING DOUBLE(S-DB2): <span>1</span></p>
+
+    </div>
+    </div>
+    </section> *@
+
+    <!-- Table-Data-Jquery -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $("#table").DataTable({
+                "info": false,
+                "bPaginate": false,
+            });
+        });
+    </script>
+
+    <script>
+        // increaseFontSizeBtn
+        document.getElementById('increaseFontSizeBtn').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontSizeBtn');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize + 1) + 'px';
+            });
+        });
+
+        //  DecreaseFontSizeBtn
+        document.getElementById('decreaseFontSizeBtn').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontSizeBtn');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize - 1) + 'px';
+            });
+        });
+
+        // rOOMS bUTTON fUNCTION
+        // increaseFontSizeBtn
+        document.getElementById('roomsBtnMax').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontIncText1');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize + 1) + 'px';
+            });
+        });
+
+        //  DecreaseFontSizeBtn
+        document.getElementById('roomsBtnMin').addEventListener('click', function () {
+            var stickerContent = document.querySelectorAll('#fontIncText1');
+            stickerContent.forEach(function (element) {
+                var currentFontSize = parseFloat(window.getComputedStyle(element).fontSize);
+                element.style.fontSize = (currentFontSize - 1) + 'px';
+            });
+        });
+        // Function to save content as PDF
+        function saveAsPDF() {
+            var excludeElements = ['.save', '.print', '#table_filter', '#roomsBtnMin', '#roomsBtnMax', '#decreaseFontSizeBtn', '#increaseFontSizeBtn']; // Add selectors for elements to exclude
+            var element = document.body.cloneNode(true); // Clone the body element
+
+            excludeElements.forEach(function (selector) {
+                var elements = element.querySelectorAll(selector);
+                elements.forEach(function (el) {
+                    el.parentNode.removeChild(el);
+                });
+            });
+
+            var opt = {
+                margin: 0.5,
+                filename: 'report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'A4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save();
+        }
+
+        document.querySelector('.save').addEventListener('click', function () {
+            saveAsPDF();
+        });
+
+        // Function to save content as PDF
+        // function saveAsPDF() {
+        //     var element = document.body;
+
+        //     var opt = {
+        //         margin: 0.5,
+        //         filename: 'report.pdf',
+        //         image: { type: 'jpeg', quality: 0.98 },
+        //         html2canvas: { scale: 2 },
+        //         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        //     };
+
+        //     html2pdf().from(element).set(opt).save();
+        // }
+
+        // document.querySelector('.save').addEventListener('click', function () {
+        //     saveAsPDF();
+        //     consolge.log("Working");
+        // });
+
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,276 @@
+@model HajjPackageInformationModel
+
+@{
+    Layout = "_PrintReportLayout";
+}
+
+
+<style>
+    @@page {
+        size: a4;
+    }
+
+    .table.header th,
+    .total {
+        background-color: rgb(237, 237, 237);
+        color: rgb(0, 0, 0);
+    }
+
+
+
+    .table {
+        border: 1px solid black;
+    }
+
+    .header-color-blue {
+        background-color: #1F4E78;
+        color: white;
+    }
+
+    .single-blue {
+        background-color: #1F4E78 !important;
+        color: white;
+    }
+
+    .single-gray {
+        background-color: rgb(221, 221, 221) !important;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        text-indent: 0;
+        font-size: 10px;
+        text-transform: uppercase;
+    }
+</style>
+<script>
+    window.onload = function () {
+        document.getElementById("download")
+            .addEventListener("click", () => {
+                const invoice = this.document.getElementById("data");
+                var opt = {
+                    margin: 0.4,
+                    filename: 'Acknowledgment.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().from(invoice).set(opt).save();
+            })
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+
+<div class="btn btn-success hideInPrint" onclick="print()">Print</div>
+<div class="btn btn-success hideInPrint" id="download">Download Invoice</div>
+
+<div id="data">
+    <div class="row mt-2" style="margin-bottom: 40px;">
+        <div class="col-md-12 text-center">
+            <h5 id="company_name" style="font-weight: 600;">@Model.CompanyName</h5>
+            <div><span style="font-size: 10px">@Model.CompanyAddress</span>
+            </div>
+            <div><b>Phone :</b> <span id="company_phone">@Model.CompanyPhone</span>
+                <b>Email :</b> <span id="company_email">@Model.CompanyEmail</span>
+                <b> Website :</b> <span id="company_website">@Model.CompanyWebsite</span>
+            </div>
+        </div>
+        <img src="~/@Model.CompanyLogo"
+            style="position: absolute; top: 0; right: 0; width: 80px; height: 80px" id="company_logo" width="80"
+            height="80" />
+
+    </div>
+
+    <table class="table table-bordered header">
+        <tr>
+            <th width="35%">SPO Name: </th>
+            <td>@Model.SPOName</td>
+        </tr>
+        <tr>
+            <th>Family Head: </th>
+            <td>@Model.FamilyHeadName</td>
+        </tr>
+        <tr>
+            <th>Package: </th>
+            <td>@Model.PackageName</td>
+        </tr>
+        <tr>
+            <th>Occupancy / Room Type: </th>
+            <td>@Model.Occupancy</td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered" style="text-align: center;">
+        <thead>
+            <tr class="header-color-blue">
+                <th>Total PAX</th>
+                <th>Adult</th>
+                <th>Child W/O BED</th>
+                <th>Infant</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.TotalPax</td>
+                <td>@Model.AdultPax</td>
+                <td>@Model.ChildPax</td>
+                <td>@Model.InfantPax</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr class="header-color-blue">
+                <th style="text-align: left;">Adult</th>
+                @foreach (string s in Model.RoomTableHeaders)
+                {
+                    <th>@s</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th width="40%" style="text-align: left;">AMOUNT PP USD</th>
+                @foreach (string s in Model.AdultPackageAmountPP)
+                {
+                    <td style="text-align: right;">@s</td>
+                }
+            </tr>
+            <tr>
+                <th style="text-align: left;">Ticket PP USD</th>
+                @for (int i = 0; i < Model.HeaderCountForColSpan; i++)
+                {
+                    <td style="text-align: right">@Model.TicketPricePP</td>
+                }
+            </tr>
+            <tr>
+                <th style="text-align: left;">** EXTRA ADF PP USD</th>
+                @for (int i = 0; i < Model.HeaderCountForColSpan; i++)
+                {
+                    <td style="text-align: right">@Model.ExtraPricePP</td>
+                }
+            </tr>
+            <tr class="total">
+                <th style="text-align: left;" class="">TOTAL AMOUNT PP USD</th>
+                @foreach (string s in Model.TotalAdultPackagePP)
+                {
+                    <td style="text-align: right;">@s</td>
+                }
+            </tr>
+
+            <tr>
+                <td colspan="@(Model.HeaderCountForColSpan + 1)"></td>
+            </tr>
+
+            <tr>
+                <th class="single-blue" style="text-align: left;">CHILD WITHOUT BED</th>
+                <th colspan="@Model.HeaderCountForColSpan" class="single-gray" style="text-align: right">@Model.ChildTotalPP</th>
+            </tr>
+
+            <tr>
+                <td colspan="@(Model.HeaderCountForColSpan + 1)"></td>
+            </tr>
+
+            <tr>
+                <th class="single-blue" style="text-align: left;">INFANT</th>
+                <th colspan="@Model.HeaderCountForColSpan" class="single-gray" style="text-align: right">@Model.InfantTotalPP</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th width="35%">ADULT TOTAL USD</th>
+                <td style="text-align: right">@Model.AdultTotalUsd</td>
+            </tr>
+
+            <tr>
+                <th>CHILD TOTAL USD</th>
+                <td style="text-align: right">@Model.ChildTotalUsd</td>
+            </tr>
+
+            <tr>
+                <th>INFANT TOTAL USD</th>
+                <td style="text-align: right">@Model.InfantTotalUsd</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="@Model.HeaderCountForColSpan"></td>
+            </tr>
+            <tr>
+                <th class="single-blue">INVOICE GRAND TOTAL</th>
+                <th class="single-blue" style="text-align: right">@Model.InvoiceGrandTotal</th>
+            </tr>
+            <tr>
+                <td colspan="@Model.HeaderCountForColSpan"></td>
+            </tr>
+            <tr>
+                <th class="single-gray">TOTAL DISCOUNT USD</th>
+                <th class="single-gray" style="text-align: right">@Model.TotalDiscount</th>
+            </tr>
+            <tr>
+                <td colspan="@Model.HeaderCountForColSpan"></td>
+            </tr>
+            <tr>
+                <th class="single-blue">NET TOTAL USD</th>
+                <th class="single-blue" style="text-align: right">@Model.NetTotal</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-bordered">
+        <tr>
+            <th class="single-gray">* DETAILS OF I-ADF</th>
+        </tr>
+        @foreach (string s in Model.IADF)
+        {
+            <tr>
+                <td>@s</td>
+            </tr>
+        }
+        @if (Model.IADF.Count == 0)
+        {
+            <tr>
+                <td>No Individual Facilities</td>
+            </tr>
+        }
+    </table>
+    <table class="table table-bordered">
+        <tr>
+            <th class="single-gray">** DETAILS OF EI-ADF</th>
+        </tr>
+        @foreach (string s in Model.EIADF)
+        {
+            <tr>
+                <td>@s</td>
+            </tr>
+        }
+        @if (Model.EIADF.Count == 0)
+        {
+            <tr>
+                <td>No Extras</td>
+            </tr>
+        }
+    </table>
+    <table class="table table-bordered">
+        <tr>
+            <th class="single-gray">REMARKS</th>
+        </tr>
+        @foreach (string s in Model.Remarks)
+        {
+            <tr>
+                <td>@s</td>
+            </tr>
+        }
+        @if (Model.Remarks.Count == 0)
+        {
+            <tr>
+                <td>No Remarks</td>
+            </tr>
+        }
+    </table>
+</div>

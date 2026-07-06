@@ -1,0 +1,47 @@
+﻿@model TMG.Models.Updated_Accounts.Accounts
+
+@{
+    string modelName = "Accounts";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+    <hr class="mb-4" />
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="CompanyId">Company</label>
+                                <select class="form-control" asp-for="CompanyId" asp-items="@ViewBag.Company">
+                                    <option disabled selected value="">Select Company</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="AccountGroupsId">Account Group</label>
+                                <select class="form-control" asp-for="AccountGroupsId" asp-items="@ViewBag.Acc">
+                                    <option disabled selected value="">Select Account Group</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="AccountGroupsId"></span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="Name">Name</label>
+                                <input asp-for="Name" class="form-control" />
+                                <span class="text-danger" asp-validation-for="Name"></span>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

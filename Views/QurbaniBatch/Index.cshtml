@@ -1,0 +1,198 @@
+﻿@model IEnumerable<QurbaniBatchIndexModel>
+@{
+    string modelName = "Qurbani Batch";
+    string modelNamePlural = "Qurbani Batches";
+    string modelControllerRoute = "QurbaniBatch";
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    @* @if (ViewBag.CreateAllowed == true)
+    { *@
+    @* <a asp-action="Create" class="btn btn-info">Create New</a> *@
+    <a asp-action="AllBatches" class="btn btn-primary">All Batches</a>
+    @* }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash
+        (@ViewBag.TrashCount)</a>
+    @* } *@
+    <br />
+    <br />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Bookings / Capacity</th>
+                        <th>Whatsapp Group Link</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+
+                    @foreach (QurbaniBatchIndexModel item in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i>
+                                <strong>@i</strong>
+                            </td>
+                            <td>@item.BatchName &nbsp;&nbsp; @Html.Raw(item.Completed ? "<span style='color: green'>(Completed)</span>" : "<span style='color: red'>(In Process)</span>")</td>
+                            <td>@item.Selected / @item.Capacity</td>
+                            <td><a href="@item.WhatsappGroupLink">@item.WhatsappGroupLink</a></td>
+                            <td>
+                                <div class="dropdown">
+                                    @* @if (ViewBag.EditAllowed == true)
+                                { *@
+                                    <button class="btn btn-info text-white" onclick="showModal('@item.QurbaniBatchId')"><i
+                                            class="bx bx-qr-scan me-1"></i> Show QR</button>
+                                    <div class="modal" id="qrModal_@item.QurbaniBatchId" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">QR Code</h5>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="~/@item.WhatsappQrCodePath" class="img-fluid"
+                                                        style="width: 300px;" alt="QR Code">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        id="closemodal_@item.QurbaniBatchId"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btn-group" id="dropdown-icon-demo">
+                                        <button type="button" class="btn btn-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bx bxs-report"></i> Reports
+                                        </button>
+                                        <ul class="dropdown-menu" style="">
+                                             <li>
+                                                    <a target="_blank" asp-controller="QurbaniBatch"
+                                                        asp-action="BatchMembers" asp-route-id="@item.QurbaniBatchId"
+                                                        class="dropdown-item d-flex align-items-center">1. Batch Members</a>
+                                                </li>
+                                            @if (!item.Completed)
+                                            {
+                                                <li>
+                                                    <a target="_blank" asp-controller="QurbaniBatch"
+                                                        asp-action="RamiStartTimeEdit" asp-route-id="@item.QurbaniBatchId"
+                                                        class="dropdown-item d-flex align-items-center">2. Rami Time</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="QurbaniBatch"
+                                                        asp-action="IncreaseDuration" asp-route-id="@item.QurbaniBatchId"
+                                                        class="dropdown-item d-flex align-items-center">3. Increase Duration</a>
+                                                </li>
+                                                <li>
+                                                    <a target="_blank" asp-controller="QurbaniBatch"
+                                                        asp-action="CompleteQurbani" asp-route-id="@item.QurbaniBatchId"
+                                                        class="dropdown-item d-flex align-items-center">4. Complete Qurbani</a>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    </div>
+                                    @* <div class="btn-group" id="dropdown-icon-demo">
+                                        <button type="button" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i class="bx bxs-report"></i> Print
+                                        </button>
+                                    </div> *@
+                                    @* <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.QurbaniBatchId"><i
+                                class="bx bx-edit-alt me-1"></i> Edit</a> *@
+                                    <button onclick="confirmDelete(@item.QurbaniBatchId)" class="btn btn-outline-danger"><i
+                                            class="bx bx-trash me-1"></i> Trash</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+        paging: false
+    });
+</script>
+<script>
+    function showModal(qurbanId) {
+        // Show the modal
+        $(`#qrModal_${qurbanId}`).modal('show');
+
+        $(`#closemodal_${qurbanId}`).on('click', function () {
+            $(`#qrModal_${qurbanId}`).modal('hide');
+        });
+    }
+</script>

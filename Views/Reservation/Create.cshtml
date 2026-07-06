@@ -1,0 +1,246 @@
+﻿@model ReservationRegisterRequest
+@{
+    string modelName = "Reservation";
+    string modelNamePlural = "Reservations";
+    string modelControllerRoute = "Reservation";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Hotel</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="HotelId"
+                                            id="select-hotel">
+                                        <option value="">Select a Hotel...</option>
+                                        @foreach (Hotel hotel in ViewBag.Model.Hotels)
+                                        {
+                                            <option value="@hotel.HotelId">@hotel.HotelCode - @hotel.HotelName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Company</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="select-company" onchange="getPackages(this.value)">
+                                        <option value="">Select a Company...</option>
+                                        @foreach (Company company in Model.Companies)
+                                        {
+                                            <option value="@company.CompanyId">@company.CompanyCode - @company.CompanyName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Package</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" onchange="getGroups(this.value)" id="select-package">
+                                        <option value="">Select a Package...</option>
+                                        @* @foreach (Package package in ViewBag.Model.Packages)
+                                        {
+                                            <option value="@package.PackageId">@package.Name</option>
+                                        } *@
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Group</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" onchange="getSubGroups(this.value)" id="select-group">
+                                        <option value="">Select a Group...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Sub Group</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" asp-for="SubGroupId" id="select-subgroup">
+                                        <option value="">Select a Sub Group...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="CheckInDate" class="form-control"
+                                           min="@DateTimeManager.Today" id="checkInDate" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check Out Date</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="date" asp-for="CheckOutDate" class="form-control"
+                                           min="@DateTimeManager.Today" id="checkOutDate" />
+                                </div>
+                                <span class="text-danger"></span>
+                            </div>
+
+                            <div id="rooms">
+                                <div class="row" id="room_0">
+                                    <div class="col-sm-12 mb-2">
+                                        <h5 class="float-start">Rooms</h5>
+                                        <button class="btn btn-outline-info float-end" type="button" onclick="addRoom(event)">Add <i class="bx bx-add-to-queue"></i></button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <select class="form-select" name="RoomId[]">
+                                                <option>Select Room...</option>
+                                                @foreach (Room r in Model.Rooms)
+                                                {
+                                                    <option value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6 mb-3">
+                                        <label class="form-label" for="basic-icon-default-fullname" name="">Quantity</label>
+                                        <div class="input-group input-group-merge">
+                                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                            <input type="text" name="Quantity[]" class="form-control" placeholder="Enter Quantity" />
+                                        </div>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <hr />
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let table = new DataTable('#reportTable', {
+    });
+
+    function getPackages(val) {
+        if (val != '') {
+            $.ajax({
+                url: "/Package/GetPackages/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const pack = document.getElementById('select-package')
+                    let html = '<option value="">Select a Package...</option>'
+                    for (let package of res) {
+                        html += `<option value="${package.packageId}">${package.name}</option>`
+                    }
+                    pack.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function getGroups(val) {
+        if (val != '') {
+            $.ajax({
+                url: "/Group/GetGroups/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const groupSelect = document.getElementById('select-group')
+                    let html = '<option value="">Select a Group...</option>'
+                    for (let group of res) {
+                        html += `<option value="${group.groupId}">${group.name}</option>`
+                    }
+                    groupSelect.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function getSubGroups(val) {
+        if (val != '') {
+            $.ajax({
+                url: "/SubGroup/GetSubGroups/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const groupSelect = document.getElementById('select-subgroup')
+                    let html = '<option value="">Select a Sub Group...</option>'
+                    for (let group of res) {
+                        html += `<option value="${group.subGroupId}">${group.name}</option>`
+                    }
+                    groupSelect.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            })
+        }
+    }
+
+    function addRoom(e) {
+        const id = Date.now() + Math.floor(Math.random() * 10000)
+        var row = `
+                    <div class="row" id="room_${id}">
+                                            <div class="col-sm-12 col-md-3 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Room</label>
+                                                <div class="input-group input-group-merge">
+                                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                                    <select class="form-select" name="RoomId[]">
+                                                        <option>Select Room...</option>
+    @foreach (Room r in Model.Rooms)
+    {
+                                                                    <option value="@r.RoomId">@r.RoomName (@r.RoomCode)</option>
+    }
+                                                    </select>
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 mb-3">
+                                                <label class="form-label" for="basic-icon-default-fullname" name="">Quantity</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="number" min="1" name="Quantity[]" class="form-control" placeholder="Enter Quantity" />
+                                                </div>
+                                                <span class="text-danger"></span>
+                                            </div>
+                                            <div class="col-sm-12 col-md-1 d-flex align-items-center">
+                                                <label class="form-label"></label>
+                                                <button type="button" class="btn btn-icon btn-danger" onclick="removeRoom(${id})"><i class='bx bxs-trash'></i></button>
+                                            </div>
+                                            <hr />`;
+
+        $("#rooms").append(row);
+    }
+
+    function removeRoom(id) {
+        // console.log(id)
+        // console.log(document.getElementById("room_"+id))
+        document.getElementById(`room_${id}`).remove();
+    }
+
+
+</script>

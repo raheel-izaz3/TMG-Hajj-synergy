@@ -1,0 +1,81 @@
+@model RoomDemandModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> Room Demand</h4>
+
+    <hr class="mb-4" />
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap " style="padding-bottom: 500px">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Place</th>
+                        <th>Hotel</th>
+                        <th>Type</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Sharing</th>
+                        @Html.Raw(Model.RoomTableHeaders)
+                        <th>Booked</th>
+                        @* @Html.Raw(Model.RoomTableHeaders)
+                        <th>Balance Stock</th> *@
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @foreach (RoomDemandEntryModel item in Model.Entries)
+                    {
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@item.SNo</strong>
+                            </td>
+                            <td>@item.Company</td>
+                            <td>@item.Package</td>
+                            <td>@item.Place</td>
+                            <td>@item.Hotel</td>
+                            <td>@item.Type</td>
+                            <td>@item.CheckIn</td>
+                            <td>@item.CheckOut</td>
+                            <td>@item.Sharing.ToString("F")</td>
+                            @foreach (float count in item.Demand)
+                            {
+                                <td>@count.ToString("F")</td>
+                            }
+                            <td>@item.Total.ToString("F")</td>
+                            @* @foreach (float count in item.Demand)
+                            {
+                                <td style="text-align: right;">0</td>
+                            }
+                            <td style="text-align: right;">0</td> *@
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let table = new DataTable('#table', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible'
+            }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+</script>

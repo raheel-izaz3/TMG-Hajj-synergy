@@ -1,0 +1,223 @@
+﻿@model IEnumerable<TMG.Controllers.QurbaniContronllers.Batches>
+@{
+	Layout = null;
+	var jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>ID Card List</title>
+
+	<link href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css" rel="stylesheet" />
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+		}
+
+		.downloade_btn {
+			padding: 8px 16px;
+			background-color: #f60000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-right: 10px;
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 999;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.4);
+		}
+
+		.modal-content {
+			background-color: #fff;
+			margin: 15% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 300px;
+			border-radius: 5px;
+		}
+
+		.close-btn {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+			.close-btn:hover {
+				color: black;
+			}
+
+		#email {
+			width: 100%;
+			padding: 8px;
+			margin-top: 10px;
+			margin-bottom: 15px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		#downloadBoth {
+			background-color: #007bff;
+			color: white;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+	</style>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script>
+	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.exporter.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+
+	<button class="downloade_btn" id="downloadPdf">Download PDF</button>
+	<button class="downloade_btn" id="downloadExcel" style="background-color:lightgreen;">Download Excel</button>
+
+	<div id="incoice_page_body">
+		<p>Printed Date : @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")</p>
+		<h4>Qurbani Batch List</h4>
+		<div id="reportGrid"></div>
+	</div>
+
+	<script>
+		let data = @Html.Raw(jsonData);
+		data = data.map((item, index) => ({
+			SNo: index + 1,
+			...item
+		}));
+
+		let gridInstance;
+
+		$(function () {
+			gridInstance = $("#reportGrid").dxDataGrid({
+				dataSource: data,
+				showBorders: true,
+				columnAutoWidth: true,
+				paging: false,
+				searchPanel: { visible: true },
+				filterRow: { visible: true, applyFilter: "auto" },
+				headerFilter: { visible: true },
+				export: {
+					enabled: true,
+					fileName: "ID Card List"
+				},
+				columns: [
+					{ dataField: "SNo", caption: "S.No", width: 60 },
+					{ dataField: "FullName", caption: "Full Name" },
+					{ dataField: "HBNo", caption: "HBNo" },
+					{ dataField: "PassportNumber", caption: "Passport Number" },
+					{ dataField: "Gender", caption: "Gender" },
+					{ dataField: "Nationality", caption: "Nationality" },
+					{ dataField: "CompanyName", caption: "Tawafa / Third Party" },
+					{ dataField: "PackageName", caption: "Package Name" }
+				]
+			}).dxDataGrid("instance");
+
+			
+			$("#downloadPdf").on("click", async function () {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF({
+					orientation: "portrait",
+					unit: "pt",
+					format: "a3"
+				});
+
+				
+				const loadImage = (src) => {
+					return new Promise((resolve, reject) => {
+						const img = new Image();
+						img.src = src;
+						img.onload = () => resolve(img);
+						img.onerror = reject;
+					});
+				};
+
+				try {
+					const img = await loadImage('/reportlogo/GroupLogo.png');
+					const imgWidth = 60;
+					const imgHeight = 25;
+					const pageWidth = doc.internal.pageSize.getWidth();
+					const x = pageWidth - imgWidth - 40;
+					const y = 10;
+					doc.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
+				} catch (err) {
+					console.error("Image failed to load", err);
+				}
+
+
+				doc.setFontSize(18);
+				doc.text("Qurbani Batch List", 40, 40);
+				doc.setFontSize(10);
+				doc.text("Printed Date: @DateTime.Now.ToString("dd/MMM/yyyy hh:mm")", 40, 60);
+
+				await DevExpress.pdfExporter.exportDataGrid({
+					jsPDFDocument: doc,
+					component: gridInstance,
+					topLeft: { x: 40, y: 80 },
+					margin: { top: 20, left: 20, right: 20, bottom: 20 },
+					customizeCell: function (options) {
+						const gridCell = options.gridCell;
+						const pdfCell = options.pdfCell;
+						pdfCell.font = { size: 8 ,color: '#ffffff'};
+						if (gridCell.column.dataField === "PackageName" && gridCell.data?.Color) {
+							pdfCell.backgroundColor = gridCell.data.Color;
+							pdfCell.textColor = "#ffffff"; 
+						}
+					}
+				});
+				doc.save("ID Card List.pdf");
+			});
+
+			
+			$("#downloadExcel").on("click", async function () {
+				const workbook = new ExcelJS.Workbook();
+				const worksheet = workbook.addWorksheet("Report");
+
+				const header = Object.keys(data[0]);
+				worksheet.addRow(header);
+
+				data.forEach(item => {
+					const row = worksheet.addRow(Object.values(item));
+					if (item.Color) {
+						row.eachCell((cell, colNumber) => {
+							if (header[colNumber - 1] === "PackageName") {
+								cell.fill = {
+									type: "pattern",
+									pattern: "solid",
+									fgColor: { argb: item.Color.replace("#", "") }
+								};
+								cell.font = { color: { argb: "FFFFFFFF" } }; 
+							}
+						});
+					}
+				});
+
+				const buf = await workbook.xlsx.writeBuffer();
+				saveAs(new Blob([buf]), "Qurbani Batch List.xlsx");
+			});
+		});
+	</script>
+
+</body>
+</html>

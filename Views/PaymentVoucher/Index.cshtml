@@ -1,0 +1,219 @@
+﻿@model IEnumerable<PaymentVoucher>
+@{
+    string modelName = "Voucher";
+    string modelNamePlural = "Vouchers";
+    string modelControllerRoute = "PaymentVoucher";
+}
+
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> @modelNamePlural</h4>
+
+    <hr class="mb-4" />
+
+    @*  @if (ViewBag.CreateAllowed == true)
+    {
+    *@
+    <a asp-action="Create" class="btn btn-info">Create New</a>
+    @* }
+    @if (ViewBag.RestoreAllowed == true)
+    { *@
+    <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.TrashCount)</a>
+    @*
+        }
+
+    *@
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Start Date</label>
+                            <input type="date"  id="startDate" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label>End Date</label>
+                            <input type="date" id="endDate" class="form-control" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="basic-icon-default-fullname"></label>
+                            <div class="input-group input-group-merge">
+                                <select class="form-control" id="payment_id">
+                                    <option value="">Select Payment Voucher</option>
+                                    @foreach (VoucherType voucher in ViewBag.VoucherTypes)
+                                    {
+                                        <option value="@voucher.VoucherTypeId">@voucher.Type</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" onclick="getVoucher()">Get Voucher</button>
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="card p-2">
+                <div class="table-responsive text-nowrap ">
+                    <table class="table table-hover" id="table">
+                        <thead>
+                            <tr>
+                                <th>Voucher Number</th>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Payee</th>
+                                <th>Amount</th>
+                                <th>R.O.E (PKR)</th>                                
+                                <th>R.O.E (SAR)</th>                                
+                                <th>R.O.E (USD)</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-1" id="tbody">
+                          
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+</div>
+<script>
+
+    function getVoucher() {
+        var id = document.getElementById("payment_id").value;
+        var startDate = document.getElementById("startDate").value;
+        var endDate = document.getElementById("endDate").value;
+
+
+
+        if (!id || !startDate || !endDate) {
+            alert("Select All Fields");
+        } else {
+            $.ajax({
+                url: "/PaymentVoucher/GetVoucher/",
+                data: {
+                    id: id,
+                    startDate:startDate,
+                    endDate: endDate
+                },
+                method: "GET",
+                success: res => {
+                    console.log(res);
+                    let html = '';
+                    for (let i of res) {
+                        var dateObject = new Date(i.date);
+                        var formattedDate = dateObject.toISOString().split("T")[0];
+                        html += `<tr>
+                            <td>${i.paymentVoucherId}</td>
+                            <td>${i.company.companyName}</td>
+                            <td>${formattedDate}</td>
+                            <td>${i.account?.name}</td>
+                            <td>${i.amount}</td>
+                            <td>${i.pkrroe}</td>
+                            <td>${i.sarroe}</td>
+                            <td>${i.usdroe}</td>
+                            <td>${i.description}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <a target="_blank" class="btn btn-info" href="/PaymentVoucher/Invoice/${i.paymentVoucherId}"><i class="bx bx-printer me-1"></i> Invoice</a>
+                                    <a class="btn btn-warning" href="/PaymentVoucher/Edit/${i.paymentVoucherId}"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                    <button onclick="confirmDelete(${i.paymentVoucherId})" class="btn btn-outline-danger"><i class="bx bx-trash me-1"></i> Trash</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }
+                    $("#tbody").html(html);
+                },
+                error: err => {
+                    console.log(err);
+                }
+            });
+        }
+    }
+
+    function confirmDelete(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Trash/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('select[name="accountId"]').select2({
+            placeholder: "Select Account Head",
+            allowClear: true,
+            width: '100%' // Adjust the width as needed
+        });
+    });
+</script>
+

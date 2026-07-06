@@ -1,0 +1,40 @@
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light">Place Wise Check In / Out</span>
+    </h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" action="/ReservationReport/PlaceWiseCheckInReport">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Place</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" name="PlaceId" required id="select-hotel">
+                                        <option value="1">Makkah</option>
+                                        <option value="2">Medina</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname">Check In / Out</label>
+                                <div class="input-group input-group-merge">
+                                    <select class="form-control" id="select-company" name="CheckInOut" required>
+                                        <option value="In">In</option>
+                                        <option value="Out">Out</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

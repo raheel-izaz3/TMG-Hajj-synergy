@@ -1,0 +1,80 @@
+﻿@model IEnumerable<ExpenseContactPerson>
+@{
+    string modelName = "ExpenseContactPerson";
+    string modelNamePlural = "Expense Contact Person";
+    string modelControllerRoute = "ExpenseContactPersons";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"></span> @modelNamePlural / Trash</h4>
+
+    <hr class="mb-4" />
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Expense Sub Type</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Designation</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (var VCP in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@i</strong>
+                            </td>
+                            <td>@VCP.ExpenseSubType.ExpenseSubTypeName</td>
+                            <td>@VCP.Name</td>
+                            <td>@VCP.Email</td>
+                            <td>@VCP.Contact</td>
+                            <td>@VCP.Designation.Name</td>
+                            <td>@VCP.Address</td>
+                            <td>
+                                @if (VCP.ActiveStatus == ActiveStatus.Active)
+                                {
+                                    <span class="circle-indicator active-status"></span>
+                                }
+                                else
+                                {
+                                    <span class="circle-indicator inactive-status"></span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn btn-info" onclick="confirmRestore(@VCP.ExpenseContactPersonId)">
+                                        <i class="bx bx-recycle me-1"></i> Restore
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmRestore(id) {
+        let del = confirm("Are you sure?")
+        if (del) {
+            location.href = `/@modelControllerRoute/Restore/${id}`;
+        }
+    }
+
+    let table = new DataTable('#table', {
+    });
+</script>
+

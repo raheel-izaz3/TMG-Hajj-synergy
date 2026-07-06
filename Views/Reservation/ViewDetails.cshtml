@@ -1,0 +1,170 @@
+﻿@model ReservationViewDetailsModel
+
+@{
+    string modelName = "Reservation";
+    string modelNamePlural = "Reservations";
+    string modelControllerRoute = "Reservation";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light">@modelNamePlural</span> / Details</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12 col-md-2">
+            <b>Hotel #: @Model.HotelNumber</b>
+        </div>
+        <div class="col-sm-12 col-md-2 mb-2">
+            <b>Hotel Code: @Model.HotelCode</b>
+        </div>
+        <div class="col-sm-12 col-md-2 mb-2">
+            <b>Place: @Model.Place</b>
+        </div>
+        <div class="col-sm-12 col-md-3 mb-2">
+            <b>Reserved By: @Model.CompanyName</b>
+        </div>
+        <div class="col-sm-12 col-md-3 mb-2">
+            <b>RSV #: @Model.RSVNumber</b>
+        </div>
+        <div class="col-sm-12 col-md-3 mb-2">
+            <b>Check In: @Model.CheckIn</b>
+        </div>
+        <div class="col-sm-12 col-md-3 mb-2">
+            <b>Check Out: @Model.CheckOut</b>
+        </div>
+
+    </div>
+
+
+    <hr class="mb-4" />
+
+    <h5>Reserved Rooms</h5>
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Type</th>
+                        <th>Code</th>
+                        <th>Room #</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+
+                    @foreach (RoomDetailEntryModel entry in Model.RoomDetails)
+                    {
+                        <tr>
+                            <td>
+                                <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@entry.Sno</strong>
+                            </td>
+                            <td>@entry.RoomType</td>
+                            <td>@entry.RoomCode</td>
+                            <td>@entry.RoomNumber</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h5>Sub Group Members</h5>
+    <div class="card p-2">
+        <div class="row">
+            <form method="post">
+                <div class="col-sm-12">
+                    <div class="table-responsive text-nowrap ">
+                        <table class="table table-hover" id="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Members</th>
+                                    <th>Room Code</th>
+                                    <th>Floor #</th>
+                                    <th>Room #</th>
+                                    <th>Connect With</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-1">
+                                @{
+                                    int i = 0;
+                                }
+                                @foreach (ReservationViewDetailMember entry in Model.SubMembers)
+                                {
+
+                                    <tr>
+                                        <td>
+                                            <i class="fab fa-bootstrap fa-lg text-primary me-3"></i> <strong>@entry.SNo</strong>
+                                        </td>
+                                        <td>@Html.Raw(entry.Name)</td>
+                                        <td>@Html.Raw(entry.RoomCode)</td>
+                                        <td>
+                                            <select class="form-control" onchange="getRooms(this.value)" style="width: 150px">
+                                                <option value="">Select Floor</option>
+                                                @foreach (Floor f in Model.Floors)
+                                                {
+                                                    <option value="@f.FloorId">Floor #@f.FloorNumber</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select name="RoomIds[@i]" class="form-control" id="select-room" style="width: 150px">
+                                                <option value="">Select Room</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control"  style="width: 150px" name="ConnectedWith[@i]">
+                                                <option value="">--</option>
+                                                @foreach (RoomDetailEntryModel room in Model.RoomDetails)
+                                                {
+                                                    if (entry.SingleRoomCode != room.RoomCode)
+                                                    {
+                                                        <option value="@room.ReservationRoomsId">
+                                                            @room.RoomCode
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-12 my-2">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function getRooms(val) {
+        if (val != '') {
+            $.ajax({
+                url: "/FloorRoom/GetAllotedRooms/" + val,
+                method: "GET",
+                success: res => {
+                    console.log(res)
+                    const rooms = document.getElementById('select-room')
+                    let html = `<option value=''>Select Room</option>`
+                    for (let room in res) {
+                        html += `<option value='${room.floorRoomId}'>Room #${room.floorRoom.roomNumber(${ room.room.roomCode })}</option>`;
+                    }
+                    rooms.innerHTML = html
+                },
+                error: err => {
+                    console.log(err)
+                }
+            });
+        }
+    }
+</script>
+

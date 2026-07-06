@@ -1,0 +1,395 @@
+﻿@{
+    Layout = "";
+}
+@model TMG.Models.HajjReceiptModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+
+    <title>Receipt </title>
+    <script>
+        window.onload = function () {
+            document.getElementById("download")
+                .addEventListener("click", () => {
+                    const invoice = this.document.getElementById("acknowledgment");
+                    console.log(invoice);
+                    console.log(window);
+                    var opt = {
+                        margin: 0.2,
+                        filename: '@ViewBag.HeadNameWithId' + ' Slip.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    };
+                    html2pdf().from(invoice).set(opt).save();
+                })
+        }
+    </script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+
+
+    <style>
+        * {
+            /* margin: 0; */
+            /* padding: 0; */
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        p {
+            padding: 3px;
+            margin: 3px;
+            font-size: 12px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            margin: 0px;
+            padding: 0px;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            table tr {
+                border: 2px solid black;
+            }
+
+            table th {
+                font-size: 12px;
+                text-align: left !important;
+                border: 1px solid black;
+            }
+
+            table td {
+                font-size: 12px;
+            }
+
+        img {
+            width: 100%;
+        }
+
+        .applicatn-copt-text {
+            text-align: right;
+        }
+
+        .govt-logo {
+            text-align: center;
+        }
+
+            .govt-logo img {
+                width: 80px;
+                height: 80px;
+            }
+
+        .top-heading-section {
+            text-align: center;
+            line-height: 1.1;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+            .top-heading-section h3 {
+                margin-top: 8px;
+                padding: 8px;
+            }
+
+            .top-heading-section h1 {
+                margin-top: 12px;
+                margin-bottom: 25px;
+                letter-spacing: 1px;
+            }
+
+        .receipt-no-date {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .enrollment-table {
+            margin-bottom: 20px;
+        }
+
+            .enrollment-table table th,
+            td {
+                padding: 8px;
+            }
+
+        .hajj-application-form table th,
+        td {
+            padding: 8px;
+        }
+
+        .image-row {
+            position: relative;
+            border: none !important;
+        }
+
+            .image-row img {
+                border: 2px solid black;
+                position: absolute;
+                top: 17px;
+                right: 0;
+            }
+
+        .Signature-part {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            height: 220px;
+            text-align: center;
+            align-items: end;
+            column-gap: 30px;
+            margin-top: 20px;
+        }
+
+            .Signature-part p {
+                margin-top: 70px;
+                font-weight: 500;
+                font-size: 14px;
+            }
+
+
+
+        .line {
+            background-color: black;
+            color: black;
+            border-top: 1px solid black;
+            width: 250px;
+            position: relative;
+            top: 80px;
+            bottom: 0;
+        }
+
+
+
+        .last-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 100px;
+            height: 110px;
+            align-items: end;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+
+    <button id="download-pdf" class="print-btn">Download PDF</button>
+
+    <div class="receipt">
+
+    
+
+        <header>
+            <div class="applicatn-copt-text">
+                <p>HGO COPY / APPLICANT COPY</p>
+            </div>
+
+            <div class="govt-logo">
+                <img src="~/Images/logo.jpg" alt="">
+
+            </div>
+
+            <div class="top-heading-section">
+                <h2>@Model.CompanyName</h2>
+                <p> @Model.CompanyAddress</p>
+                <span>@Model.CompanyContact</span>
+                <span>02134860711</span>
+                <h1> HAJJ RECEIPT - HAJJ 2024 (1445 AH)</h1>
+            </div>
+        </header>
+
+        <section class="receipt-no-date">
+            <div>
+                <span>RECEIPT NO: </span>
+                <span>@Model.ReceiptNumber</span>
+            </div>
+            <div>
+                <span> DATE: </span>
+                <span>@Model.Date</span>
+            </div>
+        </section>
+        <!-- First-small-table start  -->
+        <div class="enrollment-table">
+            <table>
+                <tr>
+
+                    <th>ENROLLMENT NO:</th>
+                    <td>@Model.EnrollmentNo</td>
+                    <th>MUNAZAM COMPANY:</th>
+                    <td>@Model.MunazamCompany</td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="hajj-application-form">
+            <table>
+                <tr class="image-row">
+                    <td colspan="2">
+                        <img src="~/@Model.MemberImage" alt="Profile Image"
+                             style="width: 155px; height: 205px; ">
+                    </td>
+                </tr>
+                <tr>
+                    <th>HAJJ APPLICATION NO:</th>
+                    <td>@Model.HajjApplicationNumber</td>
+                </tr>
+
+                <tr>
+
+                    <th>NAME OF APPLICANT:</th>
+                    <td>@Model.ApplicantName</td>
+                </tr>
+                <tr>
+                    <th>SCHEME:</th>
+                    <td>@Model.Scheme</td>
+
+                </tr>
+                <tr>
+                    <th> HAJJ PACKAGE:</th>
+                    <td>@Model.HajjPackage</td>
+
+                </tr>
+                <tr>
+                    <th> MAKKAH ACCOMMODATION:</th>
+                    <td>@Model.MakkahAccommodation</td>
+
+                </tr>
+                <tr>
+                    <th> PACKAGE AMOUNT:</th>
+                    <td>@Model.PackageAmount</td>
+
+                </tr>
+                <tr>
+                    <th> ADDITIONAL FACILITIES:</th>
+                    <td>NO</td>
+                    <th> ADDITIONAL AMOUNT:</th>
+                    <td>0</td>
+
+                </tr>
+                <tr>
+                    <th> TOTAL AMOUNT:</th>
+                    <td>@Model.TotalAmount</td>
+                    <th> AMOUNT RECEIVED:</th>
+                    <td>@Model.AmountReceived</td>
+                </tr>
+                <tr>
+                    <th> PAYMENT MODE:</th>
+                    <td> @Model.PaymentMode</td>
+                    <th> REFERENCE NO:</th>
+                    <td>@Model.ReferenceNo</td>
+                </tr>
+
+                <tr>
+                    <th> AMOUNT:</th>
+                    <td>@Model.Amount</td>
+                    <th> DATE:</th>
+                    <td>@Model.Date</td>
+                </tr>
+                <tr>
+                    <th> REMARKS:</th>
+                    <td>@Model.Remarks</td>
+
+                </tr>
+
+            </table>
+        </div>
+
+        <section class="Signature-part">
+            <div>
+                <p> APPLICANT SIGNATURE</p>
+                <img style="width: 250px; border-bottom: 1px solid black" src="" alt="">
+            </div>
+
+            <div>
+                @if (ViewBag.Invoice.Invoice.ImagePath is not null)
+                {
+                    <img src="~/@ViewBag.Invoice.Invoice.ImagePath" class="img-fluid" alt="Image not Available" width="180px" height="180px" />
+                }
+                else if (ViewBag.Invoice.Invoice.ImageBase64 is not null)
+                {
+                    <img loading="lazy" src="@ViewBag.Invoice.Invoice.ImageBase64" class="img-fluid" alt="Image not Available" width="180px" height="180px" />
+                }
+                @* <img src="logo.jpg" alt="" width="180px" height="180px"> *@
+                <p> SIGNATURE (ACCOUNTANT)</p>
+                <img src="~/@Model.AccountantSign" alt="">
+                @* <hr class="line"> *@
+            </div>
+            <div>
+                <p> STAMP (ACCOUNTANT)</p>
+                <img src="~/@Model.CompanyStamp" style="width: 150px; border-bottom: 1px solid black;" alt="">
+                @* <hr class="line"> *@
+            </div>
+        </section>
+
+        <section class="last-section">
+            <div>
+                <span> Hajj Application No. </span>
+                <span>@Model.HajjApplicationNumber</span>
+            </div>
+            <div>
+                <span>Page: </span>
+                <span> 1 of 1 </span>
+            </div>
+            <div>
+                <span>Receipt No. </span>
+                <span>@Model.ReceiptNumber</span>
+            </div>
+        </section>
+
+        <dv style="page-break-after: always;"></dv>
+
+    </div>
+
+  
+    <script>
+        document.getElementById('download-pdf').addEventListener('click', function () {
+            var element = document.querySelector('.receipt');
+
+            // Hide buttons before generating the PDF
+            var buttons = document.querySelectorAll('.print-btn');
+            buttons.forEach(button => button.style.display = 'none');
+
+            html2pdf().from(element).set({
+                margin: 1,
+                filename: 'Receipt.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            }).save().then(function () {
+                // Show buttons after PDF is generated
+                buttons.forEach(button => button.style.display = 'inline-block');
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

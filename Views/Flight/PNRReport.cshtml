@@ -1,0 +1,257 @@
+﻿@model PNRReportModel
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold"><span class="text-muted fw-light"></span> PNR Report</h4>
+
+    <hr class="mb-4" />
+
+    <h5 class="fw-bold mb-2">Sectors</h5>
+
+    <div class="card p-2">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="sectorTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Flight#</th>
+                        <th>Destination</th>
+                        <th>DEP Date</th>
+                        <th>DEP Time</th>
+                        <th>Arrival Date</th>
+                        <th>Arrival Time</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @for (int i = 0; i < Model.Sectors.Count; i++)
+                    {
+                        var currentSector = Model.Sectors.ElementAt(i);
+
+                        <tr>
+                            <td>@currentSector.SectorNumber</td>
+                            <td>@currentSector.FlightNumber</td>
+                            <td>@currentSector.Destination</td>
+                            <td>@currentSector.DepartureDate</td>
+                            <td>@currentSector.DepartureTime</td>
+                            <td>@currentSector.ArrivalDate</td>
+                            <td>@currentSector.ArrivalTime</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+
+    <p class="fw-bold">Choose Table Headers</p>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">#</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Title</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Given Name</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Sur Name</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Gender</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Passport #</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">Passport D.O.E</label>
+    </div>
+    <div class="form-check form-check-inline mb-2">
+        <input class="form-check-input check-header" onchange="colVis(this)" type="checkbox" checked>
+        <label class="form-check-label" for="inlineCheckbox1">D.O.B</label>
+    </div>
+
+    @{
+        int pnrCounter = 0;
+    }
+    @foreach (PNRReportEntryModel entry in Model.Entries)
+    {
+        <hr class="mb-3" />
+
+        <h5 class="mb-4" id="@entry.PNR">@entry.PNR</h5>
+
+        <div class="card p-2">
+            <div class="table-responsive text-nowrap ">
+                <table class="table table-hover pnrTables" id="reportTable-@entry.PNR" name="pnrTables"
+                    data-table-id="@entry.PNR">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Sur Name</th>
+                            <th>Given Name</th>
+                            <th>Gender</th>
+                            <th>Passport #</th>
+                            <th>D.O.B</th>
+                            <th>Passport D.O.E</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-1">
+                        @for (int i = 0; i < entry.PNRMembers.Count; i++)
+                        {
+                            var currentMember = entry.PNRMembers.ElementAt(i);
+
+                            <tr>
+                                <td>@currentMember.SNo</td>
+                                <td>@currentMember.Title</td>
+                                <td>@currentMember.SurName</td>
+                                <td>@currentMember.GivenName</td>
+                                <td>@currentMember.Gender</td>
+                                <td>@currentMember.PassportNumber</td>
+                                <td>@currentMember.DateOfBirth</td>
+                                <td>@currentMember.PassportDOE</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            new DataTable('#reportTable-@pnrCounter', {
+                dom: 'Bfrtip',
+                paging: false,
+                lengthChange: false,
+                buttons: [{
+                    text: 'Export to Excel',
+                    extend: 'excelHtml5',
+                    className: 'btn btn-dark',
+                    exportOptions: {
+                        columns: ':visible:not(:last-child)'
+                    }
+                }]
+
+            });
+        </script>
+        
+        pnrCounter++;
+    }
+
+</div>
+
+
+<script>
+    // Initialize DataTable for each report table
+    document.querySelectorAll('.pnrTables').forEach(table => {
+        new DataTable(table, {
+            dom: 'Bfrtip',
+            buttons: [{
+                text: 'Export to Excel',
+                extend: 'excelHtml5',
+                className: 'btn btn-dark',
+                // exportOptions: {
+                //     columns: ':visible:not(:last-child)'
+                // }
+            },
+            {
+                text: 'Copy',
+                className: 'btn btn-info',
+                extend: 'copy'
+            }],
+            paging: false,
+            lengthChange: false
+        });
+    });
+
+    // Initialize DataTable for the sector table
+    let sectorTable = new DataTable('#sectorTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            // exportOptions: {
+            //     columns: ':visible:not(:last-child)'
+            // }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+    // Add data-column-index attribute to each checkbox
+    const checkHeaders = document.querySelectorAll(".check-header");
+    let i = 0;
+    for (let check of checkHeaders) {
+        check.setAttribute("data-column-index", i);
+        check.setAttribute("data-pnr-index", i);
+        i++;
+    }
+
+    // Function to toggle column visibility
+    function colVis(elem) {
+        let index = parseInt(elem.getAttribute('data-column-index'));
+
+        if (elem.checked) {
+            $(`.pnrTables td:nth-child(${index + 1}), .pnrTables th:nth-child(${index + 1})`).show();
+        }
+        else {
+            $(`.pnrTables td:nth-child(${index + 1}), .pnrTables th:nth-child(${index + 1})`).hide();
+        }
+    }
+</script>
+
+
+@* <script>
+    let sectorTable = new DataTable('#sectorTable', {
+        dom: 'Bfrtip',
+        buttons: [{
+            text: 'Export to Excel',
+            extend: 'excelHtml5',
+            className: 'btn btn-dark',
+            exportOptions: {
+                columns: ':visible:not(:last-child)'
+            }
+        },
+        {
+            text: 'Copy',
+            className: 'btn btn-info',
+            extend: 'copy'
+        }],
+        paging: false,
+        lengthChange: false
+    });
+
+
+    const checkHeaders = document.querySelectorAll(".check-header")
+    let i = 0;
+    for (let check of checkHeaders) {
+        check.setAttribute("data-column-index", i)
+        check.setAttribute("data-pnr-index", i)
+        i++
+    }
+
+    function colVis(elem) {
+        let index = parseInt(elem.getAttribute('data-column-index'))
+        // const tables = document.getElementsByName('pnrTables')
+        // console.log(tables)
+
+        if (elem.checked) {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).show();
+        }
+        else {
+            $(`.pnrTables td:nth-child(${index + 1}),.pnrTables th:nth-child(${index + 1})`).hide();
+        }
+
+    }
+</script> *@

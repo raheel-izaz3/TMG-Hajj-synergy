@@ -1,0 +1,227 @@
+﻿@model TMG.Controllers.FamilyControllers.Visas
+
+@{
+    Layout = "";
+}
+@{
+    var fileUrl = Url.Content("~/" + "certificate.jpg");
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Print</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-lite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .invoice-container {
+            position: relative;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 794px; /* A4 Width at 96 DPI */
+            height: 990px; /* A4 Height at 96 DPI */
+            padding: 20px;
+            border: 2px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .left-image {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 120px;
+        }
+
+            .left-image img {
+                margin-top: -40px;
+                margin-left: -40px;
+                width: 90px;
+                height: 110px;
+            }
+
+
+        .right-images {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+            .right-images img:first-child {
+                width: 108px;
+                margin-right: -71px;
+                margin-top: -50px;
+                height: 106px;
+            }
+
+            .right-images img:last-child {
+                margin-top: -26px;
+                margin-right: -43px;
+                width: 60px;
+                height: auto;
+            }
+
+
+        .content-area {
+            padding: 100px 140px 60px;
+            text-align: center;
+            overflow-wrap: break-word;
+            font-size: 18px;
+            color: #000;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+            .footer img {
+                margin-bottom: -4px;
+                width: 100%;
+            }
+
+        .tmg-stamp {
+            position: absolute;
+            top: 534px;
+            left: 180px;
+            width: 100px;
+            height: 100px;
+        }
+
+            .tmg-stamp img {
+                width: 88%;
+                height: 100%;
+                object-fit: contain;
+                margin-left: -46px;
+                margin-top: 178px;
+            }
+
+
+        .export-btn {
+            margin-top: 40px;
+            padding: 12px 24px;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            background-color: #404346;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+            .export-btn:hover {
+                background-color: red;
+            }
+
+        @@media (max-width: 768px) {
+            .invoice-container {
+                width: 90%;
+                height: auto;
+            }
+
+            .content-area {
+                padding: 80px 80px 60px;
+            }
+
+            .left-image, .right-images {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="export-btn" onclick="exportToImage()">Export as Image</button>
+    <button class="export-btn" onclick="sendToServer()">Send</button>
+
+    <div id="invoice" class="invoice-container" style="background-image: url('@fileUrl'); position: relative;">
+        <div class="image-container" style="display: flex;align-items: center;justify-content: center;margin-top: 410px;font-size: 30px;color: red;font-weight: 600;">
+            @ViewBag.HajjiName
+        </div>
+        <div class="image-container" style="display: flex;align-items: center;justify-content: center;margin-bottom: 530px;font-size: 30px;color: red;font-weight: 600;">
+            @ViewBag.HbNo
+        </div>
+    </div>
+
+
+    <script>
+        function exportToImage() {
+            const invoice = document.getElementById("invoice");
+            html2canvas(invoice).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'certificate.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        function sendToServer() {
+            const invoice = document.getElementById("invoice");
+            const id = '@ViewBag.ID';
+
+            html2canvas(invoice).then(canvas => {
+                const imageData = canvas.toDataURL("image/png");
+
+                  $.ajax({
+                    url: `/Email/SendCertificate/${id}`,
+                    type: 'POST',
+                    data: { pdfBase64: imageData },
+                    success: function (response) {
+                        alert("Email sent successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error sending email: " + error);
+                    }
+                });
+            });
+        }
+
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,742 @@
+﻿@model RoomListingModel
+
+@{
+	Layout = "_PrintReportLayout";
+	var members = Newtonsoft.Json.JsonConvert.SerializeObject(Model.Members);
+	var floors = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.FloorRooms);
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.3/css/dx.light.css" />
+
+<script src="https://cdn3.devexpress.com/jslib/23.1.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.1.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.1.3/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/exporter/jspdf/dx.exporter.js"></script>
+<style>
+	@@media print {
+		.hideInPrint, button, .btn, #copyTable, #copyTableContent {
+			display: none !important;
+		}
+
+		a {
+			display: none !important;
+		}
+
+		input, select {
+			border: none !important;
+			background: transparent !important;
+			pointer-events: none !important;
+		}
+
+		.passport-img,
+		.visa-img {
+			max-width: 100%;
+			height: auto;
+		}
+
+		canvas {
+			width: 100% !important;
+			height: auto !important;
+		}
+
+		body {
+			-webkit-print-color-adjust: exact !important;
+		}
+
+		.container-fluid {
+			padding: 0;
+			margin: 0;
+		}
+
+		table {
+			page-break-inside: auto;
+		}
+
+		tr {
+			page-break-inside: avoid;
+			page-break-after: auto;
+		}
+
+		hr {
+			border: 1px solid #000 !important;
+		}
+	}
+
+	/* .passport-div {
+			max-height: 55% !important;
+			max-width: 55% !important;
+			}
+
+			.passport-img {
+			width: 55% !important;
+			} */
+
+	.passport-div {
+		max-height: 55% !important;
+		max-width: 55% !important;
+		overflow: hidden;
+		margin: auto;
+	}
+
+	.passport-img {
+		width: 55% !important;
+		object-fit: cover;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+	}
+
+	.visa-div {
+		width: 400px;
+		height: 700px; /* Increase height here */
+		margin: auto;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		overflow: hidden;
+	}
+
+	.visa-iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	#pdf-canvas-@@i {
+		width: 100%;
+		height: auto; /* Ensure it scales properly */
+		max-height: 100%; /* Restrict the height to the container's max height */
+	}
+</style>
+
+<a asp-controller="Group" asp-action="Index" class="btn btn-primary text-white m-2 hideInPrint">Back To Dashboard</a>
+<button id="export-pdf" class="btn btn-primary mb-2">Export to PDF</button>
+
+
+<div class="container-fluid mt-3">
+	<h5 class="text-center hideInPrint"><u>Hotel Rooming List</u></h5>
+	<p class="text-center mb-0 fw-bold hideInPrint">Report</p>
+	<p class="text-center mt-1 hideInPrint"><u>Group: @Model.Group</u></p>
+
+	<hr class="my-3">
+	@* <form action="/ItineraryBlock/Save/@Model.GroupId" name="memberForm" method="post">
+		<input type="hidden" name="jsonData" id="jsonData" />
+	</form> *@
+	<form name="memberForm" asp-action="Save" asp-route-id="@Model.GroupId" method="post">
+		@Html.AntiForgeryToken()
+		<div id="gridContainer"></div>
+
+
+		@* <div class="text-end mt-3">
+			<button type="submit" class="btn btn-primary">
+				Save Transportation Info
+			</button>
+		</div> *@
+
+
+	</form>
+
+	<h5 class="text-center mt-4"><u>Room Summary</u></h5>
+	<div class="row">
+		<div class="col-sm-6">
+			<table class="table">
+				<tr>
+					<th class="border-bottom text-center" colspan="3">
+						Total Members: @Model.MemberSummary.TotalMembers
+					</th>
+				</tr>
+				<tr>
+					<th class="text-center" colspan="3">Male: @Model.MemberSummary.MaleCount</th>
+				</tr>
+				<tr>
+					<td class="text-center">Adult: @Model.MemberSummary.AdultMales</td>
+					<td class="text-center">Child: @Model.MemberSummary.ChildMales</td>
+					<td class="text-center">Infant: @Model.MemberSummary.InfantMales</td>
+				</tr>
+				<tr>
+					<th class="text-center" colspan="3">Female: @Model.MemberSummary.FemaleCount</th>
+				</tr>
+				<tr>
+					<td class="text-center">Adult: @Model.MemberSummary.AdultFemales</td>
+					<td class="text-center">Child: @Model.MemberSummary.ChildFemales</td>
+					<td class="text-center">Infant: @Model.MemberSummary.InfantFemales</td>
+				</tr>
+			</table>
+		</div>
+		
+	</div>
+	<div class="card p-2">
+		<div class="table-responsive text-nowrap">
+			<button onclick="copyTableContent()" id="copyTableContent">Copy Table</button>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Room Name</th>
+						<th>Quantity</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (ViewBag.RoomAssignments != null && ((List<RoomAssignment>)ViewBag.RoomAssignments).Any())
+					{
+						var roomAssignments = (List<RoomAssignment>)ViewBag.RoomAssignments;
+
+						foreach (var assignment in roomAssignments)
+						{
+							<tr>
+								<td>@assignment.RoomName</td>
+								<td>@assignment.Quantity</td>
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td colspan="2">No room assignments available</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	@* <div class="card p-2">
+		<div class="table-responsive text-nowrap">
+			<button onclick="copyTableContent()" id="copyTableContent">Copy Table</button>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Room Name</th>
+						<th>Quantity</th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (ViewBag.RoomAssignments != null && ((List<RoomAssignment>)ViewBag.RoomAssignments).Any())
+					{
+						var roomAssignments = (List<RoomAssignment>)ViewBag.RoomAssignments;
+
+						foreach (var assignment in roomAssignments)
+						{
+							<tr>
+								<td>@assignment.RoomName</td>
+								<td>@assignment.Quantity</td>
+							</tr>
+						}
+					}
+					else
+					{
+						<tr>
+							<td colspan="2">No room assignments available</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+
+
+			<table class="table table-bordered mt-4">
+				<thead class="table-light">
+					<tr>
+						<th class="text-center">Passport Image</th>
+						<th class="text-center">Visa Document</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (int i = 0; i < Model.Members.Count; i++)
+					{
+						var currentMember = Model.Members.ElementAt(i);
+						<tr>
+							<td class="text-center">
+								<div class="passport-div">
+									@if (currentMember.PassporFileExtension == ".pdf")
+									{
+										<canvas id="pdfpassport-canvas-@i" style="width: 100%; height: auto;"></canvas>
+									}
+									else
+									{
+										<img src="~/@currentMember.PassportImage" class="passport-img" />
+									}
+								</div>
+							</td>
+							<td class="text-center">
+								<div class="visa-div">
+									@if (currentMember.FileExtension == ".pdf")
+									{
+										<div class="invoice-container">
+											<div class="image-container">
+												<canvas id="pdf-canvas-@i" style="width: 100%; height: auto;"></canvas>
+											</div>
+										</div>
+									}
+									else
+									{
+										<img src="~/@currentMember.VisaImage" class="visa-img" />
+									}
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			<!-- ✅ Load PDF.js only once -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+
+			<!-- ✅ After table is complete, now add rendering scripts -->
+			<script>
+				pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js";
+
+				@for (int i = 0; i < Model.Members.Count; i++)
+				{
+					var currentMember = Model.Members.ElementAt(i);
+					if (currentMember.FileExtension == ".pdf")
+					{
+						var fileUrl = Url.Content("~/" + currentMember.VisaImage);
+
+						<text>
+									(function () {
+										const url = '@fileUrl';
+										const loadingTask = pdfjsLib.getDocument(url);
+										loadingTask.promise.then(pdf => pdf.getPage(1)).then(page => {
+											const scale = 1.5;
+											const viewport = page.getViewport({ scale });
+
+											const canvas = document.getElementById('pdf-canvas-@i');
+											const context = canvas.getContext('2d');
+											canvas.width = viewport.width;
+											canvas.height = viewport.height;
+
+											const renderContext = {
+												canvasContext: context,
+												viewport: viewport
+											};
+
+											return page.render(renderContext).promise.then(() => {
+												const stampImg = new Image();
+												stampImg.src = '/hajj%20mabroor%20By%20TMG%201.png'; // stamp ka path
+
+												stampImg.onload = function () {
+													const padding = 20;
+													const stampWidth = 120;
+													const stampHeight = (stampImg.height / stampImg.width) * stampWidth;
+
+													const x = canvas.width - stampWidth - padding;
+													const y = canvas.height - stampHeight - padding - 40;
+
+													context.drawImage(stampImg, x, y, stampWidth, stampHeight);
+												};
+											});
+										});
+									})();
+						</text>
+					}
+					@if (currentMember.PassporFileExtension == ".pdf")
+					{
+						var fileUrl = Url.Content("~/" + currentMember.PassportImage);
+
+						<text>
+									(function () {
+										const url = '@fileUrl';
+										const loadingTask = pdfjsLib.getDocument(url);
+
+										loadingTask.promise
+											.then(pdf => {
+												return pdf.getPage(1);
+											})
+											.then(page => {
+												const scale = 1.5;
+												const viewport = page.getViewport({ scale });
+
+												const canvas = document.getElementById('pdfpassport-canvas-@i');
+												const context = canvas.getContext('2d');
+
+												canvas.width = viewport.width;
+												canvas.height = viewport.height;
+
+												page.render({
+													canvasContext: context,
+													viewport: viewport
+												});
+											})
+											.catch(error => {
+												console.error("Error loading PDF:", error);
+											});
+									})();
+						</text>
+					}
+				}
+			</script>
+		</div>
+	</div> *@
+</div>
+
+
+
+<script>
+	var members = @Html.Raw(members);
+	var rooms = @Html.Raw(floors);
+
+	console.log(members);
+	console.log(rooms);
+
+	rooms = rooms.map(r => ({
+		...r,
+		RoomDisplayText: `${r.RoomName} (${r.RoomCode})`
+	}));
+
+	let gridInstance;
+
+	$(function () {
+		$("#gridContainer").dxDataGrid({
+			dataSource: members,
+			keyExpr: "FamilyHeadId",
+			editing: {
+				mode: "cell",
+				allowUpdating: true,
+				allowAdding: false,
+				allowDeleting: false
+			},
+			filterRow: { visible: true, showEnabled: true },
+			headerFilter: { visible: true },
+			searchPanel: {
+				visible: true,
+				width: 240,
+				placeholder: "Search…",
+				searchVisibleColumnsOnly: true
+			},
+			export: {
+				enabled: true,
+				formats: ['pdf']
+			},
+			columns: [
+				{
+					dataField: "sNo",
+					caption: "#",
+					width: 50,
+					allowEditing: false,
+					calculateCellValue: function () { return ""; },
+					cellTemplate: function (container, options) {
+						const visibleIndex = options.component.getRowIndexByKey(options.key);
+						$("<div>").text(visibleIndex + 1).appendTo(container);
+					}
+				},
+				{ dataField: "Company", allowEditing: false },
+				{ dataField: "Package", allowEditing: false },
+				{ dataField: "Group", allowEditing: false },
+				{ dataField: "GroupName", allowEditing: false },
+				{ dataField: "FcId", caption: "HB #", allowEditing: false },
+				{ dataField: "Name", allowEditing: false },
+				{ dataField: "Email", allowEditing: false },
+				{ dataField: "Age", allowEditing: false },
+				{ dataField: "Passport", allowEditing: false },
+				{ dataField: "CompanyNames", caption: "Twafa / Third Party", allowEditing: false },
+				{ dataField: "VisaNumber", caption: "Visa No", allowEditing: false },
+				{ dataField: "NextHotelName", caption: "Hotel Name", allowEditing: false },
+				{ dataField: "CheckIn", caption: "Check In", allowEditing: false },
+				{ dataField: "CheckOut", caption: "Check Out", allowEditing: false },
+				{ dataField: "Gender", allowEditing: false },
+				{
+					dataField: "FloorRoomId",
+					caption: "Room Type",
+					allowEditing: true,
+
+					cellTemplate: function (container, options) {
+						const room = rooms.find(r => r.FloorRoomId === options.value);
+						const displayText = room ? `${room.RoomName} (${room.RoomCode})` : "";
+						container.text(displayText);
+					},
+
+					editCellTemplate: function (cellElement, cellInfo) {
+						const $select = $("<select>")
+							.addClass("form-control")
+							.append($("<option>").val("").text("Select a Room..."))
+							.on("change", function () {
+								const selectedValue = $(this).val();
+								cellInfo.setValue(parseInt(selectedValue) || null);
+
+								// ✅ check room before saving
+								const isRoomAvailable = checkRoomPax(this);
+
+								if (isRoomAvailable) {
+									const rowData = cellInfo.row?.data;
+									if (rowData) {
+										rowData.FloorRoomId = parseInt(selectedValue) || null;
+										saveRowToServer(rowData);
+									}
+								}
+							});
+
+
+						let serialNumber = 1;
+
+						rooms.forEach(room => {
+							// const isSelected = cellInfo.value === room.FloorRoomId;
+							const isSelected = parseInt(cellInfo.value) == room.FloorRoomId;
+							const isRoomMaxed = room.Availability === "Maxed";
+
+							if (isSelected || !isRoomMaxed) {
+								const optionText = isSelected
+									? `${room.RoomName} (${room.RoomCode})`
+									: `${serialNumber++}. ${room.RoomName} (${room.RoomCode})`;
+
+								const $option = $("<option>")
+									.val(room.FloorRoomId)
+									.attr("data-pax", room.PAX)
+									.text(optionText);
+
+								if (isSelected) {
+									$option.attr("selected", "selected");
+								}
+
+								$select.append($option);
+							}
+						});
+
+						$select.appendTo(cellElement);
+					}
+				},
+				{
+					dataField: "StayWith",
+					caption: "Stay With",
+					dataType: "string"
+				},
+				{
+					dataField: "ConnectedFloorNumber",
+					caption: "Connected Floor #",
+					dataType: "string"
+				},
+				{
+					dataField: "ConnectedRoomNumber",
+					caption: "Room #",
+					dataType: "string"
+				},
+				{ dataField: "FamilyHeadId", dataType: "number", visible: false }
+			],
+			showBorders: true,
+			paging: { enabled: false },
+			columnAutoWidth: true,
+
+			// 👇 Yahan lagao
+			// onCellValueChanged: function (e) {
+			// 	if (e.dataField === "FloorRoomId") {
+			// 		const cellElement = e.cellElement && e.cellElement.get(0);
+			// 		if (cellElement) {
+			// 			const select = cellElement.querySelector("select");
+			// 			if (select) {
+			// 				checkRoomPax(select);
+			// 			}
+			// 		}
+			// 	}
+			// },
+
+			// onEditorPrepared: function (e) {
+			// 	if (e.dataField === "FloorRoomId" && e.editorElement) {
+			// 		e.editorElement.find("select").on("change", function () {
+			// 			checkRoomPax(this);
+			// 			setTimeout(() => checkRoomPax(this), 50);
+			// 		});
+			// 	}
+			// }
+
+			columnChooser: {
+				enabled: true,
+				mode: "select"
+			},
+
+			// onCellValueChanged: ab sirf StayWith and connected fields ke liye
+			onCellValueChanged: function (e) {
+				if (["StayWith", "ConnectedFloorNumber", "ConnectedRoomNumber"].includes(e.dataField)) {
+					saveRowToServer(e.data);
+				}
+			},
+
+			onEditorPrepared: function (e) {
+				if (["StayWith", "ConnectedFloorNumber", "ConnectedRoomNumber"].includes(e.dataField) && e.editorElement) {
+					e.editorElement.find("input").on("blur", function () {
+						const rowData = gridInstance.getVisibleRows()[e.row.rowIndex].data;
+						saveRowToServer(rowData);
+					});
+				}
+			}
+		});
+
+		// Assign instance AFTER grid is created
+		gridInstance = $("#gridContainer").dxDataGrid("instance");
+
+		// Export PDF Button
+		$('#export-pdf').on('click', function () {
+			const { jsPDF } = window.jspdf;
+
+			const doc = new jsPDF({ orientation: "landscape" });
+			DevExpress.pdfExporter.exportDataGrid({
+				jsPDFDocument: doc,
+				component: gridInstance,
+				margin: { top: 10, left: 10, right: 10, bottom: 10 },
+				customizeCell: function (options) {
+					if (options.pdfCell && options.pdfCell.styles) {
+						options.pdfCell.styles.fontSize = 8;
+					}
+
+					// ✅ Replace FloorRoomId with RoomDisplayText
+					if (options.gridCell.column && options.gridCell.column.dataField === "FloorRoomId") {
+						const room = rooms.find(r => r.FloorRoomId === options.gridCell.value);
+						options.pdfCell.text = room ? `${room.RoomName} (${room.RoomCode})` : "";
+					}
+				}
+			}).then(() => {
+				doc.save('Itinerary_Landscape.pdf');
+			});
+
+		});
+
+
+	});
+
+	function saveRowToServer(rowData) {
+		$.ajax({
+			url: '@Url.Action("SaveRoomAssignment", "ItineraryBlock")',
+			method: 'POST',
+			data: {
+				id: @Model.GroupId,
+				familyHeadId: rowData.FamilyHeadId,
+				floorRoomId: rowData.FloorRoomId,
+				stayWith: rowData.StayWith,
+				connectedFloorNumber: rowData.ConnectedFloorNumber,
+				connectedRoomNumber: rowData.ConnectedRoomNumber
+			},
+			success: function () {
+				console.log("Saved");
+			},
+			error: function () {
+				alert("Error saving room.");
+			}
+		});
+	}
+
+
+	// Toggle column visibility — works if you manually apply `data-column` attributes
+	function toggleColumn(columnName) {
+		const columnCells = document.querySelectorAll(`td[data-column="${columnName}"]`);
+		const headerCell = document.querySelector(`th[data-column="${columnName}"]`);
+		const isChecked = document.getElementById(`toggle${columnName}`).checked;
+
+		columnCells.forEach(cell => {
+			cell.style.display = isChecked ? '' : 'none';
+		});
+
+		if (headerCell) {
+			headerCell.style.display = isChecked ? '' : 'none';
+		}
+	}
+
+	// Ensure checkboxes start checked
+	document.addEventListener('DOMContentLoaded', function () {
+		const checkboxes = document.querySelectorAll('[id^="toggle"]');
+		checkboxes.forEach(checkbox => {
+			checkbox.checked = true;
+		});
+	});
+</script>
+
+<script>
+	let colorMap = {};
+
+	function getRandomLightColor() {
+		let color;
+		do {
+			const r = Math.floor(Math.random() * 156) + 100;
+			const g = Math.floor(Math.random() * 156) + 100;
+			const b = Math.floor(Math.random() * 156) + 100;
+
+			color = "#" + r.toString(16) + g.toString(16) + b.toString(16);
+		} while (Object.values(colorMap).includes(color));
+
+		return color;
+	}
+
+	function checkRoomPax(elem) {
+		const selectedOption = elem.selectedOptions[0];
+		if (!selectedOption) return false;
+
+		const roomPax = parseInt(selectedOption.getAttribute('data-pax')) || 0;
+		const floorRoomId = parseInt(selectedOption.value);
+		console.log("Selected Room ID:", floorRoomId, "PAX:", roomPax);
+
+		const visibleRows = gridInstance.getVisibleRows() || [];
+		const assignedCount = visibleRows.filter(row => row.data.FloorRoomId === floorRoomId).length;
+
+		console.log("Already assigned:", assignedCount);
+
+		if (assignedCount > roomPax) {
+			alert("Room Capacity Exceeded");
+
+			// Reset selection in UI
+			elem.value = "";
+			gridInstance.cellValue($(elem).closest("tr").index(), "FloorRoomId", null);
+
+			elem.style.backgroundColor = "#fff";
+			elem.style.color = "#000";
+			return false; // ❌ Don't allow save
+		}
+
+		// ✅ Coloring
+		let optionValue = elem.value;
+		let randomColor = colorMap[optionValue];
+		if (!randomColor) {
+			randomColor = getRandomLightColor();
+			colorMap[optionValue] = randomColor;
+		}
+
+		elem.style.backgroundColor = randomColor;
+		elem.style.color = "#000";
+		selectedOption.style.backgroundColor = randomColor;
+
+		console.log("Room left: " + (roomPax - assignedCount));
+		return true; // ✅ Allow save
+	}
+
+
+
+	function getRooms(sno) {
+		if (val != '') {
+			$.ajax({
+				url: "/ItineraryBlock/GetRooms",
+				method: "GET",
+				data: {
+	@* floorNumber: val, *@
+					hotelId: @ViewBag.HotelId
+				},
+				success: res => {
+					console.log(res)
+					const pack = document.getElementById('select-room[' + sno + ']');
+					let html = '<option value="">Select a Room...</option>'
+					for (let r of res) {
+						html += `<option value="${r.floorRoomId}" data-pax="${r.pax - r.count}">${r.roomInfo}</option>`
+					}
+					pack.innerHTML = html
+				},
+				error: err => {
+					console.log(err)
+				}
+			})
+		}
+	}
+	// function getRooms(val) {
+	//     console.log(val);
+	//     var packageid = val;
+	//     if (packageid != '' || packageid != undefined || packageid != null) {
+	//         $.ajax({
+	//             url: "/SubGroupReport/GetRooms/" + packageid,
+	//             method: "GET",
+	//             success: res => {
+	//                 console.log(res)
+	//                 const pack = document.getElementById('select-room')
+	//                 let html = '<option value="">Select Room...</option>'
+	//                 for (let package of res) {
+	//                     html += `<option value="${package.RoomNumber}">${package.RoomNumber}</option>`
+	//                 }
+	//                 pack.innerHTML = html
+	//             },
+	//             error: err => {
+	//                 console.log(err)
+	//             }
+	//         })
+	//     }
+	// }
+</script>

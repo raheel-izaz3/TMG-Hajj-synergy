@@ -1,0 +1,39 @@
+@model QurbaniBatch
+
+@{
+    string modelName = "Qurbani Batch";
+    string modelNamePlural = "Qurbani Batches";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Increase Duration</h4>
+
+    <hr class="mb-4" />
+
+    <form method="post" onsubmit="return confirm('Are you sure? This action can not be reversed!')">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <input type="hidden" name="id" value="@Model.QurbaniBatchId" />
+                            <div class="col-sm-12 col-md-6 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" >Minutes</label>
+                                <div class="input-group input-group-merge">
+                                    <input name="MinutesToAdd" class="form-control" placeholder="Enter Minutes">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end" >Increase Duration</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+

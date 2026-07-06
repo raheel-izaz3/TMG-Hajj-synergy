@@ -1,0 +1,212 @@
+﻿<script>
+//    <div class="col-sm-6 col-md-2" >
+  //      <label class="form-label" > SAR ROE < /label>
+    //        < div class="input-group input-group-merge" >
+      //          <span class="input-group-text" > SAR < /span>
+        //            < input class="form-control" id = "add_sar_roe_${id}" name = "AdditionalSARROE[]" >
+          //              </div>
+            //            < /div>
+              //          < div class="col-sm-6 col-md-2" >
+                //            <label class="form-label" > USD ROE < /label>
+                  //              < div class="input-group input-group-merge" >
+                    //                <span class="input-group-text" > USD < /span>
+                      //                  < input class="form-control" id = "add_usd_roe_${id}" name = "AdditionalUSDROE[]" >
+                        //                    </div>
+                          //                  < /div>
+
+    function Addfacilities_row() {
+        let i = document.getElementById('facilities').childElementCount;
+        console.log(i);
+        let id = Date.now()
+        var row = `
+                                                          <div class="row" id="facilities_${id}">
+                                                                <hr class="col-sm-12 my-4" id="facilities_hr_${id}">
+                                                                <input type="hidden" value="0" name="AdditionalFacilityIds">
+                                                                <div class="col-sm-12 col-md-2 mb-3">
+                                                                    <label class="form-label" for="basic-icon-default-fullname">ADF Code</label>
+                                                                    <div class="input-group input-group-merge">
+
+                                                                        <input class="form-control" value="${i}" name="AdditionalCode[]" placeholder="Enter Code..." >
+                                                                    </div>
+                                                                    <span class="text-danger"></span>
+                                                                </div>
+                                                                <div class="col-sm-12 col-md-4 mb-3">
+                                                                    <label class="form-label" for="basic-icon-default-fullname">Room Type</label>
+                                                                    <div class="input-group input-group-merge">
+                                                                        <select class="form-select" name="AdditionalRoomId[]">
+                                                                            <option value="">Select Room...</option>
+    @foreach (Room r in ViewBag.Rooms)
+    {
+                                                                                                        <option value="@r.RoomId">@r.RoomCode - @r.RoomName</option>
+    }
+                                                                        </select>
+                                                                    </div>
+                                                                    <span class="text-danger"></span>
+                                                                </div>
+                                                                     <div class="col-sm-12 col-md-3  mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname">Place</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <select class="form-select" name="AdditionalPlaceId[]">
+                                                                                <option value="">Select Place...</option>
+    @foreach (Place p in ViewBag.Places)
+    {
+                                                                                                                <option value="@p.PlaceId">@p.PlaceName</option>
+    }
+                                                                            </select>
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                    <div class="col-sm-12 col-md-3 mb-3">
+                                                                        <label class="form-label" for="basic-icon-default-fullname">Accommodation Type</label>
+                                                                        <div class="input-group input-group-merge">
+                                                                            <select class="form-select" name="AdditionalAccomodationId[]">
+                                                                                <option value="">Select Accommodation...</option>
+    @foreach (Accomodation a in ViewBag.Accomodations)
+    {
+                                                                                                                <option value="@a.AccomodationId">@a.AccomodationName</option>
+    }
+                                                                            </select>
+                                                                        </div>
+                                                                        <span class="text-danger"></span>
+                                                                    </div>
+                                                                <div class="col-sm-12 mb-3">
+                                                                    <label class="form-label" for="basic-icon-default-fullname">Description</label>
+                                                                    <div class="input-group input-group-merge">
+                                                                        <select name="AdditionalFacilityDescriptionId[]" class="form-control">
+    @foreach (IndividualFacilityDescription desc in ViewBag.FacilityDescriptions)
+    {
+                                                                                        <option value="@desc.IndividualFacilityDescriptionId">
+            @desc.Description
+                                                                                        </option>
+    }
+                                                                    </select>
+                                                                    </div>
+                                                                    <span class="text-danger"></span>
+                                                                </div>
+
+
+
+                                                                <hr class="col-sm-12 my-4">
+                                                                        <h4>Pricing</h4>
+
+
+                                                                <!-- Package Base Price Section -->
+
+
+                                                                <div class="col-sm-12  mb-3">
+                                                                    <div class="row">
+                                                                        <!-- Adult PKR and SAR -->
+                                                                        <div class="col-sm-12 col-md-4">
+                                                                            <label class="form-label" for="pkPrice">ADULT (PKR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">PKR</span>
+                                                                                <input class="form-control" id="adult_pkr_${id}"
+                                                                                name="AdditionalAdultPkr[]" type="number" placeholder="Enter PKR" value="0"
+                                                                                                            oninput="pkrToOtherCurr('adult_pkr_${id}', 'adult_sar_${id}', 'adult_usd_${id}')"
+                                                                                >
+                                                                            </div>
+
+
+                                                                            <label class="form-label mt-2" for="sarPrice">ADULT (SAR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">SAR</span>
+                                                                                <input class="form-control" name="AdditionalAdultSar[]"
+                                                                                    type="number" placeholder="Enter SAR" id="adult_sar_${id}"value="0"
+                                                                                            oninput="sarToOtherCurr('adult_sar_${id}', 'adult_pkr_${id}', 'adult_usd_${id}')"
+                                                                                    >
+                                                                            </div>
+
+                                                                                 <label class="form-label mt-2" >ADULT (USD)</label>
+                                                                                <div class="input-group input-group-merge">
+                                                                                    <span class="input-group-text">USD</span>
+                                                                                    <input class="form-control" name="AdditionalAdultUsd[]"
+                                                                                        type="number" placeholder="Enter USD" id="adult_usd_${id}"value="0"
+                                                                                                oninput="usdToOtherCurr('adult_usd_${id}', 'adult_pkr_${id}', 'adult_sar_${id}')"
+                                                                                        >
+                                                                                </div>
+                                                                        </div>
+
+                                                                        <!-- Child PKR and SAR (Opposite Positions) -->
+                                                                        <div class="col-sm-12 col-md-4">
+                                                                            <label class="form-label" for="childPkPrice">CHILD (PKR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">PKR</span>
+                                                                                <input class="form-control" id="child_pkr_${id}"
+                                                                                name="AdditionalChildPkr[]" type="number" placeholder="Enter PKR"value="0"
+                                                                                        oninput="pkrToOtherCurr('child_pkr_${id}', 'child_sar_${id}', 'child_usd_${id}')"
+                                                                                >
+                                                                            </div>
+
+
+                                                                            <label class="form-label mt-2" for="childSarPrice">CHILD (SAR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">SAR</span>
+                                                                                    <input class="form-control" id="child_sar_${id}"
+                                                                                    name="AdditionalChildSar[]"
+                                                                                    type="number" placeholder="Enter SAR"value="0"
+                                                                                            oninput="sarToOtherCurr('child_sar_${id}', 'child_pkr_${id}', 'child_usd_${id}')">
+                                                                            </div>
+
+                                                                                <label class="form-label mt-2" >CHILD (USD)</label>
+                                                                                    <div class="input-group input-group-merge">
+                                                                                        <span class="input-group-text">USD</span>
+                                                                                        <input class="form-control" name="AdditionalChildUsd[]"
+                                                                                            type="number" placeholder="Enter USD" id="child_usd_${id}"value="0"
+                                                                                                            oninput="usdToOtherCurr('child_usd_${id}', 'child_pkr_${id}', 'child_sar_${id}')">
+                                                                                    </div>
+
+                                                                        </div>
+
+                                                                        <!-- Infant PKR and SAR (Opposite Positions) -->
+                                                                        <div class="col-sm-12 col-md-4">
+                                                                            <label class="form-label" for="childPkPrice">INFANT (PKR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">PKR</span>
+                                                                                    <input class="form-control" id="infant_pkr_${id}" name="AdditionalInfantPkr[]"
+                                                                                    type="number" placeholder="Enter PKR"value="0"
+                                                                                        oninput="pkrToOtherCurr('infant_pkr_${id}', 'infant_sar_${id}', 'infant_usd_${id}')"
+                                                                                >
+                                                                            </div>
+
+
+                                                                            <label class="form-label mt-2" for="childSarPrice">INFANT (SAR)</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span class="input-group-text">SAR</span>
+                                                                                    <input class="form-control" id="infant_sar_${id}"
+                                                                                    name="AdditionalInfantSar[]" type="number" placeholder="Enter SAR"value="0"
+                                                                                                    oninput="sarToOtherCurr('infant_sar_${id}', 'infant_pkr_${id}', 'infant_usd_${id}')">
+                                                                            </div>
+                                                                                 <label class="form-label mt-2" >INFANT (USD)</label>
+                                                                                        <div class="input-group input-group-merge">
+                                                                                            <span class="input-group-text">USD</span>
+                                                                                                <input class="form-control" name="AdditionalInfantUsd[]"
+                                                                                                type="number" placeholder="Enter USD" id="infant_usd_${id}"value="0"
+                                                                                                        oninput="usdToOtherCurr('infant_usd_${id}', 'infant_pkr_${id}', 'infant_sar_${id}')">
+                                                                                        </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-sm-12 col-md-11 mb-3">
+                                                                    <label class="form-label" for="basic-icon-default-fullname">Note</label>
+                                                                    <div class="input-group input-group-merge">
+
+                                                                        <input class="form-control" name="AdditionalNotes[]" placeholder="Enter Note">
+                                                                    </div>
+                                                                    <span class="text-danger"></span>
+                                                                </div>
+                                                                <div class="col-sm-12 col-md-1 mb-3" style="display:flex;flex-direction: column;justify-content: flex-end;flex-wrap: wrap;align-content: center;">
+                                                                    <button class="btn btn-icon btn-danger" onclick="Removefacilities(${id})"><i class='bx bxs-trash'></i></button>
+                                                                </div>
+
+                                                            </div>`;
+
+        $("#facilities").append(row);
+    }
+    function Removefacilities(id) {
+        $('#facilities_hr_' + id).remove();
+        $('#facilities_' + id).remove();
+    }
+
+</script>

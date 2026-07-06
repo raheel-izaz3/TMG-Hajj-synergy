@@ -1,0 +1,102 @@
+@{
+    Layout = "";
+}
+
+
+<script src="~/assets/vendor/libs/jquery/jquery.js"></script>
+
+<style>
+    @@import url(https://fonts.googleapis.com/css?family=Titillium+Web:400,200,200italic,300,300italic,900,700italic,700,600italic,600,400italic);
+
+    body {
+        font-family: 'Titillium Web', cursive;
+        width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        color: white;
+        background: #222;
+        font-weight: 100;
+    }
+
+    div {
+        display: inline-block;
+        line-height: 1;
+        padding: 20px;
+        font-size: 40px;
+    }
+
+    span {
+        display: block;
+        font-size: 20px;
+        color: white;
+    }
+
+    #days {
+        font-size: 100px;
+        color: #db4844;
+    }
+
+    #hours {
+        font-size: 100px;
+        color: #f07c22;
+    }
+
+    #minutes {
+        font-size: 100px;
+        color: #f6da74;
+    }
+
+    #seconds {
+        font-size: 50px;
+        color: #abcd58;
+    }
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+
+<div id="timer">
+    <div id="days"></div>
+    <div id="hours"></div>
+    <div id="minutes"></div>
+    <div id="seconds"></div>
+</div>
+
+<script>
+    function makeTimer() {
+
+        //		var endTime = new Date("29 April 2018 9:56:00 GMT+01:00");	
+        var endTime = new Date("@ViewBag.QurbaniTime");
+        endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        if(timeLeft < 0){
+            timeLeft = 0
+            document.getElementById("timer").innerHTML = `<h1 style='color: lightgreen'>Qurbani Done!</h1>`
+        }
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+
+        $("#days").html(days + "<span>Days</span>");
+        $("#hours").html(hours + "<span>Hours</span>");
+        $("#minutes").html(minutes + "<span>Minutes</span>");
+        $("#seconds").html(seconds + "<span>Seconds</span>");
+
+    }
+
+    setInterval(function () { makeTimer(); }, 1000);
+</script>

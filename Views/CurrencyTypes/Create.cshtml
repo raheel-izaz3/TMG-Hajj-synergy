@@ -1,0 +1,56 @@
+﻿@model TMG.Models.NewChartOfAccounts.Currencies.CurrencyType
+
+@{
+    string modelName = "CurrencyTypes";
+    string modelNamePlural = "CurrencyTypes";
+    string modelControllerRoute = "CurrencyTypes";
+}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold" style="color:  #404040;"><span class="text-muted fw-light"> @modelName / </span> Create</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CurrencyName"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="CurrencyName" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CurrencyName"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="CurrencyCode"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="CurrencyCode" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="CurrencyCode"></span>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <label class="form-label" for="basic-icon-default-fullname" asp-for="Symbol"></label>
+                                <div class="input-group input-group-merge">
+                                    <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-building"></i></span>
+                                    <input asp-for="Symbol" class="form-control">
+                                </div>
+                                <span class="text-danger" asp-validation-for="Symbol"></span>
+                            </div>
+                            <div class="col-sm-12 mt-4">
+                                <button type="submit" class="btn btn-success float-end">Create</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

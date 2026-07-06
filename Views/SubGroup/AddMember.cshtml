@@ -1,0 +1,347 @@
+﻿@* @model IEnumerable<FamilyMembers> *@
+
+@{
+    string modelName = "Sub Group";
+    string modelNamePlural = "Sub Groups";
+    string modelControllerRoute = "SubGroup";
+    TMG.Data.TMGDbContext _db;
+}
+
+@if (TempData.ContainsKey("created"))
+{
+    if ((bool)TempData["created"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Created Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["created"] = false;
+    }
+}
+@if (TempData.ContainsKey("deleted"))
+{
+    if ((bool)TempData["deleted"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Trashed Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["deleted"] = false;
+    }
+}
+@if (TempData.ContainsKey("updated"))
+{
+    if ((bool)TempData["updated"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-center";
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.success('', '@modelName Updated Successfully!', { timeOut: 2000 })
+        </script>
+        TempData["updated"] = false;
+    }
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold">Add / Remove Members To Sub Group</h4>
+
+    <hr class="mb-4" />
+
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Group Code</label>
+            <p>@ViewBag.GroupCode</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Group Name</label>
+            <p>@ViewBag.GroupName</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Group PAX</label>
+            <p>@ViewBag.GroupPAX</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Sub Group Code</label>
+            <p>@ViewBag.SubGroupCode</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Sub Group Name</label>
+            <p>@ViewBag.SubGroupName</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Sub Group PAX</label>
+            <p>@ViewBag.SubGroupPAX</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Selected</label>
+            <p id="selected">@ViewBag.SubGroupMembersCount</p>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Place</label>
+            <p>@ViewBag.Place</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Check In</label>
+            <p>@ViewBag.CheckIn</p>
+        </div>
+        <div class="col-sm-12 col-md-3">
+            <label class="fw-bold">Check Out</label>
+            <p>@ViewBag.CheckOut</p>
+        </div>
+
+    </div>
+
+    <div class="card p-3">
+        <div class="table-responsive text-nowrap ">
+            <table class="table table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Company</th>
+                        <th>Package</th>
+                        <th>Mega ID</th>
+                        <th>Group</th>
+                        <th>F ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Passport</th>
+                        <th>Friend ID</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-1">
+                    @{
+                        int i = 0;
+                    }
+                    @foreach (var fm in Model)
+                    {
+
+                        i++;
+                        bool found = false;
+                        foreach (var member in ViewBag.SubGroupMembers)
+                        {
+                            if (fm.FamilyHeadId == member.FamilyHeadId)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        string check = "";
+                        if (found)
+                        {
+                            check = "checked";
+                        }
+
+                        string textAlign = fm.IsHead ? "left" : "right";
+
+                        <tr style="border-top: @(fm.IsHead ? "2px solid black":"");">
+                            <td>
+                                <input @check class="form-check-input" name="selected[]"
+                                       onchange="updateSelected(this, @fm.FamilyHeadId, @ViewBag.SubGroupId)"
+                                       type="checkbox"
+                                       data-is-head="@fm.IsHead" data-hb-id="@fm.FamilyHeadId" data-head-id="@fm.HeadId" />
+                            </td>
+                            <td style="text-align: @textAlign; ">@fm.CompanyCode</td>
+                            <td style="text-align: @textAlign; ">@fm.Name</td>
+                            <td style="text-align: @textAlign; ">@(fm.ReferenceId ?? "-")</td>
+                            <td style="text-align: @textAlign; ">@fm.GroupCode</td>
+                            <td style="text-align: @textAlign; ">@fm.FcId</td>
+                            <td style="text-align: @textAlign; ">@fm.GivenName @fm.SurName</td>
+                            <td style="text-align: @textAlign; ">@fm.Age</td>
+                            <td style="text-align: @textAlign; ">@fm.Gender</td>
+                            <td style="text-align: @textAlign; ">@fm.PassportNumber</td>
+                            <td style="text-align: @textAlign; ">@(fm.FriendId ?? "-")</td>
+                        </tr>
+
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function updateSelectedCount() {
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        $("#selected").html(selectedCheckboxes.length);
+    }
+
+    // function updateSelected(elem, familyHeadId, groupId) {
+
+    //     const MAX = @ViewBag.SubGroupPAX;
+
+    //     const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+
+    //     const length = selectedCheckboxes.length;
+
+    //     if (length > MAX) {
+    //         alert("Limit Exceeded");
+    //         elem.checked = false
+    //         return;
+    //     }
+
+    //     updateSelectedCount()
+
+    //     const isHead = elem.getAttribute("data-is-head")
+    //     const headId = elem.getAttribute("data-head-id")
+    //     const elemFcId = elem.getAttribute("data-HB #")
+
+    //     if (isHead == "True" && elem.checked) {
+    //         const attributeName = 'data-head-id';
+    //         const elements = document.querySelectorAll(`[${attributeName}="${headId}"]`);
+
+    //         if ((elements.length - 1) + length > MAX) {
+    //             if (confirm("Cannot select this family. Limit will exceed. would you like to proceed w/ selection?")) {
+    //                 elem.checked = true;
+    //                 addMember(elemFcId, groupId)
+    //                 updateSelectedCount()
+    //                 return;
+    //             }
+    //             else {
+    //                 elem.checked = false
+    //                 removeMember(elemFcId, groupId)
+    //                 updateSelectedCount()
+    //                 return;
+    //             }
+    //         }
+
+    //         if (elem.checked) {
+    //             for (let check of elements) {
+    //                 if (check.hasAttribute('disabled')) continue;
+    //                 check.checked = true
+    //                 let fcId = check.getAttribute('data-HB #')
+    //                 addMember(fcId, groupId)
+    //             }
+    //         }
+    //         else {
+    //             elem.checked = false;
+    //             removeMember(elemFcId, groupId)
+    //         }
+    //         updateSelectedCount()
+    //     }
+    //     else if (elem.checked && isHead == "False") {
+    //         addMember(elemFcId, groupId)
+    //     }
+    //     else {
+    //         removeMember(elemFcId, groupId)
+    //     }
+
+
+    // }
+
+    function updateSelected(elem, familyHeadId, groupId) {
+        const MAX = @ViewBag.SubGroupPAX;
+        const selectedCheckboxes = $('input:checkbox[name="selected[]"]:checked');
+        const length = selectedCheckboxes.length;
+
+        if (length > MAX) {
+            alert("Limit Exceeded");
+            elem.checked = false;
+            return;
+        }
+
+        updateSelectedCount();
+
+        const isHead = elem.getAttribute("data-is-head");
+        const headId = elem.getAttribute("data-head-id");
+        const elemFcId = elem.getAttribute("data-hb-id");  // Corrected attribute
+        console.log("Selected Family Head ID:", elemFcId); // Debugging ke liye
+
+        if (isHead == "True" && elem.checked) {
+            const elements = document.querySelectorAll(`[data-head-id="${headId}"]`);
+
+            if ((elements.length - 1) + length > MAX) {
+                if (confirm("Cannot select this family. Limit will exceed. Would you like to proceed?")) {
+                    elem.checked = true;
+                    addMember(elemFcId, groupId);
+                    updateSelectedCount();
+                    return;
+                } else {
+                    elem.checked = false;
+                    removeMember(elemFcId, groupId);
+                    updateSelectedCount();
+                    return;
+                }
+            }
+
+            if (elem.checked) {
+                for (let check of elements) {
+                    if (check.hasAttribute('disabled')) continue;
+                    check.checked = true;
+                    let fcId = check.getAttribute('data-hb-id');  // Corrected attribute
+                    addMember(fcId, groupId);
+                }
+            } else {
+                elem.checked = false;
+                removeMember(elemFcId, groupId);
+            }
+            updateSelectedCount();
+        }
+        else if (elem.checked && isHead == "False") {
+            addMember(elemFcId, groupId);
+        }
+        else {
+            removeMember(elemFcId, groupId);
+        }
+    }
+
+
+    function addMember(familyHeadId, groupId) {
+        $.ajax({
+            url: "/SubGroup/AddMember",
+            method: "POST",
+            data: {
+                memberId: familyHeadId,
+                subGroupId: groupId
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.log(err)
+
+            }
+        });
+    }
+
+    function removeMember(familyHeadId, groupId) {
+        $.ajax({
+            url: "/SubGroup/RemoveMember",
+            method: "POST",
+            data: {
+                memberId: familyHeadId,
+                subGroupId: groupId
+            },
+            success: res => {
+                console.log(res)
+            },
+            error: err => {
+                console.log(err)
+            }
+        });
+    }
+
+
+</script>
