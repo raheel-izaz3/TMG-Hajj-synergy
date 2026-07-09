@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models;
 using TMG.Models.FormModels.User;
@@ -68,7 +68,7 @@ namespace TMG.Controllers
                .OrderByDescending(e => e.HajjSeasonsId)
                .FirstOrDefault(e => !e.Trashed);
 
-            _http.HttpContext.Session.SetString("ActiveSeasonId", hajjSeasons.HajjSeasonsId.ToString());
+            _http.HttpContext.Session.SetString("ActiveSeasonId", hajjSeasons?.HajjSeasonsId.ToString() ?? "0");
             _http.HttpContext.Session.SetString("Username", loggedInUser.Username);
             _http.HttpContext.Session.SetString("UserEmail", loggedInUser.Email);
             _http.HttpContext.Session.SetString("UserId", loggedInUser.UserId.ToString());

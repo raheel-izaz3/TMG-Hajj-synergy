@@ -50,8 +50,8 @@ namespace TMG.Data
         public DbSet<CombinedFlightSummaryDetail> CombinedFlightSummaryDetail { get; set; }
         public DbSet<LedgerReportDto> LedgerReportDto { get; set; }
         public DbSet<BalanceCFDto> BalanceCFDto { get; set; }
-        public DbSet<GiveAway> GiveAways{ get; set; }
-        public DbSet <CreditCard> CreditCards { get; set; }
+        public DbSet<GiveAway> GiveAways { get; set; }
+        public DbSet<CreditCard> CreditCards { get; set; }
 
 
         #region Updated Accounts
@@ -74,10 +74,10 @@ namespace TMG.Data
         public DbSet<POTicketInvoices> POTicketInvoices { get; set; }
         public DbSet<POPayment> POPayments { get; set; }
         public DbSet<Airport> Airports { get; set; }
-        public DbSet<POTicketFlightData> POTicketFlightDatas  { get; set; }
-        public DbSet<POHotels> POHotels  { get; set; }
-        public DbSet<POHotelRooms> POHotelRooms  { get; set; }
-        public DbSet<RoomDetails> RoomDetails  { get; set; }
+        public DbSet<POTicketFlightData> POTicketFlightDatas { get; set; }
+        public DbSet<POHotels> POHotels { get; set; }
+        public DbSet<POHotelRooms> POHotelRooms { get; set; }
+        public DbSet<RoomDetails> RoomDetails { get; set; }
         public DbSet<ItineraryBlock> ItineraryBlocks { get; set; }
         public DbSet<ItineraryBlockGroup> ItineraryBlockGroups { get; set; }
         public DbSet<ItineraryBlockGroupMmebers> ItineraryBlockGroupMmebers { get; set; }
@@ -167,7 +167,7 @@ namespace TMG.Data
         public DbSet<IDCardList> IDCardLists { get; set; }
         public DbSet<ListFamily> ListFamilies { get; set; }
         public DbSet<EIslamic> EIslamics { get; set; }
-        public DbSet<EMarketing> EMarketings { get; set; } 
+        public DbSet<EMarketing> EMarketings { get; set; }
         public DbSet<SubClasses> SubClasses { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<LetterHead> LetterHeads { get; set; }
@@ -375,12 +375,12 @@ namespace TMG.Data
         public DbSet<TranspotationBlockGroups> TranspotationBlockGroups { get; set; }
         public DbSet<TranspportationBlockReservation> TranspportationBlockReservations { get; set; }
 
-        public DbSet<CurrencyType> CurrencyTypes { get; set; } 
-        public DbSet<FiscalYears> FiscalYears { get; set; } 
-        public DbSet<FiscalPeriods> FiscalPeriods { get; set; } 
-        public DbSet<NewAccountGroup> NewAccountGroups { get; set; } 
-        public DbSet<NewAccount> NewAccounts { get; set; } 
-        public DbSet<NewVoucherTypes> NewVoucherTypes { get; set; } 
+        public DbSet<CurrencyType> CurrencyTypes { get; set; }
+        public DbSet<FiscalYears> FiscalYears { get; set; }
+        public DbSet<FiscalPeriods> FiscalPeriods { get; set; }
+        public DbSet<NewAccountGroup> NewAccountGroups { get; set; }
+        public DbSet<NewAccount> NewAccounts { get; set; }
+        public DbSet<NewVoucherTypes> NewVoucherTypes { get; set; }
 
         #region Without Trash
         public IQueryable<BoardingStamp> BoardingStampsWithoutTrash => BoardingStamps.Where(e => !e.Trashed);
@@ -466,7 +466,7 @@ namespace TMG.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             #region Updated Accounts
 
             // Account Types
@@ -508,6 +508,35 @@ namespace TMG.Data
             //    );
 
             #endregion
+
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Entity<DepartmentFiling>() // Adjust class name if it differs slightly
+        .HasOne(df => df.HajjSeaons)       // Adjust property name to match your entity
+        .WithMany()
+        .HasForeignKey(df => df.HajjSeasonsId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<POTicketFlightData>()
+                .HasOne(f => f.Departure)
+                .WithMany()
+                .HasForeignKey(f => f.DepartureAirportId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<POTicketFlightData>()
+                .HasOne(f => f.Arrival)
+                .WithMany()
+                .HasForeignKey(f => f.ArrivalAirportId)
+                .OnDelete(DeleteBehavior.NoAction);
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                if (foreignKey.DeleteBehavior == DeleteBehavior.Cascade)
+                {
+                    foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
+                }
+            }
 
             modelBuilder.Entity<POVisa>()
                 .HasQueryFilter(e => !e.Trashed);

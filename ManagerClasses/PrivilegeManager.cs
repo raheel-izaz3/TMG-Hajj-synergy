@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.Models;
 using static TMG.ManagerClasses.PrivilegeManager;
 
@@ -12,35 +12,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashHotel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateHotel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateHotel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditHotel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditHotel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewHotel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewHotel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreHotel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreHotel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -51,35 +51,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashRoomAllotment)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateRoomAllotment(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateRoomAllotment)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditRoomAllotment(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditRoomAllotment)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewRoomAllotment(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewRoomAllotment)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreRoomAllotment(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreRoomAllotment)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -89,13 +89,13 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewRoomSummaryReport)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         public static bool CanViewDailyRoomSummaryReport(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewDailyRoomSummaryReport)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         #region User
@@ -104,7 +104,7 @@ namespace TMG.ManagerClasses
 
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashUser)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateUser(TMGDbContext dbContext, IHttpContextAccessor http)
@@ -112,7 +112,7 @@ namespace TMG.ManagerClasses
 
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateUser)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditUser(TMGDbContext dbContext, IHttpContextAccessor http)
@@ -120,7 +120,7 @@ namespace TMG.ManagerClasses
 
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditUser)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewUser(TMGDbContext dbContext, IHttpContextAccessor http)
@@ -128,7 +128,7 @@ namespace TMG.ManagerClasses
 
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewUser)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreUser(TMGDbContext dbContext, IHttpContextAccessor http)
@@ -136,7 +136,7 @@ namespace TMG.ManagerClasses
 
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreUser)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         #endregion
 
@@ -145,42 +145,42 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashRole)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateRole(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateRole)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditRole(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditRole)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewRole(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewRole)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreRole(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreRole)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanSetRolePrivilege(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.SetRolePrivelege)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         #endregion
 
@@ -189,49 +189,49 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashCompany)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateCompany(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateCompany)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditCompany(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditCompany)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCompany(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewCompany)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreCompany(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreCompany)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewIndividualReports(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.IndividualReports)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCombineReports(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CombineReports)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         #endregion
 
@@ -240,35 +240,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashCompanyAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateCompanyAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateCompanyAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditCompanyAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditCompanyAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCompanyAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewCompanyAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreCompanyAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreCompanyAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -279,35 +279,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashCompanyContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateCompanyContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateCompanyContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditCompanyContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditCompanyContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCompanyContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewCompanyContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreCompanyContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreCompanyContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -318,35 +318,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashCompanyEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateCompanyEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateCompanyEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditCompanyEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditCompanyEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCompanyEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewCompanyEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreCompanyEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreCompanyEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -357,35 +357,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashCompanyLicense)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateCompanyLicense(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateCompanyLicense)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditCompanyLicense(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditCompanyLicense)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewCompanyLicense(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewCompanyLicense)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreCompanyLicense(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreCompanyLicense)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -396,35 +396,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashStaffMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateStaffMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateStaffMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditStaffMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditStaffMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewStaffMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewStaffMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreStaffMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreStaffMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -435,35 +435,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashDesignation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateDesignation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateDesignation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditDesignation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditDesignation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewDesignation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewDesignation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreDesignation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreDesignation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -476,35 +476,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashVehicle)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateVehicle(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateVehicle)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditVehicle(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditVehicle)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewVehicle(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewVehicle)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreVehicle(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreVehicle)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -515,35 +515,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -554,35 +554,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashTravelRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateTravelRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateTravelRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditTravelRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditTravelRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewTravelRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewTravelRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreTravelRoute(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreTravelRoute)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -593,7 +593,7 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewLogisticReport)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         #endregion
 
@@ -604,35 +604,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashRoom)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateRoom(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateRoom)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditRoom(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditRoom)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewRoom(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewRoom)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreRoom(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreRoom)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -643,35 +643,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashPlace)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreatePlace(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreatePlace)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditPlace(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditPlace)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewPlace(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewPlace)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestorePlace(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestorePlace)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -682,35 +682,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashAccomodation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateAccomodation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateAccomodation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditAccomodation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditAccomodation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewAccomodation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewAccomodation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreAccomodation(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreAccomodation)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -721,35 +721,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashAccomodationCategory)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateAccomodationCategory(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateAccomodationCategory)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditAccomodationCategory(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditAccomodationCategory)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewAccomodationCategory(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewAccomodationCategory)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreAccomodationCategory(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreAccomodationCategory)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -760,35 +760,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashFoodPackage)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateFoodPackage(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateFoodPackage)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditFoodPackage(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditFoodPackage)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFoodPackage(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFoodPackage)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreFoodPackage(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreFoodPackage)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -799,35 +799,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashGift)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateGift(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateGift)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditGift(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditGift)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewGift(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewGift)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreGift(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreGift)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -838,35 +838,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashTraining)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateTraining(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateTraining)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditTraining(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditTraining)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewTraining(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewTraining)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreTraining(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreTraining)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -877,35 +877,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashBank)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateBank(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateBank)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditBank(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditBank)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewBank(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewBank)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreBank(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreBank)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -916,35 +916,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashHonorifics)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateHonorifics(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateHonorifics)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditHonorifics(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditHonorifics)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewHonorifics(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewHonorifics)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreHonorifics(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreHonorifics)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -955,35 +955,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashFiqah)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateFiqah(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateFiqah)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditFiqah(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditFiqah)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFiqah(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFiqah)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreFiqah(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreFiqah)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -994,35 +994,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashTehsil)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateTehsil(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateTehsil)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditTehsil(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditTehsil)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewTehsil(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewTehsil)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreTehsil(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreTehsil)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1033,35 +1033,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashReference)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateReference(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateReference)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditReference(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditReference)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewReference(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewReference)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreReference(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreReference)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1072,35 +1072,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashFamilyHeadRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateFamilyHeadRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateFamilyHeadRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditFamilyHeadRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditFamilyHeadRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFamilyHeadRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFamilyHeadRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreFamilyHeadRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreFamilyHeadRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1111,35 +1111,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashMehramRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateMehramRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateMehramRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditMehramRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditMehramRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMehramRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMehramRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreMehramRel(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreMehramRel)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1150,35 +1150,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashNominee)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateNominee(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateNominee)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditNominee(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditNominee)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewNominee(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewNominee)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreNominee(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreNominee)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1189,35 +1189,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashReqDocs)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateReqDocs(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateReqDocs)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditReqDocs(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditReqDocs)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewReqDocs(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewReqDocs)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreReqDocs(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreReqDocs)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1228,35 +1228,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashPaymentNotes)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreatePaymentNotes(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreatePaymentNotes)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditPaymentNotes(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditPaymentNotes)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewPaymentNotes(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewPaymentNotes)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestorePaymentNotes(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestorePaymentNotes)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1267,35 +1267,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashVaccine)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateVaccine(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateVaccine)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditVaccine(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditVaccine)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewVaccine(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewVaccine)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreVaccine(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreVaccine)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1306,35 +1306,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashQuotationPayPol)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateQuotationPayPol(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateQuotationPayPol)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditQuotationPayPol(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditQuotationPayPol)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewQuotationPayPol(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewQuotationPayPol)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreQuotationPayPol(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreQuotationPayPol)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1345,35 +1345,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashQuotationTC)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateQuotationTC(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateQuotationTC)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditQuotationTC(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditQuotationTC)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewQuotationTC(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewQuotationTC)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreQuotationTC(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreQuotationTC)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1384,54 +1384,54 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreatePackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreatePackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestorePackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestorePackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewReportPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ReportPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         public static bool CanCopyPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CopyPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
         public static bool CanViewDetailsPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.DetailsPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1442,56 +1442,56 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCustomizeQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CustomizeQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanGetQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.GetQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewDetailsQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.DetailsQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanBookQuotationPackages(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.BookQuotationPackages)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         #endregion
@@ -1502,35 +1502,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashMemberType)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateMemberType(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateMemberType)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditMemberType(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditMemberType)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMemberType(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMemberType)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreMemberType(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreMemberType)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1541,35 +1541,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashMemberAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateMemberAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateMemberAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditMemberAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditMemberAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMemberAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMemberAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreMemberAddress(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreMemberAddress)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1580,35 +1580,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashMemberContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateMemberContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateMemberContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditMemberContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditMemberContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMemberContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMemberContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreMemberContact(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreMemberContact)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1619,35 +1619,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashMemberEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateMemberEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateMemberEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditMemberEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditMemberEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMemberEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMemberEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreMemberEmail(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreMemberEmail)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1659,35 +1659,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashAirlines)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateAirlines(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateAirlines)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditAirlines(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditAirlines)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewAirlines(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewAirlines)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreAirlines(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreAirlines)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1698,35 +1698,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashAirlineClass)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateAirlineClass(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateAirlineClass)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditAirlineClass(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditAirlineClass)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewAirlineClass(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewAirlineClass)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreAirlineClass(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreAirlineClass)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1737,35 +1737,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashAirlineFare)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateAirlineFare(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateAirlineFare)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditAirlineFare(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditAirlineFare)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewAirlineFare(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewAirlineFare)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreAirlineFare(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreAirlineFare)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1777,35 +1777,35 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewPOTicket)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreatePOTicket(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreatePOTicket)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditPOTicket(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditPOTicket)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanTrashPOTicket(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashPOTicket)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestorePOTicket(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestorePOTicket)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         #endregion
@@ -1815,70 +1815,70 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashFamily)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateFamilyHead(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateFamilyHead)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditFamily(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditFamily)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFamilies(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFamilies)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreFamily(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreFamily)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFamilyMembers(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFamilyMembers)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFamilyLetterHead(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFamilyLetterHead)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewFamilyInvoice(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewFamilyInvoice)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateFamilyMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateFamilyMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanVerifyFamilyMember(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.VerifyMember)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
 
@@ -1890,49 +1890,49 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.TrashReceipts)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanCreateReceipt(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.CreateReceipts)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanEditReceipt(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.EditReceipts)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewReceipt(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewReceipts)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanRestoreReceipt(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.RestoreReceipts)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanChangeReceiptStatus(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ChangeReceiptStatus)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewSlip(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewSlip)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         #endregion
@@ -1941,14 +1941,14 @@ namespace TMG.ManagerClasses
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewClientStatement)
-                .Allowed;
+                ?.Allowed ?? false;
         }
 
         public static bool CanViewMiniStatement(TMGDbContext dbContext, IHttpContextAccessor http)
         {
             return dbContext.RolePermissions
                 .FirstOrDefault(rp => rp.RoleId == Convert.ToInt32(http.HttpContext.Session.GetString("RoleId")) && rp.PermissionId == (int)Privileges.ViewMiniStatement)
-                .Allowed;
+                ?.Allowed ?? false;
         }
     }
 }
