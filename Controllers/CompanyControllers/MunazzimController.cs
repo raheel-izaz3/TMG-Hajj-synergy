@@ -1,13 +1,7 @@
-using Microsoft.AspNetCore;
-using TMG.Data;
-using TMG.Models;
-using TMG.Models.CompanyModels;
 using Microsoft.AspNetCore.Mvc;
-using TMG.ManagerClasses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using System.Transactions;
-using static System.Net.WebRequestMethods;
+using TMG.Data;
+using TMG.Models.CompanyModels;
 
 namespace TMG.Models.CompanyModels
 {
@@ -113,6 +107,13 @@ namespace TMG.Controllers.CompanyControllers
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                string stampFolder = Path.Combine(_host.WebRootPath, "Images", "MunazzimStampImages");
+                string signatureFolder = Path.Combine(_host.WebRootPath, "Images", "MunazzimSignatureImages");
+
+                // Defensive Check: Automatically create the folders if they are missing
+                if (!Directory.Exists(stampFolder)) Directory.CreateDirectory(stampFolder);
+                if (!Directory.Exists(signatureFolder)) Directory.CreateDirectory(signatureFolder);
+
                 string stampPath = Path.Combine(_host.WebRootPath, "Images", "MunazzimStampImages", request.StampFile.FileName);
                 string signaturePath = Path.Combine(_host.WebRootPath, "Images", "MunazzimSignatureImages", request.SignatureFile.FileName);
 
@@ -133,17 +134,23 @@ namespace TMG.Controllers.CompanyControllers
                 _dbContext.Munazzims.Add(request);
                 _dbContext.SaveChanges();
 
-                for (int i = 0; i < request.CompaniesId.Count; i++)
+                // DEFENSIVE FIX: Ensure both company arrays were actually submitted and aren't null
+                if (request.CompaniesId != null && request.SelectedCompanies != null)
                 {
-                    if (request.SelectedCompanies[i] == false) continue;
-
-                    _dbContext.MunazzimCompanies.Add(new MunazzimCompanies
+                    for (int i = 0; i < request.CompaniesId.Count; i++)
                     {
-                        CompanyId = request.CompaniesId[i],
-                        MunazzimId = request.MunazzimId,
-                    });
+                        // Safe check in case the index sizes don't perfectly match
+                        if (i >= request.SelectedCompanies.Count) break;
+                        if (request.SelectedCompanies[i] == false) continue;
+
+                        _dbContext.MunazzimCompanies.Add(new MunazzimCompanies
+                        {
+                            CompanyId = request.CompaniesId[i],
+                            MunazzimId = request.MunazzimId,
+                        });
+                    }
+                    _dbContext.SaveChanges();
                 }
-                _dbContext.SaveChanges();
 
                 transaction.Commit();
 
