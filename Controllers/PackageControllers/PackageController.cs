@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.Models.PackageModels;
 using TMG.Models.FormModels.PackageModels;
 using Microsoft.AspNetCore.Mvc;
@@ -722,6 +722,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageImages", request.FileImage.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.FileImage.CopyTo(fs);
@@ -733,6 +734,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MINA.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MINA.CopyTo(fs);
@@ -743,6 +745,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.ARAFAT.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.ARAFAT.CopyTo(fs);
@@ -753,6 +756,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MUZDALIFAH.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MUZDALIFAH.CopyTo(fs);
@@ -763,6 +767,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayOne.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayOne.CopyTo(fs);
@@ -773,6 +778,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayTwo.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayTwo.CopyTo(fs);
@@ -783,6 +789,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayThree.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayThree.CopyTo(fs);
@@ -795,6 +802,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageImages", request.FileImage.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.FileImage.CopyTo(fs);
@@ -808,6 +816,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MINA.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MINA.CopyTo(fs);
@@ -821,6 +830,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.ARAFAT.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.ARAFAT.CopyTo(fs);
@@ -834,6 +844,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MUZDALIFAH.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MUZDALIFAH.CopyTo(fs);
@@ -847,6 +858,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayOne.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayOne.CopyTo(fs);
@@ -860,6 +872,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayTwo.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayTwo.CopyTo(fs);
@@ -873,6 +886,7 @@ namespace TMG.Controllers.PackageControllers
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayThree.FileName);
                     Directory.CreateDirectory(Path.GetDirectoryName(path));
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayThree.CopyTo(fs);
@@ -1873,6 +1887,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MINA.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MINA.CopyTo(fs);
@@ -1883,6 +1898,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.ARAFAT.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.ARAFAT.CopyTo(fs);
@@ -1893,6 +1909,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MUZDALIFAH.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MUZDALIFAH.CopyTo(fs);
@@ -1903,6 +1920,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayOne.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayOne.CopyTo(fs);
@@ -1913,6 +1931,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayTwo.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayTwo.CopyTo(fs);
@@ -1923,6 +1942,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayThree.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayThree.CopyTo(fs);
@@ -2787,6 +2807,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageImages", request.FileImage.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.FileImage.CopyTo(fs);
@@ -2798,6 +2819,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MINA.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MINA.CopyTo(fs);
@@ -2808,6 +2830,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.ARAFAT.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.ARAFAT.CopyTo(fs);
@@ -2818,6 +2841,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.MUZDALIFAH.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.MUZDALIFAH.CopyTo(fs);
@@ -2828,6 +2852,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayOne.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayOne.CopyTo(fs);
@@ -2838,6 +2863,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayTwo.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayTwo.CopyTo(fs);
@@ -2848,6 +2874,7 @@ namespace TMG.Controllers.PackageControllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PackageItinerary", request.RamiDayThree.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.RamiDayThree.CopyTo(fs);
@@ -3037,6 +3064,7 @@ namespace TMG.Controllers.PackageControllers
             string path = Path.Combine(_host.WebRootPath, "Images",
                 "PackageImages", File.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);

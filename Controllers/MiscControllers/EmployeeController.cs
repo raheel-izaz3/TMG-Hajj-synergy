@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AccomodationModels;
 using TMG.Models.MiscModels;
@@ -51,6 +51,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(CNICFile.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     CNICFile.CopyTo(fileStream);
@@ -67,6 +68,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(FamilyCNIC.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     FamilyCNIC.CopyTo(fileStream);
@@ -83,6 +85,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(CV.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     CV.CopyTo(fileStream);
@@ -99,6 +102,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(OtherDoc.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     OtherDoc.CopyTo(fileStream);
@@ -115,6 +119,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(AddressFile.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     AddressFile.CopyTo(fileStream);
@@ -150,6 +155,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(CNICFile.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     CNICFile.CopyTo(fileStream);
@@ -166,6 +172,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(FamilyCNIC.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     FamilyCNIC.CopyTo(fileStream);
@@ -182,6 +189,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(CV.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     CV.CopyTo(fileStream);
@@ -198,6 +206,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(OtherDoc.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     OtherDoc.CopyTo(fileStream);
@@ -214,6 +223,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(AddressFile.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     AddressFile.CopyTo(fileStream);

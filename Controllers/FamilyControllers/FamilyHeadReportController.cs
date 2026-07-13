@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models;
 using TMG.Models.AirlineModels;
@@ -6358,6 +6358,7 @@ namespace TMG.Controllers
             {
 
                 string path = Path.Combine(_host.WebRootPath, "Images", "BiometricImages", request.File.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new(path, FileMode.Create))
                 {
                     request.File.CopyTo(fs);

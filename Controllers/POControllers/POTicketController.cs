@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Azure;
 using iText.StyledXmlParser.Jsoup.Nodes;
 using iTextSharp.text;
@@ -1241,6 +1241,7 @@ public class POTicketController : Controller
 
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -1651,6 +1652,7 @@ public class POTicketController : Controller
 
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -2083,6 +2085,7 @@ public class POTicketController : Controller
 
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -2487,6 +2490,7 @@ public class POTicketController : Controller
 
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -2948,6 +2952,7 @@ public class POTicketController : Controller
 
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -3270,6 +3275,7 @@ public class POTicketController : Controller
         var filePath = Path.Combine(uploadsFolder, fileName);
 
         // Save file to server
+        if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
             file.CopyTo(stream);

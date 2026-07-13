@@ -117,11 +117,13 @@ namespace TMG.Controllers.CompanyControllers
                 string stampPath = Path.Combine(_host.WebRootPath, "Images", "MunazzimStampImages", request.StampFile.FileName);
                 string signaturePath = Path.Combine(_host.WebRootPath, "Images", "MunazzimSignatureImages", request.SignatureFile.FileName);
 
+                if (!string.IsNullOrEmpty(stampPath)) { string dir_dt = Path.GetDirectoryName(stampPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new(stampPath, FileMode.Create))
                 {
                     request.StampFile.CopyTo(fs);
                 }
 
+                if (!string.IsNullOrEmpty(signaturePath)) { string dir_dt = Path.GetDirectoryName(signaturePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new(signaturePath, FileMode.Create))
                 {
                     request.SignatureFile.CopyTo(fs);

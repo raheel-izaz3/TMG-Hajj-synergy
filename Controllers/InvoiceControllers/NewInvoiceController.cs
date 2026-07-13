@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMG.Data;
@@ -151,6 +151,7 @@ namespace TMG.Controllers.InvoiceControllers
                         newInvoice.File.FileName
                     );
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         newInvoice.File.CopyTo(fs);
@@ -386,6 +387,7 @@ namespace TMG.Controllers.InvoiceControllers
                 request.File.FileName
             );
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 request.File.CopyTo(fs);
@@ -529,6 +531,7 @@ namespace TMG.Controllers.InvoiceControllers
                     invoice.ClearanceFile.FileName
                 );
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     invoice.ClearanceFile.CopyTo(fs);

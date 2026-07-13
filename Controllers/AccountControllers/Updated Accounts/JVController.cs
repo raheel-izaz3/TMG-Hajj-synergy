@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -184,6 +184,7 @@ namespace TMG.Controllers.AccountControllers.Updated_Accounts
                     string fileName = Path.GetFileName(image.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         image.CopyTo(fileStream);
@@ -589,6 +590,7 @@ namespace TMG.Controllers.AccountControllers.Updated_Accounts
                     string fileName = Path.GetFileName(image.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         image.CopyTo(fileStream);
@@ -736,6 +738,7 @@ namespace TMG.Controllers.AccountControllers.Updated_Accounts
                     string fileName = Path.GetFileName(image.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         image.CopyTo(fileStream);
@@ -1107,6 +1110,7 @@ namespace TMG.Controllers.AccountControllers.Updated_Accounts
                     string fileName = Path.GetFileName(image.FileName);
                     string filePath = Path.Combine(uploadsFolder, fileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         image.CopyTo(fileStream);

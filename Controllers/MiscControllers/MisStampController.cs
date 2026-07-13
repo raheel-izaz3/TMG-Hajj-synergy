@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.Models.MiscModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,14 +49,17 @@ namespace TMG.Controllers.MiscControllers
             string path1 = Path.Combine(_webEnviroment.WebRootPath, "Images", "SignatureMisStamps", request.FileSignature.FileName);
             string path2 = Path.Combine(_webEnviroment.WebRootPath, "Images", "AccountantSignatures", request.AccountantSignatureFile.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 request.File.CopyTo(fs);
             }
+            if (!string.IsNullOrEmpty(path1)) { string dir_dt = Path.GetDirectoryName(path1); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path1, FileMode.Create))
             {
                 request.FileSignature.CopyTo(fs);
             }
+            if (!string.IsNullOrEmpty(path2)) { string dir_dt = Path.GetDirectoryName(path2); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path2, FileMode.Create))
             {
                 request.AccountantSignatureFile.CopyTo(fs);
@@ -95,6 +98,7 @@ namespace TMG.Controllers.MiscControllers
             if (File is not null)
             {
                 string path = Path.Combine(_webEnviroment.WebRootPath, "Images", "MisStamps", File.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     File.CopyTo(fs);
@@ -104,6 +108,7 @@ namespace TMG.Controllers.MiscControllers
             if (FileSignature is not null)
             {
                 string path1 = Path.Combine(_webEnviroment.WebRootPath, "Images", "SignatureMisStamps", FileSignature.FileName);
+                if (!string.IsNullOrEmpty(path1)) { string dir_dt = Path.GetDirectoryName(path1); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path1, FileMode.Create))
                 {
                     FileSignature.CopyTo(fs);
@@ -114,6 +119,7 @@ namespace TMG.Controllers.MiscControllers
             if (AccountantSignatureFile is not null)
             {
                 string path2 = Path.Combine(_webEnviroment.WebRootPath, "Images", "AccountantSignatures", AccountantSignatureFile.FileName);
+                if (!string.IsNullOrEmpty(path2)) { string dir_dt = Path.GetDirectoryName(path2); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path2, FileMode.Create))
                 {
                     AccountantSignatureFile.CopyTo(fs);

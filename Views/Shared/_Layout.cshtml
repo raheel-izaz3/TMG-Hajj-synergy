@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor http
 <!DOCTYPE html>
 
@@ -577,11 +577,11 @@
                                             <div>Airports</div>
                                         </a>
                                     </li>
-                                    <li class="menu-item">
-                                        <a asp-controller="POTicketFlight" asp-action="Index" class="menu-link">
-                                            <div>Flights</div>
-                                        </a>
-                                    </li>
+                                    @* <li class="menu-item"> *@
+                                    @*     <a asp-controller="POTicketFlight" asp-action="Index" class="menu-link"> *@
+                                    @*         <div>Flights</div> *@
+                                    @*     </a> *@
+                                    @* </li> *@
                                 </ul>
                             </li>
                         }
@@ -682,11 +682,11 @@
                                             </a>
                                         </li>
                                     }
-                                    @* <li class="menu-item">
-                            <a asp-controller="Flight" asp-action="Index" class="menu-link">
-                            <div>Flights</div>
-                            </a>
-                            </li> *@
+                                    <li class="menu-item">
+                                        <a asp-controller="Flight" asp-action="Index" class="menu-link">
+                                            <div>Flights</div>
+                                        </a>
+                                    </li>
 
                                     @* <li class="menu-item">
                             <a asp-controller="FlightReport" asp-action="FlightSummary" class="menu-link" target="_blank">

@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using Humanizer;
 using TMG.Data;
 using TMG.ManagerClasses;
@@ -155,6 +155,7 @@ namespace TMG.Controllers.QurbaniContronllers
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "BatchQrCode", batch.WhatsappQrCodeFile.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     batch.WhatsappQrCodeFile.CopyTo(fs);

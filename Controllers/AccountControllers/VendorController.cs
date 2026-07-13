@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -79,6 +79,7 @@ public class VendorController : Controller
             string fileName = Path.GetFileName(image.FileName);
             string filePath = Path.Combine(uploadsFolder, fileName);
 
+            if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 image.CopyTo(fileStream);
@@ -161,6 +162,7 @@ public class VendorController : Controller
             string fileName = Path.GetFileName(image.FileName);
             string filePath = Path.Combine(uploadsFolder, fileName);
 
+            if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 image.CopyTo(fileStream);

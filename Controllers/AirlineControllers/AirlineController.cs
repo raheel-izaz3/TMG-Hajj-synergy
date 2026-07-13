@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AirlineModels;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +46,7 @@ namespace TMG.Controllers.AirlineControllers
             if (request.AirlineLogoPic is not null)
             {
                 saveLogo = Path.Combine(_host.WebRootPath, "Images", "AirlineLogo", request.AirlineLogoPic.FileName);
+                if (!string.IsNullOrEmpty(saveLogo)) { string dir_dt = Path.GetDirectoryName(saveLogo); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(saveLogo, FileMode.Create))
                 {
                     request.AirlineLogoPic.CopyTo(fs);
@@ -321,6 +322,7 @@ namespace TMG.Controllers.AirlineControllers
             string relativePath = Path.Combine("Images", "AirlineLogo", randomFileName);
             string path = Path.Combine(_host.WebRootPath, relativePath);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);

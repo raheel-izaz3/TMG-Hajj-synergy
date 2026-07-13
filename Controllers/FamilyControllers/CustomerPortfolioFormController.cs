@@ -1,4 +1,4 @@
-﻿using Humanizer;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
@@ -289,6 +289,7 @@ public partial class CustomerPortfolioFormController : Controller
             if (request.MemberImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "MemberImages", request.MemberImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MemberImage.CopyToAsync(fs);
@@ -299,6 +300,7 @@ public partial class CustomerPortfolioFormController : Controller
             if (request.PassportImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "PassportImages", request.PassportImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.PassportImage.CopyToAsync(fs);
@@ -309,6 +311,7 @@ public partial class CustomerPortfolioFormController : Controller
             if (request.VisaImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "VisaImages", request.VisaImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.VisaImage.CopyToAsync(fs);

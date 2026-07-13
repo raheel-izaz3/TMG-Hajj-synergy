@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AirlineModels;
 using TMG.Models.FamilyModels;
@@ -95,8 +95,15 @@ namespace TMG.Controllers.AirlineControllers
                .Where(e => e.HajjSeasonsId == int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId")))
                .ToList();
 
+            var activeFlight = _dbContext.Flights.FirstOrDefault(e => !e.Trashed);
+            if (activeFlight == null)
+            {
+                ModelState.AddModelError("FlightId", "No active Flight exists in the system. Please register a Flight before creating a PNR.");
+                return View(pnr);
+            }
+
             pnr.HajjSeasonsId = int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId"));
-            pnr.FlightId = 1;
+            pnr.FlightId = activeFlight.FlightId;
 
 
             _dbContext.PNRs.Add(pnr);
@@ -171,7 +178,14 @@ namespace TMG.Controllers.AirlineControllers
 
             if (!ModelState.IsValid) return View(pnr);
 
-            pnrToEdit.FlightId = 1;
+            var activeFlight = _dbContext.Flights.FirstOrDefault(e => !e.Trashed);
+            if (activeFlight == null)
+            {
+                ModelState.AddModelError("FlightId", "No active Flight exists in the system. Please register a Flight first.");
+                return View(pnr);
+            }
+
+            pnrToEdit.FlightId = activeFlight.FlightId;
             pnrToEdit.Type = pnr.Type;
             pnrToEdit.PNRType = pnr.PNRType;
             pnrToEdit.Name = pnr.Name;

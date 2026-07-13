@@ -1,4 +1,4 @@
-﻿using iText.Layout.Properties;
+using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMG.Data;
@@ -55,6 +55,7 @@ namespace TMG.Controllers.MiscControllers
 
                 string uploadPath = Path.Combine(folderPath, fileName);
 
+                if (!string.IsNullOrEmpty(uploadPath)) { string dir_dt = Path.GetDirectoryName(uploadPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(uploadPath, FileMode.Create))
                 {
                     BackgroundImage.CopyTo(fileStream);
@@ -114,6 +115,7 @@ namespace TMG.Controllers.MiscControllers
 
                 string uploadPath = Path.Combine(folderPath, fileName);
 
+                if (!string.IsNullOrEmpty(uploadPath)) { string dir_dt = Path.GetDirectoryName(uploadPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(uploadPath, FileMode.Create))
                 {
                     BackgroundImage.CopyTo(fileStream);

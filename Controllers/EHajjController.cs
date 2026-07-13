@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.Models.CompanyModels;
 using TMG.Models.EHajjModels;
 using TMG.Models.FamilyModels;
@@ -76,6 +76,7 @@ namespace TMG.Controllers
             if (request.Voucherpath is not null)
             {
                 savePathVouchers = Path.Combine(_host.WebRootPath, "Images", "EHajjVouchers", request.Voucherpath.FileName);
+                if (!string.IsNullOrEmpty(savePathVouchers)) { string dir_dt = Path.GetDirectoryName(savePathVouchers); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(savePathVouchers, FileMode.Create))
                 {
                     request.Voucherpath.CopyTo(fs);
@@ -84,6 +85,7 @@ namespace TMG.Controllers
             if (request.Contractpath is not null)
             {
                 savePathContract = Path.Combine(_host.WebRootPath, "Images", "EHajjContract", request.Contractpath.FileName);
+                if (!string.IsNullOrEmpty(savePathContract)) { string dir_dt = Path.GetDirectoryName(savePathContract); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(savePathContract, FileMode.Create))
                 {
                     request.Contractpath.CopyTo(fs);
@@ -92,6 +94,7 @@ namespace TMG.Controllers
             if (request.QrPath is not null)
             {
                 savePathQr = Path.Combine(_host.WebRootPath, "Images", "EHajjQr", request.QrPath.FileName);
+                if (!string.IsNullOrEmpty(savePathQr)) { string dir_dt = Path.GetDirectoryName(savePathQr); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(savePathQr, FileMode.Create))
                 {
                     request.QrPath.CopyTo(fs);
@@ -436,6 +439,7 @@ namespace TMG.Controllers
             string relativePath = Path.Combine("Images", "EHajjContract", randomFileName);
             string path = Path.Combine(_host.WebRootPath, relativePath);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);
@@ -462,6 +466,7 @@ namespace TMG.Controllers
             string relativePath = Path.Combine("Images", "EHajjVouchers", randomFileName);
             string path = Path.Combine(_host.WebRootPath, relativePath);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);
@@ -488,6 +493,7 @@ namespace TMG.Controllers
             string relativePath = Path.Combine("Images", "EHajjQr", randomFileName);
             string path = Path.Combine(_host.WebRootPath, relativePath);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);

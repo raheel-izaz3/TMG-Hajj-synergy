@@ -586,6 +586,7 @@ namespace TMG.Controllers.InvoiceControllers
                 {
                     string path = Path.Combine(_webEnviroment.WebRootPath, "Images", "Invoices", request.File.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.File.CopyTo(fs);
@@ -743,6 +744,7 @@ namespace TMG.Controllers.InvoiceControllers
 
             string path = Path.Combine(_webEnviroment.WebRootPath, "Images", "Invoices", request.File.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 request.File.CopyTo(fs);

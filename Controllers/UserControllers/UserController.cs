@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models;
@@ -86,6 +86,7 @@ namespace TMG.Controllers
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "UserSignatures", request.UserSignatureFile.FileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         request.UserSignatureFile.CopyTo(fs);
@@ -187,6 +188,7 @@ namespace TMG.Controllers
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "UserSignatures", request.UserSignatureFile.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     request.UserSignatureFile.CopyTo(fs);

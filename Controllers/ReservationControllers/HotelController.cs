@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.ReservationModels;
 using TMG.Models.FormModels.ReservationModels;
@@ -110,6 +110,7 @@ namespace TMG.Controllers.ReservationControllers
 
             string path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "HotelLogos", request.HotelLogoFile.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 request.HotelLogoFile.CopyTo(fs);

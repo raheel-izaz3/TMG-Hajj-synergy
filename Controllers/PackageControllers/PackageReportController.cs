@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models;
 using TMG.Models.AccountModels;
@@ -2542,6 +2542,7 @@ namespace TMG.Controllers.PackageControllers
                 if (request.VisaFile is not null)
                 {
                     visaPath = Path.Combine(_host.WebRootPath, "Images", "VisaImages", request.VisaFile.FileName);
+                    if (!string.IsNullOrEmpty(visaPath)) { string dir_dt = Path.GetDirectoryName(visaPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(visaPath, FileMode.Create))
                     {
                         request.VisaFile.CopyTo(fs);
@@ -2551,6 +2552,7 @@ namespace TMG.Controllers.PackageControllers
                 if (request.InsuranceFile is not null)
                 {
                     insurancePath = Path.Combine(_host.WebRootPath, "Images", "InsuranceImages", request.InsuranceFile.FileName);
+                    if (!string.IsNullOrEmpty(insurancePath)) { string dir_dt = Path.GetDirectoryName(insurancePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(insurancePath, FileMode.Create))
                     {
                         request.InsuranceFile.CopyTo(fs);
@@ -2563,6 +2565,7 @@ namespace TMG.Controllers.PackageControllers
 
 
                     misFile = Path.Combine(_host.WebRootPath, "Pdfs", "MIS", request.MISFile.FileName);
+                    if (!string.IsNullOrEmpty(misFile)) { string dir_dt = Path.GetDirectoryName(misFile); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(misFile, FileMode.Create))
                     {
                         request.MISFile.CopyTo(fs);
@@ -2603,6 +2606,7 @@ namespace TMG.Controllers.PackageControllers
                 if (request.AirlineFile is not null)
                 {
                     airlinePath = Path.Combine(_host.WebRootPath, "Images", "AirlineTickets", request.AirlineFile.FileName);
+                    if (!string.IsNullOrEmpty(airlinePath)) { string dir_dt = Path.GetDirectoryName(airlinePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(airlinePath, FileMode.Create))
                     {
                         request.AirlineFile.CopyTo(fs);
@@ -2612,6 +2616,7 @@ namespace TMG.Controllers.PackageControllers
                 if (request.TrainFile is not null)
                 {
                     trainPath = Path.Combine(_host.WebRootPath, "Images", "TrainTickets", request.TrainFile.FileName);
+                    if (!string.IsNullOrEmpty(trainPath)) { string dir_dt = Path.GetDirectoryName(trainPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(trainPath, FileMode.Create))
                     {
                         request.TrainFile.CopyTo(fs);
@@ -3139,6 +3144,7 @@ namespace TMG.Controllers.PackageControllers
                 if (request.TrainFile is not null)
                 {
                     trainPath = Path.Combine(_host.WebRootPath, "Images", "TrainTickets", request.TrainFile.FileName);
+                    if (!string.IsNullOrEmpty(trainPath)) { string dir_dt = Path.GetDirectoryName(trainPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new(trainPath, FileMode.Create))
                     {
                         request.TrainFile.CopyTo(fs);

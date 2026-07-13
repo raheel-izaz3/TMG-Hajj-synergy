@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -586,6 +586,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.MemberImage is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "MemberImages", request.MemberImage.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.MemberImage.CopyToAsync(fs);
@@ -596,6 +597,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.PassportAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PassportImages", request.PassportAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.PassportAttachment.CopyToAsync(fs);
@@ -606,6 +608,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.CNICAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.CNICAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.CNICAttachment.CopyToAsync(fs);
@@ -616,6 +619,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.CNICBackAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.CNICBackAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.CNICBackAttachment.CopyToAsync(fs);
@@ -626,6 +630,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.FormAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.FormAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.FormAttachment.CopyToAsync(fs);
@@ -746,6 +751,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.MemberImage is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "MemberImages", request.MemberImage.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.MemberImage.CopyToAsync(fs);
@@ -756,6 +762,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.PassportAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "PassportImages", request.PassportAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.PassportAttachment.CopyToAsync(fs);
@@ -766,6 +773,7 @@ namespace TMG.Controllers.FamilyControllers
                 if (request.CNICAttachment is not null)
                 {
                     string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.CNICAttachment.FileName);
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     await using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.CNICAttachment.CopyToAsync(fs);
@@ -1311,6 +1319,7 @@ namespace TMG.Controllers.FamilyControllers
 
                     string filePath = Path.Combine(uploadsFolder, request.MemberImage[i].FileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     {
                         request.MemberImage[i].CopyTo(fs);
@@ -1328,6 +1337,7 @@ namespace TMG.Controllers.FamilyControllers
 
                     string filePath = Path.Combine(uploadsFolder, request.PassportAttachment[i].FileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     {
                         request.PassportAttachment[i].CopyTo(fs);
@@ -1345,6 +1355,7 @@ namespace TMG.Controllers.FamilyControllers
 
                     string filePath = Path.Combine(uploadsFolder, request.CNICAttachment[i].FileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     {
                         request.CNICAttachment[i].CopyTo(fs);
@@ -1362,6 +1373,7 @@ namespace TMG.Controllers.FamilyControllers
 
                     string filePath = Path.Combine(uploadsFolder, request.CNICBackAttachment[i].FileName);
 
+                    if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     {
                         request.CNICBackAttachment[i].CopyTo(fs);

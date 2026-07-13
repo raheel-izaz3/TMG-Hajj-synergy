@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
@@ -193,6 +193,7 @@ namespace TMG.Controllers.AccountControllers
                 Directory.CreateDirectory(folderPath); 
 
                 attachmentPath = Path.Combine(folderPath, fileName);
+                if (!string.IsNullOrEmpty(attachmentPath)) { string dir_dt = Path.GetDirectoryName(attachmentPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var stream = new FileStream(attachmentPath, FileMode.Create))
                 {
                     await attachment.CopyToAsync(stream);

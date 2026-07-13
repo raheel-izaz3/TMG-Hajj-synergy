@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AccomodationModels;
 using TMG.Models.MiscModels;
@@ -60,6 +60,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(image.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     image.CopyTo(fileStream);
@@ -76,6 +77,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(footImage.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     footImage.CopyTo(fileStream);
@@ -119,6 +121,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(image.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     image.CopyTo(fileStream);
@@ -135,6 +138,7 @@ namespace TMG.Controllers.MiscControllers
                 string fileName = Path.GetFileName(footImage.FileName);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
+                if (!string.IsNullOrEmpty(filePath)) { string dir_dt = Path.GetDirectoryName(filePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     footImage.CopyTo(fileStream);

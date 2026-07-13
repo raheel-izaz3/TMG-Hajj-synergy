@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using Microsoft.AspNetCore.Mvc;
 using TMG.Models.CompanyModels;
@@ -217,18 +217,24 @@ namespace TMG.Controllers.CompanyControllers
                         ? Path.Combine(directorPhotoPath, request.DirectorPhotoFile.FileName)
                         : null;
 
+                    if (!string.IsNullOrEmpty(companyLogoPath)) { string dir_dt = Path.GetDirectoryName(companyLogoPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyLogoPath, FileMode.Create))
                         request.LogoFile.CopyTo(fs);
+                    if (!string.IsNullOrEmpty(companyStampPath)) { string dir_dt = Path.GetDirectoryName(companyStampPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyStampPath, FileMode.Create))
                         request.StampFile.CopyTo(fs);
+                    if (!string.IsNullOrEmpty(companyHeaderPath)) { string dir_dt = Path.GetDirectoryName(companyHeaderPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyHeaderPath, FileMode.Create))
                         request.Header.CopyTo(fs);
+                    if (!string.IsNullOrEmpty(companyFooterPath)) { string dir_dt = Path.GetDirectoryName(companyFooterPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyFooterPath, FileMode.Create))
                         request.Footer.CopyTo(fs);
+                    if (!string.IsNullOrEmpty(companySignaturePath)) { string dir_dt = Path.GetDirectoryName(companySignaturePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companySignaturePath, FileMode.Create))
                         request.Signatures.CopyTo(fs);
                     if (request.DirectorPhotoFile != null)
                     {
+                        if (!string.IsNullOrEmpty(companyDirectorPhotoPath)) { string dir_dt = Path.GetDirectoryName(companyDirectorPhotoPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                         using (FileStream fs = new FileStream(companyDirectorPhotoPath, FileMode.Create))
                             request.DirectorPhotoFile.CopyTo(fs);
                     }
@@ -525,6 +531,7 @@ namespace TMG.Controllers.CompanyControllers
                 {
                     string companyHeaderPath = Path.Combine(letterHeaderPath, request.Header.FileName);
 
+                    if (!string.IsNullOrEmpty(companyHeaderPath)) { string dir_dt = Path.GetDirectoryName(companyHeaderPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyHeaderPath, FileMode.Create))
                     {
                         request.Header.CopyTo(fs);
@@ -535,6 +542,7 @@ namespace TMG.Controllers.CompanyControllers
                 {
                     string companyFooterPath = Path.Combine(letterFoooterPath, request.Footer.FileName);
 
+                    if (!string.IsNullOrEmpty(companyFooterPath)) { string dir_dt = Path.GetDirectoryName(companyFooterPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companyFooterPath, FileMode.Create))
                     {
                         request.Footer.CopyTo(fs);
@@ -547,6 +555,7 @@ namespace TMG.Controllers.CompanyControllers
                     string companySignature = Path.Combine(signature, request.Signatures.FileName);
 
 
+                    if (!string.IsNullOrEmpty(companySignature)) { string dir_dt = Path.GetDirectoryName(companySignature); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(companySignature, FileMode.Create))
                     {
                         request.Signatures.CopyTo(fs);
@@ -718,6 +727,7 @@ namespace TMG.Controllers.CompanyControllers
             {
                 string path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyLogos", request.LogoFile.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs = new(path, FileMode.Create);
 
                 request.LogoFile.CopyTo(fs);
@@ -744,6 +754,7 @@ namespace TMG.Controllers.CompanyControllers
             {
                 string path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyStamps", request.StampFile.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs = new(path, FileMode.Create);
 
                 request.StampFile.CopyTo(fs);
@@ -771,7 +782,9 @@ namespace TMG.Controllers.CompanyControllers
                 string path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyLetterHeads", request.LetterHeadFile.FileName);
                 string path1 = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyLetterHeads", request.LetterHeadFooterFile.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs = new(path, FileMode.Create);
+                if (!string.IsNullOrEmpty(path1)) { string dir_dt = Path.GetDirectoryName(path1); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs1 = new(path1, FileMode.Create);
 
                 request.LetterHeadFile.CopyTo(fs);
@@ -802,7 +815,9 @@ namespace TMG.Controllers.CompanyControllers
                 string path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyLetterHeadsCompany", request.LetterHeadFileCompany.FileName);
                 string path1 = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "CompanyLetterHeadsCompany", request.LetterHeadFooterFileCompany.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs = new(path, FileMode.Create);
+                if (!string.IsNullOrEmpty(path1)) { string dir_dt = Path.GetDirectoryName(path1); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using FileStream fs1 = new(path1, FileMode.Create);
 
                 request.LetterHeadFileCompany.CopyTo(fs);

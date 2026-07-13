@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AccomodationModels;
 using TMG.Models.MiscModels;
@@ -48,6 +48,7 @@ namespace TMG.Controllers.MiscControllers
 
             string path = Path.Combine(_webEnviroment.WebRootPath, "Images", "BankLogos", request.File.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 request.File.CopyTo(fs);
@@ -100,6 +101,7 @@ namespace TMG.Controllers.MiscControllers
 
             string path = Path.Combine(_webEnviroment.WebRootPath, "Images", "BankLogos", File.FileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 File.CopyTo(fs);

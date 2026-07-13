@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMG.Data;
 using TMG.ManagerClasses;
@@ -82,6 +82,7 @@ public class ExpenseController : Controller
         if(expense.ImageFile is not null)
         {
             string path = Path.Combine(_host.WebRootPath, "Images", "ExpenseImages", expense.ImageFile.FileName);
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 expense.ImageFile.CopyTo(fs);

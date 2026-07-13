@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMG.Data;
 using TMG.ManagerClasses;
@@ -79,6 +79,7 @@ namespace TMG.Controllers.CompanyControllers
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "Documents", request.ImagePath.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     request.ImagePath.CopyTo(fs);
@@ -132,6 +133,7 @@ namespace TMG.Controllers.CompanyControllers
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "Documents", request.ImagePath.FileName);
 
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     request.ImagePath.CopyTo(fs);

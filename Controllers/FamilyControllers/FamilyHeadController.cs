@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO.Compression;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -3372,6 +3372,7 @@ namespace TMG.Controllers.FamilyControllers
                         "MemberImages",
                         request.MemberImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(memberImagePath)) { string dir_dt = Path.GetDirectoryName(memberImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(memberImagePath, FileMode.Create))
                     {
                         request.MemberImage.CopyTo(fs);
@@ -3386,6 +3387,7 @@ namespace TMG.Controllers.FamilyControllers
                         "PassportImages",
                         request.PassportImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(passportImagePath)) { string dir_dt = Path.GetDirectoryName(passportImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(passportImagePath, FileMode.Create))
                     {
                         request.PassportImage.CopyTo(fs);
@@ -3400,6 +3402,7 @@ namespace TMG.Controllers.FamilyControllers
                         "PassportTokenImages",
                         request.PassportTokenImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(passportTokenImagePath)) { string dir_dt = Path.GetDirectoryName(passportTokenImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(passportTokenImagePath, FileMode.Create))
                     {
                         request.PassportTokenImage.CopyTo(fs);
@@ -3413,6 +3416,7 @@ namespace TMG.Controllers.FamilyControllers
                         "Ehajj",
                         request.Ehajj.FileName
                     );
+                    if (!string.IsNullOrEmpty(EhajjPath)) { string dir_dt = Path.GetDirectoryName(EhajjPath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(EhajjPath, FileMode.Create))
                     {
                         request.Ehajj.CopyTo(fs);
@@ -3427,6 +3431,7 @@ namespace TMG.Controllers.FamilyControllers
                         "VisaImages",
                         request.VisaImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(visaImagePath)) { string dir_dt = Path.GetDirectoryName(visaImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(visaImagePath, FileMode.Create))
                     {
                         request.VisaImage.CopyTo(fs);
@@ -3441,6 +3446,7 @@ namespace TMG.Controllers.FamilyControllers
                         "InsuranceImages",
                         request.InsuranceImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(insuranceImagePath)) { string dir_dt = Path.GetDirectoryName(insuranceImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(insuranceImagePath, FileMode.Create))
                     {
                         request.InsuranceImage.CopyTo(fs);
@@ -3455,6 +3461,7 @@ namespace TMG.Controllers.FamilyControllers
                         "MemberVaccImages",
                         request.MemberVaccinationImage.FileName
                     );
+                    if (!string.IsNullOrEmpty(memberVaccImagePath)) { string dir_dt = Path.GetDirectoryName(memberVaccImagePath); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(memberVaccImagePath, FileMode.Create))
                     {
                         request.MemberVaccinationImage.CopyTo(fs);

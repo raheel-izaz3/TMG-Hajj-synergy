@@ -1,4 +1,4 @@
-﻿using Humanizer;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Options;
@@ -944,6 +944,7 @@ public partial class FamilyHeadFormController : Controller
                     string fileName = request.NomineeCnic.FileName;
                     string path = Path.Combine(_host.WebRootPath, "Images", "NomineeCnic", fileName);
 
+                    if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                     using (FileStream fs = new FileStream(path, FileMode.Create))
                     {
                         await request.NomineeCnic.CopyToAsync(fs);
@@ -1299,6 +1300,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.MemberImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "MemberImages", request.MemberImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MemberImage.CopyToAsync(fs);
@@ -1309,6 +1311,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.PassportImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "PassportImages", request.PassportImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.PassportImage.CopyToAsync(fs);
@@ -1319,6 +1322,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.VisaImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "VisaImages", request.VisaImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.VisaImage.CopyToAsync(fs);
@@ -1329,6 +1333,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.MemberVaccinationImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "MemberVaccImages", request.MemberVaccinationImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MemberVaccinationImage.CopyToAsync(fs);
@@ -1339,6 +1344,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.InsuranceImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "InsuranceImages", request.InsuranceImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.InsuranceImage.CopyToAsync(fs);
@@ -1349,6 +1355,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.MISPdfPath is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Pdfs", "MIS", request.MISPdfPath.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MISPdfPath.CopyToAsync(fs);
@@ -1359,6 +1366,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.BloodProof is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "BloodProof", request.BloodProof.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.BloodProof.CopyToAsync(fs);
@@ -1369,6 +1377,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.CnicUpload is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.CnicUpload.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.CnicUpload.CopyToAsync(fs);
@@ -1379,6 +1388,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.PolioUpload is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.PolioUpload.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.PolioUpload.CopyToAsync(fs);
@@ -1389,6 +1399,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.CovidUpload is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.CovidUpload.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.CovidUpload.CopyToAsync(fs);
@@ -1399,6 +1410,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.MangatitiseUpload is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.MangatitiseUpload.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MangatitiseUpload.CopyToAsync(fs);
@@ -1409,6 +1421,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.InfluenzaUpload is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "CnicUpload", request.InfluenzaUpload.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.InfluenzaUpload.CopyToAsync(fs);
@@ -1419,6 +1432,7 @@ public partial class FamilyHeadFormController : Controller
             if (request.MemberTrainImage is not null)
             {
                 string path = Path.Combine(_host.WebRootPath, "Images", "TrainImages", request.MemberTrainImage.FileName);
+                if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
                 await using (FileStream fs = new FileStream(path, FileMode.Create))
                 {
                     await request.MemberTrainImage.CopyToAsync(fs);
@@ -1923,6 +1937,7 @@ public partial class FamilyHeadFormController : Controller
             string fileName = Path.GetFileName(request.TicketPDF.FileName);
             string path = Path.Combine(pdfDirectory, fileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             await using FileStream fs = new(path, FileMode.Create);
             await request.TicketPDF.CopyToAsync(fs);
 
@@ -1961,6 +1976,7 @@ public partial class FamilyHeadFormController : Controller
             string fileName = Path.GetFileName(request.TicketPDF.FileName);
             string path = Path.Combine(pdfDirectory, fileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             await using FileStream fs = new(path, FileMode.Create);
             await request.TicketPDF.CopyToAsync(fs);
 
@@ -2087,6 +2103,7 @@ public partial class FamilyHeadFormController : Controller
             string fileName = NomineeCnic.FileName;
             string path = Path.Combine(_host.WebRootPath, "Images", "NomineeCnic", fileName);
 
+            if (!string.IsNullOrEmpty(path)) { string dir_dt = Path.GetDirectoryName(path); if (!Directory.Exists(dir_dt)) Directory.CreateDirectory(dir_dt); }
             using (FileStream fs = new FileStream(path, FileMode.Create))
             {
                 await NomineeCnic.CopyToAsync(fs);
