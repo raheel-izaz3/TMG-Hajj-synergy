@@ -1265,7 +1265,11 @@ namespace TMG.Controllers.PackageControllers
                 .Include(e => e.Room)
                 .Include(e => e.hajjSeasons)
                 .FirstOrDefault(e => e.PackageId == id);
-
+            if (package == null)
+            {
+                // Redirect back to the list so the app doesn't show a white error screen
+                return RedirectToAction("Index");
+            }
             ViewBag.Routes = _dbContext.TravelRouteStops
                             .Include(e => e.Vehicle)
                             .Include(e => e.Route)

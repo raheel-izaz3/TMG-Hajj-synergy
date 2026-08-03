@@ -429,6 +429,16 @@
                                             <div>CreditCard</div>
                                         </a>
                                     </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="Vendor" asp-action="Index" class="menu-link">
+                                            <div>Vendor</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="VendorType" asp-action="Index" class="menu-link">
+                                            <div>Vendor Types</div>
+                                        </a>
+                                    </li>
                                     @if (http.HttpContext.Session.GetString("CanViewGift").Equals("True"))
                                     {
                                         <li class="menu-item">
@@ -1227,12 +1237,12 @@
                             <div>Company Wise - Train Travel Summary</div>
                             </a>
                             </li> *@
-                                @* <li class="menu-item">
-                            <a asp-controller="AccommodationReport" target="_blank" asp-action="AccomodationReport"
-                            class="menu-link">
-                            <div>Accomodation Summary</div>
-                            </a>
-                            </li> *@
+                                <li class="menu-item">
+                                    <a asp-controller="AccommodationReport" target="_blank" asp-action="AccomodationReport"
+                                       class="menu-link">
+                                        <div>Accomodation Summary</div>
+                                    </a>
+                                </li>
                                 <li class="menu-item">
                                     <a asp-controller="Report" target="_blank" asp-action="BookingWiseReceiptReportSelection"
                                        class="menu-link">

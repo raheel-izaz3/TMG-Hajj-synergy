@@ -1,4 +1,4 @@
-﻿@model FloorDetailsModel
+@model FloorDetailsModel
 @{
     string modelName = "Floor";
     string modelNamePlural = "Floors";
@@ -58,16 +58,9 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold"><span class="text-muted fw-light">@Model.HotelName / </span> @modelNamePlural</h4>
 
-    <hr class="mb-4" />
-    @* @if (ViewBag.CreateAllowed == true)
-    { *@
-    @* <a asp-action="Create" class="btn btn-info">Create New</a> *@
-    @* }
-    @if (ViewBag.RestoreAllowed == true)
-    { *@
+    <a asp-action="Create" asp-route-id="@ViewBag.HotelId" class="btn btn-info">Create New</a>
     <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash
         (@ViewBag.TrashCount)</a>
-    @* } *@
     <br />
     <br />
     <div class="card p-2">
@@ -176,9 +169,9 @@
                                     <button onclick="confirmDelete(@floor.Floor.FloorId)" class="btn btn-outline-danger"><i
                                             class="bx bx-trash me-1"></i> Trash</button>
                                     @* } *@
-                                    @* <a class="btn btn-success" asp-controller="FloorRoom" asp-action="Create"
+                                    <a class="btn btn-success" asp-controller="FloorRoom" asp-action="Create"
                                         asp-route-id="@floor.Floor.FloorId"><i class="bx bx-add-to-queue me-1"></i> Add
-                                        Room</a> *@
+                                        Room</a>
                                     <a class="btn btn-info" asp-controller="FloorRoom" asp-action="Index"
                                         asp-route-id="@floor.Floor.FloorId"><i class="bx bx-door-open me-1"></i> Room
                                         Details</a>

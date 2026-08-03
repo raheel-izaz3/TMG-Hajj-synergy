@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TMG.Data;
 using TMG.ManagerClasses;
@@ -119,6 +119,8 @@ namespace TMG.Controllers.TransportationBlock
             ViewBag.Routes = _dbContext.RoutesWithoutTrash
                 .ToList();
 
+            ViewBag.Place = _dbContext.PlacesWithoutTrash.ToList();
+
 
             ViewBag.Packages1 = _dbContext.UserCompanies
                 .Where(uc => uc.UserId == Convert.ToInt32(_http.HttpContext.Session.GetString("UserId")))
@@ -148,6 +150,28 @@ namespace TMG.Controllers.TransportationBlock
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (transportationBlocks.PackageIds?.Count ?? 0); i++)
+                {
+                    if (transportationBlocks.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = transportationBlocks.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    transportationBlocks.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        transportationBlocks.PackageId = firstPackage.PackageId;
+                    }
+                }
+
                 _dbContext.TransportationBlocks.Add(transportationBlocks);
                 _dbContext.SaveChanges();
 
@@ -221,6 +245,11 @@ namespace TMG.Controllers.TransportationBlock
         [HttpPost]
         public IActionResult Edit(Models.TransportationBlock.TransportationBlocks group)
         {
+            ViewBag.Routes = _dbContext.RoutesWithoutTrash
+               .ToList();
+
+            ViewBag.Place = _dbContext.PlacesWithoutTrash.ToList();
+
             ViewBag.Packages1 = _dbContext.UserCompanies
                 .Where(uc => uc.UserId == Convert.ToInt32(_http.HttpContext.Session.GetString("UserId")))
                 .Join(
@@ -248,15 +277,36 @@ namespace TMG.Controllers.TransportationBlock
                 .Where(e => e.HajjSeasonsId == int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId")));
             if (!ModelState.IsValid) return View(group);
 
-
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-
                 group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
-                _dbContext.Entry(group).State = EntityState.Modified;
 
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
+                {
+                    if (group.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = group.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    group.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        group.PackageId = firstPackage.PackageId;
+                    }
+                }
+
+                _dbContext.Entry(group).State = EntityState.Modified;
                 _dbContext.SaveChanges();
+
                 _dbContext.TranspotationBlockGroups.Where(e => e.TransportationBlocksId == group.TransportationBlocksId).ExecuteDelete();
                 for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
                 {
@@ -272,10 +322,8 @@ namespace TMG.Controllers.TransportationBlock
 
                 transaction.Commit();
 
-
                 TempData["created"] = true;
                 return RedirectToAction(nameof(Index));
-
             }
             catch (Exception ex)
             {

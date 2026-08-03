@@ -1,0 +1,72 @@
+@model TMG.Models.ReservationModels.RoomDetails
+
+@{
+    ViewData["Title"] = "Create Room Details";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Hotel /</span> Add Room Details</h4>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+
+                <!-- CRITICAL HIDDEN FIELDS -->
+                <input type="hidden" asp-for="POHotelsId" />
+                <input type="hidden" asp-for="HotelId" />
+
+                <!-- If PlaceId is required by your business logic, set it here.
+                     Otherwise, you'll need to pass it from the controller or a dropdown -->
+                <input type="hidden" asp-for="PlaceId" value="1" />
+
+                <div class="row">
+                    <!-- Room Number -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="RoomNumber" class="form-label">Room Number *</label>
+                        <input asp-for="RoomNumber" class="form-control" placeholder="e.g. 101" required />
+                        <span asp-validation-for="RoomNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- Room Base Type (from ViewBag) -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="RoomId" class="form-label">Room Classification</label>
+                        <select asp-for="RoomId" class="form-select" asp-items="@(new SelectList(ViewBag.Rooms, "RoomId", "RoomName"))">
+                            <option value="">-- Select Room --</option>
+                        </select>
+                    </div>
+
+                    <!-- Room Bed Type (from ViewBag) -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="RoomBedTypeId" class="form-label">Bed Type</label>
+                        <select asp-for="RoomBedTypeId" class="form-select" asp-items="@(new SelectList(ViewBag.RoomTypes, "RoomBedTypeId", "BedType"))">
+                            <option value="">-- Select Bed Type --</option>
+                        </select>
+                    </div>
+
+                    <!-- PAX (Occupancy) -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="PAX" class="form-label">PAX (Occupancy)</label>
+                        <input asp-for="PAX" type="number" class="form-control" placeholder="e.g. 2" />
+                    </div>
+
+                    <!-- Bathroom Type Enum -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="BathroomType" class="form-label">Bathroom Type</label>
+                        <select asp-for="BathroomType" class="form-select" asp-items="Html.GetEnumSelectList<BathroomType>()">
+                            <option value="">-- Select Bathroom --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <a asp-controller="Hotel" asp-action="Index" asp-route-hotelId="@Model.POHotelsId" class="btn btn-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-success">Save Room</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

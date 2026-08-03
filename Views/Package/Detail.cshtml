@@ -44,7 +44,7 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-12">
-                        <img class="img-fluid float-end" width="180" src="~/@Model.Company.Logo" alt="">
+                        <img class="img-fluid float-end" width="180" src="~/@Model.Company?.Logo" alt="">
                     </div>
                 </div>
             </div>
@@ -322,7 +322,7 @@
         </style>
 
 
-        <h5 class="fw-bold ml-3">Routes (@Model.TravelRoute.RouteName)</h5>
+        <h5 class="fw-bold ml-3">Routes (@Model.TravelRoute?.RouteName)</h5>
         <div class="row">
             @{
                 int r = 1;

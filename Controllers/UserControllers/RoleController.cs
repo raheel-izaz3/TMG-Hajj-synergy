@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models;
@@ -125,9 +125,10 @@ namespace TMG.Controllers
 
             foreach (var permission in rolePermissions)
             {
-                if (permission.PermissionId < request.Permissions.Count) 
+                int index = permission.PermissionId - 1;
+                if (index >= 0 && index < request.Permissions.Count) 
                 {
-                    request.Permissions[permission.PermissionId] = permission.Allowed;
+                    request.Permissions[index] = permission.Allowed;
                 }
             }
 
@@ -145,16 +146,17 @@ namespace TMG.Controllers
 
             for (int i = 0; i < request.Permissions.Count; i++)
             {
-                if (existingPermissionDict.ContainsKey(i))
+                int permissionId = i + 1;
+                if (existingPermissionDict.ContainsKey(permissionId))
                 {
-                    existingPermissionDict[i].Allowed = request.Permissions[i];
+                    existingPermissionDict[permissionId].Allowed = request.Permissions[i];
                 }
                 else if (request.Permissions[i]) 
                 {
                     _dbContext.RolePermissions.Add(new RolePermissions
                     {
                         RoleId = request.RoleId,
-                        PermissionId = i,
+                        PermissionId = permissionId,
                         Allowed = true
                     });
                 }

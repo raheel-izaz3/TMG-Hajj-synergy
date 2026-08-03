@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RoomDetails>
+@model IEnumerable<RoomDetails>
 @{
     string modelName = "PO - Hotel";
     string modelNamePlural = "PO - Hotel";
@@ -60,7 +60,7 @@
     <hr class="mb-4" />
 
 
-    <a asp-action="Create" class="btn btn-info">Create New</a>
+    <a asp-action="Create" asp-route-hotelId="@ViewBag.POHotelsId" class="btn btn-info">Create New</a>
     <a asp-action="ViewTrash" class="btn btn-info float-end"><i class="bx bx-trash me-1"></i> Trash (@ViewBag.Trashed)</a>
     <br />
     <br />

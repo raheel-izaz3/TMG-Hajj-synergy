@@ -1,4 +1,4 @@
-﻿@model HotelIndexModel
+@model HotelIndexModel
 @{
     string modelName = "Hotel";
     string modelNamePlural = "Hotels";
@@ -122,9 +122,9 @@
                                         asp-route-id="@entry.Hotel.HotelId">CheckInReport</a>
                                         <a class="btn btn-primary" asp-controller="Hotel" asp-action="AvailabilityChart"
                                         asp-route-id="@entry.Hotel.HotelId">Availability Chart</a>
-                                        @* <a class="btn btn-success" asp-controller="Floor" asp-action="Create"
+                                        <a class="btn btn-success" asp-controller="Floor" asp-action="Create"
                                         asp-route-id="@entry.Hotel.HotelId"><i class="bx bx-edit-alt me-1"></i> Add
-                                            Floor</a> *@
+                                            Floor</a>
                                         <a class="btn btn-info" asp-controller="Floor" asp-action="Details"
                                         asp-route-id="@entry.Hotel.HotelId"><i class="bx bx-building me-1"></i>Floor
                                             Details</a>
@@ -133,12 +133,14 @@
                                     }
                                     else
                                     {
-                                       @*  <a class="btn btn-primary" asp-controller="Hotel" asp-action="CheckInReport"
-                                           asp-route-id="@entry.Hotel.HotelId">CheckInReport</a>
-                                        <a class="btn btn-primary" asp-controller="Hotel" asp-action="AvailabilityChart"
-                                           asp-route-id="@entry.Hotel.HotelId">Availability Chart</a> *@
-                                        <a class="btn btn-primary" asp-controller="RoomDetails" asp-action="Index"
-                                           asp-route-id="@entry.Hotel.HotelId">Room Detail</a>
+                                         <a class="btn btn-primary" asp-controller="RoomDetails" asp-action="Index"
+                                            asp-route-id="@entry.Hotel.HotelId">Room Detail</a>
+                                         <a class="btn btn-success" asp-controller="Floor" asp-action="Create"
+                                         asp-route-id="@entry.Hotel.HotelId"><i class="bx bx-edit-alt me-1"></i> Add
+                                             Floor</a>
+                                         <a class="btn btn-info" asp-controller="Floor" asp-action="Details"
+                                         asp-route-id="@entry.Hotel.HotelId"><i class="bx bx-building me-1"></i>Floor
+                                             Details</a>
                                     }
                                 </div>
                             </td>

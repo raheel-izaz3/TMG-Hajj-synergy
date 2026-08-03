@@ -1,4 +1,4 @@
-﻿using TMG.Data;
+using TMG.Data;
 using TMG.ManagerClasses;
 using TMG.Models.AccomodationModels;
 using TMG.Models.ReservationModels;
@@ -98,6 +98,7 @@ namespace TMG.Controllers.ReservationControllers
         {
             ViewBag.TrashCount = _dbContext.Floors
                 .Where(e => e.HotelId == id && e.Trashed).Count();
+            ViewBag.HotelId = id;
 
             Hotel hotel = _dbContext.Hotels.Find(id);
             var floors = _dbContext.Floors

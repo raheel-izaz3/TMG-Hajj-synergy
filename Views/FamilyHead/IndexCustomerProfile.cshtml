@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CustomerPortfolioViewModel>
+@model IEnumerable<CustomerPortfolioViewModel>
 
 @{
 	string modelName = "Family Head";
@@ -92,7 +92,7 @@
     { *@
 	@* <a asp-action="Create" class="btn btn-info">Create New</a> *@
 	<a asp-action="CreateCustomerProfile" class="mx-2 btn btn-info">Create New Customer Profile</a>
-	<a asp-action="OnlineInquiry" class="mx-2 btn btn-info">Online Inquiry Form</a>
+	<a asp-controller="OnlineInquiry" asp-action="Inquiry" class="mx-2 btn btn-info">Online Inquiry Form</a>
 	@* } *@
 
 	<a asp-action="ViewCustomerTrash" class="btn btn-info float-end">

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NuGet.Packaging;
@@ -198,6 +198,28 @@ namespace TMG.Controllers.POControllers
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (itineraryBlock.PackageIds?.Count ?? 0); i++)
+                {
+                    if (itineraryBlock.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = itineraryBlock.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    itineraryBlock.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        itineraryBlock.PackageId = firstPackage.PackageId;
+                    }
+                }
+
                 _dbContext.ItineraryBlocks.Add(itineraryBlock);
                 _dbContext.SaveChanges();
 
@@ -308,6 +330,27 @@ namespace TMG.Controllers.POControllers
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (itineraryBlock.PackageIds?.Count ?? 0); i++)
+                {
+                    if (itineraryBlock.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = itineraryBlock.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    itineraryBlock.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        itineraryBlock.PackageId = firstPackage.PackageId;
+                    }
+                }
 
                 _dbContext.ItineraryBlocks.Add(itineraryBlock);
                 _dbContext.SaveChanges();
@@ -414,6 +457,29 @@ namespace TMG.Controllers.POControllers
             {
 
                 group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
+                {
+                    if (group.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = group.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    group.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        group.PackageId = firstPackage.PackageId;
+                    }
+                }
+
                 _dbContext.Entry(group).State = EntityState.Modified;
 
                 _dbContext.SaveChanges();
@@ -528,6 +594,29 @@ namespace TMG.Controllers.POControllers
             {
 
                 group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+
+                int firstSelectedPackageId = 0;
+                for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
+                {
+                    if (group.PackagesSelected[i])
+                    {
+                        firstSelectedPackageId = group.PackageIds[i];
+                        break;
+                    }
+                }
+                if (firstSelectedPackageId > 0)
+                {
+                    group.PackageId = firstSelectedPackageId;
+                }
+                else
+                {
+                    var firstPackage = _dbContext.Packages.FirstOrDefault(p => !p.Trashed);
+                    if (firstPackage != null)
+                    {
+                        group.PackageId = firstPackage.PackageId;
+                    }
+                }
+
                 _dbContext.Entry(group).State = EntityState.Modified;
 
                 _dbContext.SaveChanges();
