@@ -3,68 +3,301 @@
     Layout = "_AuthLayout";
 }
 
-
-<div class="container-xxl">
-    @if (TempData.ContainsKey("loggedOut"))
-    {
-        if ((bool)TempData["loggedOut"]! == true)
-        {
-            <script>
-                toastr.options.closeDuration = 100;
-                toastr.options.closeButton = true;
-                toastr.options.positionClass = "toast-top-left";
-                toastr.error('Logged Out Successfully', {timeOut: 1500}) 
-            </script>
-            TempData["loggedOut"] = false;
-        }
+<style>
+    /* Full-viewport reset */
+    html, body {
+        background-color: #17191E !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        overflow: hidden !important;
     }
-    <div class="authentication-wrapper authentication-basic container-p-y">
-        <div class="authentication-inner">
-            <!-- Register -->
-            <div class="card">
-                <div class="card-body">
-                    <!-- Logo -->
-                    <div class="app-brand justify-content-center">
-                        <a asp-action="Login" class="app-brand-link gap-2">
-                            <span class="app-brand-text demo text-body fw-bolder">
-                                <img src="~/madnilogo.png" class="img-thumbnail" width="200">
-                            </span> 
-                        </a>
-                    </div>
-                    <!-- /Logo -->
-                    @if(Model?.ErrorStatusCode == 0)
-                    {
-                        <div class="alert alert-danger">Invalid Credentials</div>
-                    }
-                    <form id="formAuthentication" class="mb-3"  method="POST">
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" 
-                                   class="form-control"
-                                   placeholder="Enter your email"
-                                   autofocus />
-                            <span class="text-danger" asp-validation-for="Email"></span>
-                        </div>
-                        <div class="mb-3 form-password-toggle">
-                            <div class="d-flex justify-content-between">
-                                <label class="form-label" asp-for="Password"></label>
-                            </div>
-                            <div class="input-group input-group-merge">
-                                <input asp-for="Password" 
-                                       class="form-control"
-                                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                       aria-describedby="password" />
-                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                            </div>
-                                <span class="text-danger" asp-validation-for="Password"></span>
-                        </div>
-                        <div class="mb-3">
-                            <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
-                            
-                        </div>
-                    </form>
-                </div>
+
+    .login-split-container {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Left Side - Dark Brand Panel */
+    .brand-panel {
+        width: 45%;
+        background-color: #17191E;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 48px;
+        position: relative;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Ambient glow behind logo */
+    .brand-panel::before {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(200, 35, 51, 0.09) 0%, rgba(0,0,0,0) 70%);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .brand-center-content {
+        margin: auto;   
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        z-index: 2;
+    }
+
+    .brand-logo-img {
+        max-width: 360px;
+        height: auto;
+        filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.5));
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand-logo-img:hover {
+        transform: scale(1.03);
+    }
+
+    .brand-subcaption {
+        color: #9CA3AF;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        margin: 0;
+    }
+
+    .brand-footer {
+        color: #6B7280;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        text-align: center;
+        z-index: 2;
+    }
+
+    /* Right Side - Light Form Panel */
+    .form-panel {
+        width: 55%;
+        background-color: #FFFFFF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px;
+    }
+
+    .form-wrapper {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .form-header {
+        margin-bottom: 32px;
+    }
+
+    .form-title {
+        color: #111827;
+        font-weight: 700;
+        font-size: 32px;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .form-subtitle {
+        color: #6B7280;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* Fields Overrides */
+    .login-split-container .custom-label {
+        display: block;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    .login-split-container .form-control {
+        height: 46px;
+        border: 1px solid #D1D5DB;
+        border-radius: 8px;
+        background-color: #FFFFFF;
+        color: #111827;
+        padding: 10px 16px;
+        font-size: 15px;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .login-split-container .form-control:focus {
+        border-color: #C82333 !important;
+        box-shadow: 0 0 0 3px rgba(200, 35, 51, 0.15) !important;
+        outline: none;
+    }
+
+    /* Password Input Wrapper Override */
+    .login-split-container .input-group {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .login-split-container .input-group-text {
+        border: 1px solid #D1D5DB;
+        background-color: #FFFFFF;
+        border-left: none;
+        color: #9CA3AF;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: border-color 0.25s ease;
+    }
+
+    .login-split-container .input-group-merge .form-control {
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .login-split-container .input-group-merge .form-control:focus + .input-group-text {
+        border-color: #C82333;
+    }
+
+    /* Action Button Override */
+    .login-split-container .submit-btn {
+        width: 100%;
+        height: 46px;
+        background-color: #C82333;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-split-container .submit-btn:hover {
+        background-color: #A71D2A;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(200, 35, 51, 0.25);
+    }
+
+    .login-split-container .submit-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(200, 35, 51, 0.2);
+    }
+
+    .login-split-container .text-danger {
+        color: #DC2626;
+        font-size: 13px;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .login-split-container .alert-danger {
+        background-color: #FEF2F2;
+        border: 1px solid #FEE2E2;
+        color: #991B1B;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    /* Responsive Layout */
+    @@media (max-width: 991px) {
+        .brand-panel {
+            display: none !important;
+        }
+        .form-panel {
+            width: 100% !important;
+            padding: 24px !important;
+        }
+    } 
+</style>
+
+@if (TempData.ContainsKey("loggedOut"))
+{
+    if ((bool)TempData["loggedOut"]! == true)
+    {
+        <script>
+            toastr.options.closeDuration = 100;
+            toastr.options.closeButton = true;
+            toastr.options.positionClass = "toast-top-left";
+            toastr.error('Logged Out Successfully', {timeOut: 1500}) 
+        </script>
+        TempData["loggedOut"] = false;
+    }
+}
+
+<div class="login-split-container">
+    <!-- Left Column - Dark Brand Panel -->
+    <div class="brand-panel">
+        <div class="brand-center-content">
+            <img src="~/assets/img/Logo/logo.png" class="brand-logo-img" alt="Universal Express Logo" onerror="this.onerror=null; this.src='/Logo.png';" />
+            <p class="brand-subcaption">Travel & Logistics Management Portal</p>
+        </div>
+        <div class="brand-footer">
+            Established 1949 — UNIVERSAL EXPRESS
+        </div>
+    </div>
+
+    <!-- Right Column - Light Form Panel -->
+    <div class="form-panel">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h1 class="form-title">Welcome Back</h1>
+                <p class="form-subtitle">Sign in to access your administrative dashboard</p>
             </div>
+
+            @if(Model?.ErrorStatusCode == 0)
+            {
+                <div class="alert alert-danger">Invalid Credentials</div>
+            }
+
+            <form id="formAuthentication" method="POST">
+                <div class="mb-4">
+                    <label asp-for="Email" class="custom-label"></label>
+                    <input asp-for="Email" 
+                           class="form-control"
+                           placeholder="Enter your email"
+                           autofocus />
+                    <span class="text-danger" asp-validation-for="Email"></span>
+                </div>
+                
+                <div class="mb-4 form-password-toggle">
+                    <label asp-for="Password" class="custom-label"></label>
+                    <div class="input-group input-group-merge">
+                        <input asp-for="Password" 
+                               class="form-control"
+                               placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                               aria-describedby="password" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    </div>
+                    <span class="text-danger" asp-validation-for="Password"></span>
+                </div>
+
+                <div class="pt-2">
+                    <button class="submit-btn" type="submit">Sign in</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+

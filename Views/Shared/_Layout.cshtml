@@ -13,7 +13,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Dashboard | Madani</title>
+    <title>Dashboard</title>
 
     <meta name="description" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
@@ -87,6 +87,36 @@
     <style>
         .menu-item .active {
         }
+
+        /* Universal Express Brand Logo Container Styles */
+        .navbar-brand-badge {
+            background-color: #1E2229 !important;
+            padding: 6px 18px !important;
+            border-radius: 8px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: auto !important; /* DO NOT use fixed width */
+            height: 40px !important;
+            box-sizing: border-box !important;
+            transition: box-shadow 0.2s ease, transform 0.2s ease !important;
+            text-decoration: none !important;
+            border: 1px solid #374151 !important;
+        }
+        .navbar-brand-badge:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            transform: translateY(-0.5px) !important;
+        }
+        .navbar-brand-badge img {
+            height: 24px !important;
+            width: auto !important; /* Allow width to scale horizontally based on aspect ratio */
+            max-width: 180px !important;
+            object-fit: contain !important;
+            display: block !important;
+        }
+        .aside-logo{
+            width:180px;
+        }
     </style>
 </head>
 
@@ -103,11 +133,12 @@
 
                 <ul class="menu-inner py-1">
                     <!-- Dashboard -->
-                    <li class="menu-item active">
+                    <li class="menu-item active bg-dark">
                         <a asp-controller="Admin" asp-action="Index" class="menu-link">
                             <i class="menu-icon tf-icons bx bx-home-circle"></i>
                             <div data-i18n="Analytics" style="font-size: 15px;font-weight: bold;">
-                                 Madani Dashboard
+                                 @* Admin Dashboard *@
+                                 <img src="~/assets/img/Logo/logo.png" class="aside-logo" alt="Universal express logo" />
                             </div>
                         </a>
                     </li>
@@ -1178,12 +1209,13 @@
                                         <div>Package Rooming</div>
                                     </a>
                                 </li>
-                                @* <li class="menu-item">
+                        @* <li class="menu-item">
                             <a asp-controller="BankReport" target="_blank" asp-action="LedgerReportSelection"
                             class="menu-link">
                             <div>Bank Account Ledger</div>
                             </a>
-                            </li> *@
+                            </li> 
+                        *@
                                 <li class="menu-item">
                                     <a asp-controller="Report" asp-action="CompanyWiseSummary" class="menu-link">
                                         <div>Company Wise Summary</div>
@@ -1277,7 +1309,7 @@
                             <i class="bx bx-menu bx-sm"></i>
                         </a>
                     </div>
-                    <select id="hajjSeason" class="form-control" style="width: 100px;">
+                                        <select id="hajjSeason" class="form-control" style="width: 100px;">
                         <option value=""></option>
                     </select>
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
@@ -1286,24 +1318,22 @@
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                    data-bs-toggle="dropdown">
-                                    <div class="avatar avatar-online">
-                                        <img src="~/madnilogo.png" alt
-                                             class="w-px-40 h-auto rounded-circle" />
+                                    <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style="width: 40px; height: 40px; background-color: #C82333 !important; font-size: 16px; box-shadow: 0 2px 6px rgba(200, 35, 51, 0.2);">
+                                        @((User.Identity.Name ?? "A").Substring(0, 1).ToUpper())
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="#">
-                                            <div class="d-flex">
+                                            <div class="d-flex align-items-center py-1">
                                                 <div class="flex-shrink-0 me-3">
-                                                    <div class="avatar avatar-online">
-                                                        <img src="~/madnilogo.png" alt
-                                                             class="w-px-40 h-auto rounded-circle" />
+                                                    <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold" style="width: 44px; height: 44px; background-color: #C82333 !important; font-size: 18px; box-shadow: 0 2px 6px rgba(200, 35, 51, 0.2);">
+                                                        @((User.Identity.Name ?? "A").Substring(0, 1).ToUpper())
                                                     </div>
                                                 </div>
-                                                <div class="flex-grow-1">
-                                                    <span class="fw-semibold d-block">@User.Identity.Name</span>
-                                                    <small class="text-muted">@http.HttpContext.Session.GetString("RoleName")</small>
+                                                <div class="flex-grow-1 d-flex flex-column justify-content-center">
+                                                    <span class="fw-semibold text-dark d-block" style="font-size: 15px; line-height: 1.2; margin-bottom: 2px;">@User.Identity.Name</span>
+                                                    <small class="text-muted" style="font-size: 12px; line-height: 1.2;">@http.HttpContext.Session.GetString("RoleName")</small>
                                                 </div>
                                             </div>
                                         </a>
