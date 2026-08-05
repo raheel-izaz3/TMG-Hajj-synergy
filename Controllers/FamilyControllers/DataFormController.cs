@@ -1292,6 +1292,25 @@ namespace TMG.Controllers.FamilyControllers
         {
             List<DataForm> dataForms = new List<DataForm>();
 
+            // Ensure the SPOId used for these registrations exists. If not, fall back to
+            // the first available SPO or create a default SPO so FK constraint does not fail.
+            int assignedSPOId = 23; // original hardcoded value
+            if (!_context.SPOs.Any(s => s.SPOId == assignedSPOId))
+            {
+                var firstSPO = _context.SPOs.OrderBy(s => s.SPOId).FirstOrDefault();
+                if (firstSPO != null)
+                {
+                    assignedSPOId = firstSPO.SPOId;
+                }
+                else
+                {
+                    var newSPO = new TMG.Models.MiscModels.SPO { Name = "Default SPO" };
+                    _context.SPOs.Add(newSPO);
+                    _context.SaveChanges();
+                    assignedSPOId = newSPO.SPOId;
+                }
+            }
+
             for (int i = 0; i < request.GivenName.Count; i++)
             {
                 DataForm fh = new DataForm
@@ -1301,7 +1320,7 @@ namespace TMG.Controllers.FamilyControllers
                     CNICNo = i < request.CNIC.Count ? request.CNIC[i] : null,
                     IsHead = (i == 0),
                     DOB = i < request.DateOfBirth.Count && request.DateOfBirth[i] != null ? request.DateOfBirth[i] : DateTime.MinValue,
-                    SPOId = 23,
+                    SPOId = assignedSPOId,
                     FeedBy = "USER",
                     MobileNo = i < request.Number.Count ? request.Number[i] : null,
                     Email = i < request.Email.Count ? request.Email[i] : null,

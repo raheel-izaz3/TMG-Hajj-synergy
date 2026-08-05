@@ -70,10 +70,10 @@ namespace TMG.Controllers.GroupControllers
 
             return View();
         }
+        // C#
         [HttpPost]
         public IActionResult Create(Models.GroupModels.Group group)
         {
-
             ViewBag.Packages1 = _dbContext.UserCompanies
                 .Where(uc => uc.UserId == Convert.ToInt32(_http.HttpContext.Session.GetString("UserId")))
                 .Join(
@@ -106,18 +106,33 @@ namespace TMG.Controllers.GroupControllers
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                // Persist the group first so GroupId is available
                 _dbContext.Groups.Add(group);
                 _dbContext.SaveChanges();
 
-                group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+                // Prepare set of valid package ids for the current season (and optionally company)
+                int activeSeasonId = int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+                var validPackageIds = _dbContext.PackagesWithoutTrash
+                    .Where(p => p.HajjSeasonsId == activeSeasonId)
+                    .Select(p => p.PackageId)
+                    .ToHashSet();
 
+                // Add only those GroupPackages whose PackageId exists
                 for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
                 {
                     if (group.PackagesSelected[i] == false) continue;
 
+                    var pid = group.PackageIds[i];
+                    if (!validPackageIds.Contains(pid))
+                    {
+                        // skip or optionally add a ModelState error / log the missing id
+                        // ModelState.AddModelError("", $"Selected package ({pid}) not found.");
+                        continue;
+                    }
+
                     _dbContext.GroupPackages.Add(new GroupPackages
                     {
-                        PackageId = group.PackageIds[i],
+                        PackageId = pid,
                         GroupId = group.GroupId
                     });
                 }
@@ -125,18 +140,14 @@ namespace TMG.Controllers.GroupControllers
 
                 transaction.Commit();
 
-
                 TempData["created"] = true;
                 return RedirectToAction(nameof(Index));
-
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.Rollback();
                 return View(group);
             }
-
-
         }
         public IActionResult Edit(int id)
         {
