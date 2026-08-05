@@ -466,7 +466,6 @@ namespace TMG.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             #region Updated Accounts
 
             // Account Types
@@ -508,9 +507,6 @@ namespace TMG.Data
             //    );
 
             #endregion
-
-            base.OnModelCreating(modelBuilder);
-
 
             modelBuilder.Entity<DepartmentFiling>() // Adjust class name if it differs slightly
         .HasOne(df => df.HajjSeaons)       // Adjust property name to match your entity
@@ -1258,6 +1254,5 @@ namespace TMG.Data
 
         public IQueryable<EHajjContract> EHajjContractsWithoutTrash => EHajjContracts.Where(e => !e.Trashed);
         #endregion
-
     }
 }

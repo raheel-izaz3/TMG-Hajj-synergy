@@ -39,6 +39,7 @@ namespace TMG.Controllers.GroupControllers
             ViewBag.Selected = selected;
             return View(groups);
         }
+
         public IActionResult Create()
         {
             ViewBag.Packages1 = _dbContext.UserCompanies
@@ -106,6 +107,9 @@ namespace TMG.Controllers.GroupControllers
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
+                // Ensure the group has the active season id before persisting to avoid NULL/FK issues
+                group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+
                 // Persist the group first so GroupId is available
                 _dbContext.Groups.Add(group);
                 _dbContext.SaveChanges();
@@ -214,13 +218,23 @@ namespace TMG.Controllers.GroupControllers
 
 
             var transaction = _dbContext.Database.BeginTransaction();
+            //try
+            //{
+
+            //    group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+            //    _dbContext.Entry(group).State = EntityState.Modified;
+
+            //    _dbContext.SaveChanges();
+
+            // just checking code 
             try
             {
-
                 group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
-                _dbContext.Entry(group).State = EntityState.Modified;
 
+                _dbContext.Groups.Add(group);
                 _dbContext.SaveChanges();
+               
+                // just checking code 
                 _dbContext.GroupPackages.Where(e => e.GroupId == group.GroupId).ExecuteDelete();
                 for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
                 {

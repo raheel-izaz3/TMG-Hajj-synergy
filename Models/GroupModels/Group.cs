@@ -26,7 +26,8 @@ namespace TMG.Models.GroupModels
 
         [NotMapped] public List<int> PackageIds { get; set; }
         [NotMapped] public List<bool> PackagesSelected { get; set; }
-        public int? HajjSeasonsId { get; set; }
+        [Required]
+        public int HajjSeasonsId { get; set; }
         public HajjSeasons HajjSeasons { get; set; }
 
         public ICollection<GroupPackages> GroupPackages { get; set; }
