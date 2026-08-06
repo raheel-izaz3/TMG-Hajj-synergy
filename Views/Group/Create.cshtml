@@ -5,6 +5,8 @@
     string modelNamePlural = "Groups";
     string modelControllerRoute = "Group";
     TMG.Data.TMGDbContext _db;
+    var packages = ((IEnumerable<dynamic>)ViewBag.Packages1)?.ToList() ?? new List<dynamic>();
+
 }
 
 
@@ -18,6 +20,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                         <div class="row">
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <label class="form-label" for="basic-icon-default-fullname" asp-for="Code"></label>
