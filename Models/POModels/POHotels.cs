@@ -37,7 +37,7 @@ namespace TMG.Models.POModels
         public PaymentMode? PaymentMode { get; set; }
         public Taxes? TaxesId { get; set; }
         public int? VendorId { get; set; }
-        public Vendor Vendor { get; set; }
+        public Vendor? Vendor { get; set; }
         public int? HotelId { get; set; }
         public Hotel Hotel { get; set; }
         public int PlaceId { get; set; }
