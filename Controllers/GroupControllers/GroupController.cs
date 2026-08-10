@@ -102,110 +102,24 @@ namespace TMG.Controllers.GroupControllers
             ViewBag.Packages = _dbContext.PackagesWithoutTrash
                 .Where(e => e.HajjSeasonsId == int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId")));
 
-            if (!int.TryParse(_http.HttpContext.Session.GetString("ActiveSeasonId"), out int activeSeasonId))
-            {
-                ModelState.AddModelError("", "Active season is not set.");
-                return View(group);
-            }
-
-            group.HajjSeasonsId = activeSeasonId;
-
-            if (group.PackageIds != null && group.PackagesSelected != null)
-            {
-                for (int i = 0; i < group.PackageIds.Count && i < group.PackagesSelected.Count; i++)
-                {
-                    if (!group.PackagesSelected[i]) continue;
-                    group.PackageId = group.PackageIds[i];
-                    break;
-                }
-            }
-
-            ModelState.Remove(nameof(group.HajjSeasonsId));
-            ModelState.Remove(nameof(group.PackageId));
-            ModelState.Remove(nameof(group.PackageIds));
-            ModelState.Remove(nameof(group.PackagesSelected));
-            ModelState.Remove(nameof(group.Package));
-            ModelState.Remove(nameof(group.GroupPackages));
-            ModelState.Remove(nameof(group.HajjSeasons));
-
-            if (!ModelState.IsValid) return View(group);
-
-            if (group.PackageIds == null || group.PackagesSelected == null || group.PackageIds.Count != group.PackagesSelected.Count)
-            {
-                ModelState.AddModelError("", "Invalid package selection.");
-                return View(group);
-            }
-
-            // Build set of valid package ids for the current season and validate selected ids
-            var validPackageIds = _dbContext.PackagesWithoutTrash
-                .Where(p => p.HajjSeasonsId == activeSeasonId)
-                .Select(p => p.PackageId)
-                .ToHashSet();
-
-            var invalidSelected = new System.Collections.Generic.List<int>();
-            for (int i = 0; i < group.PackageIds.Count; i++)
-            {
-                if (!group.PackagesSelected[i]) continue;
-                var pid = group.PackageIds[i];
-                if (!validPackageIds.Contains(pid)) invalidSelected.Add(pid);
-            }
-
-            if (invalidSelected.Any())
-            {
-                ModelState.AddModelError("", $"Some selected packages are invalid: {string.Join(", ", invalidSelected)}");
-                return View(group);
-            }
-
-            if (!group.PackagesSelected.Any(selected => selected))
-            {
-                ModelState.AddModelError("", "Please select at least one package.");
-                return View(group);
-            }
+            if (!ModelState.IsValid) return View();
 
             var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                // Logging: capture context and selected package ids
-                try
-                {
-                    var logger = (Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>)_http.HttpContext.RequestServices.GetService(typeof(Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>));
-                    var userIdStr = _http.HttpContext.Session.GetString("UserId");
-                    var selectedPids = new System.Collections.Generic.List<int>();
-                    if (group.PackageIds != null && group.PackagesSelected != null)
-                    {
-                        for (int i = 0; i < group.PackageIds.Count && i < group.PackagesSelected.Count; i++)
-                        {
-                            if (group.PackagesSelected[i]) selectedPids.Add(group.PackageIds[i]);
-                        }
-                    }
-
-                    var ctxMsg = $"Group Create started. UserId={userIdStr}, ActiveSeasonId={activeSeasonId}, SelectedPids={string.Join(',', selectedPids)}";
-                    System.Diagnostics.Debug.WriteLine(ctxMsg);
-                    if (logger != null) logger.LogInformation(ctxMsg);
-                }
-                catch { /* swallow logging errors to avoid masking original issues */ }
+                // Ensure the group has the active season id before persisting to avoid NULL/FK issues
+                group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
 
                 // Persist the group first so GroupId is available
-                try
-                {
-                    System.Diagnostics.Debug.WriteLine("Saving Group entity...");
-                    _dbContext.Groups.Add(group);
-                    _dbContext.SaveChanges();
-                    System.Diagnostics.Debug.WriteLine($"Group saved. GroupId={group.GroupId}");
-                }
-                catch (Exception saveEx)
-                {
-                    try
-                    {
-                        var logger = (Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>)_http.HttpContext.RequestServices.GetService(typeof(Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>));
-                        var msg = $"Failed saving Group. ActiveSeasonId={activeSeasonId}, GroupTempId={group.GroupId}. Exception={saveEx.Message}";
-                        System.Diagnostics.Debug.WriteLine(msg);
-                        if (logger != null) logger.LogError(saveEx, msg);
-                    }
-                    catch { }
+                _dbContext.Groups.Add(group);
+                _dbContext.SaveChanges();
 
-                    throw;
-                }
+                // Prepare set of valid package ids for the current season (and optionally company)
+                int activeSeasonId = int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+                var validPackageIds = _dbContext.PackagesWithoutTrash
+                    .Where(p => p.HajjSeasonsId == activeSeasonId)
+                    .Select(p => p.PackageId)
+                    .ToHashSet();
 
                 // Add only those GroupPackages whose PackageId exists
                 for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
@@ -226,62 +140,15 @@ namespace TMG.Controllers.GroupControllers
                         GroupId = group.GroupId
                     });
                 }
-                try
-                {
-                    System.Diagnostics.Debug.WriteLine("Saving GroupPackages...");
-                    _dbContext.SaveChanges();
-                    System.Diagnostics.Debug.WriteLine("GroupPackages saved.");
-                }
-                catch (Exception saveEx)
-                {
-                    try
-                    {
-                        var logger = (Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>)_http.HttpContext.RequestServices.GetService(typeof(Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>));
-                        var msg = $"Failed saving GroupPackages. ActiveSeasonId={activeSeasonId}, GroupId={group.GroupId}. Exception={saveEx.Message}";
-                        System.Diagnostics.Debug.WriteLine(msg);
-                        if (logger != null) logger.LogError(saveEx, msg);
-                    }
-                    catch { }
-
-                    throw;
-                }
+                _dbContext.SaveChanges();
 
                 transaction.Commit();
 
                 TempData["created"] = true;
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Log failure details including inner exceptions and package context
-                try
-                {
-                    var logger = (Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>)_http.HttpContext.RequestServices.GetService(typeof(Microsoft.Extensions.Logging.ILogger<Controllers.GroupControllers.GroupController>));
-                    var userIdStr = _http.HttpContext.Session.GetString("UserId");
-                    var selectedPids = new System.Collections.Generic.List<int>();
-                    if (group.PackageIds != null && group.PackagesSelected != null)
-                    {
-                        for (int i = 0; i < group.PackageIds.Count && i < group.PackagesSelected.Count; i++)
-                        {
-                            if (group.PackagesSelected[i]) selectedPids.Add(group.PackageIds[i]);
-                        }
-                    }
-
-                    var errMsg = $"Group Create failed. UserId={userIdStr}, ActiveSeasonId={activeSeasonId}, GroupId={group.GroupId}, SelectedPids={string.Join(',', selectedPids)}, Exception={ex.Message}";
-                    System.Diagnostics.Debug.WriteLine(errMsg);
-                    if (logger != null) logger.LogError(ex, errMsg);
-
-                    // If inner SqlException exists, log its number and message too
-                    var sqlEx = ex.InnerException as Microsoft.Data.SqlClient.SqlException;
-                    if (sqlEx != null)
-                    {
-                        var sqlMsg = $"SqlException Number={sqlEx.Number}, Message={sqlEx.Message}, Procedure={sqlEx.Procedure}";
-                        System.Diagnostics.Debug.WriteLine(sqlMsg);
-                        if (logger != null) logger.LogError(sqlMsg);
-                    }
-                }
-                catch { /* swallow logging errors */ }
-
                 transaction.Rollback();
                 return View(group);
             }
@@ -347,41 +214,27 @@ namespace TMG.Controllers.GroupControllers
                 );
             ViewBag.Packages = _dbContext.PackagesWithoutTrash
                 .Where(e => e.HajjSeasonsId == int.Parse(_http.HttpContext.Session.GetString("ActiveSeasonId")));
-
-            if (!int.TryParse(_http.HttpContext.Session.GetString("ActiveSeasonId"), out int activeSeasonId))
-            {
-                ModelState.AddModelError("", "Active season is not set.");
-                return View(group);
-            }
-
-            group.HajjSeasonsId = activeSeasonId;
-
-            if (group.PackageIds != null && group.PackagesSelected != null)
-            {
-                for (int i = 0; i < group.PackageIds.Count && i < group.PackagesSelected.Count; i++)
-                {
-                    if (!group.PackagesSelected[i]) continue;
-                    group.PackageId = group.PackageIds[i];
-                    break;
-                }
-            }
-
-            ModelState.Remove(nameof(group.HajjSeasonsId));
-            ModelState.Remove(nameof(group.PackageId));
-            ModelState.Remove(nameof(group.PackageIds));
-            ModelState.Remove(nameof(group.PackagesSelected));
-            ModelState.Remove(nameof(group.Package));
-            ModelState.Remove(nameof(group.GroupPackages));
-            ModelState.Remove(nameof(group.HajjSeasons));
-
             if (!ModelState.IsValid) return View(group);
 
+
             var transaction = _dbContext.Database.BeginTransaction();
+            //try
+            //{
+
+            //    group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
+            //    _dbContext.Entry(group).State = EntityState.Modified;
+
+            //    _dbContext.SaveChanges();
+
+            // just checking code 
             try
             {
-                _dbContext.Entry(group).State = EntityState.Modified;
-                _dbContext.SaveChanges();
+                group.HajjSeasonsId = Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId"));
 
+                _dbContext.Groups.Add(group);
+                _dbContext.SaveChanges();
+               
+                // just checking code 
                 _dbContext.GroupPackages.Where(e => e.GroupId == group.GroupId).ExecuteDelete();
                 for (int i = 0; i < (group.PackageIds?.Count ?? 0); i++)
                 {
@@ -398,14 +251,21 @@ namespace TMG.Controllers.GroupControllers
                 transaction.Commit();
 
 
-                TempData["updated"] = true;
+                TempData["created"] = true;
                 return RedirectToAction(nameof(Index));
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 transaction.Rollback();
                 return View(group);
             }
+
+            //_dbContext.Entry(group).State = EntityState.Modified;
+
+            //_dbContext.SaveChanges();
+
+            //return RedirectToAction(nameof(Index));
         }
         public IActionResult ViewTrash()
         {

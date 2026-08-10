@@ -188,6 +188,16 @@ namespace TMG.Controllers.GroupController
             _dbContext.SubGroups.Add(subGroup);
             _dbContext.SaveChanges();
 
+            // Ensure collection properties are initialized to avoid NullReferenceException
+            subGroup.RoomIds = subGroup.RoomIds ?? new List<int>();
+            subGroup.RoomDetailsId = subGroup.RoomDetailsId ?? new List<int>();
+            subGroup.BathroomType = subGroup.BathroomType ?? new List<BathroomType?>();
+            subGroup.RoomViewId = subGroup.RoomViewId ?? new List<int>();
+            subGroup.POHotelsId = subGroup.POHotelsId ?? new List<int>();
+            subGroup.POHotelRoomsId = subGroup.POHotelRoomsId ?? new List<int>();
+            subGroup.PLaceIds = subGroup.PLaceIds ?? new List<int>();
+            subGroup.RoomNumber = subGroup.RoomNumber ?? new List<string>();
+
             for (int i = 0; i < subGroup.RoomIds.Count; i++)
             {
                 // Ensure SelectedRooms is not null before checking
@@ -311,7 +321,7 @@ namespace TMG.Controllers.GroupController
                 return NotFound();
             }
 
-            // ✅ Basic subgroup info update karein
+        
             subGroups.Contract = subGroup.Contract;
             subGroups.Code = subGroup.Code;
             subGroups.Name = subGroup.Name;
@@ -322,18 +332,18 @@ namespace TMG.Controllers.GroupController
 
             _dbContext.SaveChanges();
 
-            // ✅ 1. Pehle Database se Existing Rooms ko Fetch karein
+      
             var existingRooms = _dbContext.SubGroupRooms
                 .Where(e => e.SubGroupId == subGroup.SubGroupId)
                 .ToList();
 
-            // ✅ 2. Sirf Selected (Checked) Rooms ka List lo
+         
             var selectedRoomIds = subGroup.SelectedRoomDetailsId ?? new List<int>();
 
             Console.WriteLine("Selected RoomDetailsId: " + string.Join(", ", selectedRoomIds));
             Console.WriteLine("Existing Rooms in DB: " + string.Join(", ", existingRooms.Select(r => r.RoomDetailsId)));
 
-            // ✅ 3. Pehle Unchecked Rooms ko Delete karein
+       
             var roomsToDelete = existingRooms
                 .Where(r => !selectedRoomIds.Contains(r.RoomDetailsId.GetValueOrDefault()))
                 .ToList();
@@ -341,22 +351,22 @@ namespace TMG.Controllers.GroupController
             Console.WriteLine("Rooms to be Deleted: " + string.Join(", ", roomsToDelete.Select(r => r.RoomDetailsId)));
 
             _dbContext.SubGroupRooms.RemoveRange(roomsToDelete);
-            _dbContext.SaveChanges(); // ✅ Pehle delete confirm karein
+            _dbContext.SaveChanges(); 
 
-            // ✅ 4. Ab Sirf Checked Rooms ko Process karein
+          
             for (int i = 0; i < subGroup.RoomDetailsId.Count; i++)
             {
                 var roomDetailsId = subGroup.RoomDetailsId[i];
                 if (!roomDetailsId.HasValue) continue;
 
-                // ✅ Agar Checkbox Selected nahi hai, toh isko process NA karo
+            
                 if (!selectedRoomIds.Contains(roomDetailsId.Value))
                     continue;
 
-                // ✅ Check karein agar room pehle se exist karta hai ya nahi
+            
                 var existingRoom = existingRooms.FirstOrDefault(r => r.RoomDetailsId == roomDetailsId.Value);
 
-                if (existingRoom == null) // ✅ Agar pehle exist nahi karta toh ADD karein
+                if (existingRoom == null) 
                 {
                     _dbContext.SubGroupRooms.Add(new SubGroupRooms
                     {
@@ -517,7 +527,7 @@ namespace TMG.Controllers.GroupController
                 return BadRequest("Family member not found");
             }
 
-            // ✅ Member add karein
+            
             _dbContext.SubGroupMembers.Add(new SubGroupMember
             {
                 FamilyHeadId = memberId,
@@ -525,12 +535,12 @@ namespace TMG.Controllers.GroupController
                 FamilyMembersId = fm.FamilyMembersId
             });
 
-            _dbContext.SaveChanges(); // ✅ Pehle Save Karein taake count update ho
+            _dbContext.SaveChanges(); 
 
-            // ✅ Save ke baad fresh count lein
+       
             subGroup.Selected = _dbContext.SubGroupMembers.Count(e => e.SubGroupId == subGroupId);
-            _dbContext.Entry(subGroup).State = EntityState.Modified;  // ✅ Entity update karein
-            _dbContext.SaveChanges(); // ✅ Dobara Save Karein taake Selected update ho
+            _dbContext.Entry(subGroup).State = EntityState.Modified;  
+            _dbContext.SaveChanges(); 
 
             return Ok(new { status = 200, message = $"Member Id: {memberId} added to group Id: {subGroupId}" });
         }
