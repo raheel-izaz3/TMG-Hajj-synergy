@@ -188,16 +188,6 @@ namespace TMG.Controllers.GroupController
             _dbContext.SubGroups.Add(subGroup);
             _dbContext.SaveChanges();
 
-            // Ensure collection properties are initialized to avoid NullReferenceException
-            subGroup.RoomIds = subGroup.RoomIds ?? new List<int>();
-            subGroup.RoomDetailsId = subGroup.RoomDetailsId ?? new List<int>();
-            subGroup.BathroomType = subGroup.BathroomType ?? new List<BathroomType?>();
-            subGroup.RoomViewId = subGroup.RoomViewId ?? new List<int>();
-            subGroup.POHotelsId = subGroup.POHotelsId ?? new List<int>();
-            subGroup.POHotelRoomsId = subGroup.POHotelRoomsId ?? new List<int>();
-            subGroup.PLaceIds = subGroup.PLaceIds ?? new List<int>();
-            subGroup.RoomNumber = subGroup.RoomNumber ?? new List<string>();
-
             for (int i = 0; i < subGroup.RoomIds.Count; i++)
             {
                 // Ensure SelectedRooms is not null before checking
