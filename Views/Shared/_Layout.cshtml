@@ -88,9 +88,8 @@
         .menu-item .active {
         }
 
-        /* Universal Express Brand Logo Container Styles */
         .navbar-brand-badge {
-            background-color: #1E2229 !important;
+            /* background-color: #1E2229 !important; */
             padding: 6px 18px !important;
             border-radius: 8px !important;
             display: inline-flex !important;
@@ -115,7 +114,7 @@
             display: block !important;
         }
         .aside-logo{
-            width:180px;
+            width:80px;
         }
     </style>
 </head>
@@ -135,10 +134,10 @@
                     <!-- Dashboard -->
                     <li class="menu-item active bg-dark">
                         <a asp-controller="Admin" asp-action="Index" class="menu-link">
-                            <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                            @* <i class="menu-icon tf-icons bx bx-home-circle"></i> *@
                             <div data-i18n="Analytics" style="font-size: 15px;font-weight: bold;">
                                  @* Admin Dashboard *@
-                                 <img src="~/assets/img/Logo/logo.png" class="aside-logo" alt="Universal express logo" />
+                                 <img src="~/TMGGroup.png" class="aside-logo" alt="TMG Group logo" />
                             </div>
                         </a>
                     </li>

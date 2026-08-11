@@ -188,33 +188,33 @@ namespace TMG.Controllers.GroupController
             _dbContext.SubGroups.Add(subGroup);
             _dbContext.SaveChanges();
 
-            // Ensure collection properties are initialized to avoid NullReferenceException
-            subGroup.RoomIds = subGroup.RoomIds ?? new List<int>();
-            subGroup.RoomDetailsId = subGroup.RoomDetailsId ?? new List<int>();
-            subGroup.BathroomType = subGroup.BathroomType ?? new List<BathroomType?>();
-            subGroup.RoomViewId = subGroup.RoomViewId ?? new List<int>();
-            subGroup.POHotelsId = subGroup.POHotelsId ?? new List<int>();
-            subGroup.POHotelRoomsId = subGroup.POHotelRoomsId ?? new List<int>();
-            subGroup.PLaceIds = subGroup.PLaceIds ?? new List<int>();
-            subGroup.RoomNumber = subGroup.RoomNumber ?? new List<string>();
+            // protect against null collection properties coming from model binding
+            var roomIds = subGroup.RoomIds ?? new List<int>();
+            var roomDetails = subGroup.RoomDetailsId ?? new List<int>();
 
-            for (int i = 0; i < subGroup.RoomIds.Count; i++)
+            // if SelectedRooms is null there is nothing to add
+            if (SelectedRooms != null)
             {
-                // Ensure SelectedRooms is not null before checking
-                if (SelectedRooms != null && SelectedRooms.Contains(subGroup.RoomDetailsId[i]))
+                for (int i = 0; i < roomIds.Count; i++)
                 {
-                    _dbContext.SubGroupRooms.Add(new SubGroupRooms
+                    // ensure corresponding indexed collections have values
+                    if (i >= roomDetails.Count) continue;
+
+                    if (SelectedRooms.Contains(roomDetails[i]))
                     {
-                        SubGroupId = subGroup.SubGroupId,
-                        RoomId = subGroup.RoomIds[i],
-                        BathroomType = subGroup.BathroomType[i],
-                        RoomViewId = subGroup.RoomViewId[i],
-                        POHotelsId = subGroup.POHotelsId[i],
-                        POHotelRoomsId = subGroup.POHotelRoomsId[i],
-                        PlaceId = subGroup.PLaceIds[i],
-                        RoomNumber = subGroup.RoomNumber[i],
-                        RoomDetailsId = subGroup.RoomDetailsId[i]
-                    });
+                        _dbContext.SubGroupRooms.Add(new SubGroupRooms
+                        {
+                            SubGroupId = subGroup.SubGroupId,
+                            RoomId = roomIds[i],
+                            BathroomType = (subGroup.BathroomType != null && subGroup.BathroomType.Count > i) ? subGroup.BathroomType[i] : null,
+                            RoomViewId = (subGroup.RoomViewId != null && subGroup.RoomViewId.Count > i) ? subGroup.RoomViewId[i] : (int?)null,
+                            POHotelsId = (subGroup.POHotelsId != null && subGroup.POHotelsId.Count > i) ? subGroup.POHotelsId[i] : (int?)null,
+                            POHotelRoomsId = (subGroup.POHotelRoomsId != null && subGroup.POHotelRoomsId.Count > i) ? subGroup.POHotelRoomsId[i] : (int?)null,
+                            PlaceId = (subGroup.PLaceIds != null && subGroup.PLaceIds.Count > i) ? subGroup.PLaceIds[i] : (int?)null,
+                            RoomNumber = (subGroup.RoomNumber != null && subGroup.RoomNumber.Count > i) ? subGroup.RoomNumber[i] : null,
+                            RoomDetailsId = roomDetails[i]
+                        });
+                    }
                 }
             }
 
@@ -439,7 +439,13 @@ namespace TMG.Controllers.GroupController
             .Include(e => e.Place)
             .FirstOrDefault(e => e.SubGroupId == subGroupId);
 
+            if (subGroup == null)
+            {
+                return NotFound();
+            }
+
             var accommodation = _dbContext.PackageAccomodtions
+                                    .Where(e => e.PackageId == subGroup.Group.PackageId && e.PlaceId == subGroup.PlaceId)
                                     .Select(e => new
                                     {
                                         e.PlaceId,
@@ -447,7 +453,7 @@ namespace TMG.Controllers.GroupController
                                         e.CheckOut,
                                         e.PackageId
                                     })
-                                    .FirstOrDefault(e => e.PackageId == subGroup.Group.PackageId && e.PlaceId == subGroup.PlaceId);
+                                    .FirstOrDefault();
 
             // return Ok(new {
             //     Acc = accommodation
@@ -463,9 +469,9 @@ namespace TMG.Controllers.GroupController
             ViewBag.GroupName = subGroup.Group.Name;
             ViewBag.GroupPAX = subGroup.Group.PAX;
 
-            ViewBag.Place = subGroup.Place.PlaceName;
-            ViewBag.CheckIn = accommodation.CheckIn;
-            ViewBag.CheckOut = accommodation.CheckOut;
+            ViewBag.Place = subGroup.Place?.PlaceName;
+            ViewBag.CheckIn = accommodation?.CheckIn;
+            ViewBag.CheckOut = accommodation?.CheckOut;
 
             var subGroupMembers = _dbContext.SubGroupMembers.Where(e => e.SubGroupId == subGroupId);
 
