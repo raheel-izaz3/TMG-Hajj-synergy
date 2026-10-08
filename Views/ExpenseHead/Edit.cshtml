@@ -1,0 +1,50 @@
+@model TMG.Models.ExpenseModels.ExpenseHeadFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Expense Head";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense Heads /</span> Edit Expense Head</h4>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
+        </a>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold">Expense Information</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ExpenseName">Expense Name <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text"><i class="bx bx-dollar"></i></span>
+                                <input asp-for="ExpenseName" class="form-control" placeholder="Enter expense name (e.g. Office Rent)" required />
+                            </div>
+                            <span class="text-danger" asp-validation-for="ExpenseName"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">Update Expense Head</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

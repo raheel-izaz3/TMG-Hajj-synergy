@@ -184,12 +184,20 @@ namespace TMG.Controllers.PackageControllers
 
         public IActionResult Create()
         {
+            var activeSeasonStr = _http.HttpContext?.Session?.GetString("ActiveSeasonId");
+            uint activeSeasonId = 0;
+            if (!string.IsNullOrEmpty(activeSeasonStr))
+            {
+                uint.TryParse(activeSeasonStr, out activeSeasonId);
+            }
+
             ApplicationSettings settings = _dbContext.ApplicationSettings
-                .Where(s => s.HajjSeasonsId == Convert.ToUInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")))
-                .FirstOrDefault();
-            ViewBag.SARROE = settings.SARROE;
-            ViewBag.USDROE = settings.USDROE;
-            ViewBag.TermsnCondition = _dbContext.PackageTermsWithoutTrash.Where(e => e.HajjSeasonsId == Convert.ToInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")));
+                .FirstOrDefault(s => s.HajjSeasonsId == activeSeasonId)
+                ?? _dbContext.ApplicationSettings.FirstOrDefault();
+
+            ViewBag.SARROE = settings?.SARROE ?? 0f;
+            ViewBag.USDROE = settings?.USDROE ?? 0f;
+            ViewBag.TermsnCondition = _dbContext.PackageTermsWithoutTrash.Where(e => e.HajjSeasonsId == (int)activeSeasonId);
 
             ViewBag.MakkahRooms = _dbContext.IndividualFacilityDescriptionsWithoutTrash
                 .Where(e => e.PlaceId == 1)
@@ -292,11 +300,19 @@ namespace TMG.Controllers.PackageControllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PackageRegisterRequest request)
         {
+            var activeSeasonStr = _http.HttpContext?.Session?.GetString("ActiveSeasonId");
+            uint activeSeasonId = 0;
+            if (!string.IsNullOrEmpty(activeSeasonStr))
+            {
+                uint.TryParse(activeSeasonStr, out activeSeasonId);
+            }
+
             ApplicationSettings settings = _dbContext.ApplicationSettings
-                .Where(s => s.HajjSeasonsId == Convert.ToUInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")))   
-                .FirstOrDefault();
-            ViewBag.SARROE = settings.SARROE;
-            ViewBag.USDROE = settings.USDROE;
+                .FirstOrDefault(s => s.HajjSeasonsId == activeSeasonId)
+                ?? _dbContext.ApplicationSettings.FirstOrDefault();
+
+            ViewBag.SARROE = settings?.SARROE ?? 0f;
+            ViewBag.USDROE = settings?.USDROE ?? 0f;
 
             ViewBag.FacilityDescriptions = _dbContext.IndividualFacilityDescriptionsWithoutTrash;
             ViewBag.Places = _dbContext.PlacesWithoutTrash;
@@ -1341,11 +1357,19 @@ namespace TMG.Controllers.PackageControllers
                 .Select(e => e.IndividualFacilityDescriptionId)
                 .ToList();
 
+            var activeSeasonStr = _http.HttpContext?.Session?.GetString("ActiveSeasonId");
+            uint activeSeasonId = 0;
+            if (!string.IsNullOrEmpty(activeSeasonStr))
+            {
+                uint.TryParse(activeSeasonStr, out activeSeasonId);
+            }
+
             ApplicationSettings settings = _dbContext.ApplicationSettings
-                .Where(s => s.HajjSeasonsId == Convert.ToUInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")))
-                .FirstOrDefault();
-            ViewBag.SARROE = settings.SARROE;
-            ViewBag.USDROE = settings.USDROE;
+                .FirstOrDefault(s => s.HajjSeasonsId == activeSeasonId)
+                ?? _dbContext.ApplicationSettings.FirstOrDefault();
+
+            ViewBag.SARROE = settings?.SARROE ?? 0f;
+            ViewBag.USDROE = settings?.USDROE ?? 0f;
             ViewBag.PackageTerms = _dbContext.PackageTermsConditions
                 .Where(e => e.PackageId == id)
                 .ToList();
@@ -1539,11 +1563,19 @@ namespace TMG.Controllers.PackageControllers
         public IActionResult Edit(PackageEditRequest request)
         {
 
+            var activeSeasonStr = _http.HttpContext?.Session?.GetString("ActiveSeasonId");
+            uint activeSeasonId = 0;
+            if (!string.IsNullOrEmpty(activeSeasonStr))
+            {
+                uint.TryParse(activeSeasonStr, out activeSeasonId);
+            }
+
             ApplicationSettings settings = _dbContext.ApplicationSettings
-                .Where(s => s.HajjSeasonsId == Convert.ToUInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")))
-                .FirstOrDefault();
-            ViewBag.SARROE = settings.SARROE;
-            ViewBag.USDROE = settings.USDROE;
+                .FirstOrDefault(s => s.HajjSeasonsId == activeSeasonId)
+                ?? _dbContext.ApplicationSettings.FirstOrDefault();
+
+            ViewBag.SARROE = settings?.SARROE ?? 0f;
+            ViewBag.USDROE = settings?.USDROE ?? 0f;
 
             ViewBag.PackageTerms = _dbContext.PackageTermsConditions
                 .Where(e => e.PackageId == request.PackageId)
@@ -2460,11 +2492,19 @@ namespace TMG.Controllers.PackageControllers
         public IActionResult Copy(PackageRegisterRequest request, int PackageId)
         {
 
+            var activeSeasonStr = _http.HttpContext?.Session?.GetString("ActiveSeasonId");
+            uint activeSeasonId = 0;
+            if (!string.IsNullOrEmpty(activeSeasonStr))
+            {
+                uint.TryParse(activeSeasonStr, out activeSeasonId);
+            }
+
             ApplicationSettings settings = _dbContext.ApplicationSettings
-                .Where(s => s.HajjSeasonsId == Convert.ToUInt32(_http.HttpContext.Session.GetString("ActiveSeasonId")))
-                .FirstOrDefault();
-            ViewBag.SARROE = settings.SARROE;
-            ViewBag.USDROE = settings.USDROE;
+                .FirstOrDefault(s => s.HajjSeasonsId == activeSeasonId)
+                ?? _dbContext.ApplicationSettings.FirstOrDefault();
+
+            ViewBag.SARROE = settings?.SARROE ?? 0f;
+            ViewBag.USDROE = settings?.USDROE ?? 0f;
             ViewBag.FacilityDescriptions = _dbContext.IndividualFacilityDescriptionsWithoutTrash;
             ViewBag.Places = _dbContext.PlacesWithoutTrash;
             ViewBag.Companies = _dbContext

@@ -1,0 +1,110 @@
+@model IEnumerable<TMG.Models.ClientModels.ClientCompanyTransactionIndexViewModel>
+
+@{
+    ViewData["Title"] = "Trashed Transactions";
+}
+
+@if (TempData.ContainsKey("restored") && (bool)TempData["restored"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Transaction Restored Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("deleted") && (bool)TempData["deleted"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Transaction Permanently Deleted!', { timeOut: 2500 });
+    </script>
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Transactions /</span> Trash</h4>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back to Transactions
+        </a>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="card p-3 shadow-sm">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover" id="trashedTransactionsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Client / Company</th>
+                        <th>Payment Type</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th style="width: 200px;" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @{
+                        int index = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@index</strong></td>
+                            <td>
+                                <span class="badge bg-label-secondary me-1">@item.BookingFor</span>
+                                <strong>@item.PartnerName</strong>
+                            </td>
+                            <td>@item.PaymentType</td>
+                            <td>@item.AmountPkr.ToString("N2") PKR</td>
+                            <td>@item.PaymentDate.ToString("dd-MMM-yyyy")</td>
+                            <td><span class="badge bg-secondary">@item.Status</span></td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Restore">
+                                        <i class="bx bx-undo me-1"></i> Restore
+                                    </a>
+                                    <button type="button" onclick="confirmDeletePermanent(@item.Id)" class="btn btn-sm btn-danger" title="Delete Permanently">
+                                        <i class="bx bx-trash me-1"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="trashActionForm" method="post" action="" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    function confirmDeletePermanent(id) {
+        if (confirm("Are you sure you want to PERMANENTLY delete this transaction? This action cannot be undone.")) {
+            var form = document.getElementById('trashActionForm');
+            form.action = '/PaymentTransaction/DeletePermanent/' + id;
+            form.submit();
+        }
+    }
+
+    $(document).ready(function () {
+        $('#trashedTransactionsTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search trashed...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "Previous",
+                    next: "Next"
+                }
+            }
+        });
+    });
+</script>

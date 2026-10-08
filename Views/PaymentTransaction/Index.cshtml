@@ -1,0 +1,215 @@
+@model IEnumerable<TMG.Models.ClientModels.ClientCompanyTransactionIndexViewModel>
+
+@{
+    ViewData["Title"] = "All Transactions";
+    int trashCount = ViewBag.TrashCount ?? 0;
+}
+
+@if (TempData.ContainsKey("created") && (bool)TempData["created"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Payment Transaction Created Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("updated") && (bool)TempData["updated"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Payment Transaction Updated Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("deleted") && (bool)TempData["deleted"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Payment Transaction Trashed Successfully!', { timeOut: 2500 });
+    </script>
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Transactions /</span> All Transactions</h4>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Create" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">
+                <i class="bx bx-plus me-1"></i> Add Transaction
+            </a>
+            <a asp-action="Trash" class="btn btn-danger rounded-pill" style="background-color: #8b0000; border-color: #8b0000;">
+                <i class="bx bx-trash me-1"></i> Trash (@trashCount)
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Toolbar Card -->
+    <div class="card p-3 shadow-sm mb-4">
+        <form method="get" asp-action="Index">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Client</label>
+                    <select name="familyHeadId" asp-items="ViewBag.Clients" class="form-select">
+                        <option value="">--All Clients--</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label font-weight-bold">Company</label>
+                    <select name="companyId" asp-items="ViewBag.Companies" class="form-select">
+                        <option value="">--All Companies--</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label font-weight-bold">Payment Type</label>
+                    <select name="paymentType" class="form-select">
+                        <option value="">--All Types--</option>
+                        <option value="Cash" selected="@(ViewBag.SelectedPaymentType == "Cash")">Cash</option>
+                        <option value="Bank Transfer" selected="@(ViewBag.SelectedPaymentType == "Bank Transfer")">Bank Transfer</option>
+                        <option value="Cheque" selected="@(ViewBag.SelectedPaymentType == "Cheque")">Cheque</option>
+                        <option value="Pay Order" selected="@(ViewBag.SelectedPaymentType == "Pay Order")">Pay Order</option>
+                        <option value="Online Deposit" selected="@(ViewBag.SelectedPaymentType == "Online Deposit")">Online Deposit</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label font-weight-bold">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">--All Status--</option>
+                        <option value="Confirmed" selected="@(ViewBag.SelectedStatus == "Confirmed")">Confirmed</option>
+                        <option value="Pending" selected="@(ViewBag.SelectedStatus == "Pending")">Pending</option>
+                        <option value="Bounced" selected="@(ViewBag.SelectedStatus == "Bounced")">Bounced</option>
+                        <option value="Cancelled" selected="@(ViewBag.SelectedStatus == "Cancelled")">Cancelled</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100" style="background-color: #0d6efd; border-color: #0d6efd;">
+                        @* <i class="bx bx-filter-alt me-1"></i> *@
+                        Filter
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card p-3 shadow-sm">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover" id="paymentTransactionsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Client / Company</th>
+                        <th>Payment Type</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Ref No</th>
+                        <th class="text-center">Proof</th>
+                        <th>Status</th>
+                        <th style="width: 150px;" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">No transactions found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int index = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@index</strong></td>
+                                <td>
+                                    @if (item.BookingFor == "Company")
+                                    {
+                                        <span class="badge bg-label-warning me-1">Company</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-label-info me-1">Client</span>
+                                    }
+                                    <strong>@item.PartnerName</strong>
+                                    <div class="small text-muted">@item.BookingCode</div>
+                                </td>
+                                <td>@item.PaymentType</td>
+                                <td><strong class="text-dark">@item.AmountPkr.ToString("N2") PKR</strong></td>
+                                <td>@item.PaymentDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@(string.IsNullOrEmpty(item.ReferenceChequeNo) ? "-" : item.ReferenceChequeNo)</td>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.ProofFilePath))
+                                    {
+                                        <a href="@item.ProofFilePath" target="_blank" class="btn btn-xs btn-outline-primary" title="View Proof">
+                                            <i class="bx bx-file me-1"></i> Proof
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        string statusClass = item.Status switch
+                                        {
+                                            "Confirmed" => "bg-success",
+                                            "Pending" => "bg-warning text-dark",
+                                            "Bounced" => "bg-danger",
+                                            "Cancelled" => "bg-danger",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusClass">@item.Status</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Details">
+                                            <i class="bx bx-show"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success" title="Edit">
+                                            <i class="bx bx-pencil"></i>
+                                        </a>
+                                        <button type="button" onclick="confirmMoveToTrash(@item.Id)" class="btn btn-sm btn-danger" title="Move to Trash">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="moveToTrashForm" method="post" action="" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    function confirmMoveToTrash(id) {
+        if (confirm("Are you sure you want to move this transaction to trash?")) {
+            var form = document.getElementById('moveToTrashForm');
+            form.action = '/PaymentTransaction/MoveToTrash/' + id;
+            form.submit();
+        }
+    }
+
+    $(document).ready(function () {
+        $('#paymentTransactionsTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search transactions...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "Previous",
+                    next: "Next"
+                }
+            }
+        });
+    });
+</script>

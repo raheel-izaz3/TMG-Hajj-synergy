@@ -1,0 +1,212 @@
+@model TMG.Models.ClientModels.ClientCompanyTransactionFormViewModel
+
+@{
+    ViewData["Title"] = "Add Transaction";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Transactions /</span> Add Transaction</h4>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
+        </a>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold">Transaction Information</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Grid row 1 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="BookingFor">Booking For <span class="text-danger">*</span></label>
+                                <select asp-for="BookingFor" class="form-select" id="bookingForSelect" required>
+                                    <option value="Client">Client (Pilgrim)</option>
+                                    <option value="Company">Company (Corporate B2B Agent)</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="BookingFor"></span>
+                            </div>
+                            <div class="col-md-6" id="clientDropdownContainer">
+                                <label class="form-label" asp-for="FamilyHeadId">Client <span class="text-danger">*</span></label>
+                                <select asp-for="FamilyHeadId" asp-items="ViewBag.Clients" class="form-select" id="clientSelect">
+                                    <option value="">--Select Client--</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="FamilyHeadId"></span>
+                            </div>
+                            <div class="col-md-6 d-none" id="companyDropdownContainer">
+                                <label class="form-label" asp-for="CompanyId">Company <span class="text-danger">*</span></label>
+                                <select asp-for="CompanyId" asp-items="ViewBag.Companies" class="form-select" id="companySelect">
+                                    <option value="">--Select Company--</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="CompanyId"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 2 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="SelectedBookingId">Select Booking <span class="text-danger">*</span></label>
+                                <select asp-for="SelectedBookingId" class="form-select" id="bookingSelect">
+                                    <option value="">--Select Client/Company first--</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="SelectedBookingId"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="PaymentType">Payment Type <span class="text-danger">*</span></label>
+                                <select asp-for="PaymentType" class="form-select" required>
+                                    <option value="">--Select--</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Pay Order">Pay Order</option>
+                                    <option value="Online Deposit">Online Deposit</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="PaymentType"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 3 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="AmountPkr">Amount (PKR) <span class="text-danger">*</span></label>
+                                <input asp-for="AmountPkr" class="form-control" type="number" step="0.01" placeholder="Enter amount" required />
+                                <span class="text-danger" asp-validation-for="AmountPkr"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="PaymentDate">Payment Date <span class="text-danger">*</span></label>
+                                <input asp-for="PaymentDate" class="form-control" type="date" value="@Model.PaymentDate.ToString("yyyy-MM-dd")" required />
+                                <span class="text-danger" asp-validation-for="PaymentDate"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 4 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="ReferenceChequeNo">Reference / Cheque No</label>
+                                <input asp-for="ReferenceChequeNo" class="form-control" placeholder="TXN-123 / Cheque No" />
+                                <span class="text-danger" asp-validation-for="ReferenceChequeNo"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="ProofFile">Proof of Payment (JPG, PNG, PDF — Max 2MB)</label>
+                                <input asp-for="ProofFile" class="form-control" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                                <span class="text-danger" asp-validation-for="ProofFile"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 5 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Status">Status <span class="text-danger">*</span></label>
+                                <select asp-for="Status" class="form-select" required>
+                                    <option value="Confirmed">Confirmed</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Bounced">Bounced</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="Status"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 6 -->
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Notes">Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Optional remarks..."></textarea>
+                            <span class="text-danger" asp-validation-for="Notes"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">
+                                <i class="bx bx-save me-1"></i> Save Transaction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            function updateDropdownVisibility() {
+                var bookingFor = $('#bookingForSelect').val();
+                if (bookingFor === 'Company') {
+                    $('#clientDropdownContainer').addClass('d-none');
+                    $('#companyDropdownContainer').removeClass('d-none');
+                    $('#clientSelect').val('');
+                    loadCompanyBookings();
+                } else {
+                    $('#companyDropdownContainer').addClass('d-none');
+                    $('#clientDropdownContainer').removeClass('d-none');
+                    $('#companySelect').val('');
+                    loadClientBookings();
+                }
+            }
+
+            function loadClientBookings() {
+                var clientId = $('#clientSelect').val();
+                var $booking = $('#bookingSelect');
+                $booking.empty().append('<option value="">--Select Booking--</option>');
+
+                if (clientId) {
+                    $.getJSON('/PaymentTransaction/GetBookingsByClient', { clientFamilyHeadId: clientId }, function (data) {
+                        $.each(data, function (i, item) {
+                            $booking.append($('<option>', {
+                                value: item.id,
+                                text: item.displayText
+                            }));
+                        });
+                        if (data.length === 1) {
+                            $booking.val(data[0].id);
+                        }
+                    });
+                }
+            }
+
+            function loadCompanyBookings() {
+                var companyId = $('#companySelect').val();
+                var $booking = $('#bookingSelect');
+                $booking.empty().append('<option value="">--Select Booking--</option>');
+
+                if (companyId) {
+                    $.getJSON('/PaymentTransaction/GetBookingsByCompany', { companyId: companyId }, function (data) {
+                        $.each(data, function (i, item) {
+                            $booking.append($('<option>', {
+                                value: item.id,
+                                text: item.displayText
+                            }));
+                        });
+                        if (data.length === 1) {
+                            $booking.val(data[0].id);
+                        }
+                    });
+                }
+            }
+
+            $('#bookingForSelect').change(function () {
+                updateDropdownVisibility();
+            });
+
+            $('#clientSelect').change(function () {
+                loadClientBookings();
+            });
+
+            $('#companySelect').change(function () {
+                loadCompanyBookings();
+            });
+
+            updateDropdownVisibility();
+        });
+    </script>
+}

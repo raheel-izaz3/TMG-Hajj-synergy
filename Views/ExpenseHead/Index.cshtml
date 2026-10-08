@@ -1,0 +1,115 @@
+@model IEnumerable<TMG.Models.ExpenseModels.ExpenseHeadIndexViewModel>
+
+@{
+    ViewData["Title"] = "Expense Heads";
+    int trashCount = ViewBag.TrashCount ?? 0;
+}
+
+@if (TempData.ContainsKey("created") && (bool)TempData["created"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Head Created Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("updated") && (bool)TempData["updated"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Head Updated Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("deleted") && (bool)TempData["deleted"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Head Trashed Successfully!', { timeOut: 2500 });
+    </script>
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense /</span> Expense Heads</h4>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Create" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">
+                <i class="bx bx-plus me-1"></i> Add Expense Head
+            </a>
+            <a asp-action="Trash" class="btn btn-danger rounded-pill" style="background-color: #8b0000; border-color: #8b0000;">
+                <i class="bx bx-trash me-1"></i> Trash (@trashCount)
+            </a>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="card p-3 shadow-sm">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover" id="expenseHeadsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">#</th>
+                        <th>Expense Name</th>
+                        <th>Created At</th>
+                        <th style="width: 150px;" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @{
+                        int index = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@index</strong></td>
+                            <td>@item.ExpenseName</td>
+                            <td>@item.CreatedAt.ToString("dd MMM, yyyy")</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success" title="Edit">
+                                        <i class="bx bx-pencil"></i>
+                                    </a>
+                                    <button type="button" onclick="confirmMoveToTrash(@item.Id, '@item.ExpenseName')" class="btn btn-sm btn-danger" title="Move to Trash">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Form for POST delete -->
+<form id="moveToTrashForm" method="post" action="" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    function confirmMoveToTrash(id, name) {
+        if (confirm("Are you sure you want to move '" + name + "' to trash?")) {
+            var form = document.getElementById('moveToTrashForm');
+            form.action = '/ExpenseHead/MoveToTrash/' + id;
+            form.submit();
+        }
+    }
+
+    $(document).ready(function () {
+        $('#expenseHeadsTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "Previous",
+                    next: "Next"
+                }
+            }
+        });
+    });
+</script>

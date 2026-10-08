@@ -1,0 +1,145 @@
+@model TMG.Models.ExpenseModels.ExpenseTransactionFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Expense Transaction";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense Transactions /</span> Edit Expense Transaction</h4>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
+        </a>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold">Transaction Information</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ExistingProofDocumentPath" />
+
+                        <!-- Grid row 1 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="ExpenseHeadId">Expense Head <span class="text-danger">*</span></label>
+                                <select asp-for="ExpenseHeadId" asp-items="ViewBag.ExpenseHeads" class="form-select" required>
+                                    <option value="">Select Expense</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="ExpenseHeadId"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Type">Type <span class="text-danger">*</span></label>
+                                <select asp-for="Type" class="form-select" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Operational">Operational</option>
+                                    <option value="Administrative">Administrative</option>
+                                    <option value="Procurement">Procurement</option>
+                                    <option value="Emergency">Emergency</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="Type"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 2 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="Year">Year <span class="text-danger">*</span></label>
+                                <input asp-for="Year" class="form-control" type="number" required />
+                                <span class="text-danger" asp-validation-for="Year"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Amount">Amount <span class="text-danger">*</span></label>
+                                <input asp-for="Amount" class="form-control" type="number" step="0.01" placeholder="Enter amount" required />
+                                <span class="text-danger" asp-validation-for="Amount"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 3 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="PaymentType">Payment Type <span class="text-danger">*</span></label>
+                                <select asp-for="PaymentType" class="form-select" required>
+                                    <option value="">Select Payment Type</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="Cheque">Cheque</option>
+                                    <option value="Online Remittance">Online Remittance</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="PaymentType"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Currency">Currency <span class="text-danger">*</span></label>
+                                <select asp-for="Currency" class="form-select" id="currencySelect" required>
+                                    <option value="PKR">PKR</option>
+                                    <option value="SAR">SAR</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                                <span class="text-danger" asp-validation-for="Currency"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 4 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="ExchangeRate">Exchange Rate <span class="text-danger">*</span></label>
+                                <input asp-for="ExchangeRate" class="form-control" type="number" step="0.0001" id="exchangeRateInput" required />
+                                <span class="text-danger" asp-validation-for="ExchangeRate"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="Date">Date <span class="text-danger">*</span></label>
+                                <input asp-for="Date" class="form-control" type="date" value="@Model.Date.ToString("yyyy-MM-dd")" required />
+                                <span class="text-danger" asp-validation-for="Date"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 5 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="ReferenceNo">Reference No</label>
+                                <input asp-for="ReferenceNo" class="form-control" placeholder="Enter reference" />
+                                <span class="text-danger" asp-validation-for="ReferenceNo"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="ProofFile">Proof (Slip / Screenshot)</label>
+                                <input asp-for="ProofFile" class="form-control" type="file" accept=".jpg,.jpeg,.png,.pdf" />
+                                @if (!string.IsNullOrEmpty(Model.ExistingProofDocumentPath))
+                                {
+                                    <div class="mt-1">
+                                        <small class="text-muted">Current Proof: </small>
+                                        <a href="@Model.ExistingProofDocumentPath" target="_blank" class="btn btn-link btn-sm p-0">View Current File</a>
+                                    </div>
+                                }
+                                <div class="form-text">Accepts JPG, PNG, PDF up to 2MB</div>
+                                <span class="text-danger" asp-validation-for="ProofFile"></span>
+                            </div>
+                        </div>
+
+                        <!-- Grid row 6 -->
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Description">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Optional details"></textarea>
+                            <span class="text-danger" asp-validation-for="Description"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">Update Transaction</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,239 @@
+@model TMG.Models.ExpenseModels.ClientLedgerStatementViewModel
+
+@{
+    ViewData["Title"] = "Account Statement - " + Model.FullName;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- Subheader breadcrumb & Action Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <div class="text-muted small text-uppercase fw-semibold mb-1">ACCOUNT STATEMENT &gt; Client Ledger</div>
+            <h3 class="fw-bold m-0 d-flex align-items-center gap-2">
+                @Model.FullName
+                <span class="badge bg-success rounded-pill fs-6 px-3">Active</span>
+            </h3>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="ExportExcel" asp-route-clientId="@Model.ClientId" asp-route-fromDate="@(Model.FromDate?.ToString("yyyy-MM-dd"))" asp-route-toDate="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="btn text-white" style="background-color: #0f766e; border-color: #0f766e;">
+                <i class="bx bx-file-blank me-1"></i> Export Excel
+            </a>
+            <a href="javascript:window.print();" class="btn text-white" style="background-color: #be123c; border-color: #be123c;">
+                <i class="bx bx-file-pdf me-1"></i> Export PDF
+            </a>
+            <a asp-controller="PaymentTransaction" asp-action="Index" class="btn btn-outline-secondary">
+                Back to Transactions
+            </a>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+
+    <!-- 4 Top KPI Cards Grid -->
+    <div class="row g-3 mb-4">
+        <!-- Card 1: TOTAL BOOKING AMOUNT -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small fw-bold text-uppercase">TOTAL BOOKING AMOUNT</span>
+                        <div class="avatar avatar-sm bg-label-primary rounded p-1">
+                            <i class="bx bx-file fs-4"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold mb-1">PKR @Model.TotalBookingAmount.ToString("N0")</h4>
+                    <div class="text-muted small">All bookings combined</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: RECEIVED AT BOOKING -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small fw-bold text-uppercase">RECEIVED AT BOOKING</span>
+                        <div class="avatar avatar-sm bg-label-info rounded p-1">
+                            <i class="bx bx-money fs-4"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold mb-1">PKR @Model.ReceivedAtBooking.ToString("N0")</h4>
+                    <div class="text-muted small">Initial payment on booking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: TOTAL PAID -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small fw-bold text-uppercase">TOTAL PAID</span>
+                        <div class="avatar avatar-sm bg-label-success rounded p-1">
+                            <i class="bx bx-check-circle fs-4"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold mb-1 text-success">PKR @Model.TotalPaidViaTransactions.ToString("N0")</h4>
+                    <div class="text-muted small">Booking + @Model.TotalPaidViaTransactions.ToString("N0") via transactions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: REMAINING BALANCE -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100 border-start border-danger border-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-danger small fw-bold text-uppercase">REMAINING BALANCE</span>
+                        <div class="avatar avatar-sm bg-label-danger rounded p-1">
+                            <i class="bx bx-scales fs-4"></i>
+                        </div>
+                    </div>
+                    <h4 class="fw-bold mb-1 text-danger">PKR @Model.BalanceDue.ToString("N0")</h4>
+                    <div class="text-danger small fw-semibold">Amount Due</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mid Section 2-Column Split Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Left: Client Information Card -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold"><i class="bx bx-user me-2 text-primary"></i>Client Information</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted fw-semibold">FULL NAME:</div>
+                        <div class="col-sm-8 fw-bold text-dark">@Model.FullName</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted fw-semibold">PHONE NUMBER:</div>
+                        <div class="col-sm-8"><i class="bx bx-phone me-1 text-primary"></i>@Model.PhoneNumber</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted fw-semibold">EMAIL ADDRESS:</div>
+                        <div class="col-sm-8">@(string.IsNullOrEmpty(Model.EmailAddress) ? "—" : Model.EmailAddress)</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted fw-semibold">ACCOUNT STATUS:</div>
+                        <div class="col-sm-8"><span class="badge bg-info">@Model.AccountStatus</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Payment Breakdown Card -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold"><i class="bx bx-calculator me-2 text-primary"></i>Payment Breakdown</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                        <span class="text-muted fw-semibold">Total Booking Amount:</span>
+                        <strong class="text-dark">PKR @Model.TotalBookingAmount.ToString("N0")</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                        <span class="text-muted fw-semibold">Received at Booking:</span>
+                        <span>— PKR @Model.ReceivedAtBooking.ToString("N0")</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pb-2 border-bottom">
+                        <span class="text-muted fw-semibold">Via Transactions:</span>
+                        <span class="text-success fw-bold">— PKR @Model.TotalPaidViaTransactions.ToString("N0")</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <span class="text-danger fw-bold fs-5">Balance Due:</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-danger">Due</span>
+                            <strong class="text-danger fs-5">PKR @Model.BalanceDue.ToString("N0")</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section: Transaction History Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0 fw-bold">Transaction History</h5>
+            <span class="badge bg-primary rounded-pill">@Model.Transactions.Count Records</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle m-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>PACKAGE</th>
+                            <th>PAYMENT TYPE</th>
+                            <th>AMOUNT</th>
+                            <th>DATE</th>
+                            <th>REF NO</th>
+                            <th>NARRATION</th>
+                            <th class="text-center">PROOF</th>
+                            <th class="text-center">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Transactions.Any())
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">No transaction history records found for this client.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in Model.Transactions)
+                            {
+                                <tr>
+                                    <td><strong>@item.SerialNo</strong></td>
+                                    <td>
+                                        <span class="badge bg-success">@item.PackageName</span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            string pTypeClass = item.PaymentType == "Cheque" ? "bg-warning text-dark" : "bg-info";
+                                        }
+                                        <span class="badge @pTypeClass">@item.PaymentType</span>
+                                    </td>
+                                    <td><strong class="text-primary fs-6">PKR @item.Amount.ToString("N0")</strong></td>
+                                    <td>
+                                        <i class="bx bx-calendar me-1 text-muted"></i>@item.Date.ToString("dd MMM, yyyy")
+                                    </td>
+                                    <td><code>@item.ReferenceNo</code></td>
+                                    <td>@item.Narration</td>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(item.ProofUrl))
+                                        {
+                                            <a href="@item.ProofUrl" target="_blank" class="btn btn-xs btn-outline-primary">
+                                                <i class="bx bx-file me-1"></i> View
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary rounded-pill">@item.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="9" class="text-center py-3 fs-6">
+                                Confirmed Transactions: <strong class="text-primary ms-2">PKR @Model.TotalPaidViaTransactions.ToString("N0")</strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

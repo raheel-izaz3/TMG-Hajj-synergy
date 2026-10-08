@@ -1,0 +1,206 @@
+@using TMG.Models.OperationalGroupModels
+@model IEnumerable<TMG.Models.OperationalGroupModels.OperationalGroupIndexItemViewModel>
+
+@{
+    ViewData["Title"] = "Operational Resource Groups";
+    int count = 1;
+    var currentCategory = ViewData["CurrentCategory"] as GroupCategory?;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bx bx-check-circle me-1"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Header Title & Create Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h4 class="fw-bold m-0"><i class="bx bx-layer text-primary me-2"></i>Operational Resource Groups</h4>
+            <small class="text-muted">Manage Flight, Bus, Hotel, Route & General allocation groups</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown">
+                    <i class="bx bx-plus me-1"></i> + Create Resource Group
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><a class="dropdown-item" asp-action="Create" asp-route-type="@GroupCategory.Flight"><i class="bx bx-paper-plane text-info me-2"></i> ✈️ Flight Group</a></li>
+                    <li><a class="dropdown-item" asp-action="Create" asp-route-type="@GroupCategory.Bus"><i class="bx bx-bus text-success me-2"></i> 🚌 Bus Group</a></li>
+                    <li><a class="dropdown-item" asp-action="Create" asp-route-type="@GroupCategory.Hotel"><i class="bx bx-building-house text-primary me-2"></i> 🏨 Hotel Group</a></li>
+                    <li><a class="dropdown-item" asp-action="Create" asp-route-type="@GroupCategory.Route"><i class="bx bx-git-repo-forked text-warning me-2"></i> 🔀 Route Group</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-action="Create" asp-route-type="@GroupCategory.General"><i class="bx bx-group text-secondary me-2"></i> 👥 General / All Group</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter Tabs & Search Bar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <!-- Nav Pills Category Filter -->
+                <ul class="nav nav-pills gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link @(!currentCategory.HasValue ? "active" : "")" asp-action="Index">
+                            <i class="bx bx-grid-alt me-1"></i> All Groups
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentCategory == GroupCategory.Flight ? "active bg-info text-white" : "")" asp-action="Index" asp-route-category="@GroupCategory.Flight">
+                            ✈️ Flight
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentCategory == GroupCategory.Bus ? "active bg-success text-white" : "")" asp-action="Index" asp-route-category="@GroupCategory.Bus">
+                            🚌 Bus
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentCategory == GroupCategory.Hotel ? "active bg-primary text-white" : "")" asp-action="Index" asp-route-category="@GroupCategory.Hotel">
+                            🏨 Hotel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentCategory == GroupCategory.Route ? "active bg-warning text-dark" : "")" asp-action="Index" asp-route-category="@GroupCategory.Route">
+                            🔀 Route
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentCategory == GroupCategory.General ? "active bg-dark text-white" : "")" asp-action="Index" asp-route-category="@GroupCategory.General">
+                            👥 General
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Search Bar -->
+                <form method="get" asp-action="Index" class="d-flex align-items-center">
+                    @if (currentCategory.HasValue)
+                    {
+                        <input type="hidden" name="category" value="@currentCategory.Value" />
+                    }
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bx bx-search"></i></span>
+                        <input type="text" name="search" class="form-control" placeholder="Search group name, leader, PNR..." value="@ViewData["CurrentSearch"]" />
+                        @if (!string.IsNullOrEmpty((string)ViewData["CurrentSearch"]))
+                        {
+                            <a asp-action="Index" asp-route-category="@currentCategory" class="btn btn-outline-secondary"><i class="bx bx-x"></i></a>
+                        }
+                        <button type="submit" class="btn btn-secondary">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">S:NO</th>
+                            <th>Category</th>
+                            <th>Group Name</th>
+                            <th>Group Leader</th>
+                            <th>Resource Allocation Summary</th>
+                            <th class="text-center">Pax Assigned</th>
+                            <th class="text-center" style="width: 140px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bx bx-folder-open display-5 d-block mb-2 text-secondary"></i>
+                                    <span>No Operational Resource Groups found. Use the <strong>+ Create Resource Group</strong> menu above.</span>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@(count++)</td>
+                                    <td>
+                                        @switch (item.Category)
+                                        {
+                                            case GroupCategory.Flight:
+                                                <span class="badge bg-info text-white"><i class="bx bx-paper-plane me-1"></i> Flight</span>
+                                                break;
+                                            case GroupCategory.Bus:
+                                                <span class="badge bg-success text-white"><i class="bx bx-bus me-1"></i> Bus</span>
+                                                break;
+                                            case GroupCategory.Hotel:
+                                                <span class="badge bg-primary text-white"><i class="bx bx-building-house me-1"></i> Hotel</span>
+                                                break;
+                                            case GroupCategory.Route:
+                                                <span class="badge bg-warning text-dark"><i class="bx bx-git-repo-forked me-1"></i> Route</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary text-white"><i class="bx bx-group me-1"></i> General</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="fw-semibold text-dark">@item.GroupName</span>
+                                    </td>
+                                    <td>
+                                        <div><i class="bx bx-user-voice me-1 text-primary"></i> @item.GroupLeaderName</div>
+                                        @if (!string.IsNullOrEmpty(item.LeaderMobileNumber))
+                                        {
+                                            <small class="text-muted"><i class="bx bx-phone me-1"></i> @item.LeaderMobileNumber</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="small text-muted d-inline-block text-wrap" style="max-width: 320px;">@item.ResourceSummary</span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if (item.Category == GroupCategory.Bus || item.Category == GroupCategory.General)
+                                        {
+                                            bool isOverCapacity = item.PassengerCount > item.BusCapacity;
+                                            <span class="badge rounded-pill @(isOverCapacity ? "bg-danger" : "bg-success") px-3 py-2 fs-6">
+                                                @item.PassengerCount / @item.BusCapacity Pax
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-primary px-3 py-2 fs-6">
+                                                @item.PassengerCount Pax
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded fs-4"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a class="dropdown-item text-primary" asp-action="Details" asp-route-id="@item.Id">
+                                                    <i class="bx bx-list-ul me-1"></i> View Manifest
+                                                </a>
+                                                <a class="dropdown-item text-warning" asp-action="Edit" asp-route-id="@item.Id">
+                                                    <i class="bx bx-edit-alt me-1"></i> Edit
+                                                </a>
+                                                <a class="dropdown-item text-danger" asp-action="MoveToTrash" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to move this group to trash?');">
+                                                    <i class="bx bx-trash me-1"></i> Move to Trash
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

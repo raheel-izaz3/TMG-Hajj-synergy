@@ -1,0 +1,157 @@
+@model IEnumerable<TMG.Models.ExpenseModels.ExpenseTransactionIndexViewModel>
+
+@{
+    ViewData["Title"] = "Expense Transactions";
+    int trashCount = ViewBag.TrashCount ?? 0;
+}
+
+@if (TempData.ContainsKey("created") && (bool)TempData["created"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Transaction Created Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("updated") && (bool)TempData["updated"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Transaction Updated Successfully!', { timeOut: 2500 });
+    </script>
+}
+@if (TempData.ContainsKey("deleted") && (bool)TempData["deleted"]!)
+{
+    <script>
+        toastr.options = { closeDuration: 100, closeButton: true, positionClass: "toast-top-center", showMethod: 'slideDown', hideMethod: 'slideUp' };
+        toastr.success('', 'Expense Transaction Trashed Successfully!', { timeOut: 2500 });
+    </script>
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense /</span> Expense Transactions</h4>
+        <div class="d-flex align-items-center gap-2">
+            <a asp-action="Create" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">
+                <i class="bx bx-plus me-1"></i> Add Transaction
+            </a>
+            <a asp-action="Trash" class="btn btn-danger rounded-pill" style="background-color: #8b0000; border-color: #8b0000;">
+                <i class="bx bx-trash me-1"></i> Trash (@trashCount)
+            </a>
+        </div>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="card p-3 shadow-sm">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover" id="expenseTransactionsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th>Expense</th>
+                        <th>Amount</th>
+                        <th>Currency</th>
+                        <th>Payment</th>
+                        <th>Type</th>
+                        <th>Year</th>
+                        <th>Date</th>
+                        <th class="text-center">Proof</th>
+                        <th style="width: 150px;" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">No expense transactions found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int index = 1;
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@index</strong></td>
+                                <td><strong>@item.ExpenseHeadName</strong></td>
+                                <td>@item.Amount.ToString("N2")</td>
+                                <td>
+                                    @{
+                                        string badgeClass = item.Currency switch
+                                        {
+                                            "SAR" => "bg-success",
+                                            "USD" => "bg-warning text-dark",
+                                            _ => "bg-primary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@item.Currency</span>
+                                </td>
+                                <td>@item.PaymentType</td>
+                                <td><span class="badge bg-label-info">@item.Type</span></td>
+                                <td>@item.Year</td>
+                                <td>@item.Date.ToString("dd-MMM-yyyy")</td>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.ProofDocumentPath))
+                                    {
+                                        <a href="@item.ProofDocumentPath" target="_blank" class="btn btn-xs btn-outline-primary" title="View Proof">
+                                            <i class="bx bx-file me-1"></i> View Proof
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Details">
+                                            <i class="bx bx-show"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success" title="Edit">
+                                            <i class="bx bx-pencil"></i>
+                                        </a>
+                                        <button type="button" onclick="confirmMoveToTrash(@item.Id)" class="btn btn-sm btn-danger" title="Move to Trash">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<form id="moveToTrashForm" method="post" action="" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    function confirmMoveToTrash(id) {
+        if (confirm("Are you sure you want to move this transaction to trash?")) {
+            var form = document.getElementById('moveToTrashForm');
+            form.action = '/ExpenseTransaction/MoveToTrash/' + id;
+            form.submit();
+        }
+    }
+
+    $(document).ready(function () {
+        $('#expenseTransactionsTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search transactions...",
+                lengthMenu: "Show _MENU_ entries",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: {
+                    previous: "Previous",
+                    next: "Next"
+                }
+            }
+        });
+    });
+</script>

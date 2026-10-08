@@ -1,0 +1,59 @@
+@model TMG.Models.ExpenseModels.ClientLedgerFilterViewModel
+
+@{
+    ViewData["Title"] = "Client Ledger Filter";
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense & Financials /</span> Client Ledger Filter</h4>
+        <a asp-controller="PaymentTransaction" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back
+        </a>
+    </div>
+
+    <hr class="mb-4" />
+
+    <div class="row">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0 fw-bold">Filter Client Ledger</h5>
+                </div>
+                <div class="card-body mt-3">
+                    <form asp-action="View" method="get">
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="ClientId">Select Client <span class="text-danger">*</span></label>
+                            <select asp-for="ClientId" asp-items="ViewBag.Clients" class="form-select" required>
+                                <option value="">--Select Client--</option>
+                            </select>
+                            <span class="text-danger" asp-validation-for="ClientId"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label class="form-label" asp-for="FromDate">From Date</label>
+                                <input asp-for="FromDate" class="form-control" type="date" placeholder="dd--yyyy" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" asp-for="ToDate">To Date</label>
+                                <input asp-for="ToDate" class="form-control" type="date" placeholder="dd--yyyy" />
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-controller="PaymentTransaction" asp-action="Index" class="btn btn-outline-secondary">Back</a>
+                            <button type="submit" class="btn btn-primary" style="background-color: #0d6efd; border-color: #0d6efd;">
+                                <i class="bx bx-filter-alt me-1"></i> Generate Ledger
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

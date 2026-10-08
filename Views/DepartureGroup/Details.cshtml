@@ -1,0 +1,141 @@
+@model TMG.Models.DepartureGroupModels.DepartureGroup
+
+@{
+    ViewData["Title"] = "Departure Group Manifest - " + Model.GroupName;
+    int count = 1;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h4 class="fw-bold m-0"><i class="bx bx-list-ul text-success me-2"></i>Departure Group Manifest</h4>
+            <span class="text-muted">Group: <strong>@Model.GroupName</strong></span>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                <i class="bx bx-edit me-1"></i> Edit Group
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bx bx-arrow-back me-1"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Flight & Group Details Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light py-3">
+            <h5 class="card-title m-0 fw-bold"><i class="bx bx-info-circle text-success me-2"></i>Flight & Group Details</h5>
+        </div>
+        <div class="card-body mt-3">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Group Name</span>
+                    <strong class="fs-6 text-dark">@Model.GroupName</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Airline</span>
+                    <strong class="fs-6 text-dark">@(ViewBag.AirlineName ?? "N/A")</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Flight Number</span>
+                    <strong class="fs-6 text-dark">@(Model.FlightNumber ?? "N/A")</strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">PNR Number</span>
+                    <span class="badge bg-label-success font-monospace fs-6">@(Model.PNRNumber ?? "N/A")</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Departure Date & Time</span>
+                    <strong class="fs-6 text-dark">
+                        @(Model.FlightDepartureDate?.ToString("dd-MMM-yyyy") ?? "N/A") @(string.IsNullOrEmpty(Model.FlightDepartureTime) ? "" : $"at {Model.FlightDepartureTime}")
+                    </strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Route (From - To)</span>
+                    <strong class="fs-6 text-dark">
+                        @(string.IsNullOrEmpty(Model.DepartureCity) ? "N/A" : Model.DepartureCity) &rarr; @(string.IsNullOrEmpty(Model.ArrivalCity) ? "N/A" : Model.ArrivalCity)
+                    </strong>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Total Passengers</span>
+                    <span class="badge bg-success px-3 py-2 fs-6">@(Model.Members?.Count(m => !m.Trashed) ?? 0) Pax</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted d-block small">Created At</span>
+                    <strong class="fs-6 text-dark">@Model.CreatedAt.ToString("dd-MMM-yyyy HH:mm")</strong>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Remarks))
+                {
+                    <div class="col-12">
+                        <span class="text-muted d-block small">Remarks</span>
+                        <p class="m-0 text-dark bg-light p-2 rounded border">@Model.Remarks</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Passenger Manifest Table Card -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
+            <h5 class="card-title m-0 fw-bold"><i class="bx bx-group text-success me-2"></i>Passenger Manifest</h5>
+            <span class="badge bg-label-success px-3 py-2 font-monospace">
+                Total: @(Model.Members?.Count(m => !m.Trashed) ?? 0) Passengers
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">S:NO</th>
+                            <th>Booking Code</th>
+                            <th>Full Name</th>
+                            <th class="text-center">Role</th>
+                            <th>Passport Number</th>
+                            <th>CNIC</th>
+                            <th>Assigned At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Members == null || !Model.Members.Any(m => !m.Trashed))
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    <i class="bx bx-user-x display-6 d-block mb-2 text-secondary"></i>
+                                    No passengers assigned to this departure group.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var member in Model.Members.Where(m => !m.Trashed).OrderBy(m => m.BookingCode).ThenByDescending(m => m.IsHead))
+                            {
+                                <tr>
+                                    <td class="fw-bold">@(count++)</td>
+                                    <td>
+                                        <span class="badge bg-label-secondary font-monospace">@member.BookingCode</span>
+                                    </td>
+                                    <td class="fw-semibold text-dark">@member.FullName</td>
+                                    <td class="text-center">
+                                        @if (member.IsHead)
+                                        {
+                                            <span class="badge bg-success px-2 py-1"><i class="bx bx-user-voice me-1"></i> Head</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary px-2 py-1"><i class="bx bx-user me-1"></i> Member</span>
+                                        }
+                                    </td>
+                                    <td class="font-monospace">@(string.IsNullOrEmpty(member.PassportNumber) ? "N/A" : member.PassportNumber)</td>
+                                    <td class="font-monospace">@(string.IsNullOrEmpty(member.CNIC) ? "N/A" : member.CNIC)</td>
+                                    <td class="text-muted small">@member.AssignedAt.ToString("dd-MMM-yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

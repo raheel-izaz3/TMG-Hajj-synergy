@@ -1,0 +1,408 @@
+@using TMG.Models.OperationalGroupModels
+@model TMG.Models.OperationalGroupModels.OperationalGroupCreateViewModel
+
+@{
+    ViewData["Title"] = "Edit Operational Resource Group";
+    var currentCat = Model.Category;
+
+    string groupTypeName = currentCat switch
+    {
+        GroupCategory.Flight => "Flight",
+        GroupCategory.Bus => "Bus",
+        GroupCategory.Hotel => "Hotel",
+        GroupCategory.Route => "Route",
+        _ => "General"
+    };
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- Top Header & Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="fw-bold m-0"><i class="bx bx-edit text-warning me-2"></i>Edit Operational Resource Group</h4>
+            <small class="text-muted">Update group metadata, resource allocations, and passenger assignments</small>
+        </div>
+        <a asp-action="Index" asp-route-category="@currentCat" class="btn btn-outline-secondary">
+            <i class="bx bx-arrow-back me-1"></i> Back to Groups
+        </a>
+    </div>
+
+    <!-- Main Edit Form -->
+    <form asp-action="Edit" method="post" id="operationalGroupForm">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Category" id="categoryInput" value="@((int)currentCat)" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <!-- SECTION 1: Basic Group Details -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light py-3">
+                <h5 class="card-title m-0 fw-bold"><i class="bx bx-info-circle text-primary me-2"></i>Section 1: Basic Group Details</h5>
+            </div>
+            <div class="card-body mt-3">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="GroupName" class="form-label fw-semibold">Group Name <span class="text-danger">*</span></label>
+                        <input asp-for="GroupName" class="form-control" required />
+                        <span asp-validation-for="GroupName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="GroupLeaderName" class="form-label fw-semibold">Group Leader Name</label>
+                        <input asp-for="GroupLeaderName" class="form-control" />
+                        <span asp-validation-for="GroupLeaderName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label asp-for="LeaderMobileNumber" class="form-label fw-semibold">Leader Mobile Number</label>
+                        <input asp-for="LeaderMobileNumber" class="form-control" />
+                        <span asp-validation-for="LeaderMobileNumber" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Resource Allocation -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light py-3">
+                <h5 class="card-title m-0 fw-bold"><i class="bx bx-slider-alt text-primary me-2"></i>Section 2: Resource Allocation (@groupTypeName Allocation)</h5>
+            </div>
+            <div class="card-body mt-3">
+                <!-- Flight Resource Allocation Block -->
+                @if (currentCat == GroupCategory.Flight || currentCat == GroupCategory.General)
+                {
+                    <div class="mb-4 border p-3 rounded bg-light-subtle">
+                        <h6 class="fw-bold text-info mb-3"><i class="bx bx-paper-plane me-1"></i> Flight Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label asp-for="AirlineId" class="form-label fw-semibold">Select Airline</label>
+                                <select asp-for="AirlineId" asp-items="Model.Airlines" class="form-select">
+                                    <option value="">-- Select Airline --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="FlightId" class="form-label fw-semibold">Select Flight</label>
+                                <select asp-for="FlightId" asp-items="Model.Flights" class="form-select">
+                                    <option value="">-- Select Flight --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="FlightNumber" class="form-label fw-semibold">Flight Number</label>
+                                <input asp-for="FlightNumber" class="form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="PNRReference" class="form-label fw-semibold">PNR Reference</label>
+                                <input asp-for="PNRReference" class="form-control font-monospace" />
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="FlightDate" class="form-label fw-semibold">Flight Date</label>
+                                <input asp-for="FlightDate" type="date" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Bus Resource Allocation Block -->
+                @if (currentCat == GroupCategory.Bus || currentCat == GroupCategory.General)
+                {
+                    <div class="mb-4 border p-3 rounded bg-light-subtle">
+                        <h6 class="fw-bold text-success mb-3"><i class="bx bx-bus me-1"></i> Bus & Vehicle Details (Strict Capacity Enforcement)</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="VehicleId" class="form-label fw-semibold">Vehicle / Transport Model</label>
+                                <select asp-for="VehicleId" asp-items="Model.Vehicles" class="form-select">
+                                    <option value="">-- Select Bus / Vehicle --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="BusIdentifierPlateNo" class="form-label fw-semibold">Bus Identifier / Plate #</label>
+                                <input asp-for="BusIdentifierPlateNo" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="BusCapacity" class="form-label fw-semibold">Bus Capacity (Seats Limit) *</label>
+                                <input asp-for="BusCapacity" type="number" class="form-control fw-bold" id="busCapacityInput" min="1" max="500" required />
+                                <small class="text-warning d-block mt-1"><i class="bx bx-error me-1"></i>System will strictly block saving if selected pilgrims exceed this seat limit.</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Hotel Resource Allocation Block -->
+                @if (currentCat == GroupCategory.Hotel || currentCat == GroupCategory.General)
+                {
+                    <div class="mb-4 border p-3 rounded bg-light-subtle">
+                        <h6 class="fw-bold text-primary mb-3"><i class="bx bx-building-house me-1"></i> Hotel & Rooming Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="HotelId" class="form-label fw-semibold">Hotel Accommodation</label>
+                                <select asp-for="HotelId" asp-items="Model.Hotels" class="form-select">
+                                    <option value="">-- Select Hotel --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="RoomId" class="form-label fw-semibold">Target Room Type / Sharing Bed</label>
+                                <select asp-for="RoomId" asp-items="Model.Rooms" class="form-select">
+                                    <option value="">-- Select Room Type --</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Route Resource Allocation Block -->
+                @if (currentCat == GroupCategory.Route || currentCat == GroupCategory.General)
+                {
+                    <div class="mb-4 border p-3 rounded bg-light-subtle">
+                        <h6 class="fw-bold text-warning mb-3"><i class="bx bx-git-repo-forked me-1"></i> Route & Schedule Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="RouteId" class="form-label fw-semibold">Bus Route Sector</label>
+                                <select asp-for="RouteId" asp-items="Model.Routes" class="form-select">
+                                    <option value="">-- Select Bus Route --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ItineraryScheduleId" class="form-label fw-semibold">Travel Itinerary Schedule</label>
+                                <select asp-for="ItineraryScheduleId" class="form-select">
+                                    <option value="">-- Select Travel Itinerary --</option>
+                                    <option value="1">Standard Arrival Itinerary (JED - MAK - MED)</option>
+                                    <option value="2">Standard Departure Itinerary (MED - JED)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- SECTION 3: Select Pilgrims for Group -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title m-0 fw-bold me-2 d-inline-block"><i class="bx bx-user-check text-primary me-2"></i>Section 3: Select Pilgrims for @groupTypeName Group</h5>
+                    <span class="badge rounded-pill bg-success fs-6 px-3 py-1 font-monospace" id="capacityPillBadge">
+                        Selected: <span id="selectedCountSpan">0</span> / Capacity: <span id="capacityLimitSpan">@(currentCat == GroupCategory.Bus || currentCat == GroupCategory.General ? Model.BusCapacity : "∞")</span>
+                    </span>
+                    <small class="text-muted d-block mt-1">Select Hajis / Passengers from confirmed bookings to add to this group.</small>
+                </div>
+                <div class="form-check form-switch cursor-pointer">
+                    <input class="form-check-input" type="checkbox" id="selectAllPilgrimsMaster" />
+                    <label class="form-check-label fw-bold" for="selectAllPilgrimsMaster">Select All Pilgrims</label>
+                </div>
+            </div>
+            <div class="card-body mt-3">
+                <!-- Search Box -->
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bx bx-search"></i></span>
+                        <input type="text" id="passengerSearch" class="form-control" placeholder="Search passengers by name, passport, CNIC, or booking #..." />
+                    </div>
+                </div>
+
+                <!-- Master Table Layout for Pilgrim Selection -->
+                <div class="table-responsive text-nowrap border rounded">
+                    <table class="table table-hover align-middle mb-0" id="pilgrimSelectionTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;" class="text-center">Select</th>
+                                <th>Booking #</th>
+                                <th>Haji Full Name</th>
+                                <th>CNIC / B-Form</th>
+                                <th>Passport #</th>
+                                <th class="text-center">Gender</th>
+                                <th>Company / Client</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!Model.Bookings.Any())
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">
+                                        <i class="bx bx-user-x display-6 d-block mb-2 text-secondary"></i>
+                                        No active bookings or pilgrims found for the current season.
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var booking in Model.Bookings)
+                                {
+                                    <!-- Booking Header Row -->
+                                    <tr class="bg-light booking-header-row" data-booking-code="@booking.BookingCode.ToLower()" data-head-name="@booking.HeadName.ToLower()">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="form-check-input booking-master-checkbox" data-head-id="@booking.HeadId" />
+                                        </td>
+                                        <td colspan="6">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary font-monospace fs-7">@booking.BookingCode</span>
+                                                <strong class="text-dark">@booking.HeadName</strong>
+                                                <span class="small text-muted ms-2">(Pax Unit: @booking.PaxCount member(s))</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Passenger Rows -->
+                                    @foreach (var pax in booking.Passengers)
+                                    {
+                                        <tr class="passenger-item-row" data-booking-head="@booking.HeadId" data-search-text="@($"{pax.FullName} {pax.CNIC} {pax.PassportNumber} {pax.BookingCode} {pax.ClientCompanyName}".ToLower())">
+                                            <td class="text-center">
+                                                <input type="checkbox" name="SelectedPassengerIds" value="@pax.IndividualId" class="form-check-input pax-checkbox" id="pax_check_@pax.IndividualId" data-booking-head="@booking.HeadId" @(pax.IsSelected ? "checked" : "") />
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-label-secondary font-monospace">@pax.BookingCode</span>
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label fw-bold cursor-pointer text-dark m-0" for="pax_check_@pax.IndividualId">
+                                                    @pax.FullName
+                                                    @if (pax.IsHead)
+                                                    {
+                                                        <span class="badge bg-label-primary ms-1">Head</span>
+                                                    }
+                                                </label>
+                                            </td>
+                                            <td class="font-monospace">@(string.IsNullOrEmpty(pax.CNIC) ? "N/A" : pax.CNIC)</td>
+                                            <td class="font-monospace">@(string.IsNullOrEmpty(pax.PassportNumber) ? "N/A" : pax.PassportNumber)</td>
+                                            <td class="text-center">
+                                                @if (pax.Gender == "Female")
+                                                {
+                                                    <span class="badge bg-label-danger px-2 py-1"><i class="bx bx-female me-1"></i> Female</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-label-info px-2 py-1"><i class="bx bx-male me-1"></i> Male</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="small text-muted">@pax.ClientCompanyName</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer Action Bar -->
+            <div class="card-footer bg-light py-3 d-flex justify-content-between align-items-center">
+                <a asp-action="Index" asp-route-category="@currentCat" class="btn btn-outline-secondary">
+                    <i class="bx bx-x me-1"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-warning btn-lg fw-bold shadow-sm">
+                    <i class="bx bx-save me-1"></i> Update @groupTypeName Group
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var category = parseInt($('#categoryInput').val()) || 1;
+
+            function getCapacity() {
+                if (category === 2 || category === 5) {
+                    var capVal = parseInt($('#busCapacityInput').val());
+                    return isNaN(capVal) || capVal <= 0 ? 45 : capVal;
+                }
+                return Infinity;
+            }
+
+            function updateCounter() {
+                var selected = $('.pax-checkbox:checked').length;
+                var capacity = getCapacity();
+
+                $('#selectedCountSpan').text(selected);
+                $('#capacityLimitSpan').text(capacity === Infinity ? "∞" : capacity);
+
+                var $badge = $('#capacityPillBadge');
+                if (capacity !== Infinity && selected > capacity) {
+                    $badge.removeClass('bg-success').addClass('bg-danger');
+                } else {
+                    $badge.removeClass('bg-danger').addClass('bg-success');
+                }
+            }
+
+            updateCounter();
+
+            $(document).on('change', '#busCapacityInput', function () {
+                updateCounter();
+            });
+
+            $(document).on('change', '.pax-checkbox', function () {
+                var headId = $(this).attr('data-booking-head');
+                if (headId) {
+                    var $headCheckboxes = $('.pax-checkbox[data-booking-head="' + headId + '"]');
+                    var allChecked = $headCheckboxes.filter(':checked').length === $headCheckboxes.length;
+                    $('.booking-master-checkbox[data-head-id="' + headId + '"]').prop('checked', allChecked);
+                }
+                updateCounter();
+            });
+
+            $(document).on('change', '.booking-master-checkbox', function () {
+                var headId = $(this).attr('data-head-id');
+                var isChecked = $(this).is(':checked');
+                $('.pax-checkbox[data-booking-head="' + headId + '"]:visible').prop('checked', isChecked);
+                updateCounter();
+            });
+
+            $('#selectAllPilgrimsMaster').on('change', function () {
+                var isChecked = $(this).is(':checked');
+                $('.pax-checkbox:visible').prop('checked', isChecked);
+                $('.booking-master-checkbox:visible').prop('checked', isChecked);
+                updateCounter();
+            });
+
+            $('#operationalGroupForm').on('submit', function (e) {
+                if (category === 2 || category === 5) {
+                    var selected = $('.pax-checkbox:checked').length;
+                    var capacity = getCapacity();
+
+                    if (selected > capacity) {
+                        e.preventDefault();
+                        alert('STRICT CAPACITY ERROR:\nSelected pilgrims (' + selected + ') exceed the maximum bus seat capacity limit (' + capacity + ' seats).\n\nPlease deselect pilgrims or increase the capacity limit before saving.');
+                        return false;
+                    }
+                }
+            });
+
+            $('#passengerSearch').on('keyup input', function () {
+                var term = $(this).val().toLowerCase().trim();
+
+                if (term === '') {
+                    $('.passenger-item-row').show();
+                    $('.booking-header-row').show();
+                    return;
+                }
+
+                $('.booking-header-row').each(function () {
+                    var $header = $(this);
+                    var headId = $header.find('.booking-master-checkbox').attr('data-head-id');
+                    var bookingCode = $header.attr('data-booking-code') || '';
+                    var headName = $header.attr('data-head-name') || '';
+                    var headerMatches = bookingCode.indexOf(term) !== -1 || headName.indexOf(term) !== -1;
+
+                    var visibleCount = 0;
+                    $('.passenger-item-row[data-booking-head="' + headId + '"]').each(function () {
+                        var $row = $(this);
+                        var text = $row.attr('data-search-text') || '';
+                        if (headerMatches || text.indexOf(term) !== -1) {
+                            $row.show();
+                            visibleCount++;
+                        } else {
+                            $row.hide();
+                        }
+                    });
+
+                    if (visibleCount > 0) {
+                        $header.show();
+                    } else {
+                        $header.hide();
+                    }
+                });
+            });
+        });
+    </script>
+}

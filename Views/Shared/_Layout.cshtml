@@ -141,9 +141,9 @@
                             </div>
                         </a>
                     </li>
-                    <li class="menu-header small text-uppercase">
+                    @* <li class="menu-header small text-uppercase">
                         <span class="menu-header-text">Modules </span>
-                    </li>
+                    </li> *@
                     @if (http.HttpContext.Session.GetString("RoleName").Equals("null"))
                     {
                         <li class="menu-header small text-uppercase">
@@ -682,6 +682,67 @@
                         {
 
                         }
+                        @* <li class="menu-header small text-uppercase">
+                            <span class="menu-header-text">EXPENSE & FINANCIALS</span>
+                        </li> *@
+
+                         <li class="menu-item">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                                <i class='menu-icon tf-icons bx bxs-user-account'></i>
+                                <div data-i18n="Account Settings">Expense & Financials</div>
+                            </a>
+                            <ul class="menu-sub">
+                                 <li class="menu-item">
+                            <a asp-controller="ExpenseHead" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-dollar"></i>
+                                <div>Add Expense</div>
+                            </a>
+                        </li>
+                         <li class="menu-item">
+                            <a asp-controller="ExpenseTransaction" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-credit-card"></i>
+                                <div>Expense Transactions</div>
+                            </a>
+                        </li>
+                          <li class="menu-item">
+                            <a asp-controller="PaymentTransaction" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-transfer"></i>
+                                <div>Transactions</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a asp-controller="ClientLedger" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-filter"></i>
+                                <div data-i18n="Ledger Filter">Ledger Filter</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a asp-controller="CompanyLedger" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-filter"></i>
+                                <div data-i18n="Company Filter">Company Filter</div>
+                            </a>
+                        </li>
+                            </ul>
+                        </li>
+
+                        @* <li class="menu-item">
+                            <a asp-controller="ExpenseHead" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-dollar"></i>
+                                <div>Add Expense</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a asp-controller="ExpenseTransaction" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-credit-card"></i>
+                                <div>Expense Transactions</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a asp-controller="PaymentTransaction" asp-action="Index" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-transfer"></i>
+                                <div>Transactions</div>
+                            </a>
+                        </li> *@
                         @if (http.HttpContext.Session.GetString("TransportationModuleAllowed").Equals("True"))
                         {
                             <li class="menu-item">
@@ -725,6 +786,21 @@
                                     <li class="menu-item">
                                         <a asp-controller="Flight" asp-action="Index" class="menu-link">
                                             <div>Flights</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="ArrivalGroup" asp-action="Index" class="menu-link">
+                                            <div>Arrival Groups</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="DepartureGroup" asp-action="Index" class="menu-link">
+                                            <div>Departure Groups</div>
+                                        </a>
+                                    </li>
+                                    <li class="menu-item">
+                                        <a asp-controller="OperationalGroup" asp-action="Index" class="menu-link">
+                                            <div>Operational Groups</div>
                                         </a>
                                     </li>
 
@@ -1496,6 +1572,8 @@
         });
 
     </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 

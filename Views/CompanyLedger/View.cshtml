@@ -1,0 +1,225 @@
+@model TMG.Models.ExpenseModels.CompanyLedgerStatementViewModel
+
+@{
+    ViewData["Title"] = "Company Ledger - " + Model.CompanyName;
+}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- Header Bar -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0"><span class="text-muted fw-light">Expense & Financials /</span> Company Ledger — @Model.CompanyName</h4>
+        <div class="d-flex gap-2">
+            <a href="javascript:window.print();" class="btn text-white" style="background-color: #be123c; border-color: #be123c;">
+                <i class="bx bx-file-pdf me-1"></i> Export PDF
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bx bx-arrow-back me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Green Banner Header -->
+    <div class="card text-white mb-4 shadow-sm" style="background-color: #166534;">
+        <div class="card-body py-3">
+            <h4 class="m-0 text-white fw-bold"><i class="bx bx-book-open me-2"></i>Ledger Summary</h4>
+        </div>
+    </div>
+
+    <!-- Report Information Card (2-Column Layout) -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 border-end-md">
+                    <div class="mb-2"><span class="text-muted fw-semibold">Company:</span> <strong class="fs-6 text-dark ms-2">@Model.CompanyName</strong></div>
+                    <div><span class="text-muted fw-semibold">Total Bookings:</span> <strong class="ms-2">@Model.TotalBookingsCount</strong></div>
+                </div>
+                <div class="col-md-6 ps-md-4 mt-3 mt-md-0">
+                    <div class="mb-2"><span class="text-muted fw-semibold">Total Pax:</span> <strong class="ms-2">@Model.TotalPaxCount</strong></div>
+                    <div><span class="text-muted fw-semibold">Generated On:</span> <span class="ms-2 text-muted">@Model.GeneratedOn.ToString("dd-MMM-yyyy hh:mm tt")</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 4 KPI Metric Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Card 1: Total Bookings -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Total Bookings</div>
+                    <h3 class="fw-bold mb-1">@Model.TotalBookingsCount</h3>
+                    <div class="text-muted small">@Model.TotalPaxCount pax combined</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Total Booking Amount -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Total Booking Amount</div>
+                    <h4 class="fw-bold mb-1" style="color: #0f766e;">PKR @Model.TotalBookingAmount.ToString("N0")</h4>
+                    <div class="text-muted small">Agreed package value</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Received -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Total Received</div>
+                    <h4 class="fw-bold mb-1 text-primary">PKR @Model.GrandTotalReceived.ToString("N0")</h4>
+                    <div class="text-muted small">Bookings + Transactions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Balance -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase mb-2">Balance</div>
+                    <h4 class="fw-bold mb-1 text-primary">PKR @Model.Balance.ToString("N0")</h4>
+                    <div class="text-muted small">Net amount due</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Bookings Table -->
+    <div class="mb-4">
+        <h5 class="fw-bold text-danger mb-3">Bookings (@Model.TotalBookingsCount)</h5>
+        <div class="card shadow-sm">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle m-0">
+                    <thead style="background-color: #d1e7dd;">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Booking Date</th>
+                            <th>Package</th>
+                            <th>Pax</th>
+                            <th>Total Amount</th>
+                            <th>Received</th>
+                            <th>Balance</th>
+                            <th class="text-center" style="width: 120px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Bookings.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">No bookings found for this company.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var b in Model.Bookings)
+                            {
+                                <tr>
+                                    <td><strong>@b.SerialNo</strong></td>
+                                    <td>@b.BookingDate.ToString("dd-MMM-yyyy")</td>
+                                    <td><span class="badge bg-label-success">@b.PackageName</span></td>
+                                    <td><strong>@b.Pax</strong></td>
+                                    <td>PKR @b.TotalAmount.ToString("N0")</td>
+                                    <td>PKR @b.Received.ToString("N0")</td>
+                                    <td><strong class="text-primary">PKR @b.Balance.ToString("N0")</strong></td>
+                                    <td class="text-center">
+                                        <a href="/FamilyHead/Edit/@b.FamilyHeadId" target="_blank" class="btn btn-xs btn-outline-primary">
+                                            View Booking
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Transactions Table -->
+    <div class="mb-4">
+        <h5 class="fw-bold text-danger mb-3">Transactions (@Model.Transactions.Count)</h5>
+        <div class="card shadow-sm">
+            <div class="table-responsive text-nowrap">
+                <table class="table table-hover align-middle m-0">
+                    <thead style="background-color: #d1e7dd;">
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Date</th>
+                            <th>Booking</th>
+                            <th>Payment Type</th>
+                            <th>Reference No</th>
+                            <th>Amount</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Transactions.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No financial transactions found for this company.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var t in Model.Transactions)
+                            {
+                                <tr>
+                                    <td><strong>@t.SerialNo</strong></td>
+                                    <td>@t.Date.ToString("dd-MMM-yyyy")</td>
+                                    <td><code>@t.BookingReference</code></td>
+                                    <td><span class="badge bg-label-info">@t.PaymentType</span></td>
+                                    <td>@t.ReferenceNo</td>
+                                    <td><strong class="text-success">PKR @t.Amount.ToString("N0")</strong></td>
+                                    <td class="text-center">
+                                        <span class="badge bg-primary rounded-pill">@t.Status</span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Section: Final Summary Card (Aligned to Right) -->
+    <div class="row justify-content-end mb-4">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm border">
+                <div class="card-header bg-light py-2">
+                    <h6 class="card-title mb-0 fw-bold">Reconciliation Summary</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm m-0">
+                        <tbody>
+                            <tr>
+                                <td class="px-3 py-2 text-muted">Total Booking Amount:</td>
+                                <td class="px-3 py-2 text-end fw-semibold">PKR @Model.TotalBookingAmount.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 text-muted">Total Received (Bookings):</td>
+                                <td class="px-3 py-2 text-end">PKR @Model.TotalReceivedAtBooking.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 text-muted">Total Received (Confirmed Transactions):</td>
+                                <td class="px-3 py-2 text-end text-success fw-semibold">PKR @Model.TotalReceivedViaTransactions.ToString("N2")</td>
+                            </tr>
+                            <tr class="table-light">
+                                <td class="px-3 py-2 fw-bold">Grand Total Received:</td>
+                                <td class="px-3 py-2 text-end fw-bold text-dark">PKR @Model.GrandTotalReceived.ToString("N2")</td>
+                            </tr>
+                            <tr class="table-light border-top border-2">
+                                <td class="px-3 py-2 fw-bold text-primary fs-6">Balance:</td>
+                                <td class="px-3 py-2 text-end fw-bold text-primary fs-6">PKR @Model.Balance.ToString("N2")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

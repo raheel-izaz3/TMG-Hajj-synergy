@@ -4346,54 +4346,59 @@ namespace TMG.Controllers.FamilyControllers
                     .RateOfExchangesWithoutTrash.OrderByDescending(e => e.Date)
                     .FirstOrDefault(e => e.Currency == Currencies.PKR);
 
-                PaymentVoucher voucher = new PaymentVoucher
-                {
-                    CompanyId = familyHeadPackage.CompanyId,
-                    Date = dateTime,
-                    AccountId = AccountId,
-                    InstrumentNumber = "",
-                    VoucherTypeId = 5,
-                    Description = $"Receivable of {fh.GivenName} {fh.SurName} ({fh.FcId})",
-                    Amount = packageTotalPkr,
-                    PKRROE = 1,
-                    SARROE = familyHeadPackage.SARROE,
-                    USDROE = familyHeadPackage.USDROE,
-                    Currency = Currencies.PKR,
-                    ReceivingParty = "",
-                };
-
-                _context.PaymentVouchers.Add(voucher);
-                _context.SaveChanges();
-
-                _context.VoucherEntries.Add(
-                    new VoucherEntry
-                    {
-                        PaymentVoucherId = voucher.PaymentVoucherId,
-                        AccountId = AccountId,
-                        Debit = packageTotalPkr,
-                        Credit = 0,
-                        DebitOrCreditSide = ShowAccountDebitOrCreditSide.Debit,
-                    }
-                );
-
+                // Safety Check: Only create legacy payment vouchers if valid accounts exist in the database
+                var defaultAccount = _context.Accounts.FirstOrDefault();
                 var companySaleAccount = _context
                     .Accounts.Include(e => e.Category)
                     .ThenInclude(e => e.SubType)
                     .Select(e => new { e.AccountId, e.Category.SubType.CompanyId })
                     .FirstOrDefault(a => a.CompanyId == familyHeadPackage.CompanyId);
 
-                _context.VoucherEntries.Add(
-                    new VoucherEntry
+                if (defaultAccount != null && companySaleAccount != null)
+                {
+                    PaymentVoucher voucher = new PaymentVoucher
                     {
-                        PaymentVoucherId = voucher.PaymentVoucherId,
-                        AccountId = companySaleAccount.AccountId,
-                        Debit = 0,
-                        Credit = packageTotalPkr,
-                        DebitOrCreditSide = ShowAccountDebitOrCreditSide.Credit,
-                    }
-                );
+                        CompanyId = familyHeadPackage.CompanyId,
+                        Date = dateTime,
+                        AccountId = defaultAccount.AccountId,
+                        InstrumentNumber = "",
+                        VoucherTypeId = 5,
+                        Description = $"Receivable of {fh.GivenName} {fh.SurName} ({fh.FcId})",
+                        Amount = packageTotalPkr,
+                        PKRROE = 1,
+                        SARROE = familyHeadPackage.SARROE,
+                        USDROE = familyHeadPackage.USDROE,
+                        Currency = Currencies.PKR,
+                        ReceivingParty = "",
+                    };
 
-                _context.SaveChanges();
+                    _context.PaymentVouchers.Add(voucher);
+                    _context.SaveChanges();
+
+                    _context.VoucherEntries.Add(
+                        new VoucherEntry
+                        {
+                            PaymentVoucherId = voucher.PaymentVoucherId,
+                            AccountId = defaultAccount.AccountId,
+                            Debit = packageTotalPkr,
+                            Credit = 0,
+                            DebitOrCreditSide = ShowAccountDebitOrCreditSide.Debit,
+                        }
+                    );
+
+                    _context.VoucherEntries.Add(
+                        new VoucherEntry
+                        {
+                            PaymentVoucherId = voucher.PaymentVoucherId,
+                            AccountId = companySaleAccount.AccountId,
+                            Debit = 0,
+                            Credit = packageTotalPkr,
+                            DebitOrCreditSide = ShowAccountDebitOrCreditSide.Credit,
+                        }
+                    );
+
+                    _context.SaveChanges();
+                }
 
                 transaction.Commit();
                 return RedirectToAction("Index", "FamilyHead");

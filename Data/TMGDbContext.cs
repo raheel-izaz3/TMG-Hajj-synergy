@@ -1,4 +1,4 @@
-﻿using TMG.Controllers;
+using TMG.Controllers;
 using TMG.Models;
 using TMG.Models.AccomodationModels;
 using TMG.Models.AccountModels;
@@ -31,6 +31,11 @@ using TMG.Models.NewChartOfAccounts.FiscalYear;
 using TMG.Models.NewChartOfAccounts.NewAccount;
 using TMG.Models.NewChartOfAccounts.NewVoucher;
 
+using TMG.Models.ArrivalGroupModels;
+using TMG.Models.DepartureGroupModels;
+using TMG.Models.OperationalGroupModels;
+using TMG.Models.ExpenseModels;
+
 namespace TMG.Data
 {
 
@@ -43,6 +48,18 @@ namespace TMG.Data
         {
             _http = httpContextAccessor;
         }
+
+        public DbSet<ExpenseHead> ExpenseHeads { get; set; }
+        public DbSet<ExpenseTransaction> ExpenseTransactions { get; set; }
+        public DbSet<ClientCompanyTransaction> ClientCompanyTransactions { get; set; }
+        public DbSet<ArrivalGroup> ArrivalGroups { get; set; }
+        public DbSet<ArrivalGroupMember> ArrivalGroupMembers { get; set; }
+
+        public DbSet<DepartureGroup> DepartureGroups { get; set; }
+        public DbSet<DepartureGroupMember> DepartureGroupMembers { get; set; }
+
+        public DbSet<OperationalGroup> OperationalGroups { get; set; }
+        public DbSet<OperationalGroupMember> OperationalGroupMembers { get; set; }
 
         public DbSet<UserHajjAgreement> UserHajjAgreements { get; set; }
         public DbSet<CombinedFlightsResult> CombinedFlightsResult { get; set; }
